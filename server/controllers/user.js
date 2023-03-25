@@ -15,16 +15,33 @@ class User {
                 email,
                 password: hashedPassword
             };
-            await this.db.query("INSERT INTO users SET ?", user, (err, result) => {
-                if (err) {
-                    console.error(err);
+
+            const localRegistration = async () => {
+                await this.db.query("INSERT INTO users SET ?", user, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        return callback(500, {
+                            error: "Internal server error"
+                        })
+                    }
+                    return callback(201, {
+                        message: "User registered successfully"
+                    })
+                })
+            }
+
+            await this.db.query("SELECT COUNT(*) as count from users where email = ?", user.email, async (err, result) => {
+                if (err || result.length < 1)
                     return callback(500, {
                         error: "Internal server error"
                     })
-                }
-                return callback(201, {
-                    message: "User registered successfully"
-                })
+
+                if (result[0].count > 0)
+                    return callback(409, {
+                        error: "Email was registered earlier"
+                    })
+
+                await localRegistration();
             });
         } catch (err) {
             console.error(err);

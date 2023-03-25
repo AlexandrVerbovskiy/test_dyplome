@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "./utils/axios";
+import {login, registration, test} from "./requests";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -7,44 +7,40 @@ function App() {
   const [message, setMessage] = useState("");
 
   const handleRegister = async () => {
-    try {
-      await axios.post("http://localhost:5000/register", { email, password });
-      setMessage("User registered successfully");
-    } catch (err) {
-      console.error(err);
-      setMessage("Internal server error");
-    }
+    await registration(
+      { email, password },
+      () => {
+        setMessage("User registered successfully");
+      },
+      err => {
+        setMessage(err);
+      }
+    );
   };
 
   const handleLogin = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/login", {
-        email,
-        password
-      });
-      const token = res.data.token;
-      console.log(res.data, token)
-      localStorage.setItem("token", token);
-      setMessage("Logged in successfully");
-    } catch (err) {
-      console.error(err);
-      setMessage("Invalid email or password");
-    }
+    await login(
+      { email, password },
+      () => {
+        setMessage("Logged in successfully");
+      },
+      err => {
+        setMessage(err);
+      }
+    );
   };
 
   const handleTest = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/test", {
-        email,
-        password
-      });
-      console.log(res);
-      setMessage("Ok?");
-    } catch (err) {
-      console.error(err);
-      setMessage("Error?");
-    }
-  }
+    await test(
+      { email, password },
+      () => {
+        setMessage("OK?");
+      },
+      ()=> {
+        setMessage("ERROR?");
+      }
+    );
+  };
 
   return (
     <div>
