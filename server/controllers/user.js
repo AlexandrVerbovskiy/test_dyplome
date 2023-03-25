@@ -1,6 +1,9 @@
 require("dotenv").config()
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {
+    validateToken
+} = require('../utils');
 
 class User {
 
@@ -93,6 +96,11 @@ class User {
                 error: "Internal server error"
             })
         }
+    }
+
+    async validateToken(token, callback) {
+        const res = validateToken(token);
+        callback(res);
     }
 }
 

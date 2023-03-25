@@ -1,69 +1,41 @@
-import React, { useState } from "react";
-import {login, registration, test} from "./requests";
+import React, { useState, useEffect } from "react";
+import { Chat, Default } from "./components";
+import { validateToken } from "./requests";
 
 function App() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [systemMessage, setSystemMessage] = useState("");
+  const [auth, setAuth] = useState(false);
 
-  const handleRegister = async () => {
-    await registration(
-      { email, password },
-      () => {
-        setMessage("User registered successfully");
-      },
-      err => {
-        setMessage(err);
-      }
-    );
+  const init = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAuth(false);
+    } else {
+      await validateToken(
+        token,
+        res => setAuth(res),
+        message => setSystemMessage(message)
+      );
+    }
   };
 
-  const handleLogin = async () => {
-    await login(
-      { email, password },
-      () => {
-        setMessage("Logged in successfully");
-      },
-      err => {
-        setMessage(err);
-      }
-    );
+  useEffect(() => {
+    init();
+  }, []);
+
+  const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    setAuth(false);
   };
 
-  const handleTest = async () => {
-    await test(
-      { email, password },
-      () => {
-        setMessage("OK?");
-      },
-      ()=> {
-        setMessage("ERROR?");
-      }
-    );
-  };
+  if (auth) return <Chat onLogoutClick={handleLogoutClick} />;
 
   return (
-    <div>
-      <h1>My App</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button onClick={handleRegister}>Register</button>
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleTest}>Test</button>
-      <p>
-        {message}
-      </p>
-    </div>
+    <Default
+      setSystemMessage={setSystemMessage}
+      systemMessage={systemMessage}
+      setAuth={setAuth}
+    />
   );
 }
 

@@ -1,9 +1,17 @@
-const {User} = require("../controllers");
-const {isAuth, isNotAuth} = require("../middlewares");
+const {
+    User
+} = require("../controllers");
+const {
+    isAuth,
+    isNotAuth
+} = require("../middlewares");
+const {
+    validateToken
+} = require("../utils");
+
 function route(app, db) {
     const userController = new User(db);
 
-    // Handle user registration
     app.post("/register", isNotAuth, async (req, res) => {
         console.log(req)
         const {
@@ -14,7 +22,6 @@ function route(app, db) {
         await userController.registration(email, password, callback);
     });
 
-    // Handle user login
     app.post("/login", isNotAuth, async (req, res) => {
         const {
             email,
@@ -33,6 +40,20 @@ function route(app, db) {
     app.post("/test", isAuth, async (req, res) => {
         res.status(200).json({
             mess: "well done"
+        });
+    })
+
+    app.post("/check-token", isAuth, async (req, res) => {
+        const {
+            token
+        } = req.body;
+
+        const resValidate = await validateToken(token);
+        if (resValidate) return res.status(200).json({
+            validated: true
+        });
+        return res.status(200).json({
+            validated: false
         });
     })
 }

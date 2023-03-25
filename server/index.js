@@ -5,6 +5,10 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const userRoutes = require("./routes/user")
+const socketIo = require('socket.io');
+const {
+  Chats: ChatSocketController
+} = require('./sockets')
 
 const PORT = process.env.PORT || 5000;
 
@@ -34,6 +38,14 @@ db.connect((err) => {
 
 userRoutes(app, db);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log("Server started on port " + PORT);
 });
+
+const io = socketIo(server, {
+  cors: {
+    credentials: true
+  }
+})
+
+new ChatSocketController(io, db);

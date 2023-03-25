@@ -1,25 +1,24 @@
-require("dotenv").config()
-const jwt = require("jsonwebtoken");
+const {
+  validateToken
+} = require('../utils');
 
 function isAuth(request, response, next) {
   const authorization = request.headers.authorization;
-  console.log(authorization)
   if (!authorization) return response.status(401).json({
     message: 'Authentication failed'
   });
 
   const token = authorization.split(' ')[1];
-  try {
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-    request.userData = {
-      userId: decodedToken.userId
-    };
-    next();
-  } catch (error) {
-    response.status(401).json({
-      message: 'Authentication failed'
-    });
-  }
+  const userId = validateToken(token);
+
+  if (!userId) return response.status(401).json({
+    message: 'Authentication failed'
+  });
+
+  request.userData = {
+    userId
+  };
+  next();
 }
 
 module.exports = isAuth;

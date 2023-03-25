@@ -1,21 +1,19 @@
-require("dotenv").config()
-const jwt = require("jsonwebtoken");
+const {
+  validateToken
+} = require('../utils');
 
 function isNotAuth(request, response, next) {
-    const authorization = request.headers.authorization;
-    if (!authorization) return next();
-  
-    const token = authorization.split(' ')[1];
-    try {
-      const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-      if(!decodedToken) return next();
+  const authorization = request.headers.authorization;
+  if (!authorization) return next();
 
-      response.status(403).json({
-        message: 'Forbidden'
-      });
-    } catch (error) {
-      next();
-    }
-  }
-  
-  module.exports = isNotAuth;
+  const token = authorization.split(' ')[1];
+  const userId = validateToken(token);
+
+  if (userId) return response.status(403).json({
+    message: 'Forbidden'
+  });
+
+  next();
+}
+
+module.exports = isNotAuth;
