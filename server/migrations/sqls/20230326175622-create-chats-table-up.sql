@@ -1,6 +1,5 @@
 /* Replace with your SQL commands */
-CREATE TABLE sockets (
+CREATE TABLE chats (
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id varchar(255) NOT NULL,
-    socket varchar(255) NOT NULL
+    type varchar(255) DEFAULT "personal",
 );
