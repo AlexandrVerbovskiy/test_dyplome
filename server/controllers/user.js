@@ -1,106 +1,52 @@
 require("dotenv").config()
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const {
     validateToken
 } = require('../utils');
+const {
+    User: UserModel
+} = require("../models");
 
 class User {
-
     constructor(db) {
-        this.db = db;
+        this.userModel = new UserModel(db);
     }
 
-    async registration(email, password, callback) {
-        try {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const user = {
-                email,
-                password: hashedPassword
-            };
+    async registration(res, req){
+        const {
+            email,
+            password
+        } = req.body;
+        const callback = (code, data) => res.status(code).json(data);
+        await userModel.create(email, password, callback);
+    }
 
-            const localRegistration = async () => {
-                await this.db.query("INSERT INTO users SET ?", user, (err, result) => {
-                    if (err) {
-                        console.error(err);
-                        return callback(500, {
-                            error: "Internal server error"
-                        })
-                    }
-                    return callback(201, {
-                        message: "User registered successfully"
-                    })
-                })
-            }
-
-            await this.db.query("SELECT COUNT(*) as count from users where email = ?", user.email, async (err, result) => {
-                if (err || result.length < 1)
-                    return callback(500, {
-                        error: "Internal server error"
-                    })
-
-                if (result[0].count > 0)
-                    return callback(409, {
-                        error: "Email was registered earlier"
-                    })
-
-                await localRegistration();
+    async login(res, req){
+        const {
+            email,
+            password
+        } = req.body;
+        const callback = (code, data) => {
+            console.log(data)
+            if (data["token"]) res.set('Authorization', `Bearer ${data["token"]}`);
+            res.status(code).json({
+                ...data
             });
-        } catch (err) {
-            console.error(err);
-            return callback(500, {
-                error: "Internal server error"
-            })
         }
+        await userModel.findByPasswordAndEmail(email, password, callback);
     }
 
-    async login(email, password, callback) {
-        try {
-            this.db.query(
-                "SELECT * FROM users WHERE email = ?",
-                [email],
-                async (err, result) => {
-                    if (err)
-                        return callback(500, {
-                            error: "Internal server error"
-                        })
+    async validateToken(req, res) {
+        const {
+            token
+        } = req.body;
 
-                    if (result.length == 0)
-                        return callback(401, {
-                            error: "Invalid email or password"
-                        })
-
-
-                    const user = result[0];
-                    const isPasswordValid = await bcrypt.compare(
-                        password,
-                        user.password
-                    );
-
-                    if (!isPasswordValid)
-                        return callback(401, {
-                            error: "Invalid email or password"
-                        })
-
-                    const token = jwt.sign({
-                        userId: user.id
-                    }, process.env.SECRET_KEY);
-                    return callback(200, {
-                        token
-                    })
-                }
-            );
-        } catch (err) {
-            console.error(err);
-            return callback(500, {
-                error: "Internal server error"
-            })
-        }
-    }
-
-    async validateToken(token, callback) {
-        const res = validateToken(token);
-        callback(res);
+        const resValidate = await validateToken(token);
+        if (resValidate) return res.status(200).json({
+            validated: true
+        });
+        return res.status(200).json({
+            validated: false
+        });
     }
 }
 

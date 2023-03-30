@@ -1,3 +1,3 @@
 module.exports = {
-    Chats: require('./chats')
+    Chat: require('./chat')
 }
