@@ -6,9 +6,6 @@ const {
     isAuth,
     isNotAuth
 } = require("../middlewares");
-const {
-    validateToken
-} = require("../utils");
 
 function route(app, db) {
     const userController = new User(db);

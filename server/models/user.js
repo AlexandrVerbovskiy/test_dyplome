@@ -7,7 +7,7 @@ class User {
         this.db = db;
     }
 
-    async create(email, password, callback) {
+    create = async (email, password, callback) => {
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = {
@@ -50,7 +50,7 @@ class User {
         }
     }
 
-    async findByPasswordAndEmail(email, password, callback) {
+    findByPasswordAndEmail = async (email, password, callback) => {
         try {
             this.db.query(
                 "SELECT * FROM users WHERE email = ?",
@@ -94,8 +94,8 @@ class User {
         }
     }
 
-    async getUserInfo(userId, successCallback, errorCallback) {
-        await this.db.query('SELECT * FROM users WHERE user_id = ?', [userId], (err, res) => {
+    getUserInfo = async (userId, successCallback, errorCallback) => {
+        await this.db.query('SELECT * FROM users WHERE id = ?', [userId], (err, res) => {
             if (err) return errorCallback(err);
             if (res.length > 0) return successCallback(res[0]);
             successCallback(null);

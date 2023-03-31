@@ -8,28 +8,29 @@ class Socket {
         this.io = io;
     }
 
-    async sendSocketMessageToUsers(usersId, message, data) {
+    sendSocketMessageToUsers = async (usersId, message, data) => {
+        console.log(message)
         await this.socketModel.findUserSocket(usersId,
-            res => res.forEach(socket => this.io.to(socket.socket_id).emit(message, data)),
+            res => res.forEach(socket => this.io.to(socket.socket).emit(message, data)),
             err => console.log(err));
     }
 
-    async sendSocketMessageToUser(userId, message, data) {
+    sendSocketMessageToUser = async (userId, message, data) => {
         await this.sendSocketMessageToUsers([userId], message, data);
     }
 
-    async sendError(userId, error) {
+    sendError = async (userId, error) => {
         console.log("sendError: ", error)
         await this.sendSocketMessageToUser(userId, "error", error);
     }
 
-    async connect(socket, userId) {
+    connect = async (socket, userId) => {
         await this.socketModel.create(socket, userId,
             () => console.log("connected success"),
             err => console.log("Connection error: " + err));
     }
 
-    async disconnect(socket) {
+    disconnect = async (socket) => {
         await this.socketModel.delete(socket,
             () => console.log("disconnected success"),
             (err) => console.log("Disconnection error: " + err));

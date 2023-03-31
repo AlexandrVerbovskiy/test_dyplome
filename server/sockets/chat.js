@@ -1,7 +1,10 @@
 const {
     validateToken
 } = require('../utils');
-const {Chat: ChatController, Socket: SocketController} = require('../controllers')
+const {
+    Chat: ChatController,
+    Socket: SocketController
+} = require('../controllers')
 
 class Chat {
     constructor(io, db) {
@@ -17,20 +20,22 @@ class Chat {
                 token
             } = socket.handshake.query;
 
+            const sendError = message => this.io.to(socket.id).emit("error", message);
+
             const userId = validateToken(token);
             if (!userId) return sendError(socket, "Authentication failed")
-
-            const sendError = message => this.socketController.sendError(socket, message);
 
             this.socketController.connect(socket, userId);
 
             socket.on('create-personal-chat', (data) => {
-                this.chatController.createChatFactory(data, 
-                    (message, sender) => this.socketController.sendSocketMessageToUser(data.userId, "created-chat", {
-                    message,
-                    sender
-                }))
-            }, sendError);
+                this.chatController.createChat(data,
+                    (message, sender) => {
+                        this.socketController.sendSocketMessageToUsers([data.userId, userId], "created-chat", {
+                            message,
+                            sender
+                        })
+                    }, sendError)
+            });
 
             socket.on('disconnect', () => this.socketController.disconnect(socket));
 

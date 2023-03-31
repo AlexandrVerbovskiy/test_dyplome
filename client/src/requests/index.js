@@ -14,3 +14,8 @@ export {
     default as validateToken
 }
 from "./validateToken";
+
+export {
+    default as getUsersToChatting
+}
+from "./getUsersToChatting";

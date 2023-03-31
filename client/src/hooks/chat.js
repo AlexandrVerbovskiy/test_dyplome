@@ -17,9 +17,21 @@ const useChatInit = () => {
                 token
             },
         });
+
+        ioRef.current.on("created-chat", data => console.log("created: ", data));
     }, []);
 
+    const createChat = (userId) => {
+        ioRef.current.emit('create-personal-chat', {
+            userId,
+            typeMessage: "test",
+            content: "test"
+        });
+    }
 
+    return {
+        createChat
+    };
 }
 
 export default useChatInit;

@@ -11,31 +11,30 @@ class User {
         this.userModel = new UserModel(db);
     }
 
-    async registration(res, req){
+    registration = async (req, res) => {
         const {
             email,
             password
         } = req.body;
         const callback = (code, data) => res.status(code).json(data);
-        await userModel.create(email, password, callback);
+        await this.userModel.create(email, password, callback);
     }
 
-    async login(res, req){
+    login = async (req, res) => {
         const {
             email,
             password
         } = req.body;
         const callback = (code, data) => {
-            console.log(data)
             if (data["token"]) res.set('Authorization', `Bearer ${data["token"]}`);
             res.status(code).json({
                 ...data
             });
         }
-        await userModel.findByPasswordAndEmail(email, password, callback);
+        await this.userModel.findByPasswordAndEmail(email, password, callback);
     }
 
-    async validateToken(req, res) {
+    validateToken = async (req, res) => {
         const {
             token
         } = req.body;
