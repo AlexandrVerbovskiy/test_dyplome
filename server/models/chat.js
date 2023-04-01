@@ -5,6 +5,14 @@ class Chat {
         this.db = db;
     }
 
+    hasUserAccessToChat = async (chatId, userId, successCallback, errorCallback) => {
+        await this.db.query("SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?", [chatId, userId], (err, res) => {
+            if (err) return errorCallback(err);
+            if (res.length > 0) return successCallback();
+            errorCallback("Permission denied");
+        })
+    }
+
     createChat = async (type, successCallback, errorCallback) => {
         await this.db.query("INSERT INTO chats (type) VALUES (?)", [type], (err, res) => {
             if (err) return errorCallback(err);
@@ -43,7 +51,14 @@ class Chat {
     createNewMessage = async (chatId, senderId, typeMessage, contentMessage, successCallback, errorCallback) => {
         await this.db.query("INSERT INTO messages (chat_id, sender_id, type) VALUES (?, ?, ?)", [chatId, senderId, typeMessage], (err, res) => {
             if (err) return errorCallback(err);
-            this.addContentToMessage(res.insertId, contentMessage, () => successCallback(res.insertId), errorCallback);
+            const resMess = {
+                id: res.insertId,
+                chatId,
+                senderId,
+                typeMessage,
+                contentMessage
+            }
+            this.addContentToMessage(res.insertId, contentMessage, () => successCallback(resMess), errorCallback);
         })
     }
 
@@ -68,15 +83,20 @@ class Chat {
         })
     }
 
-    getUsersToChatting = async (searcherId, callback, start = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
+    generateQueryToGetUserChats = () => `
+    SELECT chats.id as chat_id FROM 
+    (
+        SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
+            JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
+    ) as c1 
+    JOIN chats on c1.chat_id = chats.id and type=?
+    `;
 
-        /*
-        `SELECT users.* FROM chats_users 
-             JOIN chats_users ON chats_users.chat_id = chats_users.chat_id AND chats_users.user_id != chats_users.user_id
-             JOIN chats ON chats.chat_id = chats_users.chat_id AND chats.type ="personal"`
-        */
-        await this.db.query("SELECT * FROM users where id!=?",
-            [searcherId], (err, res) => {
+    getUsersToChatting = async (searcherId, callback, lastChatId = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
+        await this.db.query(`SELECT c1.chat_id, users.* FROM (${this.generateQueryToGetUserChats()}) AS c1 
+            JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 
+            JOIN users ON chats_users.user_id = users.id;`,
+            [searcherId, searcherId, "personal", searcherId], (err, res) => {
                 if (err) return callback({
                     error: err
                 });

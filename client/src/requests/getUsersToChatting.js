@@ -2,10 +2,9 @@ import {
     axios
 } from "../utils";
 
-const getUsersToChatting = async (successCallback, errorCallback) => {
+const getUsersToChatting = async (data, successCallback, errorCallback) => {
     try {
-        const res = await axios.get("http://localhost:5000/users-to-chatting");
-        console.log(res.data);
+        const res = await axios.post("http://localhost:5000/users-to-chatting", data);
         successCallback(res.data);
     } catch (err) {
         const res = err.response;

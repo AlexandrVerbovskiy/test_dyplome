@@ -12,7 +12,7 @@ class Chat {
 
     getUsersToChatting = async (req, res) => {
         const {
-            start,
+            lastChatId,
             limit,
             searchString
         } = req.body;
@@ -26,13 +26,19 @@ class Chat {
             res.status(200).json(result["users"])
         }
 
-        await this.chatModel.getUsersToChatting(searcherId, callback, start, limit, searchString);
+        await this.chatModel.getUsersToChatting(searcherId, callback, lastChatId, limit, searchString);
     }
 
-    createChat = (data, sendSuccessRes, sendError) => {
+    createChat = (data, userId, sendSuccessRes, sendError) => {
         const onSuccessGetMessageInfo = (message) => this.userModel.getUserInfo(userId, (sender) => sendSuccessRes(message, sender), sendError)
         const onSuccessCreate = (messageId) => this.chatModel.getMessageInfo(messageId, onSuccessGetMessageInfo, sendError)
         this.chatModel.createPersonalChat(data.userId, data.typeMessage, data.content, userId, onSuccessCreate, sendError);
+    }
+
+    createMessage = (data, userId, sendSuccessRes, sendError) => {
+        this.chatModel.hasUserAccessToChat(data.chatId, userId, () => {
+            this.chatModel.createNewMessage(data.chatId, userId, data.typeMessage, data.content, sendSuccessRes, sendError)
+        }, sendError)
     }
 }
 

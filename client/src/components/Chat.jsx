@@ -1,43 +1,39 @@
 import { useState, useEffect } from "react";
 import { useChatInit } from "../hooks";
 import { getUsersToChatting } from "../requests";
+import ChatElem from "./ChatElem";
 
 const Chat = ({ onLogoutClick }) => {
-  const [message, setMessage] = useState("");
   const [users, setUsers] = useState([]);
-  const [actualChat, setActualChat] = useState("");
-
-  const { createChat } = useChatInit();
-
-  const handleChangeMessage = e => setMessage(e.target.value);
-  const handleSendMessage = () => {
-    console.log(message);
-  };
+  const { createChat, sendMessage } = useChatInit();
 
   useEffect(() => {
-    getUsersToChatting(res => setUsers(res), e => console.log(e));
+    const test = {
+      lastChatId: -1,
+      limit: 20,
+      searchString: ""
+    };
+    getUsersToChatting(test, setUsers, e => console.log(e));
   }, []);
 
-  const handleCreateChat = id => {
-    createChat(id);
-  };
+  const handleCreateChat = userId => createChat(userId);
+
+  const handleSendMessage = (chatId, message) =>
+    sendMessage(chatId, "text", message);
 
   return (
     <div>
       <button onClick={onLogoutClick}>Logout</button>
       <div id="messages" />
-      <input type="text" value={message} onChange={handleChangeMessage} />
-      <button onClick={handleSendMessage}>Send message</button>
       <div>Chats</div>
       <div id="chatList">
-        {users.map(user => {
-          return <div key={user.id}>
-            {user.email}
-            <button onClick={() => handleCreateChat(user.id)}>
-              Send message
-            </button>
-          </div>;
-        })}
+        {users.map(user =>
+          <ChatElem
+            key={user.chat_id}
+            user={user}
+            handleSendMessage={handleSendMessage}
+          />
+        )}
       </div>
     </div>
   );

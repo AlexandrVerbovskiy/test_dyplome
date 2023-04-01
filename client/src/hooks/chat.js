@@ -19,6 +19,17 @@ const useChatInit = () => {
         });
 
         ioRef.current.on("created-chat", data => console.log("created: ", data));
+
+        ioRef.current.on("error", data => {
+            let message = "Something went wrong. Please take a screenshot of the console.log and send to the admins"
+            if (data.sqlMessage) message = data.sqlMessage;
+            if (data.message) message = data.message;
+            alert(message);
+        });
+
+        ioRef.current.on("success-sended-message", data => console.log("success-sended-message: ", data));
+        ioRef.current.on("get-message", data => console.log("get-message: ", data));
+
     }, []);
 
     const createChat = (userId) => {
@@ -29,8 +40,17 @@ const useChatInit = () => {
         });
     }
 
+    const sendMessage = (chatId, typeMessage, content) => {
+        ioRef.current.emit('send-message', {
+            chatId,
+            typeMessage,
+            content
+        });
+    }
+
     return {
-        createChat
+        createChat,
+        sendMessage
     };
 }
 

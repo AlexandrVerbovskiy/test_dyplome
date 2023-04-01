@@ -28,9 +28,22 @@ class Chat {
             this.socketController.connect(socket, userId);
 
             socket.on('create-personal-chat', (data) => {
-                this.chatController.createChat(data,
+                this.chatController.createChat(data, userId,
                     (message, sender) => {
                         this.socketController.sendSocketMessageToUsers([data.userId, userId], "created-chat", {
+                            message,
+                            sender
+                        })
+                    }, sendError)
+            });
+
+            socket.on('send-message', (data) => {
+                this.chatController.createMessage(data, userId,
+                    (message, sender) => {
+                        this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
+                            message
+                        })
+                        this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
                             message,
                             sender
                         })

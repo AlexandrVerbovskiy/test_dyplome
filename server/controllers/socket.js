@@ -9,7 +9,6 @@ class Socket {
     }
 
     sendSocketMessageToUsers = async (usersId, message, data) => {
-        console.log(message)
         await this.socketModel.findUserSocket(usersId,
             res => res.forEach(socket => this.io.to(socket.socket).emit(message, data)),
             err => console.log(err));
