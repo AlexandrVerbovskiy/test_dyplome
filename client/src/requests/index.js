@@ -19,3 +19,8 @@ export {
     default as getUsersToChatting
 }
 from "./getUsersToChatting";
+
+export {
+    default as getChatMessages
+}
+from "./getChatMessages";

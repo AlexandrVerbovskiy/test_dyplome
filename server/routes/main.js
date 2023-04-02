@@ -15,6 +15,7 @@ function route(app, db) {
     app.post("/login", isNotAuth, userController.login);
     app.post("/check-token", isAuth, userController.validateToken);
     app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
+    app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
 
     app.post("/test", isAuth, async (req, res) => {
         res.status(200).json({

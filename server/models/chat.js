@@ -5,6 +5,8 @@ class Chat {
         this.db = db;
     }
 
+    usersFields = "users.email as user_email";
+
     hasUserAccessToChat = async (chatId, userId, successCallback, errorCallback) => {
         await this.db.query("SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?", [chatId, userId], (err, res) => {
             if (err) return errorCallback(err);
@@ -100,10 +102,35 @@ class Chat {
                 if (err) return callback({
                     error: err
                 });
-                if (res.length > 0) return callback({
+                return callback({
                     users: res
                 });
-                callback(null);
+            })
+    }
+
+    getChatMessages = async (chatId, lastId, count, callback) => {
+        await this.db.query(`SELECT messages.type as type, messages.id as message_id, messages.time_created as messages,
+        ${this.usersFields}, contents.content as content
+        FROM messages
+        JOIN (SELECT mc.content, mc.message_id, mc.time_edited
+            FROM messages_contents mc
+            INNER JOIN (
+                SELECT messages_contents.message_id, MAX(messages_contents.time_edited) AS max_time 
+                FROM messages_contents 
+                GROUP BY messages_contents.message_id
+            ) tmc 
+            ON mc.message_id = tmc.message_id AND mc.time_edited = tmc.max_time
+        ) contents ON contents.message_id = messages.id
+        JOIN users ON users.id=messages.sender_id
+        WHERE messages.chat_id = ? AND messages.hidden=false AND messages.id > ?
+        LIMIT 0, ?;`,
+            [chatId, lastId, count], (err, res) => {
+                if (err) return callback({
+                    error: err
+                });
+                return callback({
+                    messages: res
+                });
             })
     }
 }
