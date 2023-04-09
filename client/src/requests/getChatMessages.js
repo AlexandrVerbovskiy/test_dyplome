@@ -2,9 +2,11 @@ import {
     axios
 } from "../utils";
 
+import config from "../config";
+
 const getChatMessages = async (data, successCallback, errorCallback) => {
     try {
-        const res = await axios.post("http://localhost:5000/get-chat-messages", data);
+        const res = await axios.post(config.API_URL+"/get-chat-messages", data);
         successCallback(res.data);
     } catch (err) {
         const res = err.response;

@@ -1,10 +1,11 @@
 import {
     axios
 } from "../utils";
+import config from "../config";
 
 const login = async (data, successCallback, errorCallback) => {
     try {
-        const res = await axios.post("http://localhost:5000/login", data);
+        const res = await axios.post(config.API_URL + "/login", data);
         const token = res.data.token;
         console.log(res.data, token);
         localStorage.setItem("token", token);

@@ -1,10 +1,11 @@
 import {
     axios
 } from "../utils";
+import config from "../config";
 
 const registration = async (data, successCallback, errorCallback) => {
     try {
-        await axios.post("http://localhost:5000/register", data);
+        await axios.post(config.API_URL + "/register", data);
         successCallback();
     } catch (err) {
         const res = err.response;

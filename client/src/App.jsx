@@ -1,41 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { Chat, Default } from "./components";
-import { validateToken } from "./requests";
+import React, { useEffect, useState } from "react";
+import { useAuth, useSystemMessage } from "./hooks";
+import { MainRouter, SignRouter } from "./routes";
+import { MainContext } from "./contexts";
+import { Message } from "./components";
 
 function App() {
-  const [systemMessage, setSystemMessage] = useState("");
-  const [auth, setAuth] = useState(false);
+  const {
+    setSuccess,
+    setError,
+    systemMessage,
+    clearMessage
+  } = useSystemMessage();
 
-  const init = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setAuth(false);
-    } else {
-      await validateToken(
-        token,
-        res => setAuth(res),
-        message => setSystemMessage(message)
-      );
-    }
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
-
-  const handleLogoutClick = () => {
-    localStorage.removeItem("token");
-    setAuth(false);
-  };
-
-  if (auth) return <Chat onLogoutClick={handleLogoutClick} />;
+  const { auth, logout, setAuth } = useAuth(setError);
 
   return (
-    <Default
-      setSystemMessage={setSystemMessage}
-      systemMessage={systemMessage}
-      setAuth={setAuth}
-    />
+    <MainContext.Provider value={{ logout, setAuth, setSuccess, setError }}>
+      {systemMessage &&
+        <Message
+          message={systemMessage.message}
+          type={systemMessage.type}
+          onClose={clearMessage}
+        />}
+      {auth ? <MainRouter /> : <SignRouter />}
+    </MainContext.Provider>
   );
 }
 

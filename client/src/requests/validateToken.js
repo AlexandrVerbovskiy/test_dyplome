@@ -1,10 +1,11 @@
 import {
     axios
 } from "../utils";
+import config from "../config";
 
 const validateToken = async (token, successCallback, errorCallback) => {
     try {
-        const res = await axios.post("http://localhost:5000/check-token", {
+        const res = await axios.post(config.API_URL + "/check-token", {
             token
         });
         const validated = res.data.validated;
