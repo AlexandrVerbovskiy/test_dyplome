@@ -9,8 +9,11 @@ const validateToken = async (token, successCallback, errorCallback) => {
             token
         });
         const validated = res.data.validated;
-        if (validated)
+        if (validated && res.data.token){
+            const token = res.data.token;
+            localStorage.setItem("token", token);
             return successCallback(true);
+        }
 
         localStorage.removeItem("token");
         return successCallback(false);

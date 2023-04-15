@@ -3,12 +3,10 @@ import {
 } from "../utils";
 import config from "../config";
 
-const login = async (data, successCallback, errorCallback) => {
+const selectChat = async (chatId, successCallback, errorCallback) => {
     try {
-        const res = await axios.post(config.API_URL + "/login", data);
-        const token = res.data.token;
-        localStorage.setItem("token", token);
-        successCallback();
+        const res = await axios.post(config.API_URL+"/select-chat", {chatId});
+        successCallback(res.data);
     } catch (err) {
         const res = err.response;
         if (res && res.status && res.data && res.data.error)
@@ -17,4 +15,4 @@ const login = async (data, successCallback, errorCallback) => {
     }
 }
 
-export default login;
+export default selectChat;

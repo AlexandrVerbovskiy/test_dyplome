@@ -1,4 +1,6 @@
 require("dotenv").config()
+const jwt = require("jsonwebtoken");
+
 const {
     validateToken
 } = require('../utils');
@@ -26,7 +28,12 @@ class User {
             password
         } = req.body;
         const callback = (code, data) => {
-            if (data["token"]) res.set('Authorization', `Bearer ${data["token"]}`);
+            if (data["userId"]) {
+                const token = jwt.sign({
+                    userId: data["userId"]
+                }, process.env.SECRET_KEY);
+                res.set('Authorization', `Bearer ${token}`);
+            }
             res.status(code).json({
                 ...data
             });
@@ -40,9 +47,16 @@ class User {
         } = req.body;
 
         const resValidate = await validateToken(token);
-        if (resValidate) return res.status(200).json({
-            validated: true
-        });
+        if (resValidate) {
+            const token = jwt.sign({
+                userId: resValidate
+            }, process.env.SECRET_KEY);
+            res.set('Authorization', `Bearer ${token}`);
+            return res.status(200).json({
+                validated: true,
+                token
+            });
+        }
         return res.status(200).json({
             validated: false
         });

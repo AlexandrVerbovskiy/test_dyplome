@@ -11,9 +11,7 @@ class Chat {
     }
 
     _checkIsBodyHasKeys(req, keys) {
-        console.log(keys)
         for (let i = 0; i < keys.length; i++) {
-            console.log(keys[i])
             if (!(keys[i] in req.body)) return false;
         }
         return true;
@@ -77,6 +75,27 @@ class Chat {
 
         this.chatModel.hasUserAccessToChat(chatId, userId, () => {
             this.chatModel.getChatMessages(chatId, lastId, count, callback)
+        }, (error) => res.status(500).json({
+            error
+        }))
+    }
+
+    selectChat = (req, res) => {
+        const {
+            userId
+        } = req.userData;
+
+        const {
+            chatId
+        } = req.body;
+
+        const callback = result => {
+            if (result["error"]) return res.status(500).json(result)
+            res.status(200).json(result["messages"])
+        }
+
+        this.chatModel.hasUserAccessToChat(chatId, userId, () => {
+            this.chatModel.selectChat(userId, chatId, callback)
         }, (error) => res.status(500).json({
             error
         }))

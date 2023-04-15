@@ -2579,6 +2579,8 @@ input.search-control-2::placeholder {
 
 #chat_body {
   padding-left: 0px;
+  background: transparent;
+  box-shadow: none;
 }
 
 #chat_list .card-body {
@@ -2590,7 +2592,7 @@ input.search-control-2::placeholder {
 }
 
 #chat_list .card-body h6 {
-  font-size: 1.25rem;
+  font-size: 0.9rem;
 }
 
 #chat_list ul {
@@ -2611,4 +2613,36 @@ input.search-control-2::placeholder {
 
 .chat-body h5 {
   font-size: "1rem";
+}
+
+.chat-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.message > img {
+  margin-right: 10px;
+}
+
+.message > .card {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.message .time {
+  text-align: end;
+  font-weight: 600;
+  padding: 0 1rem 0.1rem;
+  margin-top: -0.25rem;
+  font-size: 13px;
+}
+
+.message .content {
+  padding: 1rem 1rem 0;
 }

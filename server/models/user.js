@@ -1,6 +1,5 @@
 require("dotenv").config()
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 class User {
     constructor(db) {
@@ -77,12 +76,9 @@ class User {
                         return callback(401, {
                             error: "Invalid email or password"
                         })
-
-                    const token = jwt.sign({
-                        userId: user.id
-                    }, process.env.SECRET_KEY);
+                   
                     return callback(200, {
-                        token
+                        userId: user.id
                     })
                 }
             );

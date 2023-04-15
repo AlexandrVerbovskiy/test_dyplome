@@ -5,7 +5,7 @@ class Chat {
         this.db = db;
     }
 
-    usersFields = "users.email as user_email";
+    usersFields = "users.email as user_email, users.id as user_id";
 
     hasUserAccessToChat = async (chatId, userId, successCallback, errorCallback) => {
         await this.db.query("SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?", [chatId, userId], (err, res) => {
@@ -95,9 +95,23 @@ class Chat {
     `;
 
     getUsersToChatting = async (searcherId, callback, lastChatId = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
-        await this.db.query(`SELECT c1.chat_id, users.* FROM (${this.generateQueryToGetUserChats()}) AS c1 
-            JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 
-            JOIN users ON chats_users.user_id = users.id;`,
+        const query = `SELECT c1.chat_id, users.*, messages.type, messages.time_created as time_sended, messages_contents.content FROM (${this.generateQueryToGetUserChats()}) AS c1 
+        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 
+        JOIN users ON chats_users.user_id = users.id
+        JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
+            SELECT MAX(time_created)
+            FROM messages 
+            WHERE messages.chat_id = c1.chat_id
+            GROUP BY chat_id
+        )
+        JOIN messages_contents ON messages_contents.message_id = messages.id AND messages_contents.time_edited = (
+            SELECT MAX(time_edited) 
+            FROM messages_contents 
+            WHERE messages_contents.message_id = messages.id
+        )`;
+        console.log(query)
+
+        await this.db.query(query,
             [searcherId, searcherId, "personal", searcherId], (err, res) => {
                 if (err) return callback({
                     error: err
@@ -109,7 +123,7 @@ class Chat {
     }
 
     getChatMessages = async (chatId, lastId, count, callback) => {
-        await this.db.query(`SELECT messages.type as type, messages.id as message_id, messages.time_created as messages,
+        let query = `SELECT messages.type as type, messages.id as message_id, messages.time_created as time_sended,
         ${this.usersFields}, contents.content as content
         FROM messages
         JOIN (SELECT mc.content, mc.message_id, mc.time_edited
@@ -122,16 +136,35 @@ class Chat {
             ON mc.message_id = tmc.message_id AND mc.time_edited = tmc.max_time
         ) contents ON contents.message_id = messages.id
         JOIN users ON users.id=messages.sender_id
-        WHERE messages.chat_id = ? AND messages.hidden=false AND messages.id > ?
-        LIMIT 0, ?;`,
-            [chatId, lastId, count], (err, res) => {
-                if (err) return callback({
-                    error: err
-                });
-                return callback({
-                    messages: res
-                });
-            })
+        WHERE messages.chat_id = ? AND messages.hidden=false`;
+
+        const params = [chatId];
+
+        if (lastId > 0) {
+            query += ` AND messages.id > ?`;
+            params.push(Number(lastId));
+        }
+
+        query += ` LIMIT 0, ?;`;
+        params.push(Number(count));
+
+        await this.db.query(query, params, (err, res) => {
+            if (err) return callback({
+                error: err
+            });
+            return callback({
+                messages: res
+            });
+        })
+    }
+
+    selectChat = async (userId, chatId, callback) => {
+        await this.db.query(`UPDATE sockets SET chat_id=? WHERE user_id=?`, [chatId, userId], async (err, res) => {
+            if (err) return callback({
+                error: err
+            });
+            await this.getChatMessages(chatId, -1, process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES, callback);
+        });
     }
 }
 module.exports = Chat;

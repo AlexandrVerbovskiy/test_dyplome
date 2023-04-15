@@ -24,3 +24,8 @@ export {
     default as getChatMessages
 }
 from "./getChatMessages";
+
+export {
+    default as selectChat
+}
+from "./selectChat";
