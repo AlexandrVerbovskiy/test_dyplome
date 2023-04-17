@@ -1,7 +1,7 @@
 import { useChatInit, useChatList } from "../hooks";
 import { ChatList, ChatBody } from "../components";
 import { getChatMessages, selectChat } from "../requests";
-import { ChatListContext } from "../contexts";
+import { ChatListContext, ChatContext } from "../contexts";
 import { useState } from "react";
 
 const Chat = () => {
@@ -18,8 +18,9 @@ const Chat = () => {
 
   const [messages, setMessages] = useState([]);
   const handleCreateChat = userId => createChat(userId);
-  const handleSendMessage = (chatId, message) =>
-    sendMessage(chatId, "text", message);
+  const handleSendTextMessage = message => {
+    sendMessage(activeChatId, "text", message);
+  };
 
   const handleChatClick = async chatId => {
     if (activeChatId == chatId) return;
@@ -54,7 +55,9 @@ const Chat = () => {
         >
           <ChatList chatList={chatList} />
         </ChatListContext.Provider>
-        <ChatBody messages={messages} />
+        <ChatContext.Provider value={{ handleSendTextMessage }}>
+          <ChatBody messages={messages} />
+        </ChatContext.Provider>
       </div>
     </div>
   );

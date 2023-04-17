@@ -13,6 +13,9 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   if (activeChatId == chat.chat_id) className += " active";
 
   const handleElemClick = () => selectChat(chat.chat_id);
+
+  const content = chat.type == "text" ? chat.content : chat.type;
+
   return (
     <li ref={chatRef} className={className} onClick={handleElemClick}>
       <img
@@ -31,9 +34,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             {fullTimeFormat(chat.time_sended)}
           </span>
         </div>
-        <span className="body">
-          {chat.type == "text" ? chat.content : chat.type}
-        </span>
+        <span className="body" dangerouslySetInnerHTML={{ __html: content }} />
       </div>
     </li>
   );
