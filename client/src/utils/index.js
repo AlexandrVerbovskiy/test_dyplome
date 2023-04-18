@@ -3,4 +3,13 @@ export {
 }
 from "./axios";
 
-export {shortTimeFormat, fullTimeFormat} from "./timeFormat";
+export {
+    shortTimeFormat,
+    fullTimeFormat
+}
+from "./timeFormat";
+
+export {
+    default as generateSmilesArray
+}
+from "./generateSmilesArray";

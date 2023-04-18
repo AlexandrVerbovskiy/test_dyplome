@@ -1,4 +1,4 @@
-const TextInput = ({ textRef }) => {
+const TextInput = ({ textRef, onInput }) => {
   return (
     <div
       className="form-control message-input"
@@ -6,6 +6,8 @@ const TextInput = ({ textRef }) => {
       placeholder="Type your message"
       id="messageSendDiv"
       ref={textRef}
+      onInput={onInput}
+      onFocus={onInput}
     />
   );
 };

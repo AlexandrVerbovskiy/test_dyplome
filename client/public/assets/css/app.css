@@ -715,6 +715,10 @@ a {
   border-radius: 15px;
 }
 
+.radius-1_2 {
+  border-radius: 50%;
+}
+
 .row.row-group > div {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
@@ -2657,6 +2661,7 @@ input.search-control-2::placeholder {
   margin-right: 0.75rem;
   padding: 1rem 1rem 0;
   flex-grow: 1;
+  position: relative;
   overflow-y: auto;
 }
 
@@ -2742,4 +2747,37 @@ div[contentEditable="true"]:focus {
 
 *::-webkit-scrollbar-thumb:hover {
   background-color: rgb(171, 171, 171);
+}
+
+#emojiButton {
+  margin: 10px 10px 15px 0 !important;
+  cursor: pointer;
+  padding: 0;
+}
+
+.emoji-popup {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+#emojiBlock {
+  font-size: 22px;
+  position: absolute;
+  bottom: 120%;
+  left: 1%;
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 999999;
+  width: 380px;
+  max-height: 400px;
+  overflow-y: auto;
+  align-items: center;
+  flex-direction: row;
+  border-radius: 15px;
+  margin: 0;
+  padding: 20px;
 }
