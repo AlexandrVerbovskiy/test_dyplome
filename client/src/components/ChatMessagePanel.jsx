@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import TextInput from "./TextInput";
 import { ChatContext } from "../contexts";
 import { Paperclip, EmojiSmile } from "react-bootstrap-icons";
@@ -9,19 +9,47 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
   const { handleSendTextMessage } = useContext(ChatContext);
   const [savedSelection, setSavedSelection] = useState(null);
 
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount) {
+        const range = selection.getRangeAt(0);
+        setSavedSelection({
+          startContainer: range.startContainer,
+          startOffset: range.startOffset,
+          endContainer: range.endContainer,
+          endOffset: range.endOffset
+        });
+      }
+    };
+
+    document.onselectionchange = e => {
+      const selection = window.getSelection();
+      if (
+        selection &&
+        selection.focusNode &&
+        selection.focusNode.parentElement
+      ) {
+        if (selection.focusNode.parentElement.id == "messageSendDiv") {
+          handleSelectionChange();
+        }
+      }
+    };
+
+    /*const div = textRef.current;
+    console.log(div);
+    div.addEventListener("selectionchange", handleSelectionChange);
+
+    return () => {
+      div.removeEventListener("selectionchange", handleSelectionChange);
+    };*/
+  }, []);
+
   const handleSendClick = () =>
     handleSendTextMessage(textRef.current.innerHTML);
 
   const handleClickEmoji = () => {
     changeActivationEmojiPopup();
-  };
-
-  const handleChange = () => {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      setSavedSelection(range);
-    }
   };
 
   return (
@@ -42,7 +70,7 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
           <EmojiSmile />
         </div>
 
-        <TextInput textRef={textRef} onInput={handleChange} />
+        <TextInput textRef={textRef} />
         <button className="send-message btn btn-dark" onClick={handleSendClick}>
           Send
         </button>

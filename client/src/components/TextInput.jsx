@@ -1,13 +1,11 @@
-const TextInput = ({ textRef, onInput }) => {
+const TextInput = ({ textRef }) => {
   return (
     <div
       className="form-control message-input"
-      contentEditable="true"
+      contentEditable={true}
       placeholder="Type your message"
       id="messageSendDiv"
       ref={textRef}
-      onInput={onInput}
-      onFocus={onInput}
     />
   );
 };

@@ -5,13 +5,17 @@ const EmojiPopup = ({ savedSelection, setSavedSelection }) => {
   const emojiList = generateSmilesArray();
 
   const handleEmojiClick = emoji => {
-    const selection = window.getSelection();
-    if (savedSelection) {
-      selection.removeAllRanges();
-      selection.addRange(savedSelection);
-    }
+    if (!savedSelection) return;
 
-    const range = selection.getRangeAt(0);
+    const {
+      startContainer,
+      startOffset,
+      endContainer,
+      endOffset
+    } = savedSelection;
+    const range = document.createRange();
+    range.setStart(startContainer, startOffset);
+    range.setEnd(endContainer, endOffset);
     range.deleteContents();
 
     const textNode = document.createTextNode(emoji);
@@ -20,8 +24,19 @@ const EmojiPopup = ({ savedSelection, setSavedSelection }) => {
     range.setStartAfter(textNode);
     range.setEndAfter(textNode);
 
-    const newSelection = selection.getRangeAt(0);
-    setSavedSelection(newSelection);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    if (selection.rangeCount) {
+      const range = selection.getRangeAt(0);
+      setSavedSelection({
+        startContainer: range.startContainer,
+        startOffset: range.startOffset,
+        endContainer: range.endContainer,
+        endOffset: range.endOffset
+      });
+    }
   };
 
   return (
