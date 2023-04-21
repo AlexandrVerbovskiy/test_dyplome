@@ -22,6 +22,17 @@ const Chat = () => {
     sendMessage(activeChatId, "text", message);
   };
 
+  const [editor, setEditor] = useState({ active: false });
+
+  const activateTextEditor = position => setEditor({ ...position, active: true });
+  const removeTextEditor = () => setEditor(prev => ({ ...prev, active: false }));
+
+  const mainEditor = {
+    editor,
+    activateTextEditor,
+    removeTextEditor
+  }
+
   const handleChatClick = async chatId => {
     if (activeChatId == chatId) return;
     console.log(chatId);
@@ -55,7 +66,7 @@ const Chat = () => {
         >
           <ChatList chatList={chatList} />
         </ChatListContext.Provider>
-        <ChatContext.Provider value={{ handleSendTextMessage }}>
+        <ChatContext.Provider value={{ handleSendTextMessage, editor: mainEditor }}>
           <ChatBody messages={messages} />
         </ChatContext.Provider>
       </div>

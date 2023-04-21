@@ -13,3 +13,8 @@ export {
     default as generateSmilesArray
 }
 from "./generateSmilesArray";
+
+export {
+    default as getCursorPosition
+}
+from "./getCursorPosition";

@@ -2781,3 +2781,22 @@ div[contentEditable="true"]:focus {
   margin: 0;
   padding: 20px;
 }
+
+
+.chat-text-editor {
+  position: absolute;
+  z-index: 100;
+  display: flex;
+
+}
+
+.chat-text-editor .edit-button,
+.chat-text-editor .edit-color-button {
+  display: block;
+  background-color: white;
+  border-color: rgb(233, 233, 233);
+  padding: 2px;
+  box-shadow: 0 0 0 0 white;
+  font-size: 16px;
+  height: auto;
+}

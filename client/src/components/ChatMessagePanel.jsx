@@ -3,10 +3,11 @@ import TextInput from "./TextInput";
 import { ChatContext } from "../contexts";
 import { Paperclip, EmojiSmile } from "react-bootstrap-icons";
 import EmojiPopup from "./EmojiPopup";
+import ChatTextEditor from "./ChatTextEditor";
 
 const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
   const textRef = useRef(null);
-  const { handleSendTextMessage } = useContext(ChatContext);
+  const { handleSendTextMessage, editor } = useContext(ChatContext);
   const [savedSelection, setSavedSelection] = useState(null);
 
   useEffect(() => {
@@ -35,14 +36,6 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
         }
       }
     };
-
-    /*const div = textRef.current;
-    console.log(div);
-    div.addEventListener("selectionchange", handleSelectionChange);
-
-    return () => {
-      div.removeEventListener("selectionchange", handleSelectionChange);
-    };*/
   }, []);
 
   const handleSendClick = () =>
@@ -54,6 +47,7 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
 
   return (
     <div id="chatMessagePanel" className="card">
+      {editor.editor.active && <ChatTextEditor {...editor.editor} remove={editor.removeTextEditor} />}
       {activeEmojiPopup &&
         <EmojiPopup
           textRef={textRef}
