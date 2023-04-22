@@ -22,7 +22,6 @@ const TextInput = ({ textRef }) => {
       lineHeight;
 
     const startX = messageSendDivParent.getBoundingClientRect().left;
-    //const startY = e.clientY - messageSendDivParent.getBoundingClientRect().top - lineHeight;
 
     const { left, right, top, bottom } = getCursorPosition(
       window.getSelection(),

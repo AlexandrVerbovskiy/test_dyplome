@@ -1252,7 +1252,6 @@ a {
 
 .chat-content-leftside .chat-left-msg {
   width: fit-content;
-  background-color: #eff2f5;
   padding: 0.8rem;
   border-radius: 12px;
   max-width: 480px;
@@ -2593,10 +2592,6 @@ input.search-control-2::placeholder {
   padding: 0;
 }
 
-#chat_list .card-body > div {
-  padding: 1rem 1rem 0.5rem;
-}
-
 #chat_list .card-body h6 {
   font-size: 0.9rem;
 }
@@ -2607,10 +2602,6 @@ input.search-control-2::placeholder {
 
 #chat_list li {
   padding: 0.5rem 1rem;
-}
-
-#chat_list li.active {
-  background-color: whitesmoke;
 }
 
 .chat-body {
@@ -2667,11 +2658,11 @@ input.search-control-2::placeholder {
 
 #chatMessagePanel {
   border-top: 1px solid rgb(211, 211, 211);
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
   display: flex;
   justify-content: center;
   margin-bottom: 0;
   flex-direction: row;
-  background-color: transparent;
   padding: 0 1rem;
 }
 
@@ -2782,12 +2773,10 @@ div[contentEditable="true"]:focus {
   padding: 20px;
 }
 
-
 .chat-text-editor {
   position: absolute;
   z-index: 100;
   display: flex;
-
 }
 
 .chat-text-editor .edit-button,
@@ -2799,4 +2788,17 @@ div[contentEditable="true"]:focus {
   box-shadow: 0 0 0 0 white;
   font-size: 16px;
   height: auto;
+}
+
+#chat_header {
+  padding: 15px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  z-index: 1;
+}
+
+.chat-left-msg.card,
+.chat-right-msg.card {
+  margin-bottom: 1rem;
 }

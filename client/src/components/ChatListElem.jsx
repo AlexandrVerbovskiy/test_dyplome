@@ -1,40 +1,44 @@
-import { useRef, useContext } from "react";
+import { useContext } from "react";
 import { ChatListContext } from "../contexts";
 import { fullTimeFormat } from "../utils";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
-  let className = "d-flex align-items-center";
-  if (!last) className += " border-bottom pb-2";
+  let className = "list-group-item";
+  if (!last) className += "pb-2";
   if (!first) className += " mt-4";
 
-  const chatRef = useRef(null);
   const { activeChatId, selectChat } = useContext(ChatListContext);
 
   if (activeChatId == chat.chat_id) className += " active";
 
-  const handleElemClick = () => selectChat(chat.chat_id);
+  const handleElemClick = () => selectChat(chat);
 
   const content = chat.type == "text" ? chat.content : chat.type;
 
   return (
-    <li ref={chatRef} className={className} onClick={handleElemClick}>
-      <img
-        src="assets/images/avatars/avatar-8.png"
-        className="rounded-circle p-1 border"
-        width="40"
-        height="40"
-        alt={chat.email}
-      />
-      <div className="flex-grow-1 ms-2 chat-body">
-        <div className="chat-info">
-          <h6 className="my-0">
-            {chat.email}
-          </h6>
-          <span className="time">
-            {fullTimeFormat(chat.time_sended)}
-          </span>
+    <li onClick={handleElemClick} className={className}>
+      <div className="d-flex">
+        <div className="chat-user-online">
+          <img
+            src="assets/images/avatars/avatar-3.png"
+            width="42"
+            height="42"
+            className="rounded-circle"
+            alt={chat.user_email}
+          />
         </div>
-        <span className="body" dangerouslySetInnerHTML={{ __html: content }} />
+        <div className="flex-grow-1 ms-2">
+          <h6 className="mb-0 chat-title">
+            {chat.user_email}
+          </h6>
+          <p
+            className="mb-0 chat-msg"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </div>
+        <div className="chat-time">
+          {fullTimeFormat(chat.time_sended)}
+        </div>
       </div>
     </li>
   );

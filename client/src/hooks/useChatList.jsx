@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { getUsersToChatting } from "../requests";
 
 const useChatList = onInit => {
+  const limit = 20;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [chatList, setChatList] = useState([]);
   const [search, setChatListSearch] = useState("");
   const [canSearch, setCanSearch] = useState(true);
-  const limit = 20;
 
   useEffect(
     () => {
@@ -38,6 +38,7 @@ const useChatList = onInit => {
         if (chats.length === limit) setCanSearch(true);
         setChatList(prev => [...prev, ...chats]);
         if (isFirstAction) {
+          console.log(chats);
           setIsFirstAction(false);
           onInit(chats);
         }
@@ -50,7 +51,15 @@ const useChatList = onInit => {
     if (canSearch) await getChats();
   };
 
-  return { chatList, setChatListSearch, getMoreChats };
+  const onChatUpdate = chat => {
+    console.log(chat);
+    setChatList(prev => {
+      const chats = prev.filter(elem => elem.chat_id != chat.chat_id);
+      return [chat, ...chats];
+    });
+  };
+
+  return { chatList, setChatListSearch, getMoreChats, onChatUpdate };
 };
 
 export default useChatList;

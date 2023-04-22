@@ -48,9 +48,24 @@ class Chat {
     }
 
     createMessage = (data, userId, sendSuccessRes, sendError) => {
-        this.chatModel.hasUserAccessToChat(data.chatId, userId, () => {
-            this.chatModel.createNewMessage(data.chatId, userId, data.typeMessage, data.content, sendSuccessRes, sendError)
-        }, sendError)
+        const localSend = () => {
+            const onCreateMessage = async (messageId) => await this.chatModel.getMessageById(messageId, sendSuccessRes, sendError);
+            this.chatModel.hasUserAccessToChat(data.chatId, userId, () => {
+                this.chatModel.createNewMessage(data.chatId, userId, data.typeMessage, data.content, onCreateMessage, sendError)
+            }, sendError)
+        }
+
+        if (data['chat_type'] == 'personal') {
+            this.chatModel.hasPersonalChat(data['getter_id'], userId, has => {
+                if (has) {
+                    localSend();
+                } else {
+                    this.chatModel.createChat(data, userId, localSend, sendError);
+                }
+            }, sendError)
+        } else {
+            localSend();
+        }
     }
 
     getChatMessages = (req, res) => {

@@ -6,6 +6,20 @@ class Chat {
     }
 
     usersFields = "users.email as user_email, users.id as user_id";
+    messageSelect = `SELECT messages.type as type, messages.id as message_id, messages.time_created as time_sended,
+    ${this.usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type
+    FROM messages
+    JOIN (SELECT mc.content, mc.message_id, mc.time_edited
+        FROM messages_contents mc
+        INNER JOIN (
+            SELECT messages_contents.message_id, MAX(messages_contents.time_edited) AS max_time 
+            FROM messages_contents 
+            GROUP BY messages_contents.message_id
+        ) tmc 
+        ON mc.message_id = tmc.message_id AND mc.time_edited = tmc.max_time
+    ) contents ON contents.message_id = messages.id
+    JOIN users ON users.id=messages.sender_id
+    JOIN chats ON messages.chat_id = chats.id`;
 
     hasUserAccessToChat = async (chatId, userId, successCallback, errorCallback) => {
         await this.db.query("SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?", [chatId, userId], (err, res) => {
@@ -53,14 +67,7 @@ class Chat {
     createNewMessage = async (chatId, senderId, typeMessage, contentMessage, successCallback, errorCallback) => {
         await this.db.query("INSERT INTO messages (chat_id, sender_id, type) VALUES (?, ?, ?)", [chatId, senderId, typeMessage], (err, res) => {
             if (err) return errorCallback(err);
-            const resMess = {
-                id: res.insertId,
-                chatId,
-                senderId,
-                typeMessage,
-                contentMessage
-            }
-            this.addContentToMessage(res.insertId, contentMessage, () => successCallback(resMess), errorCallback);
+            this.addContentToMessage(res.insertId, contentMessage, () => successCallback(res.insertId), errorCallback);
         })
     }
 
@@ -68,6 +75,17 @@ class Chat {
         await this.db.query("UPDATE messages SET hidden = true WHERE id = ?", [messageId], (err) => {
             if (err) return errorCallback(err);
             successCallback();
+        })
+    }
+
+    hasPersonalChat = async (user1, user2, successCallback, errorCallback) => {
+        await this.db.query(`SELECT c.id FROM chats c
+            JOIN chats_users as cu1 ON c.id=cu1.chat_id AND cu1.user_id = ?
+            JOIN chats_users as cu2  ON c.id=cu2.chat_id AND cu2.user_id = ?
+            WHERE c.type = 'personal'`, [user1, user2], (err, res) => {
+            if (err) return errorCallback(err);
+            if (res.length > 0) return successCallback(true);
+            successCallback(false);
         })
     }
 
@@ -95,7 +113,9 @@ class Chat {
     `;
 
     getUsersToChatting = async (searcherId, callback, lastChatId = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
-        const query = `SELECT c1.chat_id, users.*, messages.type, messages.time_created as time_sended, messages_contents.content FROM (${this.generateQueryToGetUserChats()}) AS c1 
+        const query = `SELECT c1.chat_id, chats.type as chat_type, ${this.usersFields}, 
+        messages.type, messages.time_created as time_sended, messages_contents.content
+        FROM (${this.generateQueryToGetUserChats()}) AS c1 
         JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 
         JOIN users ON chats_users.user_id = users.id
         JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
@@ -108,8 +128,8 @@ class Chat {
             SELECT MAX(time_edited) 
             FROM messages_contents 
             WHERE messages_contents.message_id = messages.id
-        )`;
-        console.log(query)
+        )
+        JOIN chats ON c1.chat_id=chats.id`;
 
         await this.db.query(query,
             [searcherId, searcherId, "personal", searcherId], (err, res) => {
@@ -122,26 +142,21 @@ class Chat {
             })
     }
 
+    getMessageById = async (messageId, successCallback, errorCallback) => {
+        await this.db.query(`${this.messageSelect} WHERE messages.id = ?`, [messageId], (err, res) => {
+            if (err) return errorCallback();
+            if (res.length > 0) return successCallback(res[0]);
+            return successCallback(null);
+        })
+    }
+
     getChatMessages = async (chatId, lastId, count, callback) => {
-        let query = `SELECT messages.type as type, messages.id as message_id, messages.time_created as time_sended,
-        ${this.usersFields}, contents.content as content
-        FROM messages
-        JOIN (SELECT mc.content, mc.message_id, mc.time_edited
-            FROM messages_contents mc
-            INNER JOIN (
-                SELECT messages_contents.message_id, MAX(messages_contents.time_edited) AS max_time 
-                FROM messages_contents 
-                GROUP BY messages_contents.message_id
-            ) tmc 
-            ON mc.message_id = tmc.message_id AND mc.time_edited = tmc.max_time
-        ) contents ON contents.message_id = messages.id
-        JOIN users ON users.id=messages.sender_id
-        WHERE messages.chat_id = ? AND messages.hidden=false`;
+        let query = `${this.messageSelect} WHERE messages.chat_id = ? AND messages.hidden=false`;
 
         const params = [chatId];
 
         if (lastId > 0) {
-            query += ` AND messages.id > ?`;
+            query += ` AND messages.id < ?`;
             params.push(Number(lastId));
         }
 

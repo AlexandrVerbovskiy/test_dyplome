@@ -57,7 +57,7 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
 
       <div className="input-group card-body ">
         <div
-          className="font-20 btn btn-light radius-1_2"
+          className="font-20 btn radius-1_2"
           onClick={handleClickEmoji}
           id="emojiButton"
         >

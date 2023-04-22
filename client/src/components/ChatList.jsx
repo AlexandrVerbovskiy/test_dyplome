@@ -2,10 +2,22 @@ import { ChatListElem } from "../components";
 
 const ChatList = ({ chatList }) => {
   return (
-    <div id="chat_list" className="card radius-10 col-lg-4">
+    <div id="chat_list" className="chat-list card col-lg-4">
       <div className="card-body">
-        <div className="d-flex align-items-center">
-          <h6 className="mb-0">Chats</h6>
+        <div className="chat-sidebar-header">
+          <div className="input-group input-group-sm">
+            <span className="input-group-text bg-transparent">
+              <i className="bx bx-search" />
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="People, groups, &amp; messages"
+            />
+            <span className="input-group-text bg-transparent">
+              <i className="bx bx-dialpad" />
+            </span>
+          </div>
         </div>
         <ul className="list-unstyled">
           {chatList.map((chat, index) =>
