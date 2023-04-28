@@ -2740,10 +2740,19 @@ div[contentEditable="true"]:focus {
   background-color: rgb(171, 171, 171);
 }
 
-#emojiButton {
-  margin: 10px 10px 15px 0 !important;
+#emojiButton, #fileButton, #recordMediaButton{
   cursor: pointer;
   padding: 0;
+}
+
+#fileButton, #recordMediaButton {
+  margin: 5px 0 10px!important;
+  font-size: 28px;
+}
+
+
+#emojiButton {
+  margin: 10px 10px 15px 0 !important;
 }
 
 .emoji-popup {

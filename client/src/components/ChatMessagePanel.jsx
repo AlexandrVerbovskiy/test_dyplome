@@ -1,9 +1,10 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import TextInput from "./TextInput";
 import { ChatContext } from "../contexts";
-import { Paperclip, EmojiSmile } from "react-bootstrap-icons";
+import { Paperclip, EmojiSmile} from "react-bootstrap-icons";
 import EmojiPopup from "./EmojiPopup";
 import ChatTextEditor from "./ChatTextEditor";
+import MediaButton from "./MediaButton";
 
 const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
   const textRef = useRef(null);
@@ -65,6 +66,17 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
         </div>
 
         <TextInput textRef={textRef} />
+
+        <div
+          className="btn radius-1_2"
+          onClick={(e)=>console.log(e)}
+          id="fileButton"
+        >
+          <Paperclip />
+        </div>
+
+        <MediaButton/>
+
         <button className="send-message btn btn-dark" onClick={handleSendClick}>
           Send
         </button>
