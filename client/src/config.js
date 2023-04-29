@@ -1,5 +1,8 @@
 const config = {
-    API_URL: "http://localhost:5000"
+    API_URL: "http://localhost:5000",
+    VIDEO_EXTENSIONS: ["mp4", "webm", "ogg", "ogv"],
+    AUDIO_EXTENSIONS: ["mp3", "wav", "aac", "m4a"],
+    IMAGE_EXTENSIONS: ["jpg", "jpeg", "png", "gif", "svg"]
 };
 
 export default config;

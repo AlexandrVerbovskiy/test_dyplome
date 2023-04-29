@@ -2666,6 +2666,10 @@ input.search-control-2::placeholder {
   padding: 0 1rem;
 }
 
+html.dark-theme #chatMessagePanel {
+  border-top: 1px solid rgb(22, 22, 22);
+}
+
 #chatMessagePanel .card-body {
   padding: 0;
   margin: 0;
@@ -2740,16 +2744,31 @@ div[contentEditable="true"]:focus {
   background-color: rgb(171, 171, 171);
 }
 
-#emojiButton, #fileButton, #recordMediaButton{
+html.dark-theme *::-webkit-scrollbar-track {
+  background: rgb(22, 22, 22);
+}
+
+html.dark-theme *::-webkit-scrollbar-thumb {
+  background-color: rgb(97, 97, 97);
+  border-radius: 20px;
+}
+
+html.dark-theme *::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(133, 133, 133);
+}
+
+#emojiButton,
+#fileButton,
+#recordMediaButton {
   cursor: pointer;
   padding: 0;
 }
 
-#fileButton, #recordMediaButton {
-  margin: 5px 0 10px!important;
+#fileButton,
+#recordMediaButton {
+  margin: 5px 0 10px !important;
   font-size: 28px;
 }
-
 
 #emojiButton {
   margin: 10px 10px 15px 0 !important;
@@ -2801,13 +2820,57 @@ div[contentEditable="true"]:focus {
 
 #chat_header {
   padding: 15px;
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  justify-content: start !important;
+  flex-direction: row !important;
   border-left: 1px solid rgba(0, 0, 0, 0.125);
   z-index: 1;
+  margin-bottom: 0;
 }
 
 .chat-left-msg.card,
 .chat-right-msg.card {
   margin-bottom: 1rem;
+}
+
+#chatMediaFileAccept img,
+#chatMediaFileAccept video {
+  max-height: 400px;
+  max-width: 400px;
+  height: auto;
+  width: auto;
+  min-height: 200px;
+  min-width: 200px;
+}
+
+#customAudioWork {
+  margin-right: 5px;
+  padding: 0;
+  background-color: transparent;
+  line-height: 0.6;
+  border: 0;
+}
+
+#customAudioWork:active,
+#customAudioWork:focus {
+  box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.3);
+}
+
+#customAudio {
+  margin-bottom: 0;
+}
+
+#customAudioBody {
+  width: 100%;
+  padding: 0;
+  flex-grow: 1;
+}
+
+#customAudio wave {
+  overflow: hidden !important;
+}
+
+#customAudioTime {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 5px;
 }

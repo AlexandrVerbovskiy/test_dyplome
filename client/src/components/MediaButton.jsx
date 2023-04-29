@@ -6,7 +6,6 @@ const MediaButton = () => {
     recordingMediaType,
     changeRecordingMediaType
   } = useRecordingMediaType();
-  console.log(recordingMediaType);
 
   const handleMenuClick = e=>{
     e.preventDefault();

@@ -18,3 +18,8 @@ export {
     default as getCursorPosition
 }
 from "./getCursorPosition";
+
+export {
+    default as getFileData
+}
+from "./getFileData";

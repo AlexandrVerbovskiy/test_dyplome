@@ -2,7 +2,8 @@ import {
   useChatInit,
   useChatEmojiPopup,
   useChatTextEditor,
-  useMainChat
+  useMainChat,
+  useMediaFileAccept
 } from "../hooks";
 import { ChatList, ChatBody } from "../components";
 import { ChatListContext, ChatContext } from "../contexts";
@@ -17,6 +18,7 @@ const Chat = () => {
     getMoreChats,
     onGetMessage
   } = useMainChat();
+  const { MediaFileAccept, handleSetFile } = useMediaFileAccept();
 
   const { createChat, sendMessage } = useChatInit(onGetMessage);
 
@@ -38,7 +40,7 @@ const Chat = () => {
           activeChatId: activeChat?.chat_id,
           selectChat,
           setChatListSearch,
-          getMoreChats
+          getMoreChats,
         }}
       >
         <ChatList chatList={chatList} />
@@ -49,11 +51,14 @@ const Chat = () => {
           editor,
           emojiPopup,
           messages,
-          activeChat
+          activeChat,
+          handleSetFile
         }}
       >
         <ChatBody />
       </ChatContext.Provider>
+
+      <MediaFileAccept />
     </div>
   );
 };
