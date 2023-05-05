@@ -2649,7 +2649,6 @@ input.search-control-2::placeholder {
 }
 
 #chat_body .card-body {
-  margin-right: 0.75rem;
   padding: 1rem 1rem 0;
   flex-grow: 1;
   position: relative;
@@ -2837,7 +2836,7 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   max-height: 400px;
   max-width: 400px;
   height: auto;
-  width: auto;
+  width: auto !important;
   min-height: 200px;
   min-width: 200px;
 }
@@ -2873,4 +2872,80 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: flex-end;
   margin-left: 5px;
+}
+
+#chatPage {
+  width: 100%;
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+}
+
+#chatPage #chat_list .chat-sidebar-header + ul {
+  max-height: calc(100vh - 62px);
+  overflow-y: auto;
+}
+
+.recording-block {
+  font-size: 20px !important;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+}
+
+.recording-block:focus {
+  box-shadow: 0 0 0 0 !important;
+}
+
+.recording-block .time-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recording-block .circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  margin: 0 10px;
+}
+
+.recording-block .circle.active {
+  animation: 2s infinite linear recording-circle;
+}
+
+
+.recording-block span {
+  text-align: start;
+}
+
+.recording-block svg {
+  cursor: pointer;
+  color: red;
+  opacity: 0.6;
+  width: 50px;
+  height: 50px;
+  transition: all 0.3s;
+}
+
+.recording-block svg:hover {
+  animation: stop-hover 0.1s linear;
+  opacity: 1;
+}
+
+@keyframes recording-circle {
+  0% {
+    background: red;
+  }
+
+  50% {
+    background: white;
+  }
+
+  100% {
+    background: red;
+  }
 }

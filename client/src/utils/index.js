@@ -23,3 +23,8 @@ export {
     default as getFileData
 }
 from "./getFileData";
+
+export {
+    default as formatTime
+}
+from "./formatTime";

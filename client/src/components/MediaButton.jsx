@@ -1,21 +1,20 @@
-import { useRecordingMediaType } from "../hooks";
+import { useContext } from "react";
 import { MicFill, CameraVideoFill } from "react-bootstrap-icons";
+import { ChatBodyContext } from "../contexts";
 
 const MediaButton = () => {
-  const {
-    recordingMediaType,
-    changeRecordingMediaType
-  } = useRecordingMediaType();
+  const { recorder } = useContext(ChatBodyContext);
+  const { recordingMediaType, changeRecordingMediaType, open } = recorder;
 
-  const handleMenuClick = e=>{
+  const handleMenuClick = e => {
     e.preventDefault();
     changeRecordingMediaType();
-  }
+  };
 
   return (
     <div
       className="btn radius-1_2"
-      onClick={e => console.log(e)}
+      onClick={open}
       onContextMenu={handleMenuClick}
       id="recordMediaButton"
     >

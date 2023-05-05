@@ -1,11 +1,12 @@
 import { useRef, useContext } from "react";
 import { Paperclip } from "react-bootstrap-icons";
-import {ChatContext } from "../contexts";
+import {ChatBodyContext } from "../contexts";
 import {getFileData} from "../utils";
 
 const ChatFileSend = () => {
   const inputRef = useRef(null);
-  const { handleSetFile } = useContext(ChatContext);
+  const { mediaFileAccept } = useContext(ChatBodyContext);
+  const {handleSetFile} = mediaFileAccept;
 
   const handleInputChange = e => {
     if(!e.target.files[0]) return;

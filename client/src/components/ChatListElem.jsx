@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ChatListContext } from "../contexts";
+import { ChatContext } from "../contexts";
 import { fullTimeFormat } from "../utils";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
@@ -7,7 +7,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   if (!last) className += "pb-2";
   if (!first) className += " mt-4";
 
-  const { activeChatId, selectChat } = useContext(ChatListContext);
+  const { activeChatId, selectChat } = useContext(ChatContext);
 
   if (activeChatId == chat.chat_id) className += " active";
 

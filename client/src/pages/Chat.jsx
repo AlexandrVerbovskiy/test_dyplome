@@ -2,11 +2,10 @@ import {
   useChatInit,
   useChatEmojiPopup,
   useChatTextEditor,
-  useMainChat,
-  useMediaFileAccept
+  useMainChat
 } from "../hooks";
 import { ChatList, ChatBody } from "../components";
-import { ChatListContext, ChatContext } from "../contexts";
+import { ChatContext } from "../contexts";
 
 const Chat = () => {
   const {
@@ -18,7 +17,6 @@ const Chat = () => {
     getMoreChats,
     onGetMessage
   } = useMainChat();
-  const { MediaFileAccept, handleSetFile } = useMediaFileAccept();
 
   const { createChat, sendMessage } = useChatInit(onGetMessage);
 
@@ -34,31 +32,23 @@ const Chat = () => {
   };
 
   return (
-    <div className="row">
-      <ChatListContext.Provider
+    <div id="chatPage" className="row">
+      <ChatContext.Provider
         value={{
           activeChatId: activeChat?.chat_id,
           selectChat,
           setChatListSearch,
           getMoreChats,
-        }}
-      >
-        <ChatList chatList={chatList} />
-      </ChatListContext.Provider>
-      <ChatContext.Provider
-        value={{
           handleSendTextMessage,
           editor,
           emojiPopup,
           messages,
-          activeChat,
-          handleSetFile
+          activeChat
         }}
       >
-        <ChatBody />
+        <ChatList chatList={chatList} />
+        <ChatBody/>
       </ChatContext.Provider>
-
-      <MediaFileAccept />
     </div>
   );
 };
