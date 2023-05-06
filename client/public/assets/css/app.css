@@ -2834,11 +2834,11 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
 #chatMediaFileAccept .modal-header,
 #chatMediaFileAccept .modal-body,
 #chatMediaFileAccept .modal-footer {
- /* width: 100%;*/
+ width: 100%;
 }
 
 #chatMediaFileAccept .modal-content {
-  /*align-items: center;*/
+  align-items: center;
 }
 
 #chatMediaFileAccept img,

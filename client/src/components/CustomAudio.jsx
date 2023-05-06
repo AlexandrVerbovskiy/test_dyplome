@@ -46,12 +46,20 @@ const AudioPlayer = ({ src }) => {
           minPxPerSec: 1,
           barMinHeight: 1
         };
+
         wavesurfer.current = WaveSurfer.create(options);
         wavesurfer.current.load(src);
 
         wavesurfer.current.on("waveform-ready", () => {
           setDuration(wavesurfer.current.getDuration());
-          console.log("Аудіо файл завантажено та готовий до програвання.");
+        });
+
+        wavesurfer.current.on('ready', function() {
+          const containerWidth = waveformRef.current.clientWidth;
+          const duration = wavesurfer.current.getDuration();
+          const waveWidth = containerWidth / duration * wavesurfer.current.getDuration()+(duration < 1 ? 100 : 0);
+          const increasedContainerWidth = containerWidth;
+          wavesurfer.current.drawer.setWidth(waveWidth, increasedContainerWidth);
         });
 
         wavesurfer.current.on("play", () => {
@@ -135,7 +143,7 @@ const AudioPlayer = ({ src }) => {
   </button>
   <div id="customAudio" style={{flexGrow: 1}}>
     <div id="customAudioBody">
-      <div ref={waveformRef} />
+      <div ref={waveformRef} style={{padding: 0, margin: 0}}/>
     </div>
   </div>
   <div id="customAudioTime">
