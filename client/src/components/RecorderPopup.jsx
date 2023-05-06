@@ -3,30 +3,61 @@ import { StopFill } from "react-bootstrap-icons";
 import PopupWrapper from "./PopupWrapper";
 import { ChatBodyContext } from "../contexts";
 import { formatTime } from "../utils";
+import VisualizeCamera from "./VisualizeCamera";
+import VisualizeAudio from "./VisualizeAudio";
 
 const RecorderPopup = () => {
   const { recorder } = useContext(ChatBodyContext);
-  const { active, recordingTime, close, stop, recording } = recorder;
+  const {
+    active,
+    recordingTime,
+    close,
+    stop,
+    recording,
+    handleStartRecording,
+    recordingMediaType,
+    handleStopClick
+  } = recorder;
+
   const onStopClick = () => {
     stop();
     console.log("stopped");
+    handleStopClick();
   };
 
   return (
     <PopupWrapper
       onClose={close}
       activeTrigger={active}
-      id="chatMediaFileAccept"
+      id="Recording"
       title="Recording"
     >
-      <div className="recording-block">
-        <div className="time-section">
-          <div className={"circle" + (recording ? " active" : "")} />
-          <span>
-            {formatTime(recordingTime)}
-          </span>
+      <div className="modal-body">
+        <div className="card">
+          <div className="card-body d-flex justify-content-center">
+            {recordingMediaType == "video" &&
+              <VisualizeCamera
+                active={active}
+                handlePlay={handleStartRecording}
+              />}
+            {recordingMediaType == "audio" &&
+              <VisualizeAudio
+                active={active}
+                handlePlay={handleStartRecording}
+              />}
+          </div>
         </div>
-        <StopFill onClick={onStopClick} />
+      </div>
+      <div className="modal-footer">
+        <div className="recording-block">
+          <div className="time-section">
+            <div className={"circle" + (recording ? " active" : "")} />
+            <span>
+              {formatTime(recordingTime)}
+            </span>
+          </div>
+          <StopFill onClick={onStopClick} />
+        </div>
       </div>
     </PopupWrapper>
   );

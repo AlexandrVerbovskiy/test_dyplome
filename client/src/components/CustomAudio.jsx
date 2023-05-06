@@ -42,7 +42,9 @@ const AudioPlayer = ({ src }) => {
           interact: false,
           cursorWidth: 0,
           backend: "MediaElement",
-          width: "100%"
+          width: "100%",
+          minPxPerSec: 1,
+          barMinHeight: 1
         };
         wavesurfer.current = WaveSurfer.create(options);
         wavesurfer.current.load(src);

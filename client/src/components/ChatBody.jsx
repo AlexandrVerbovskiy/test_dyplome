@@ -11,7 +11,7 @@ const ChatBody = () => {
   const main = useContext(MainContext);
   const { messages, emojiPopup } = useContext(ChatContext);
   const mediaFileAccept = useMediaFileAccept();
-  const recorder = useRecorder();
+  const recorder = useRecorder(mediaFileAccept.handleSetFile);
 
   const {
     activeEmojiPopup,

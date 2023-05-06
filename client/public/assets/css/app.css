@@ -2831,6 +2831,16 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   margin-bottom: 1rem;
 }
 
+#chatMediaFileAccept .modal-header,
+#chatMediaFileAccept .modal-body,
+#chatMediaFileAccept .modal-footer {
+ /* width: 100%;*/
+}
+
+#chatMediaFileAccept .modal-content {
+  /*align-items: center;*/
+}
+
 #chatMediaFileAccept img,
 #chatMediaFileAccept video {
   max-height: 400px;
@@ -2891,7 +2901,6 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 10px;
 }
 
 .recording-block:focus {
@@ -2916,7 +2925,6 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
 .recording-block .circle.active {
   animation: 2s infinite linear recording-circle;
 }
-
 
 .recording-block span {
   text-align: start;

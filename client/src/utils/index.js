@@ -28,3 +28,10 @@ export {
     default as formatTime
 }
 from "./formatTime";
+
+export {
+    default as randomString
+}
+from "./randomString";
+
+export * from "./writerMedia";
