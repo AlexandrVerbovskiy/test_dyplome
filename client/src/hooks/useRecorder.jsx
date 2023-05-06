@@ -43,7 +43,6 @@ const useRecorder = setFile => {
       file["type"] = recordingMediaType === "audio" ? "mp3" : "mp4";
       file["name"] = name + "." + file["type"];
       close();
-      console.log(file);
       setFile(file);
     };
 
