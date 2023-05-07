@@ -2662,7 +2662,7 @@ input.search-control-2::placeholder {
   justify-content: center;
   margin-bottom: 0;
   flex-direction: row;
-  padding: 0 1rem;
+  padding: 0 1rem 0 0.5rem;
 }
 
 html.dark-theme #chatMessagePanel {
@@ -2703,9 +2703,18 @@ div[contentEditable="true"] {
   border-radius: 0;
 }
 
+html.dark-theme div[contentEditable="true"] {
+  background-color: transparent !important;
+}
+
 div[contentEditable="true"]:hover,
 div[contentEditable="true"]:focus {
   border-bottom: 2px solid black !important;
+}
+
+html.dark-theme div[contentEditable="true"]:hover,
+html.dark-theme div[contentEditable="true"]:focus {
+  border-bottom: 2px solid rgb(200, 200, 200) !important;
 }
 
 .send-message {
@@ -2724,6 +2733,10 @@ div[contentEditable="true"]:focus {
 
 #messageSendDiv {
   margin: 10px 0;
+}
+
+html.dark-theme #messageSendDiv {
+  border: 0;
 }
 
 *::-webkit-scrollbar {
@@ -2758,19 +2771,52 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
 
 #emojiButton,
 #fileButton,
-#recordMediaButton {
+#recordMediaButton,
+#sendButton {
   cursor: pointer;
   padding: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+#emojiButton:hover,
+#fileButton:hover,
+#recordMediaButton:hover,
+#sendButton:hover {
+  color: #626262;
+}
+
+#recordMediaButton{
+  margin-right: 5px;
+}
+
+html.dark-theme #emojiButton,
+html.dark-theme #fileButton,
+html.dark-theme #recordMediaButton,
+html.dark-theme #sendButton {
+  color: rgb(144, 144, 144);
+}
+
+html.dark-theme #emojiButton:hover,
+html.dark-theme #fileButton:hover,
+html.dark-theme #recordMediaButton:hover,
+html.dark-theme #sendButton:hover {
+  color: rgb(200, 200, 200);
+}
+
+#sendButton {
+  margin: 5px 5px 10px !important;
+  font-size: 28px;
 }
 
 #fileButton,
-#recordMediaButton {
+#recordMediaButton
+{
   margin: 5px 0 10px !important;
   font-size: 28px;
 }
 
 #emojiButton {
-  margin: 10px 10px 15px 0 !important;
+  margin: 10px 5px 15px 5px !important;
 }
 
 .emoji-popup {
@@ -2834,7 +2880,7 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
 #chatMediaFileAccept .modal-header,
 #chatMediaFileAccept .modal-body,
 #chatMediaFileAccept .modal-footer {
- width: 100%;
+  width: 100%;
 }
 
 #chatMediaFileAccept .modal-content {
@@ -2950,10 +2996,14 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   }
 
   50% {
-    background: white;
+    background: transparent;
   }
 
   100% {
     background: red;
   }
+}
+
+ {
+  color: #e4e5e6;
 }

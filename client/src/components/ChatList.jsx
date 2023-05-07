@@ -6,16 +6,13 @@ const ChatList = ({ chatList }) => {
       <div className="card-body">
         <div className="chat-sidebar-header">
           <div className="input-group input-group-sm">
-            <span className="input-group-text bg-transparent">
-              <i className="bx bx-search" />
-            </span>
             <input
               type="text"
               className="form-control"
-              placeholder="People, groups, &amp; messages"
+              placeholder="People"
             />
             <span className="input-group-text bg-transparent">
-              <i className="bx bx-dialpad" />
+              <i className="bx bx-search" />
             </span>
           </div>
         </div>

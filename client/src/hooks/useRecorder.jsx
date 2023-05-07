@@ -31,9 +31,6 @@ const useRecorder = setFile => {
     });
   };
 
-  const close = () => setActive(false);
-  const open = () => setActive(true);
-
   const handleStartRecording = async () => {
     const name = randomString();
 
@@ -64,6 +61,12 @@ const useRecorder = setFile => {
     await recorder();
     setRecorder(null);
   };
+
+  const close = () => {
+    setActive(false);
+    handleStopClick();
+  };
+  const open = () => setActive(true);
 
   return {
     active,

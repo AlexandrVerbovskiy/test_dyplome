@@ -59,21 +59,25 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
         />}
 
       <div className="input-group card-body ">
+        <ChatFileSend />
+        <MediaButton />
+
         <div
           className="font-20 btn radius-1_2"
           onClick={handleClickEmoji}
           id="emojiButton"
         >
-          <EmojiSmile />
+          <EmojiSmile width="25px" height="25px" />
         </div>
 
         <TextInput textRef={textRef} />
-        <ChatFileSend />
-        <MediaButton />
-
-        <button className="send-message btn btn-dark" onClick={handleSendClick}>
-          Send
-        </button>
+        <div
+          id="sendButton"
+          className="btn radius-1_2"
+          onClick={handleSendClick}
+        >
+          <i className="lni lni-telegram-original" />
+        </div>
       </div>
     </div>
   );
