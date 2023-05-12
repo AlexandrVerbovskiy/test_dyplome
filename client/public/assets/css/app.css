@@ -2785,7 +2785,7 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
   color: #626262;
 }
 
-#recordMediaButton{
+#recordMediaButton {
   margin-right: 5px;
 }
 
@@ -2809,8 +2809,7 @@ html.dark-theme #sendButton:hover {
 }
 
 #fileButton,
-#recordMediaButton
-{
+#recordMediaButton {
   margin: 5px 0 10px !important;
   font-size: 28px;
 }
@@ -2934,6 +2933,9 @@ html.dark-theme #sendButton:hover {
   width: 100%;
   --bs-gutter-x: 0;
   --bs-gutter-y: 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-y: auto;
 }
 
 #chatPage #chat_list .chat-sidebar-header + ul {
@@ -3004,6 +3006,11 @@ html.dark-theme #sendButton:hover {
   }
 }
 
- {
-  color: #e4e5e6;
+#chat_body .modal-content .card-body {
+  padding: 1rem 1rem;
+}
+
+.no-chats-page {
+  height: auto;
+  padding: 6rem 1rem;
 }

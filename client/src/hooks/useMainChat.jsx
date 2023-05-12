@@ -28,7 +28,6 @@ const useMainChat = () => {
     if (activeChatId == chatId) return;
 
     const successCallback = res => {
-      console.log("ended");
       activeChat.current = chat;
       setMessages(res);
       const count = res.length;
@@ -36,7 +35,6 @@ const useMainChat = () => {
         setLastMessageId(res[count - 1].message_id);
       }
     };
-    console.log("started");
 
     await selectChat(chatId, successCallback, error => console.error(error));
   }

@@ -39,7 +39,7 @@ const useRecorder = setFile => {
       const file = { src };
       file["type"] = recordingMediaType === "audio" ? "mp3" : "mp4";
       file["name"] = name + "." + file["type"];
-      close();
+      //close();
       setFile(file);
     };
 
@@ -57,14 +57,10 @@ const useRecorder = setFile => {
     );
   };
 
-  const handleStopClick = async () => {
+  const close = async () => {
+    setActive(false);
     await recorder();
     setRecorder(null);
-  };
-
-  const close = () => {
-    setActive(false);
-    handleStopClick();
   };
   const open = () => setActive(true);
 
@@ -78,8 +74,7 @@ const useRecorder = setFile => {
     recordingMediaType,
     changeRecordingMediaType,
     startRecording,
-    handleStartRecording,
-    handleStopClick
+    handleStartRecording
   };
 };
 

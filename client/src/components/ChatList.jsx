@@ -1,16 +1,12 @@
 import { ChatListElem } from "../components";
 
-const ChatList = ({ chatList }) => {
+const ChatList = ({ chatList, listRef }) => {
   return (
-    <div id="chat_list" className="chat-list card col-lg-4">
+    <div id="chat_list" className="chat-list card col-lg-4" ref={listRef}>
       <div className="card-body">
         <div className="chat-sidebar-header">
           <div className="input-group input-group-sm">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="People"
-            />
+            <input type="text" className="form-control" placeholder="People" />
             <span className="input-group-text bg-transparent">
               <i className="bx bx-search" />
             </span>

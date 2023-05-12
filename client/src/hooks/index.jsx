@@ -7,3 +7,4 @@ export { default as useChatTextEditor } from "./useChatTextEditor";
 export { default as useMainChat } from "./useMainChat";
 export { default as useRecorder } from "./useRecorder";
 export { default as useMediaFileAccept } from "./useMediaFileAccept";
+export { default as useChatWindowsChanger } from "./useChatWindowsChanger";

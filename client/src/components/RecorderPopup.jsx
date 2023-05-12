@@ -15,14 +15,13 @@ const RecorderPopup = () => {
     stop,
     recording,
     handleStartRecording,
-    recordingMediaType,
-    handleStopClick
+    recordingMediaType
   } = recorder;
 
   const onStopClick = () => {
     stop();
     console.log("stopped");
-    handleStopClick();
+    close();
   };
 
   return (

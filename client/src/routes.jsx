@@ -4,8 +4,12 @@ import { SignIn, SignUp, Chat } from "./pages";
 
 const mainRouter = createBrowserRouter([
   {
+    path: "/chat",
+    element: <Chat />
+  },
+  {
     path: "*",
-    element: <Chat/>
+    element: <div>Test</div>
   }
 ]);
 

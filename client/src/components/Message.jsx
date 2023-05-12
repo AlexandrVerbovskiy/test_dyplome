@@ -13,24 +13,28 @@ const Message = ({ type, message, onClose }) => {
     setTimeout(onClose, 200);
   };
 
+  useEffect(() => {
+    setTimeout(handleCloseClick, 5000)
+  }, []);
+
   return (
     <div className={className} ref={messageRef}>
       <div className="d-flex align-items-center">
         <div className="font-35 text-white">
-          <i className="bx bxs-check-circle" />
+          {type == "success"
+            ? <i className="bx bxs-check-circle" />
+            : <i className="bx bxs-message-square-x" />}
         </div>
         <div className="ms-3">
-          <h6 className="mb-0 text-white">Success Alerts</h6>
+          <h6 className="mb-0 text-white">
+            {type == "success" ? "Success Alert" : "Error Alert"}
+          </h6>
           <div className="text-white">
             {message}
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        className="btn-close"
-        onClick={handleCloseClick}
-      />
+      <button type="button" className="btn-close" onClick={handleCloseClick} />
     </div>
   );
 };

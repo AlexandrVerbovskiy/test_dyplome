@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
   credentials: true,
+  exposedHeaders: 'Authorization',
   origin: process.env.CLIENT_URL
 }));
 

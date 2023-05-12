@@ -2,10 +2,12 @@ import {
   useChatInit,
   useChatEmojiPopup,
   useChatTextEditor,
-  useMainChat
+  useMainChat,
+  useChatWindowsChanger
 } from "../hooks";
 import { ChatList, ChatBody } from "../components";
 import { ChatContext } from "../contexts";
+import NoChats from "./NoChats";
 
 const Chat = () => {
   const {
@@ -17,6 +19,8 @@ const Chat = () => {
     getMoreChats,
     onGetMessage
   } = useMainChat();
+
+  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
 
   const { createChat, sendMessage } = useChatInit(onGetMessage);
 
@@ -31,6 +35,8 @@ const Chat = () => {
     sendMessage(activeChat.chat_id, "text", message, activeChat.chat_type, dop);
   };
 
+  if(chatList.length<1) return <NoChats/>;
+
   return (
     <div id="chatPage" className="row">
       <ChatContext.Provider
@@ -43,11 +49,14 @@ const Chat = () => {
           editor,
           emojiPopup,
           messages,
-          activeChat
+          activeChat,
+          setListWindow,
+          setChatWindow,
+          activeWindow
         }}
       >
-        <ChatList chatList={chatList} />
-        <ChatBody/>
+        <ChatList chatList={chatList} listRef={listRef} />
+        <ChatBody chatRef={chatRef}/>
       </ChatContext.Provider>
     </div>
   );

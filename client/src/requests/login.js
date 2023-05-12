@@ -6,7 +6,7 @@ import config from "../config";
 const login = async (data, successCallback, errorCallback) => {
     try {
         const res = await axios.post(config.API_URL + "/login", data);
-        const token = res.data.token;
+        const token = res.headers.authorization.split(" ")[1];
         localStorage.setItem("token", token);
         successCallback();
     } catch (err) {

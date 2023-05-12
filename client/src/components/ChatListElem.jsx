@@ -7,11 +7,14 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   if (!last) className += "pb-2";
   if (!first) className += " mt-4";
 
-  const { activeChatId, selectChat } = useContext(ChatContext);
+  const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
 
   if (activeChatId == chat.chat_id) className += " active";
 
-  const handleElemClick = () => selectChat(chat);
+  const handleElemClick = () => {
+    selectChat(chat);
+    setChatWindow();
+  };
 
   const content = chat.type == "text" ? chat.content : chat.type;
 

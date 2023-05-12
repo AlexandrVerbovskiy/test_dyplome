@@ -7,7 +7,7 @@ import MediaFileAcceptPopup from "./MediaFileAcceptPopup";
 import { MainContext, ChatContext, ChatBodyContext } from "../contexts";
 import { useMediaFileAccept, useRecorder } from "../hooks";
 
-const ChatBody = () => {
+const ChatBody = ({ chatRef }) => {
   const main = useContext(MainContext);
   const { messages, emojiPopup } = useContext(ChatContext);
   const mediaFileAccept = useMediaFileAccept();
@@ -21,7 +21,7 @@ const ChatBody = () => {
 
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>
-      <div id="chat_body" className="card col-lg-8">
+      <div id="chat_body" className="card col-lg-8" ref={chatRef}>
         <ChatHeader />
         <div className="card-body">
           {messages.map(message =>
@@ -38,9 +38,9 @@ const ChatBody = () => {
             onWheel={closeEmojiPopup}
             className="emoji-popup"
           />}
+        <MediaFileAcceptPopup />
+        <RecorderPopup />
       </div>
-      <MediaFileAcceptPopup />
-      <RecorderPopup/>
     </ChatBodyContext.Provider>
   );
 };

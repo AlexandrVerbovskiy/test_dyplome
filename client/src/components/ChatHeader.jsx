@@ -2,11 +2,12 @@ import { useContext } from "react";
 import { ChatContext } from "../contexts";
 
 const ChatHeader = () => {
-  const { activeChat } = useContext(ChatContext);
+  const { activeChat, setListWindow } = useContext(ChatContext);
+  const handleGoBackClick = ()=>setListWindow();
 
   return (
     <div id="chat_header" className="card d-flex align-items-center">
-      <div className="chat-toggle-btn">
+      <div className="chat-toggle-btn"  onClick={handleGoBackClick}>
         <i className="bx bx-menu-alt-left" />
       </div>
       <img
