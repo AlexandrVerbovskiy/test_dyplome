@@ -25,7 +25,15 @@ class Chat {
             const userId = validateToken(token);
             if (!userId) return sendError(socket, "Authentication failed")
 
-            this.socketController.connect(socket, userId);
+            await this.socketController.connect(socket, userId);
+
+            await this.chatController.getUsersToSendInfo(userId, (res) => {
+                res.forEach(elem => {
+                    this.io.to(elem["socket"]).emit("online", {
+                        userId
+                    })
+                })
+            }, sendError)
 
             socket.on('create-personal-chat', (data) => {
                 this.chatController.createChat(data, userId,
@@ -50,8 +58,98 @@ class Chat {
                     }, sendError)
             });
 
-            socket.on('disconnect', () => this.socketController.disconnect(socket));
+            socket.on('update-message', (data) => {
+                const onGetSockets = (sockets, chatId, messageId) => {
+                    const dataToSend = {
+                        chatId,
+                        messageId,
+                        content: data.content
+                    };
 
+                    this.socketController.sendSocketMessageToUsers([userId], "success-updated-message", dataToSend);
+                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("updated-message", dataToSend));
+                }
+
+                const onUpdate = async (message) => {
+                    await this.chatController.getUserSocketsFromChat(message["chat_id"], userId, (sockets) => onGetSockets(sockets, message["chat_id"], message["message_id"]), sendError);
+                }
+                this.chatController.updateMessage(data, userId, onUpdate, sendError)
+            }, sendError);
+
+            socket.on('delete-message', (data) => {
+                const onGetReplacedMessage = async (sockets, message, deletedChatId, deletedMessageId) => {
+                    const dataToSend = {
+                        message,
+                        deletedChatId,
+                        deletedMessageId
+                    };
+
+                    this.socketController.sendSocketMessageToUsers([userId], "success-deleted-message", dataToSend);
+                    sockets.forEach(socket => {
+                        this.io.to(socket["socket"]).emit("deleted-message", dataToSend)
+                    });
+                }
+
+                const onGetSockets = async (sockets, chatId, messageId) => {
+                    await this.chatController.getNextMessage(chatId, data.lastMessageId,
+                        async (message) => await onGetReplacedMessage(sockets, message, chatId, messageId),
+                            sendError)
+                }
+
+                const onDelete = async (message) => {
+                    await this.chatController.getUserSocketsFromChat(message["chat_id"], userId,
+                        async (sockets) => await onGetSockets(sockets, message["chat_id"], message["message_id"]),
+                            sendError);
+                }
+                this.chatController.hideMessage(data, userId, onDelete, sendError)
+            });
+
+            socket.on('typing', async (data) => {
+                const chatId = data.chatId;
+
+                const onGetSockets = (sockets) => {
+                    const dataToSend = {
+                        chatId,
+                        userId
+                    };
+                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("typing", dataToSend));
+                }
+
+                await this.chatController.getUserSocketsFromChat(chatId,
+                    userId,
+                    (sockets) => onGetSockets(sockets),
+                    sendError);
+            })
+
+            socket.on('stop-typing', async (data) => {
+                const chatId = data.chatId;
+
+                const onGetSockets = (sockets) => {
+                    const dataToSend = {
+                        chatId,
+                        userId
+                    };
+                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("stop-typing", dataToSend));
+                }
+
+                await this.chatController.getUserSocketsFromChat(chatId,
+                    userId,
+                    (sockets) => onGetSockets(sockets),
+                    sendError);
+            })
+
+            socket.on('test', res => console.log(res));
+
+            socket.on('disconnect', async () => {
+                await this.socketController.disconnect(socket);
+                await this.chatController.getUsersToSendInfo(userId, (res) => {
+                    res.forEach(elem => {
+                        this.io.to(elem["socket"]).emit("offline", {
+                            userId
+                        })
+                    })
+                }, sendError)
+            });
         });
     }
 }

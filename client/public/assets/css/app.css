@@ -2484,7 +2484,7 @@ input.search-control-2::placeholder {
     z-index: 11;
     display: block;
     cursor: move;
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
   }
   .email-header {
     border-top-left-radius: 0.25rem;
@@ -2512,7 +2512,7 @@ input.search-control-2::placeholder {
     z-index: 9;
     display: block;
     cursor: move;
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
   }
 }
 
@@ -2775,7 +2775,7 @@ html.dark-theme *::-webkit-scrollbar-thumb:hover {
 #sendButton {
   cursor: pointer;
   padding: 0;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 #emojiButton:hover,
@@ -2818,7 +2818,7 @@ html.dark-theme #sendButton:hover {
   margin: 10px 5px 15px 5px !important;
 }
 
-.emoji-popup {
+.popup-wrapper {
   position: fixed;
   width: 100%;
   height: 100vh;
@@ -2984,7 +2984,7 @@ html.dark-theme #sendButton:hover {
   opacity: 0.6;
   width: 50px;
   height: 50px;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .recording-block svg:hover {
@@ -3013,4 +3013,25 @@ html.dark-theme #sendButton:hover {
 .no-chats-page {
   height: auto;
   padding: 6rem 1rem;
+}
+
+#chat_body .message-action {
+  z-index: 1;
+  bottom: 0;
+  right: 0;
+  transform: translateY(calc(100% + 1rem));
+  position: absolute;
+}
+
+#chat_body .message-action .card-body {
+  padding: 1rem 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+#chat_body .message-action .card-body:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+html.dark-theme #chat_body .message-action .card-body:hover {
+  background-color: rgb(133, 133, 133);
 }

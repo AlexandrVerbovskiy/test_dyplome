@@ -72,7 +72,7 @@ class Chat {
     }
 
     hideMessage = async (messageId, successCallback, errorCallback) => {
-        await this.db.query("UPDATE messages SET hidden = true WHERE id = ?", [messageId], (err) => {
+        await this.db.query("UPDATE messages SET hidden = false WHERE id = ?", [messageId], (err) => {
             if (err) return errorCallback(err);
             successCallback();
         })
@@ -142,6 +142,20 @@ class Chat {
             })
     }
 
+    getUsersToSendInfo = async (userId, successCallback, errorCallback) => {
+        const query = `
+        SELECT DISTINCT s.socket as socket FROM chats_users as cu1 
+            JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
+            JOIN sockets as s ON s.user_id = cu1.user_id
+        `;
+
+        await this.db.query(query, [userId, userId], (err, res) => {
+            if (err) return errorCallback();
+            if (res.length > 0) return successCallback(res);
+            return successCallback([]);
+        })
+    }
+
     getMessageById = async (messageId, successCallback, errorCallback) => {
         await this.db.query(`${this.messageSelect} WHERE messages.id = ?`, [messageId], (err, res) => {
             if (err) return errorCallback();
@@ -160,7 +174,7 @@ class Chat {
             params.push(Number(lastId));
         }
 
-        query += ` LIMIT 0, ?;`;
+        query += ` ORDER BY time_sended DESC LIMIT 0, ?;`;
         params.push(Number(count));
 
         await this.db.query(query, params, (err, res) => {
@@ -168,7 +182,7 @@ class Chat {
                 error: err
             });
             return callback({
-                messages: res
+                messages: res.reverse()
             });
         })
     }
@@ -180,6 +194,24 @@ class Chat {
             });
             await this.getChatMessages(chatId, -1, process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES, callback);
         });
+    }
+
+    getUserSocketsFromChat = async (chatId, userId, callback) => {
+        const query = `SELECT s.socket FROM chats AS c1 
+        JOIN chats_users ON chats_users.chat_id = c1.id
+        JOIN users ON chats_users.user_id = users.id AND NOT(users.id = ?)
+        join sockets as s ON s.user_id = users.id
+        where c1.id=?`;
+
+        await this.db.query(query,
+            [userId, chatId], (err, res) => {
+                if (err) return callback({
+                    error: err
+                });
+                return callback({
+                    sockets: res
+                });
+            })
     }
 }
 module.exports = Chat;

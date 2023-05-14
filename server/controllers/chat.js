@@ -68,6 +68,50 @@ class Chat {
         }
     }
 
+    updateMessage = async (data, userId, sendSuccessRes, sendError) => {
+        const onFindMessage = async (message) => {
+            if (!message) return sendError("No message found!");
+            if (message["user_id"] != userId) return sendError("Not the author of the message!");
+            this.chatModel.addContentToMessage(data.messageId, data.content, () => sendSuccessRes(message), sendError);
+        }
+
+        await this.chatModel.getMessageById(data.messageId, onFindMessage, sendError);
+    }
+
+    hideMessage = async (data, userId, sendSuccessRes, sendError) => {
+        const onFindMessage = async (message) => {
+            if (!message) return sendError("No message found!");
+            if (message["user_id"] != userId) return sendError("Not the author of the message!");
+            this.chatModel.hideMessage(data.messageId, () => sendSuccessRes(message), sendError);
+        }
+
+        await this.chatModel.getMessageById(data.messageId, onFindMessage, sendError);
+    }
+
+    getNextMessage = async (chatId, messageId, sendSuccessRes, sendError) => {
+        await this.chatModel.getChatMessages(chatId, messageId, 1, res => {
+            if (res["error"]) return sendError(res["error"]);
+            if (res["messages"].length > 0) return sendSuccessRes(res["messages"][0]);
+            return sendSuccessRes(null);
+        })
+    }
+
+    getNextMessages = async (chatId, messageId, sendSuccessRes, sendError) => {
+        await this.chatModel.getChatMessages(chatId, messageId, 20, res => {
+            if (res["error"]) return sendError(res["error"]);
+            if (res["messages"].length > 0) return sendSuccessRes(res["messages"]);
+            return sendSuccessRes([]);
+        })
+    }
+
+    getUserSocketsFromChat = async (chatId, userId, sendSuccessRes, sendError) => {
+        await this.chatModel.getUserSocketsFromChat(chatId, userId, res => {
+            if (res["error"]) return sendError(res["error"]);
+            if (res["sockets"].length > 0) return sendSuccessRes(res["sockets"]);
+            return sendSuccessRes([]);
+        });
+    }
+
     getChatMessages = (req, res) => {
         if (!this._checkIsBodyHasKeys(req, ["chatId", "lastId", "count"])) return res.status(500).json({
             error: "Not all data was transferred successfully"
@@ -115,6 +159,8 @@ class Chat {
             error
         }))
     }
+
+    getUsersToSendInfo = async (userId, successCallback, errorCallback) => await this.chatModel.getUsersToSendInfo(userId, successCallback, errorCallback);
 }
 
 module.exports = Chat;

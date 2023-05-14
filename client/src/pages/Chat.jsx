@@ -17,22 +17,42 @@ const Chat = () => {
     chatList,
     setChatListSearch,
     getMoreChats,
-    onGetMessage
+    onGetMessage,
+    editMessageId,
+    editMessageContent,
+    setEditMessage,
+    unsetEditMessage,
+    lastMessageId
   } = useMainChat();
 
-  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
+  const onEditMessage = (id, content)=>{
+    console.log("edit start: ", id, content)
+    setEditMessage(id, content);
+  }
 
-  const { createChat, sendMessage } = useChatInit(onGetMessage);
+  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
+  const { createChat, sendMessage, editMessage, deleteMessage } = useChatInit(onGetMessage);
+ 
+  const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 
   const editor = useChatTextEditor();
   const emojiPopup = useChatEmojiPopup();
 
   const handleCreateChat = userId => createChat(userId);
   const handleSendTextMessage = message => {
-    const dop = {};
-    if (activeChat.chat_type == "personal")
-      dop["getter_id"] = activeChat.user_id;
-    sendMessage(activeChat.chat_id, "text", message, activeChat.chat_type, dop);
+      console.log(editMessageId)
+    if(editMessageId){
+      if(message!=editMessageContent) {
+        editMessage(editMessageId, message);
+        console.log("unhidded")
+      }
+      unsetEditMessage();
+    }else{
+      const dop = {};
+      if (activeChat.chat_type == "personal")
+        dop["getter_id"] = activeChat.user_id;
+      sendMessage(activeChat.chat_id, "text", message, activeChat.chat_type, dop);
+    }
   };
 
   if(chatList.length<1) return <NoChats/>;
@@ -52,7 +72,9 @@ const Chat = () => {
           activeChat,
           setListWindow,
           setChatWindow,
-          activeWindow
+          activeWindow,
+          onEditMessage,
+          onDeleteMessage
         }}
       >
         <ChatList chatList={chatList} listRef={listRef} />

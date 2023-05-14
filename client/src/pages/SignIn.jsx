@@ -13,9 +13,9 @@ const SignIn = () => {
     e.preventDefault();
     await login(
       { email, password },
-      () => {
+      userId => {
         main.setSuccess("Logged in successfully");
-        main.setAuth(true);
+        main.setAuth(userId);
         redirect("/registration");
       },
       err => main.setError(err)

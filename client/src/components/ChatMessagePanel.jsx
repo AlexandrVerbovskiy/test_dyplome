@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import TextInput from "./TextInput";
 import { ChatContext } from "../contexts";
 import { EmojiSmile } from "react-bootstrap-icons";
@@ -7,8 +7,7 @@ import ChatTextEditor from "./ChatTextEditor";
 import MediaButton from "./MediaButton";
 import ChatFileSend from "./ChatFileSend";
 
-const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
-  const textRef = useRef(null);
+const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
   const { handleSendTextMessage, editor } = useContext(ChatContext);
   const [savedSelection, setSavedSelection] = useState(null);
 
@@ -40,8 +39,10 @@ const Panel = ({ activeEmojiPopup, changeActivationEmojiPopup }) => {
     };
   }, []);
 
-  const handleSendClick = () =>
+  const handleSendClick = () => {
     handleSendTextMessage(textRef.current.innerHTML);
+    textRef.current.innerHTML = "";
+  };
 
   const handleClickEmoji = () => {
     changeActivationEmojiPopup();

@@ -15,7 +15,9 @@ function App() {
   const { auth, logout, setAuth } = useAuth(setError);
 
   return (
-    <MainContext.Provider value={{ logout, setAuth, setSuccess, setError }}>
+    <MainContext.Provider
+      value={{ auth, logout, setAuth, setSuccess, setError }}
+    >
       {systemMessage &&
         <Message
           message={systemMessage.message}

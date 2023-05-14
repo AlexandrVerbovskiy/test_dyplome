@@ -54,7 +54,7 @@ class User {
             res.set('Authorization', `Bearer ${token}`);
             return res.status(200).json({
                 validated: true,
-                token
+                userId: resValidate
             });
         }
         return res.status(200).json({

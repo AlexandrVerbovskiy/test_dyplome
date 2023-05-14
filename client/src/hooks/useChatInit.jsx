@@ -28,7 +28,23 @@ const useChatInit = onGetMessage => {
       onGetMessage(data.message)
     );
     ioRef.current.on("get-message", data => onGetMessage(data.message));
+
+    ioRef.current.on("success-deleted-message", data => console.log(data));
+    ioRef.current.on("deleted-message", data => console.log(data));
+    ioRef.current.on("success-updated-message", data => console.log(data));
+    ioRef.current.on("updated-message", data => console.log(data.message));
+    ioRef.current.on("typing", data => console.log(data));
+    ioRef.current.on("stop-typing", data => console.log(data));
+    ioRef.current.on("online", data => console.log(data));
+    ioRef.current.on("offline", data => console.log(data.message));
   }, []);
+
+  useEffect(
+    () => {
+      ioRef.current.emit("test");
+    },
+    [ioRef.current]
+  );
 
   const createChat = userId => {
     ioRef.current.emit("create-personal-chat", {
@@ -48,9 +64,26 @@ const useChatInit = onGetMessage => {
     });
   };
 
+  const editMessage = (messageId, content) => {
+    ioRef.current.emit("update-message", {
+      messageId,
+      content
+    });
+  };
+
+  const deleteMessage = (messageId, lastMessageId) => {
+    console.log(lastMessageId);
+    ioRef.current.emit("delete-message", {
+      messageId,
+      lastMessageId
+    });
+  };
+
   return {
     createChat,
-    sendMessage
+    sendMessage,
+    editMessage,
+    deleteMessage
   };
 };
 

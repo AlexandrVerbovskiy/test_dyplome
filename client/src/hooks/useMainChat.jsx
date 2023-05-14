@@ -7,6 +7,8 @@ const useMainChat = () => {
   const activeChat = useRef(null);
   const [messages, setMessages] = useState([]);
   const [lastMessageId, setLastMessageId] = useState(null);
+  const [editMessageId, setEditMessageId] = useState(null);
+  const [editMessageContent, setEditMessageContent] = useState(null);
 
   const {
     chatList,
@@ -17,6 +19,16 @@ const useMainChat = () => {
     const chatElem = chatList.length > 0 ? chatList[0] : null;
     handleChangeChat(chatElem);
   });
+
+  function setEditMessage(id, content) {
+    setEditMessageContent(content);
+    setEditMessageId(id);
+  }
+
+  function unsetEditMessage() {
+    setEditMessageContent(null);
+    setEditMessageId(null);
+  }
 
   async function handleChangeChat(chat) {
     console.log(chat);
@@ -32,7 +44,7 @@ const useMainChat = () => {
       setMessages(res);
       const count = res.length;
       if (count > 0) {
-        setLastMessageId(res[count - 1].message_id);
+        setLastMessageId(res[0].message_id);
       }
     };
 
@@ -69,7 +81,12 @@ const useMainChat = () => {
     chatList,
     setChatListSearch,
     getMoreChats,
-    onGetMessage
+    onGetMessage,
+    editMessageId,
+    editMessageContent,
+    setEditMessage,
+    unsetEditMessage,
+    lastMessageId
   };
 };
 
