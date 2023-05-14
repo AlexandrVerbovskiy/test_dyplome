@@ -72,7 +72,7 @@ class Chat {
     }
 
     hideMessage = async (messageId, successCallback, errorCallback) => {
-        await this.db.query("UPDATE messages SET hidden = false WHERE id = ?", [messageId], (err) => {
+        await this.db.query("UPDATE messages SET hidden = true WHERE id = ?", [messageId], (err) => {
             if (err) return errorCallback(err);
             successCallback();
         })
