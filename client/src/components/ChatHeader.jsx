@@ -2,8 +2,10 @@ import { useContext } from "react";
 import { ChatContext } from "../contexts";
 
 const ChatHeader = () => {
-  const { activeChat, setListWindow } = useContext(ChatContext);
+  const { activeChat, setListWindow, chatTyping, chatOnline } = useContext(ChatContext);
   const handleGoBackClick = ()=>setListWindow();
+
+  console.log(chatTyping)
 
   return (
     <div id="chat_header" className="card d-flex align-items-center">

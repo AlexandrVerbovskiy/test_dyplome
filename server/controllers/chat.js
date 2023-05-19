@@ -18,7 +18,6 @@ class Chat {
     }
 
     getUsersToChatting = async (req, res) => {
-
         if (!this._checkIsBodyHasKeys(req, ["lastChatId", "searchString", "limit"])) return res.status(500).json({
             error: "Not all data was transferred successfully"
         });

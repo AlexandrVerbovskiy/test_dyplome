@@ -38,7 +38,6 @@ const useChatList = onInit => {
         if (chats.length === limit) setCanSearch(true);
         setChatList(prev => [...prev, ...chats]);
         if (isFirstAction) {
-          console.log(chats);
           setIsFirstAction(false);
           onInit(chats);
         }
@@ -52,14 +51,93 @@ const useChatList = onInit => {
   };
 
   const onChatUpdate = chat => {
-    console.log(chat);
+    if (!chat) return;
+
     setChatList(prev => {
-      const chats = prev.filter(elem => elem.chat_id != chat.chat_id);
-      return [chat, ...chats];
+      const prevDataChat = prev.find(elem => elem.chat_id == chat.chat_id);
+
+      if (
+        prevDataChat &&
+        ((!chat.time_sended && chat.message_id == prevDataChat.message_id) ||
+          new Date(prevDataChat.time_sended) <= new Date(chat.time_sended))
+      ) {
+        const partToUpdate = {
+          content: chat.content,
+          message_id: chat.message_id
+        };
+        if (chat.time_sended) partToUpdate["time_sended"] = chat.time_sended;
+        if (chat.type) partToUpdate["type"] = chat.type;
+
+        const newChat = {
+          ...prevDataChat,
+          ...partToUpdate
+        };
+
+        let chats = prev.filter(elem => elem.chat_id != chat.chat_id);
+        chats = [newChat, ...chats];
+
+        chats = chats.sort(
+          (a, b) => new Date(a.time_sended) - new Date(b.time_sended)
+        );
+
+        return chats;
+      }
+
+      return prev;
     });
   };
 
-  return { chatList, setChatListSearch, getMoreChats, onChatUpdate };
+  const onChatMessageDelete = (chatId, deletedMessageId, message) => {
+    setChatList(prev => {
+      const prevDataChat = prev.find(elem => elem.chat_id == chatId);
+      if (prevDataChat && prevDataChat.message_id == deletedMessageId) {
+        let chats = prev.filter(elem => elem.chat_id != chatId);
+        if (!message) return chats;
+
+        const newChat = {
+          ...prevDataChat,
+          content: message.content,
+          message_id: message.message_id,
+          time_sended: message.time_sended,
+          type: message.type
+        };
+        chats = [newChat, ...chats];
+        chats = chats.sort(
+          (a, b) => new Date(a.time_sended) - new Date(b.time_sended)
+        );
+        return chats;
+      }
+      return prev;
+    });
+  };
+
+  const onChangeTyping = (data, typing) => {
+    setChatList(prev =>
+      prev.map(elem => {
+        if (elem.chat_id == data.chatId) return { ...elem, typing };
+        return { ...elem };
+      })
+    );
+  };
+
+  const onChangeOnline = (data, online) => {
+    setChatList(prev =>
+      prev.map(elem => {
+        if (elem.chat_id == data.chatId) return { ...elem, online };
+        return { ...elem };
+      })
+    );
+  };
+
+  return {
+    chatList,
+    setChatListSearch,
+    getMoreChats,
+    onChatUpdate,
+    onChatMessageDelete,
+    onChangeTyping,
+    onChangeOnline
+  };
 };
 
 export default useChatList;

@@ -121,7 +121,7 @@ class Chat {
         JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
             SELECT MAX(time_created)
             FROM messages 
-            WHERE messages.chat_id = c1.chat_id
+            WHERE messages.chat_id = c1.chat_id AND messages.hidden = 0
             GROUP BY chat_id
         )
         JOIN messages_contents ON messages_contents.message_id = messages.id AND messages_contents.time_edited = (

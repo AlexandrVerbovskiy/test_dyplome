@@ -61,11 +61,10 @@ class Chat {
             socket.on('update-message', (data) => {
                 const onGetSockets = (sockets, chatId, messageId) => {
                     const dataToSend = {
-                        chatId,
-                        messageId,
+                        chat_id: chatId,
+                        message_id: messageId,
                         content: data.content
                     };
-
                     this.socketController.sendSocketMessageToUsers([userId], "success-updated-message", dataToSend);
                     sockets.forEach(socket => this.io.to(socket["socket"]).emit("updated-message", dataToSend));
                 }
@@ -77,12 +76,16 @@ class Chat {
             }, sendError);
 
             socket.on('delete-message', (data) => {
-                const onGetReplacedMessage = async (sockets, message, deletedChatId, deletedMessageId) => {
+                console.log("started")
+                const onGetChatReplacedMessage = async (sockets, messageToChat, deletedChatId, deletedMessageId, messageToList) => {
                     const dataToSend = {
-                        message,
+                        messageToChat,
+                        messageToList,
                         deletedChatId,
                         deletedMessageId
                     };
+
+                    console.log(dataToSend)
 
                     this.socketController.sendSocketMessageToUsers([userId], "success-deleted-message", dataToSend);
                     sockets.forEach(socket => {
@@ -90,9 +93,16 @@ class Chat {
                     });
                 }
 
-                const onGetSockets = async (sockets, chatId, messageId) => {
+                const onGetListReplacedMessage = async (sockets, chatId, messageId, messageToList) => {
                     await this.chatController.getNextMessage(chatId, data.lastMessageId,
-                        async (message) => await onGetReplacedMessage(sockets, message, chatId, messageId),
+                        async (messageToChat) => await onGetChatReplacedMessage(sockets, messageToChat, chatId, messageId, messageToList),
+                            sendError)
+                }
+
+                const onGetSockets = async (sockets, chatId, messageId) => {
+                    await this.chatController.getNextMessage(chatId, messageId,
+                        async (messageToList) =>
+                            await onGetListReplacedMessage(sockets, chatId, messageId, messageToList),
                             sendError)
                 }
 
@@ -104,7 +114,7 @@ class Chat {
                 this.chatController.hideMessage(data, userId, onDelete, sendError)
             });
 
-            socket.on('typing', async (data) => {
+            socket.on('start-typing', async (data) => {
                 const chatId = data.chatId;
 
                 const onGetSockets = (sockets) => {
@@ -112,6 +122,8 @@ class Chat {
                         chatId,
                         userId
                     };
+
+                    this.socketController.sendSocketMessageToUsers([userId], "typing", dataToSend);
                     sockets.forEach(socket => this.io.to(socket["socket"]).emit("typing", dataToSend));
                 }
 
@@ -121,7 +133,7 @@ class Chat {
                     sendError);
             })
 
-            socket.on('stop-typing', async (data) => {
+            socket.on('end-typing', async (data) => {
                 const chatId = data.chatId;
 
                 const onGetSockets = (sockets) => {
@@ -129,6 +141,7 @@ class Chat {
                         chatId,
                         userId
                     };
+                    this.socketController.sendSocketMessageToUsers([userId], "stop-typing", dataToSend);
                     sockets.forEach(socket => this.io.to(socket["socket"]).emit("stop-typing", dataToSend));
                 }
 

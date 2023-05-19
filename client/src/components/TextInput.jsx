@@ -3,7 +3,9 @@ import { getCursorPosition } from "../utils";
 import { ChatContext } from "../contexts";
 
 const TextInput = ({ textRef }) => {
-  const { editor } = useContext(ChatContext);
+  const { editor, handleStartTyping, handleEndTyping } = useContext(
+    ChatContext
+  );
   const { activateTextEditor } = editor;
 
   const handleContextMenu = e => {
@@ -46,6 +48,8 @@ const TextInput = ({ textRef }) => {
 
   return (
     <div
+      onFocus={handleStartTyping}
+      onBlur={handleEndTyping}
       className="form-control message-input"
       contentEditable={true}
       placeholder="Type your message"

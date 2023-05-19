@@ -2,7 +2,13 @@ import io from "socket.io-client";
 import { useEffect, useRef } from "react";
 import config from "../config";
 
-const useChatInit = onGetMessage => {
+const useChatInit = ({
+  onGetMessageForSockets,
+  onUpdateMessageForSockets,
+  onDeleteMessageForSockets,
+  changeTypingForSockets,
+  changeOnlineForSockets
+}) => {
   const ioRef = useRef(null);
 
   useEffect(() => {
@@ -25,18 +31,30 @@ const useChatInit = onGetMessage => {
     });
 
     ioRef.current.on("success-sended-message", data =>
-      onGetMessage(data.message)
+      onGetMessageForSockets(data.message)
     );
-    ioRef.current.on("get-message", data => onGetMessage(data.message));
+    ioRef.current.on("get-message", data =>
+      onGetMessageForSockets(data.message)
+    );
 
-    ioRef.current.on("success-deleted-message", data => console.log(data));
-    ioRef.current.on("deleted-message", data => console.log(data));
-    ioRef.current.on("success-updated-message", data => console.log(data));
-    ioRef.current.on("updated-message", data => console.log(data.message));
-    ioRef.current.on("typing", data => console.log(data));
-    ioRef.current.on("stop-typing", data => console.log(data));
-    ioRef.current.on("online", data => console.log(data));
-    ioRef.current.on("offline", data => console.log(data.message));
+    ioRef.current.on("success-deleted-message", data =>
+      onDeleteMessageForSockets(data)
+    );
+    ioRef.current.on("deleted-message", data =>
+      onDeleteMessageForSockets(data)
+    );
+    ioRef.current.on("success-updated-message", data =>
+      onUpdateMessageForSockets(data)
+    );
+    ioRef.current.on("updated-message", data =>
+      onUpdateMessageForSockets(data.message)
+    );
+    ioRef.current.on("typing", data => changeTypingForSockets(data, true));
+    ioRef.current.on("stop-typing", data =>
+      changeTypingForSockets(data, false)
+    );
+    ioRef.current.on("online", data => changeOnlineForSockets(data, true));
+    ioRef.current.on("offline", data => changeOnlineForSockets(data, false));
   }, []);
 
   useEffect(
@@ -72,10 +90,23 @@ const useChatInit = onGetMessage => {
   };
 
   const deleteMessage = (messageId, lastMessageId) => {
-    console.log(lastMessageId);
     ioRef.current.emit("delete-message", {
       messageId,
       lastMessageId
+    });
+  };
+
+  const startTyping = chatId => {
+    console.log(chatId);
+    ioRef.current.emit("start-typing", {
+      chatId
+    });
+  };
+
+  const endTyping = chatId => {
+    console.log(chatId);
+    ioRef.current.emit("end-typing", {
+      chatId
     });
   };
 
@@ -83,7 +114,9 @@ const useChatInit = onGetMessage => {
     createChat,
     sendMessage,
     editMessage,
-    deleteMessage
+    deleteMessage,
+    startTyping,
+    endTyping
   };
 };
 

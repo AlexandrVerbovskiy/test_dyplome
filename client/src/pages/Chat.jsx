@@ -17,12 +17,17 @@ const Chat = () => {
     chatList,
     setChatListSearch,
     getMoreChats,
-    onGetMessage,
     editMessageId,
     editMessageContent,
     setEditMessage,
     unsetEditMessage,
-    lastMessageId
+    lastMessageId,
+    onGetMessage:onGetMessageForSockets,
+    onUpdateMessage: onUpdateMessageForSockets,
+    onDeleteMessage: onDeleteMessageForSockets,
+    onChangeTyping: changeTypingForSockets,
+    onChangeOnline: changeOnlineForSockets,
+    chatTyping, chatOnline
   } = useMainChat();
 
   const onEditMessage = (id, content)=>{
@@ -31,12 +36,16 @@ const Chat = () => {
   }
 
   const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage } = useChatInit(onGetMessage);
+  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping } = useChatInit({changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
  
   const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 
   const editor = useChatTextEditor();
   const emojiPopup = useChatEmojiPopup();
+
+  const handleStartTyping = () => startTyping(activeChat.chat_id);
+  
+  const handleEndTyping = () => endTyping(activeChat.chat_id);
 
   const handleCreateChat = userId => createChat(userId);
   const handleSendTextMessage = message => {
@@ -66,6 +75,8 @@ const Chat = () => {
           setChatListSearch,
           getMoreChats,
           handleSendTextMessage,
+          handleStartTyping, 
+          handleEndTyping,
           editor,
           emojiPopup,
           messages,
@@ -74,7 +85,9 @@ const Chat = () => {
           setChatWindow,
           activeWindow,
           onEditMessage,
-          onDeleteMessage
+          onDeleteMessage,
+          chatTyping, 
+          chatOnline
         }}
       >
         <ChatList chatList={chatList} listRef={listRef} />
