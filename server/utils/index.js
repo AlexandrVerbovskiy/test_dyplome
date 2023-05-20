@@ -1,3 +1,4 @@
 module.exports = {
-    validateToken: require('./validateToken')
+    validateToken: require('./validateToken'),
+    randomString: require('./randomString'),
 }

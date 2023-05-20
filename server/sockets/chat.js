@@ -22,6 +22,7 @@ class Chat {
 
             const sendError = message => this.io.to(socket.id).emit("error", message);
 
+
             const userId = validateToken(token);
             if (!userId) return sendError(socket, "Authentication failed")
 
@@ -123,7 +124,6 @@ class Chat {
                         userId
                     };
 
-                    this.socketController.sendSocketMessageToUsers([userId], "typing", dataToSend);
                     sockets.forEach(socket => this.io.to(socket["socket"]).emit("typing", dataToSend));
                 }
 
@@ -153,6 +153,28 @@ class Chat {
 
             socket.on('test', res => console.log(res));
 
+            socket.on('file-part-upload', async ({
+                temp_key,
+                data,
+                type
+            }) => {
+                this.chatController.uploadToFile(userId, temp_key, data, type, () => {
+                    this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
+                        temp_key
+                    });
+                }, (error) => console.log(error))
+            })
+
+            socket.on('stop-file-upload', async ({
+                temp_key
+            }) => {
+                this.chatController.onStopFile(temp_key, userId, () => {
+                    this.socketController.sendSocketMessageToUsers([userId], "file-upload-stopped", {
+                        temp_key
+                    });
+                }, (err) => console.log(err))
+            })
+
             socket.on('disconnect', async () => {
                 await this.socketController.disconnect(socket);
                 await this.chatController.getUsersToSendInfo(userId, (res) => {
@@ -163,6 +185,7 @@ class Chat {
                     })
                 }, sendError)
             });
+
         });
     }
 }

@@ -1,14 +1,24 @@
 require("dotenv").config()
+const fs = require('fs');
+
 const {
     Chat: ChatModel,
-    User: UserModel
+    User: UserModel,
+    Action: ActionModel
 } = require("../models");
+
+const {
+    randomString
+} = require("../utils");
 
 class Chat {
     constructor(db) {
         this.chatModel = new ChatModel(db);
         this.userModel = new UserModel(db);
+        this.actionModel = new ActionModel(db);
     }
+
+    folder = "files/messages";
 
     _checkIsBodyHasKeys(req, keys) {
         for (let i = 0; i < keys.length; i++) {
@@ -160,6 +170,54 @@ class Chat {
     }
 
     getUsersToSendInfo = async (userId, successCallback, errorCallback) => await this.chatModel.getUsersToSendInfo(userId, successCallback, errorCallback);
+
+    uploadToFile = async (userId, key, data, type, sendSuccessRes, sendError) => {
+        const onReadActionInfo = async (info) => {
+            try {
+                let filename = randomString() + "." + type;
+                if (!info) {
+                    fs.writeFileSync(this.folder + "/" + filename, data);
+                    const actionInfo = JSON.stringify({
+                        filename
+                    });
+                    await this.actionModel.createAction("sending_file", userId, key, actionInfo, sendSuccessRes, sendError);
+                } else {
+                    ({
+                        filename
+                    } = JSON.parse(info));
+                    fs.appendFileSync(this.folder + "/" + filename, data);
+                }
+                sendSuccessRes(filename);
+            } catch (err) {
+                sendError(err);
+            }
+        }
+
+        await this.actionModel.getActionDataByKeyAndType(userId, key, "sending_file", onReadActionInfo, sendError);
+    }
+
+    onUpdatedFile = async (data, key, userId, sendSuccessRes, sendError) => {
+        await this.actionModel.deleteActionByKeyAndType(userId, key, "sending_file", () => {
+            this.createMessage(data, userId, sendSuccessRes, sendError);
+        }, sendError);
+    }
+
+    onStopFile = async (key, userId, sendSuccessRes, sendError) => {
+        const deleteAction = async (info) => {
+            await this.actionModel.deleteActionByKeyAndType(userId, key, "sending_file", () => {
+                try {
+                    const {
+                        filename
+                    } = JSON.parse(info);
+                    fs.unlinkSync(this.folder + "/" + filename);
+                    sendSuccessRes();
+                } catch (err) {
+                    sendError(err);
+                }
+            }, sendError);
+        }
+        await this.actionModel.getActionDataByKeyAndType(userId, key, "sending_file", deleteAction, sendError);
+    }
 }
 
 module.exports = Chat;
