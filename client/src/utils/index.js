@@ -35,3 +35,10 @@ export {
 from "./randomString";
 
 export * from "./writerMedia";
+
+export {
+    default as splitBlob
+}
+from "./splitBlob";
+
+export * from "./convertToBlob";

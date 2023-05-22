@@ -3,7 +3,6 @@ import { useState } from "react";
 const useMediaFileAccept = () => {
   const [file, setFile] = useState(null);
   const [active, setActive] = useState(false);
-
   const close = () => setActive(false);
   const open = () => setActive(true);
 

@@ -8,3 +8,4 @@ export { default as useMainChat } from "./useMainChat";
 export { default as useRecorder } from "./useRecorder";
 export { default as useMediaFileAccept } from "./useMediaFileAccept";
 export { default as useChatWindowsChanger } from "./useChatWindowsChanger";
+export { default as useMediaActions } from "./useMediaActions";

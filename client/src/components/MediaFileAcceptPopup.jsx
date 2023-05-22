@@ -1,15 +1,20 @@
 import { useContext } from "react";
 import PopupWrapper from "./PopupWrapper";
 import CustomAudio from "./CustomAudio";
-import { ChatBodyContext } from "../contexts";
+import { ChatBodyContext, ChatContext } from "../contexts";
 import config from "../config";
+import { autoConvert } from "../utils";
 
 const MediaFileAcceptPopup = () => {
+  const { createMediaActions } = useContext(ChatContext);
   const { mediaFileAccept } = useContext(ChatBodyContext);
   const { file, active, close } = mediaFileAccept;
 
-  const handleSendFile = () => {
+  const handleSendFile = async () => {
     console.log(file);
+    if (!file.src) return;
+    const blob = await autoConvert(file.src);
+    createMediaActions(blob);
   };
 
   const ImgToSend = () => {

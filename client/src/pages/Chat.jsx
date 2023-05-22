@@ -3,7 +3,8 @@ import {
   useChatEmojiPopup,
   useChatTextEditor,
   useMainChat,
-  useChatWindowsChanger
+  useChatWindowsChanger,
+  useMediaActions
 } from "../hooks";
 import { ChatList, ChatBody } from "../components";
 import { ChatContext } from "../contexts";
@@ -29,6 +30,8 @@ const Chat = () => {
     onChangeOnline: changeOnlineForSockets,
     chatTyping, chatOnline
   } = useMainChat();
+
+  const {createMediaActions, onSuccessSendBlobPart, onStopSendMedia} = useMediaActions();
 
   const onEditMessage = (id, content)=>{
     console.log("edit start: ", id, content)
@@ -87,7 +90,8 @@ const Chat = () => {
           onEditMessage,
           onDeleteMessage,
           chatTyping, 
-          chatOnline
+          chatOnline,
+          createMediaActions
         }}
       >
         <ChatList chatList={chatList} listRef={listRef} />
