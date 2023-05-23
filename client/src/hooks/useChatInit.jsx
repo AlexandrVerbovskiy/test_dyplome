@@ -1,5 +1,6 @@
 import io from "socket.io-client";
 import { useEffect, useRef } from "react";
+import { useMediaActions } from "../hooks";
 import config from "../config";
 
 const useChatInit = ({
@@ -10,6 +11,12 @@ const useChatInit = ({
   changeOnlineForSockets
 }) => {
   const ioRef = useRef(null);
+
+  const {
+    createMediaActions,
+    onSuccessSendBlobPart,
+    onStopSendMedia
+  } = useMediaActions();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -55,6 +62,13 @@ const useChatInit = ({
     );
     ioRef.current.on("online", data => changeOnlineForSockets(data, true));
     ioRef.current.on("offline", data => changeOnlineForSockets(data, false));
+
+    ioRef.current.on("file-part-uploaded", async ({ temp_key }) => {
+      const nextPartData = await onSuccessSendBlobPart(temp_key);
+      if (!nextPartData) return console.log("data");
+      ioRef.current.emit("file-part-upload", { ...nextPartData });
+      console.log("sended");
+    });
   }, []);
 
   useEffect(
@@ -110,13 +124,22 @@ const useChatInit = ({
     });
   };
 
+  const sendMedia = async (blob, filetype) => {
+    const dataToSend = await createMediaActions(blob, filetype);
+    ioRef.current.emit("file-part-upload", { ...dataToSend });
+  };
+
+  const stopSendMedia = key => {};
+
   return {
     createChat,
     sendMessage,
     editMessage,
     deleteMessage,
     startTyping,
-    endTyping
+    endTyping,
+    sendMedia,
+    stopSendMedia
   };
 };
 

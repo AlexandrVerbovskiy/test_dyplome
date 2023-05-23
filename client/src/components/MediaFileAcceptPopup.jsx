@@ -6,15 +6,14 @@ import config from "../config";
 import { autoConvert } from "../utils";
 
 const MediaFileAcceptPopup = () => {
-  const { createMediaActions } = useContext(ChatContext);
+  const { sendMedia } = useContext(ChatContext);
   const { mediaFileAccept } = useContext(ChatBodyContext);
   const { file, active, close } = mediaFileAccept;
 
   const handleSendFile = async () => {
-    console.log(file);
     if (!file.src) return;
     const blob = await autoConvert(file.src);
-    createMediaActions(blob);
+    sendMedia(blob, file.type);
   };
 
   const ImgToSend = () => {
@@ -45,11 +44,7 @@ const MediaFileAcceptPopup = () => {
   const checkFileExtension = extension => {
     if (!file || !file.type || !file.name) return false;
 
-    const fullExtension = "." + extension;
-    const splitedExtension = file.name.split(fullExtension);
-
-    if (splitedExtension.length < 2) return false;
-    if (splitedExtension[splitedExtension.length - 1].length > 0) return false;
+    if (file.type != extension) return false;
     return true;
   };
 

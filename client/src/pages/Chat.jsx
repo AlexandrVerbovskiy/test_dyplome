@@ -3,8 +3,7 @@ import {
   useChatEmojiPopup,
   useChatTextEditor,
   useMainChat,
-  useChatWindowsChanger,
-  useMediaActions
+  useChatWindowsChanger
 } from "../hooks";
 import { ChatList, ChatBody } from "../components";
 import { ChatContext } from "../contexts";
@@ -31,15 +30,13 @@ const Chat = () => {
     chatTyping, chatOnline
   } = useMainChat();
 
-  const {createMediaActions, onSuccessSendBlobPart, onStopSendMedia} = useMediaActions();
-
   const onEditMessage = (id, content)=>{
     console.log("edit start: ", id, content)
     setEditMessage(id, content);
   }
 
   const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping } = useChatInit({changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
+  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
  
   const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 
@@ -91,7 +88,8 @@ const Chat = () => {
           onDeleteMessage,
           chatTyping, 
           chatOnline,
-          createMediaActions
+          sendMedia, 
+          stopSendMedia
         }}
       >
         <ChatList chatList={chatList} listRef={listRef} />
