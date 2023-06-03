@@ -27,7 +27,7 @@ const Chat = () => {
     onDeleteMessage: onDeleteMessageForSockets,
     onChangeTyping: changeTypingForSockets,
     onChangeOnline: changeOnlineForSockets,
-    chatTyping, chatOnline
+    chatTyping, chatOnline, selectedChatId
   } = useMainChat();
 
   const onEditMessage = (id, content)=>{
@@ -49,7 +49,6 @@ const Chat = () => {
 
   const handleCreateChat = userId => createChat(userId);
   const handleSendTextMessage = message => {
-      console.log(editMessageId)
     if(editMessageId){
       if(message!=editMessageContent) {
         editMessage(editMessageId, message);
@@ -58,8 +57,10 @@ const Chat = () => {
       unsetEditMessage();
     }else{
       const dop = {};
-      if (activeChat.chat_type == "personal")
+      if (activeChat.chat_type == "personal"){
+        dop["chatId"] = activeChat?.chat_id;
         dop["getter_id"] = activeChat.user_id;
+      }
       sendMessage(activeChat.chat_id, "text", message, activeChat.chat_type, dop);
     }
   };

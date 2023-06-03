@@ -1,5 +1,6 @@
 const {
-    validateToken
+    validateToken,
+    indicateMediaTypeByExtension
 } = require('../utils');
 const {
     Chat: ChatController,
@@ -20,7 +21,9 @@ class Chat {
                 token
             } = socket.handshake.query;
 
-            const sendError = message => this.io.to(socket.id).emit("error", message);
+            const sendError = message => {
+                this.io.to(socket.id).emit("error", message)
+            };
 
 
             const userId = validateToken(token);
@@ -77,7 +80,6 @@ class Chat {
             }, sendError);
 
             socket.on('delete-message', (data) => {
-                console.log("started")
                 const onGetChatReplacedMessage = async (sockets, messageToChat, deletedChatId, deletedMessageId, messageToList) => {
                     const dataToSend = {
                         messageToChat,
@@ -85,8 +87,6 @@ class Chat {
                         deletedChatId,
                         deletedMessageId
                     };
-
-                    console.log(dataToSend)
 
                     this.socketController.sendSocketMessageToUsers([userId], "success-deleted-message", dataToSend);
                     sockets.forEach(socket => {
@@ -153,16 +153,46 @@ class Chat {
 
             socket.on('test', res => console.log(res));
 
-            socket.on('file-part-upload', async ({
-                temp_key,
-                data,
-                type
-            }) => {
-                this.chatController.uploadToFile(userId, temp_key, data, type, () => {
-                    this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
-                        temp_key
+            socket.on('file-part-upload', async (data) => {
+                const {
+                    temp_key,
+                    data: fileBody,
+                    type,
+                    last
+                } = data;
+
+                this.chatController.uploadToFile(userId, temp_key, fileBody, type, (filename) => {
+                    if (last) {
+                        const dataToSend = {
+                            content: filename,
+                            typeMessage: indicateMediaTypeByExtension(type),
+                            getter_id: data.getter_id,
+                            chat_type: data.chat_type,
+                            userId: data.getter_id
+                        }
+
+                        this.chatController.createMessage(dataToSend, userId,
+                            (message, sender) => {
+                                this.socketController.sendSocketMessageToUsers([dataToSend.getter_id], "get-message", {
+                                    message,
+                                    sender
+                                })
+                                this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
+                                    temp_key,
+                                    message
+                                });
+                            }, sendError)
+                    } else {
+                        this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
+                            temp_key
+                        });
+                    }
+                }, (error) => {
+                    this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded-error", {
+                        temp_key,
+                        error
                     });
-                }, (error) => console.log(error))
+                })
             })
 
             socket.on('stop-file-upload', async ({

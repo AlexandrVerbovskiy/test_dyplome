@@ -1,7 +1,10 @@
+const path = require('path');
+
 const {
     User,
     Chat
 } = require("../controllers");
+
 const {
     isAuth,
     isNotAuth
@@ -23,6 +26,13 @@ function route(app, db) {
             mess: "well done"
         });
     })
+
+    app.get('/files/:filename', (req, res) => {
+        const filename = req.params.filename;
+        const fileUrl = path.join(__dirname, `../files/messages/`, filename);
+        console.log(fileUrl)
+        res.sendFile(fileUrl);
+    });
 }
 
 module.exports = route;

@@ -84,6 +84,7 @@ const ChatMessage = ({
               <ChatMessageActions
                 onDeleteClick={handleMessageDeleteClick}
                 onEditClick={handleMessageEditClick}
+                canEdit={type == "text"}
               />}
 
             <AcceptDeleteMessageModal

@@ -6,14 +6,22 @@ import config from "../config";
 import { autoConvert } from "../utils";
 
 const MediaFileAcceptPopup = () => {
-  const { sendMedia } = useContext(ChatContext);
+  const { sendMedia, activeChat, activeChatId } = useContext(ChatContext);
   const { mediaFileAccept } = useContext(ChatBodyContext);
   const { file, active, close } = mediaFileAccept;
 
   const handleSendFile = async () => {
     if (!file.src) return;
     const blob = await autoConvert(file.src);
-    sendMedia(blob, file.type);
+
+    const dop = {};
+    if (activeChat.chat_type == "personal") {
+      dop["chatId"] = activeChatId;
+      dop["chat_type"] = activeChat.chat_type;
+      dop["getter_id"] = activeChat.user_id;
+    }
+    sendMedia(blob, file.type, dop);
+    close();
   };
 
   const ImgToSend = () => {
@@ -82,7 +90,7 @@ const MediaFileAcceptPopup = () => {
       onClose={close}
       activeTrigger={active}
       id="chatMediaFileAccept"
-      title="Are you sure you want to send this video?"
+      title="Are you sure you want to send this file?"
     >
       <div className="modal-body">
         {file && <FileCard />}

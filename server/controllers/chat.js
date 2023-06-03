@@ -57,19 +57,19 @@ class Chat {
     }
 
     createMessage = (data, userId, sendSuccessRes, sendError) => {
-        const localSend = () => {
+        const localSend = (chatId) => {
             const onCreateMessage = async (messageId) => await this.chatModel.getMessageById(messageId, sendSuccessRes, sendError);
-            this.chatModel.hasUserAccessToChat(data.chatId, userId, () => {
-                this.chatModel.createNewMessage(data.chatId, userId, data.typeMessage, data.content, onCreateMessage, sendError)
+            this.chatModel.hasUserAccessToChat(chatId, userId, () => {
+                this.chatModel.createNewMessage(chatId, userId, data.typeMessage, data.content, onCreateMessage, sendError)
             }, sendError)
         }
 
         if (data['chat_type'] == 'personal') {
             this.chatModel.hasPersonalChat(data['getter_id'], userId, has => {
                 if (has) {
-                    localSend();
+                    localSend(has);
                 } else {
-                    this.chatModel.createChat(data, userId, localSend, sendError);
+                    this.createChat(data, userId, localSend, sendError);
                 }
             }, sendError)
         } else {
@@ -180,19 +180,18 @@ class Chat {
                     const actionInfo = JSON.stringify({
                         filename
                     });
-                    await this.actionModel.createAction("sending_file", userId, key, actionInfo, sendSuccessRes, sendError);
+                    await this.actionModel.createAction("sending_file", userId, key, actionInfo, () => sendSuccessRes(filename), sendError);
                 } else {
                     ({
                         filename
                     } = JSON.parse(info));
                     fs.appendFileSync(this.folder + "/" + filename, data);
+                    sendSuccessRes(filename);
                 }
-                sendSuccessRes(filename);
             } catch (err) {
                 sendError(err);
             }
         }
-
         await this.actionModel.getActionDataByKeyAndType(userId, key, "sending_file", onReadActionInfo, sendError);
     }
 

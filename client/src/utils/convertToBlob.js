@@ -5,7 +5,7 @@ export async function blobLinkToBlob(blobURL) {
 }
 
 export async function base64ToBlob(base64Data) {
-    const [, imageType] = base64Data.match(/^data:(image\/\w+);base64,/);
+    const [, imageType] = base64Data.match(/^data:([\w\/]+);base64,/);
     const base64WithoutPrefix = base64Data.slice(base64Data.indexOf(',') + 1);
     const byteCharacters = atob(base64WithoutPrefix);
     const byteNumbers = new Array(byteCharacters.length);

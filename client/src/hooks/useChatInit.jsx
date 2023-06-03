@@ -34,7 +34,7 @@ const useChatInit = ({
         "Something went wrong. Please take a screenshot of the console.log and send to the admins";
       if (data.sqlMessage) message = data.sqlMessage;
       if (data.message) message = data.message;
-      alert(message);
+      console.log(data);
     });
 
     ioRef.current.on("success-sended-message", data =>
@@ -63,12 +63,18 @@ const useChatInit = ({
     ioRef.current.on("online", data => changeOnlineForSockets(data, true));
     ioRef.current.on("offline", data => changeOnlineForSockets(data, false));
 
-    ioRef.current.on("file-part-uploaded", async ({ temp_key }) => {
-      const nextPartData = await onSuccessSendBlobPart(temp_key);
-      if (!nextPartData) return console.log("data");
-      ioRef.current.emit("file-part-upload", { ...nextPartData });
-      console.log("sended");
-    });
+    ioRef.current.on(
+      "file-part-uploaded",
+      async ({ temp_key, message = null }) => {
+        const nextPartData = await onSuccessSendBlobPart(temp_key);
+        if (!nextPartData) return console.log("data");
+        if (nextPartData == "success saved" && message) {
+          onGetMessageForSockets(message);
+          return console.log("success saved");
+        }
+        ioRef.current.emit("file-part-upload", { ...nextPartData });
+      }
+    );
   }, []);
 
   useEffect(
@@ -124,8 +130,9 @@ const useChatInit = ({
     });
   };
 
-  const sendMedia = async (blob, filetype) => {
-    const dataToSend = await createMediaActions(blob, filetype);
+  const sendMedia = async (blob, filetype, dop) => {
+    console.log(dop);
+    const dataToSend = await createMediaActions(blob, filetype, dop);
     ioRef.current.emit("file-part-upload", { ...dataToSend });
   };
 

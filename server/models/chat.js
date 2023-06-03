@@ -84,7 +84,7 @@ class Chat {
             JOIN chats_users as cu2  ON c.id=cu2.chat_id AND cu2.user_id = ?
             WHERE c.type = 'personal'`, [user1, user2], (err, res) => {
             if (err) return errorCallback(err);
-            if (res.length > 0) return successCallback(true);
+            if (res.length > 0) return successCallback(res[0].id);
             successCallback(false);
         })
     }

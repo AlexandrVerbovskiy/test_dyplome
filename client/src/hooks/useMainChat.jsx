@@ -45,6 +45,7 @@ const useMainChat = () => {
 
     const successCallback = res => {
       activeChat.current = chat;
+      console.log(res);
       setMessages(res);
       const count = res.length;
       if (count > 0) {
