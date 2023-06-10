@@ -42,3 +42,4 @@ export {
 from "./splitBlob";
 
 export * from "./convertToBlob";
+export * from "./map";

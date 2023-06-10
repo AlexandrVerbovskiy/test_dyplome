@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import { useEffect, useRef } from "react";
-import { useMediaActions } from "../hooks";
+import useMediaActions from "./useMediaActions";
 import config from "../config";
 
 const useChatInit = ({

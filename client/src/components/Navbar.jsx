@@ -2,6 +2,12 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm">
       <div className="container-fluid">
+        <a
+          href="/"
+          style={{ display: "flex", alignItems: "center", width: "100px" }}
+        >
+          <h6>Test site</h6>
+        </a>
         <button
           className="navbar-toggler"
           type="button"

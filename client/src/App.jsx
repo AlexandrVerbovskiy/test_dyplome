@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useAuth, useSystemMessage } from "./hooks";
+import React from "react";
+import { useSystemMessage } from "./chat_hooks";
+import { useAuth } from "./hooks";
 import { MainRouter, SignRouter } from "./routes";
 import { MainContext } from "./contexts";
-import { Message } from "./components";
+import { Message } from "./chat_components";
 
 function App() {
   const {

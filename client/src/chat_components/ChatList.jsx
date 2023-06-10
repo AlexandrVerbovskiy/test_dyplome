@@ -1,4 +1,4 @@
-import { ChatListElem } from "../components";
+import ChatListElem from "./ChatListElem";
 
 const ChatList = ({ chatList, listRef }) => {
   return (

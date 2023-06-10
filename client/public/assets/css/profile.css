@@ -1,0 +1,42 @@
+.profile-edit-page {
+  margin-left: 0;
+}
+
+.profile-edit-page input[type="file"] {
+  display: none;
+}
+
+.profile-edit-map {
+  height: 400px;
+}
+
+@media screen and (min-width: 2400px) {
+  .profile-edit-map {
+    height: 800px;
+  }
+}
+
+.profile-edit-card-header {
+  margin-bottom: 10px;
+}
+
+.profile-edit-inputs > div:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.profile-edit-page .image-input-btn-block {
+  display: flex;
+  align-items: flex-end;
+}
+
+.profile-edit-page .image-input-btn-block button {
+  height: 170px;
+}
+
+.profile-edit-page .image-input-btn-block button:has(img) {
+  padding: 0;
+}
+
+.profile-edit-page .secure-edit-inputs > div:not(:last-child) {
+  margin-bottom: 10px;
+}

@@ -1,11 +1,15 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SignIn, SignUp, Chat } from "./pages";
+import { SignIn, SignUp, Chat, ProfileEdit } from "./pages";
 
 const mainRouter = createBrowserRouter([
   {
     path: "/chat",
     element: <Chat />
+  },
+  {
+    path: "/profile-edit",
+    element: <ProfileEdit />
   },
   {
     path: "*",

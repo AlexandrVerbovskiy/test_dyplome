@@ -4,8 +4,8 @@ import {
   useChatTextEditor,
   useMainChat,
   useChatWindowsChanger
-} from "../hooks";
-import { ChatList, ChatBody } from "../components";
+} from "../chat_hooks";
+import { ChatList, ChatBody } from "../chat_components";
 import { ChatContext } from "../contexts";
 import NoChats from "./NoChats";
 

@@ -1,11 +1,9 @@
 export { default as Input } from "./Input";
 export { default as SignForm } from "./SignForm";
+export { default as Activator } from "../components/Activator";
 export { default as PasswordInput } from "./PasswordInput";
-export { default as Activator } from "./Activator";
-export { default as Message } from "./Message";
-export { default as ChatList } from "./ChatList";
-export { default as ChatListElem } from "./ChatListElem";
-export { default as ChatBody } from "./ChatBody";
-export { default as ChatMessagePanel } from "./ChatMessagePanel";
-export { default as RecorderPopup } from "./RecorderPopup";
+export { default as TextInput } from "./TextInput";
 export { default as Navbar } from "./Navbar";
+export { default as MapMarker } from "./MapMarker";
+export { default as Map } from "./Map";
+export { default as ImageInput } from "./ImageInput";
