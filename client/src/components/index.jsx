@@ -7,3 +7,4 @@ export { default as Navbar } from "./Navbar";
 export { default as MapMarker } from "./MapMarker";
 export { default as Map } from "./Map";
 export { default as ImageInput } from "./ImageInput";
+export { default as ErrorSpan } from "./ErrorSpan";

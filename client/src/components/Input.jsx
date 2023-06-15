@@ -1,4 +1,5 @@
 import { useId } from "react";
+import ErrorSpan from "./ErrorSpan";
 
 const Input = ({
   type,
@@ -8,7 +9,8 @@ const Input = ({
   placeholder = "",
   columnCounts = 12,
   children = null,
-  required = true
+  required = true,
+  error = null
 }) => {
   const id = useId();
   const className = "col-" + columnCounts;
@@ -29,6 +31,7 @@ const Input = ({
         />
         {children != null && children}
       </div>
+      <ErrorSpan error={error} />
     </div>
   );
 };

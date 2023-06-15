@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getFileData } from "../utils";
+import ErrorSpan from "./ErrorSpan";
 
 const ImageInput = ({ btnText, onChange, error }) => {
   const [file, setFile] = useState(null);
@@ -41,10 +42,7 @@ const ImageInput = ({ btnText, onChange, error }) => {
         </div>
       </div>
 
-      {error &&
-        <span className="form-text text-danger">
-          {error}
-        </span>}
+      <ErrorSpan error={error} />
     </div>
   );
 };

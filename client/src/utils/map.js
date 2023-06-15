@@ -53,10 +53,14 @@ const getAddressByCoords = async ({
 
 
 const getCoordsByAddress = async (address) => {
-    const res = await Geocode.fromAddress(address);
-    const coords = res.results[0].geometry.location;
-    if (!coords) throw new Error("Undefined address");
-    return coords;
+    try {
+        const res = await Geocode.fromAddress(address);
+        const coords = res.results[0].geometry.location;
+        if (!coords) throw new Error("Undefined address");
+        return coords;
+    } catch (error) {
+        return null;
+    }
 }
 
 const fullAddressToString = (address) => {

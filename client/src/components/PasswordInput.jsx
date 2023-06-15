@@ -5,7 +5,8 @@ const PasswordInput = ({
   value,
   onChange,
   label = "Password",
-  placeholder = "Enter Password"
+  placeholder = "Enter Password",
+  error = null
 }) => {
   const [typePasswordInput, setTypePasswordInput] = useState("password");
 
@@ -23,6 +24,7 @@ const PasswordInput = ({
       label={label}
       onChange={onChange}
       placeholder={placeholder}
+      error={error}
     >
       <span
         className="input-group-text bg-transparent"

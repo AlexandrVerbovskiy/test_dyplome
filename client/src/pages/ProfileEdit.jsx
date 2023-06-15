@@ -1,48 +1,32 @@
-import { useState } from "react";
+import React from "react";
 import { ImageInput, Input, Navbar, PasswordInput } from "../components";
 import { SingleMarkMap } from "../profile_components";
-import {
-  fullAddressToString,
-  getAddressByCoords,
-  getCoordsByAddress
-} from "../utils";
+import { useChangePassword, useEditProfile } from "../hooks";
 
 const ProfileEdit = () => {
-  const [coords, setCoords] = useState(null);
-  const [address, setAddress] = useState("");
-  const [nick, setNick] = useState("");
-  const [email, setEmail] = useState("");
+  const {
+    coords,
+    address,
+    email,
+    nick,
+    profileImg,
+    validateProfileEdit
+  } = useEditProfile();
 
-  const [password, setPassword] = useState("");
-  const [repeatedPassword, setRepeatedPassword] = useState("");
+  const {
+    password,
+    repeatedPassword,
+    validateChangePassword
+  } = useChangePassword();
 
-  const changeCoords = async coords => {
-    setCoords(coords);
-    const address = await getAddressByCoords(coords);
-    const strAddress = fullAddressToString(address);
-    address(strAddress);
+  const saveProfile = () => {
+    const res = validateProfileEdit();
+    if (res) alert("done 1");
   };
 
-  const changeAddress = async address => {
-    setAddress(address);
-    const res = await getCoordsByAddress(address);
-    setCoords(res);
-  };
-
-  const changeEmail = email => {
-    setEmail(email);
-  };
-
-  const changeNick = nick => {
-    setNick(nick);
-  };
-
-  const changePassword = password => {
-    setPassword(password);
-  };
-
-  const changeRepeatedPassword = password => {
-    setRepeatedPassword(password);
+  const savePassword = () => {
+    const res = validateChangePassword();
+    if (res) alert("done 2");
   };
 
   return (
@@ -58,9 +42,8 @@ const ProfileEdit = () => {
               <div className="profile-edit-map col-12 col-md-6">
                 <SingleMarkMap
                   markerTitle="Your position"
-                  error={null}
-                  changeCoords={changeCoords}
-                  coords={coords}
+                  changeCoords={coords.change}
+                  coords={coords.value}
                 />
               </div>
 
@@ -68,36 +51,41 @@ const ProfileEdit = () => {
                 <Input
                   type="text"
                   label="Nickname"
-                  value={nick}
+                  value={nick.value}
+                  error={nick.error}
                   placeholder="Nickname"
-                  onChange={e => changeNick(e.target.value)}
+                  onChange={e => nick.change(e.target.value)}
                 />
                 <Input
                   type="text"
                   label="Email"
-                  value={email}
+                  value={email.value}
+                  error={email.error}
                   placeholder="email@gmail.com"
-                  onChange={e => changeEmail(e.target.value)}
+                  onChange={e => email.change(e.target.value)}
                 />
                 <Input
                   type="text"
                   label="Address"
                   placeholder="London Backer street"
-                  value={address}
-                  onChange={e => changeAddress(e.target.value)}
+                  value={address.value}
+                  error={address.error}
+                  onChange={e => address.change(e.target.value)}
                 />
 
                 <ImageInput
                   btnText="Change avatar"
-                  onChange={img => console.log(img)}
-                  error={null}
+                  onChange={img => profileImg.change(img)}
+                  error={profileImg.error}
                 />
               </div>
             </div>
             <hr />
             <div className="d-flex align-items-center">
               <div className="dropdown ms-auto">
-                <button className="btn btn-primary">Save</button>
+                <button className="btn btn-primary" onClick={saveProfile}>
+                  Save
+                </button>
               </div>
             </div>
           </div>
@@ -110,21 +98,25 @@ const ProfileEdit = () => {
 
             <div className="row secure-edit-inputs">
               <PasswordInput
-                value={password}
-                onChange={e => changePassword(e.target.value)}
+                value={password.value}
+                error={password.error}
+                onChange={e => password.change(e.target.value)}
               />
 
               <PasswordInput
                 label="Repeated password"
-                value={repeatedPassword}
-                onChange={e => changeRepeatedPassword(e.target.value)}
+                value={repeatedPassword.value}
+                error={repeatedPassword.error}
+                onChange={e => repeatedPassword.change(e.target.value)}
               />
             </div>
-            
+
             <hr />
             <div className="d-flex align-items-center">
               <div className="dropdown ms-auto">
-                <button className="btn btn-primary">Save</button>
+                <button className="btn btn-primary" onClick={savePassword}>
+                  Save
+                </button>
               </div>
             </div>
           </div>
