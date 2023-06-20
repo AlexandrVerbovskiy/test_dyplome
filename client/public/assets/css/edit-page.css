@@ -1,4 +1,5 @@
-.profile-edit-page {
+.profile-edit-page,
+.job-edit-page {
   margin-left: 0;
 }
 
@@ -6,13 +7,40 @@
   display: none;
 }
 
-.profile-edit-map {
+.profile-edit-map,
+.job-edit-map {
   height: 450px;
 }
 
+.profile-edit-inputs,
+.job-edit-inputs {
+  margin-top: 20px;
+}
+
+.job-edit-inputs textarea {
+  resize: none;
+}
+
+@media (min-width: 768px) {
+  .profile-edit-map,
+  .job-edit-map {
+    height: auto;
+  }
+
+  .profile-edit-inputs,
+  .job-edit-inputs {
+    margin-top: 0;
+  }
+}
+
 @media screen and (min-width: 2400px) {
-  .profile-edit-map {
+  .profile-edit-map,
+  .job-edit-map {
     height: 800px;
+  }
+
+  .job-edit-page textarea {
+    height: 480px;
   }
 }
 
@@ -20,9 +48,10 @@
   margin-bottom: 10px;
 }
 
-.profile-edit-inputs > div:not(:last-child) {
+/*.profile-edit-inputs > div:not(:last-child),
+.job-edit-inputs > div:not(:last-child) {
   margin-bottom: 10px;
-}
+}*/
 
 .profile-edit-page .image-input-btn-block {
   display: flex;

@@ -5,7 +5,7 @@ const ErrorSpan = ({ error }) => {
     <div
       id="error-message"
       className="text-danger"
-      style={{ minHeight: "1em", fontSize: "14px" }}
+      style={{ minHeight: "1.5em", fontSize: "14px" }}
     >
       {error}
     </div>

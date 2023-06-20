@@ -1,7 +1,6 @@
 import React from "react";
-import { ImageInput, Input, Navbar, PasswordInput } from "../components";
-import { SingleMarkMap } from "../profile_components";
-import { useChangePassword, useEditProfile } from "../hooks";
+import { ImageInput, Input, Navbar, PasswordInput, SingleMarkMap } from "../components";
+import { useChangePassword, useProfileEdit } from "../hooks";
 
 const ProfileEdit = () => {
   const {
@@ -11,7 +10,7 @@ const ProfileEdit = () => {
     nick,
     profileImg,
     validateProfileEdit
-  } = useEditProfile();
+  } = useProfileEdit();
 
   const {
     password,

@@ -1,30 +1,11 @@
 import React, { useState } from "react";
+import useAddressCoordsRelation from "./useAddressCoordsRelation";
 
-import {
-  fullAddressToString,
-  getAddressByCoords,
-  getCoordsByAddress
-} from "../utils";
-
-const useEditProfile = () => {
-  const [coords, setCoords] = useState({ value: null, error: null });
-  const [address, setAddress] = useState({ value: "", error: null });
+const useProfileEdit = () => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [email, setEmail] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
-
-  const changeCoords = async coords => {
-    setCoords({ value: coords, error: null });
-    const address = await getAddressByCoords(coords);
-    const strAddress = fullAddressToString(address);
-    setAddress({ value: strAddress, error: null });
-  };
-
-  const changeAddress = async address => {
-    setAddress({ value: address, error: null });
-    const res = await getCoordsByAddress(address);
-    setCoords({ value: res, error: null });
-  };
+  const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
 
   const changeEmail = email => {
     setEmail({ value: email, error: null });
@@ -67,20 +48,13 @@ const useEditProfile = () => {
       validated = false;
     }
 
-    if (!coords.value) {
-      setAddress(prev => ({
-        ...prev,
-        error: "Without coordinates, the program cannot find tasks nearby"
-      }));
-      validated = false;
-    }
-
+    validated = addressCoordsValidate() && validated;
     return validated;
   };
 
   return {
-    coords: { value: coords.value, error: coords.error, change: changeCoords },
-    address: { ...address, change: changeAddress },
+    coords: { ...coords },
+    address: { ...address },
     email: { ...email, change: changeEmail },
     nick: { ...nick, change: changeNick },
     profileImg: { ...profileImg, change: changeImg },
@@ -88,4 +62,4 @@ const useEditProfile = () => {
   };
 };
 
-export default useEditProfile;
+export default useProfileEdit;
