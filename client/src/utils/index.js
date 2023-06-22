@@ -41,5 +41,15 @@ export {
 }
 from "./splitBlob";
 
+export {
+    default as isRangeInDocument
+}
+from "./isRangeInDocument";
+
+export {
+    default as splitDataIntoChunks
+}
+from "./splitDataIntoChunks";
+
 export * from "./convertToBlob";
 export * from "./map";

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import {TextInput} from "../components";
+import { TextInput } from "../components";
 import { ChatContext } from "../contexts";
 import { EmojiSmile } from "react-bootstrap-icons";
 import EmojiPopup from "./EmojiPopup";
@@ -32,7 +32,10 @@ const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
         selection.focusNode &&
         selection.focusNode.parentElement
       ) {
-        if (selection.focusNode.parentElement.id == "messageSendDiv") {
+        if (
+          selection.focusNode.parentElement.id == "messageSendDiv" ||
+          selection.focusNode.parentElement.closest("#messageSendDiv")
+        ) {
           handleSelectionChange();
         }
       }

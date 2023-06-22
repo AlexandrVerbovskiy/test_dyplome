@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatMessagePanel from "./ChatMessagePanel";
 import ChatHeader from "./ChatHeader";

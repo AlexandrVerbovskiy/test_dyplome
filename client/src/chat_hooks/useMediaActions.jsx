@@ -1,17 +1,24 @@
 import { useRef } from "react";
-import { randomString, splitBlob } from "../utils";
+import { randomString, splitBlob, splitDataIntoChunks } from "../utils";
 import config from "../config";
 
 const useMediaActions = () => {
   const mediaActionsRef = useRef({});
 
-  async function createMediaActions(mediaBlob, filetype, dop) {
+  async function createMediaActions(data, dataType, filetype, dop) {
     const tempFileKey = randomString();
-    const arr = await splitBlob(
-      mediaBlob,
-      config["BLOB_CHUNK_SIZE"],
-      mediaBlob.type
-    );
+    console.log(filetype);
+
+    let arr = null;
+
+    console.log(data);
+
+    if (dataType == "media")
+      arr = await splitBlob(data, config["BLOB_CHUNK_SIZE"], data.type);
+    else if (dataType == "notmedia")
+      arr = splitDataIntoChunks(data, config["BLOB_CHUNK_SIZE"], data.type);
+
+    console.log(arr);
 
     mediaActionsRef.current[tempFileKey] = {
       data: arr,

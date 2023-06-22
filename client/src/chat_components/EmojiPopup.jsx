@@ -1,11 +1,11 @@
 import React from "react";
-import { generateSmilesArray } from "../utils";
+import { generateSmilesArray, isRangeInDocument } from "../utils";
 
-const EmojiPopup = ({ savedSelection, setSavedSelection }) => {
+const EmojiPopup = ({ textRef, savedSelection, setSavedSelection }) => {
   const emojiList = generateSmilesArray();
 
   const handleEmojiClick = emoji => {
-    if (!savedSelection) return;
+    if (!savedSelection) return (textRef.current.innerHTML += emoji);
 
     const {
       startContainer,
@@ -13,6 +13,10 @@ const EmojiPopup = ({ savedSelection, setSavedSelection }) => {
       endContainer,
       endOffset
     } = savedSelection;
+
+    if (!isRangeInDocument(startContainer, endContainer))
+      return (textRef.current.innerHTML += emoji);
+
     const range = document.createRange();
     range.setStart(startContainer, startOffset);
     range.setEnd(endContainer, endOffset);

@@ -130,9 +130,8 @@ const useChatInit = ({
     });
   };
 
-  const sendMedia = async (blob, filetype, dop) => {
-    console.log(dop);
-    const dataToSend = await createMediaActions(blob, filetype, dop);
+  const sendMedia = async (data, dataType, filetype, dop) => {
+    const dataToSend = await createMediaActions(data, dataType, filetype, dop);
     ioRef.current.emit("file-part-upload", { ...dataToSend });
   };
 

@@ -12,7 +12,7 @@ const MediaFileAcceptPopup = () => {
 
   const handleSendFile = async () => {
     if (!file.src) return;
-    const blob = await autoConvert(file.src);
+    const {data, dataType} = await autoConvert(file.src);
 
     const dop = {};
     if (activeChat.chat_type == "personal") {
@@ -20,7 +20,7 @@ const MediaFileAcceptPopup = () => {
       dop["chat_type"] = activeChat.chat_type;
       dop["getter_id"] = activeChat.user_id;
     }
-    sendMedia(blob, file.type, dop);
+    sendMedia(data, dataType, file.type, dop);
     close();
   };
 
