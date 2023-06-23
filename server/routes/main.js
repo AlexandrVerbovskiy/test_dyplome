@@ -2,7 +2,8 @@ const path = require('path');
 
 const {
     User,
-    Chat
+    Chat,
+    Job
 } = require("../controllers");
 
 const {
@@ -13,6 +14,7 @@ const {
 function route(app, db) {
     const userController = new User(db);
     const chatController = new Chat(db);
+    const jobController = new Job(db);
 
     app.post("/register", isNotAuth, userController.registration);
     app.post("/login", isNotAuth, userController.login);
@@ -20,6 +22,8 @@ function route(app, db) {
     app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
     app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
     app.post("/select-chat", isAuth, chatController.selectChat);
+
+    app.post("/create-job", isAuth, Job.selectChat);
 
     app.post("/test", isAuth, async (req, res) => {
         res.status(200).json({
@@ -33,6 +37,7 @@ function route(app, db) {
         console.log(fileUrl)
         res.sendFile(fileUrl);
     });
+
 }
 
 module.exports = route;
