@@ -6,6 +6,7 @@ const useChangePassword = () => {
     value: "",
     error: null
   });
+  const [oldPassword, setOldPassword] = useState({ value: "", error: null });
 
   const changePassword = password => {
     setPassword({ value: password, error: null });
@@ -13,6 +14,10 @@ const useChangePassword = () => {
 
   const changeRepeatedPassword = password => {
     setRepeatedPassword({ value: password, error: null });
+  };
+
+  const changeOldPassword = password => {
+    setOldPassword({ value: password, error: null });
   };
 
   const validateChangePassword = () => {
@@ -47,6 +52,7 @@ const useChangePassword = () => {
   return {
     password: { ...password, change: changePassword },
     repeatedPassword: { ...repeatedPassword, change: changeRepeatedPassword },
+    oldPassword: { ...oldPassword, change: changeOldPassword },
     validateChangePassword
   };
 };

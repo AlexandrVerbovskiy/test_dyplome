@@ -1,5 +1,11 @@
 import React from "react";
-import { ImageInput, Input, Navbar, PasswordInput, SingleMarkMap } from "../components";
+import {
+  ImageInput,
+  Input,
+  Navbar,
+  PasswordInput,
+  SingleMarkMap
+} from "../components";
 import { useChangePassword, useProfileEdit } from "../hooks";
 
 const ProfileEdit = () => {
@@ -15,6 +21,7 @@ const ProfileEdit = () => {
   const {
     password,
     repeatedPassword,
+    oldPassword,
     validateChangePassword
   } = useChangePassword();
 
@@ -97,6 +104,14 @@ const ProfileEdit = () => {
 
             <div className="row secure-edit-inputs">
               <PasswordInput
+                label="Old password"
+                value={oldPassword.value}
+                error={oldPassword.error}
+                onChange={e => oldPassword.change(e.target.value)}
+              />
+
+              <PasswordInput
+                label="New password"
                 value={password.value}
                 error={password.error}
                 onChange={e => password.change(e.target.value)}

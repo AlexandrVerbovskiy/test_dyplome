@@ -6,9 +6,11 @@ class User {
         this.db = db;
     }
 
+    passwordCashSaltOrRounds = 10;
+
     create = async (email, password, callback) => {
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, passwordCashSaltOrRounds);
             const user = {
                 email,
                 password: hashedPassword
@@ -76,7 +78,7 @@ class User {
                         return callback(401, {
                             error: "Invalid email or password"
                         })
-                   
+
                     return callback(200, {
                         userId: user.id
                     })
@@ -96,6 +98,32 @@ class User {
             if (res.length > 0) return successCallback(res[0]);
             successCallback(null);
         })
+    }
+
+    updateUserProfile = async (userId, profileData, successCallback, errorCallback) => {
+        const {
+            nick,
+            address,
+            avatar,
+            lat,
+            lng
+        } = profileData;
+
+        const updateQuery = "UPDATE users SET nick = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ? WHERE id = ?";
+        const values = [nick, address, avatar, lat, lng, true, userId];
+
+        await this.db.query(updateQuery, values, (err, res) => {
+            if (err) return errorCallback(err);
+            successCallback();
+        });
+    };
+
+    updatePassword = async (accountId, password) => {
+        const hashedPassword = await bcrypt.hash(password, passwordCashSaltOrRounds);
+        await this.db.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, accountId], (err, res) => {
+            if (err) return errorCallback(err);
+            successCallback();
+        });
     }
 }
 
