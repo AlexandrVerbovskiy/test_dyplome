@@ -119,6 +119,20 @@ class JobRequestModel {
       });
     });
   };
+
+  checkJobRequestOwner = (jobRequestId, userId) => {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT * FROM job_requests WHERE id = ? AND user_id = ?';
+      const values = [jobRequestId, userId];
+      this.db.query(query, values, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows.length > 0);
+        }
+      });
+    });
+  };
 }
 
 module.exports = JobRequestModel;
