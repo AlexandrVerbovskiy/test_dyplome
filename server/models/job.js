@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-class JobAction {
+class Job {
     constructor(db) {
         this.db = db;
     }
@@ -76,6 +76,12 @@ class JobAction {
         );
     };
 
+    checkJobExists = async (jobId) => {
+        const query = 'SELECT id FROM jobs WHERE id = ?';
+        const result = await this.db.query(query, [jobId]);
+        return result.length > 0;
+    }
+
     getJobsByDistance = async (latitude, longitude, distance, successCallback, errorCallback) => {
         const latitudeLongitudeToKilometers = 111.045;
         const degreesToRadians = 57.3;
@@ -100,6 +106,22 @@ class JobAction {
             }
         );
     };
+
+    checkJobExistsAndOwner = async (jobId, userId) => {
+        return new Promise((resolve, reject) => {
+            this.db.query(
+                'SELECT * FROM jobs WHERE id = ? AND (author_id = ? OR status = "Completed")',
+                [jobId, userId],
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result.length > 0);
+                    }
+                }
+            );
+        });
+    };
 }
 
-module.exports = JobAction;
+module.exports = Job

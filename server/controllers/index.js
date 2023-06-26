@@ -2,5 +2,6 @@ module.exports={
     User: require('./user'),
     Chat: require('./chat'),
     Socket: require('./socket'),
-    Job: require('./job')
+    Job: require('./job'),
+    JobRequest: require('./jobRequest')
 }
