@@ -25,6 +25,7 @@ const ImageInput = ({ btnText, onChange, error }) => {
           ref={inputRef}
           type="file"
           className="form-control"
+          name="image"
           onChange={e => setFile(e.target.files[0])}
         />
         <div className="image-input-btn-block">
