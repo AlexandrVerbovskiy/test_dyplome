@@ -1,29 +1,20 @@
-class Socket {
-    constructor(db) {
-        this.db = db;
-    }
+require("dotenv").config()
+const Model = require("./model");
 
-    findUserSocket = async (usersIds, successCallback, errorCallback) => {
+class Socket extends Model {
+    findUserSockets = async (usersIds) => await this.errorWrapper(async () => {
         const placeholders = usersIds.map(() => '?').join(',');
-        await this.db.query('SELECT socket FROM sockets WHERE user_id IN ('+placeholders+')', usersIds, (err, res) => {
-            if (err) return errorCallback(err);
-            successCallback(res);
-        })
-    }
+        const sockets = await this.dbQueryAsync('SELECT socket FROM sockets WHERE user_id IN (' + placeholders + ')', usersIds)
+        return sockets;
+    });
 
-    create = async (socket, userId, successCallback, errorCallback) => {
-        await this.db.query("INSERT INTO sockets (user_id, socket) VALUES (?, ?)", [userId, socket.id], (err) => {
-            if (err) return errorCallback(err);
-            successCallback();
-        })
-    }
+    create = async (socket, userId) => await this.errorWrapper(async () => {
+        await this.dbQueryAsync("INSERT INTO sockets (user_id, socket) VALUES (?, ?)", [userId, socket.id]);
+    });
 
-    delete = async (socket, successCallback, errorCallback) => {
-        await this.db.query("DELETE FROM sockets WHERE socket = ?", [socket.id], (err) => {
-            if (err) return errorCallback(err);
-            successCallback();
-        })
-    }
+    delete = async (socket) => await this.errorWrapper(async () => {
+        await this.dbQueryAsync("DELETE FROM sockets WHERE socket = ?", [socket.id]);
+    });
 }
 
 module.exports = Socket;

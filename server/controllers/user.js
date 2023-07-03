@@ -73,10 +73,10 @@ class User extends Controller {
         const userId = req.userData.userId;
         const avatarFile = req.files && req.files.image;
 
-        if (!nick || !address || !lat || !lng) this.setResponseValidationError("All fields are required");
-        if (nick.length < 3) this.setResponseValidationError("Nick must be at least 3 characters long");
-        if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) this.setResponseValidationError("Invalid latitude or longitude values");
-        if (address.length > 255) this.setResponseValidationError("Address length must not exceed 255 characters");
+        if (!nick || !address || !lat || !lng) return this.setResponseValidationError("All fields are required");
+        if (nick.length < 3) return this.setResponseValidationError("Nick must be at least 3 characters long");
+        if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) return this.setResponseValidationError("Invalid latitude or longitude values");
+        if (address.length > 255) return this.setResponseValidationError("Address length must not exceed 255 characters");
 
         //avatar saving
         if (avatarFile) {
@@ -103,7 +103,7 @@ class User extends Controller {
         } = req.body;
 
         const user = await this.userModel.findByEmail(email);
-        if (!user) this.setResponseNoFoundError('No user with this email was found');
+        if (!user) return this.setResponseNoFoundError('No user with this email was found');
 
         let resetLink = await this.passwordResetLinkModel.getLinkByAccountId(user.id);
         if (!resetLink) {
@@ -123,7 +123,7 @@ class User extends Controller {
         const resetToken = req.query.token;
 
         const resetLink = await this.passwordResetLinkModel.getLinkByToken(resetToken);
-        if (!resetLink) this.setResponseNoFoundError('Invalid password reset token');
+        if (!resetLink) return this.setResponseNoFoundError('Invalid password reset token');
 
         const accountId = resetLink.account_id;
         await this.userModel.updatePassword(accountId, password);
@@ -142,7 +142,7 @@ class User extends Controller {
         const user = await this.userModel.findById(userId);
         const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
 
-        if (!isCurrentPasswordValid) this.setResponse({
+        if (!isCurrentPasswordValid) return this.setResponse({
             message: 'The current password is incorrect'
         }, 401);
 

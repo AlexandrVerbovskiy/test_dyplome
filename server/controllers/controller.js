@@ -1,7 +1,13 @@
 require("dotenv").config()
 const {
     User: UserModel,
-    PasswordResetLink: PasswordResetLinkModel
+    PasswordResetLink: PasswordResetLinkModel,
+    Socket: SocketModel,
+    Chat: ChatModel,
+    Action: ActionModel,
+    Job: JobModel,
+    JobProposal: JobProposalModel,
+    Dispute: DisputeModel
 } = require("../models");
 
 class Controller {
@@ -50,6 +56,21 @@ class Controller {
     constructor(db) {
         this.userModel = new UserModel(db);
         this.passwordResetLinkModel = new PasswordResetLinkModel(db);
+        this.socketModel = new SocketModel(db);
+        this.chatModel = ChatModel(db);
+        this.actionModel = ActionModel(db);
+        this.jobModel = JobModel(db);
+        this.jobProposalModel = JobProposalModel(db);
+        this.disputeModel = DisputeModel(db);
+
+        /*
+        models.forEach(model => {
+            const modelObject = new model(db);
+            const modelName = modelObject.constructor.name;
+            const name = modelName.charAt(0).toLowerCase() + modelName.slice(1) + "Model";
+            this[name] = modelObject;
+        });
+        */
     }
 
     async errorWrapper(res, func) {

@@ -1,95 +1,36 @@
-class Dispute {
-    constructor(db) {
-        this.db = db;
-    }
+require("dotenv").config()
+const Model = require("./model");
 
-    createDispute = (jobRequestId, userId, description) => {
-        return new Promise((resolve, reject) => {
-            const query = 'INSERT INTO disputes (job_request_id, user_id, description) VALUES (?, ?, ?)';
-            const values = [jobRequestId, userId, description];
-            this.db.query(query, values, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    const createdDisputeId = result.insertId;
-                    this.getDisputeById(createdDisputeId)
-                        .then(createdDispute => resolve(createdDispute))
-                        .catch(error => reject(error));
-                }
-            });
-        });
-    };
+class Dispute extends Model {
+    create = async (jobProposalId, userId, description) => await this.errorWrapper(async () => {
+        const dispute = await this.dbQueryAsync('INSERT INTO disputes (job_request_id, user_id, description) VALUES (?, ?, ?)', [jobProposalId, userId, description]);
+        return dispute.insertId;
+    });
 
-    getDisputeById = (disputeId) => {
-        return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM disputes WHERE id = ?';
-            this.db.query(query, disputeId, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
-                }
-            });
-        });
-    };
+    getById = async (id) => await this.errorWrapper(async () => {
+        const disputes = await this.dbQueryAsync('SELECT * FROM disputes WHERE id = ?', [id]);
+        if (disputes.length > 0) return disputes[0];
+        return null;
+    });
 
-    getDisputeByJobId = (jobId) => {
-        return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM disputes WHERE job_id = ?';
-            this.db.query(query, jobId, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
-                }
-            });
-        });
-    };
+    getByProposalId = async (proposalId) => await this.errorWrapper(async () => {
+        const disputes = await this.dbQueryAsync('SELECT * FROM disputes WHERE job_request_id = ?', [proposalId]);
+        if (disputes.length > 0) return disputes[0];
+        return null;
+    });
 
-    getDisputeByJobRequestId = (jobRequestId) => {
-        return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM disputes WHERE job_request_id = ?';
-            this.db.query(query, jobRequestId, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
-                }
-            });
-        });
-    };
+    getByJobId = async (jobId) => await this.errorWrapper(async () => {
+        const disputes = await this.dbQueryAsync('SELECT * FROM disputes join job_requests ON job_requests.id = disputes.job_request_id WHERE job_id = ?', [jobId]);
+        if (disputes.length > 0) return disputes[0];
+        return null;
+    });
 
-    updateDisputeStatus = (disputeId, status) => {
-        return new Promise((resolve, reject) => {
-            const query = 'UPDATE disputes SET status = ? WHERE id = ?';
-            const values = [status, disputeId];
-            this.db.query(query, values, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    this.getDisputeById(disputeId)
-                        .then(updatedDispute => resolve(updatedDispute))
-                        .catch(error => reject(error));
-                }
-            });
-        });
-    };
+    setStatus = async (disputeId, status) => await this.errorWrapper(async () => {
+        await this.dbQueryAsync('UPDATE disputes SET status = ? WHERE id = ?', [status, disputeId]);
+    });
 
-    assignAdminToDispute = (disputeId, adminId) => {
-        return new Promise((resolve, reject) => {
-            const query = 'UPDATE disputes SET admin_id = ? WHERE id = ?';
-            const values = [adminId, disputeId];
-            this.db.query(query, values, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    this.getDisputeById(disputeId)
-                        .then(updatedDispute => resolve(updatedDispute))
-                        .catch(error => reject(error));
-                }
-            });
-        });
-    };
+    assignAdmin = async (disputeId, adminId) => await this.errorWrapper(async () => {
+        await this.dbQueryAsync('UPDATE disputes SET admin_id = ? WHERE id = ?', [adminId, disputeId]);
+    });
 }
-
 module.exports = Dispute;
