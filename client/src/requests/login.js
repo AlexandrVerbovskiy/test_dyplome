@@ -8,7 +8,7 @@ const login = async (data, successCallback, errorCallback) => {
         const res = await axios.post(config.API_URL + "/login", data);
         const token = res.headers.authorization.split(" ")[1];
         localStorage.setItem("token", token);
-        successCallback(data.userId);
+        successCallback(res.data.userId);
     } catch (err) {
         const res = err.response;
         if (res && res.status && res.data && res.data.error)

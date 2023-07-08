@@ -1,18 +1,15 @@
-require("dotenv").config()
-const fs = require('fs');
+const Controller = require("./controller");
 
-const {
-    User: UserModel,
-    Job: JobModel
-} = require("../models");
-
-class Job {
-    constructor(db) {
-        this.jobModel = new JobModel(db);
-        this.userModel = new UserModel(db);
+class Job extends Controller {
+    __validateEdit = (title, price, description, lat, lng) => {
+        if (!title || title.length <= 2) return this.setResponseValidationError('Title should be at least 3 characters long');
+        if (!price || price <= 0) return this.setResponseValidationError('Price should be greater than zero');
+        if (description.length < 80) return this.setResponseValidationError('Description should be at least 80 characters long');
+        if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) return this.setResponseValidationError('Latitude and longitude should be valid numbers');
+        return false;
     }
 
-    createJob = async (req, res) => {
+    create = (req, res) => this.errorWrapper(res, async () => {
         const {
             title,
             price,
@@ -21,56 +18,20 @@ class Job {
             lat,
             lng
         } = req.body;
+
         const userId = req.userData.userId;
+        const resValidation = this.__validateEdit(title, price, description, lat, lng);
+        if (resValidation) return resValidation;
 
-        if (!title || title.length <= 2) {
-            return res.status(400).json({
-                error: 'Title should be at least 3 characters long'
-            });
-        }
+        const jobId = await this.jobModel.create(title, price, address, description, lat, lng, userId);
+        this.setResponseBaseSuccess("The job was created successfully", {
+            newId: jobId
+        });
+    });
 
-        if (!price || price <= 0) {
-            return res.status(400).json({
-                error: 'Price should be greater than zero'
-            });
-        }
-
-        if (description.length < 80) {
-            return res.status(400).json({
-                error: 'Description should be at least 80 characters long'
-            });
-        }
-
-        if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) {
-            return res.status(400).json({
-                error: 'Latitude and longitude should be valid numbers'
-            });
-        }
-
-        const sendSuccess = (id) => {
-            return res.status(200).json({
-                newId: id
-            });
-        }
-
-        const sendError = (err) => {
-            return res.status(400).json({
-                error: err
-            });
-        }
-
-        await this.jobModel.findByPasswordAndEmail({
-            title,
-            price,
-            address,
-            description,
-            lat,
-            lng
-        }, userId, sendSuccess, sendError);
-    }
-
-    updateJob = async (req, res) => {
+    edit = (req, res) => this.errorWrapper(res, async () => {
         const {
+            jobId,
             title,
             price,
             address,
@@ -78,54 +39,13 @@ class Job {
             lat,
             lng
         } = req.body;
-        const userId = req.userData.userId;
 
-        if (!title || title.length <= 2) {
-            return res.status(400).json({
-                error: 'Title should be at least 3 characters long'
-            });
-        }
+        const resValidation = this.__validateEdit(title, price, description, lat, lng);
+        if (resValidation) return resValidation;
 
-        if (!price || price <= 0) {
-            return res.status(400).json({
-                error: 'Price should be greater than zero'
-            });
-        }
-
-        if (description.length < 80) {
-            return res.status(400).json({
-                error: 'Description should be at least 80 characters long'
-            });
-        }
-
-        if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) {
-            return res.status(400).json({
-                error: 'Latitude and longitude should be valid numbers'
-            });
-        }
-
-        const sendSuccess = (id) => {
-            return res.status(200).json({
-                newId: id
-            });
-        }
-
-        const sendError = (err) => {
-            return res.status(400).json({
-                error: err
-            });
-        }
-
-        await this.jobModel.findByPasswordAndEmail({
-            title,
-            price,
-            address,
-            description,
-            lat,
-            lng
-        }, userId, sendSuccess, sendError);
-    }
+        await this.jobModel.edit(title, price, address, description, lat, lng, jobId);
+        this.setResponseBaseSuccess("The job was updated successfully");
+    });
 }
-
 
 module.exports = Job;

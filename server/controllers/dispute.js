@@ -1,163 +1,62 @@
-require("dotenv").config()
+const Controller = require("./controller");
 
-const {
-    Dispute: DisputeModel
-} = require("../models");
+class Dispute extends Controller {
+    create = (req, res) => this.errorWrapper(res, async () => {
+        const {
+            jobRequestId,
+            description
+        } = req.body;
 
-class DisputeController {
-    constructor(db) {
-        this.disputeModel = DisputeModel(db);
-    }
-    createDispute = async (req, res) => {
-        try {
-            const {
-                jobRequestId,
-                userId,
-                description
-            } = req.body;
-
-            const jobRequestExists = await this.jobRequestModel.checkJobRequestExists(jobRequestId);
-            if (!jobRequestExists) {
-                return res.status(404).json({
-                    error: 'Job request not found'
-                });
-            }
-
-            const isJobRequestOwner = await this.jobRequestModel.checkJobRequestOwner(jobRequestId, userId);
-            //const isJobRequestExecutor = await this.jobRequestModel.checkJobRequestExecutor(jobRequestId, userId);
-            if (!isJobRequestOwner /*&& !isJobRequestExecutor*/) {
-                return res.status(403).json({
-                    error: 'You are not authorized to create a dispute for this job request'
-                });
-            }
-
-            //await this.validateJobAndOwner(jobRequestId, userId);
-
-            const dispute = await this.disputeModel.createDispute(jobRequestId, userId, description);
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to create dispute'
-            });
-        }
-    };
-
-    validateJobAndOwner = async (jobRequestId, userId) => {
-        const jobRequest = await this.jobRequestModel.getJobRequestById(jobRequestId);
-        if (!jobRequest) {
-            throw new Error('Job request not found');
+        const userId = req.userData.userId;
+        let proposalExists = await this.jobProposalModel.checkOwner(jobRequestId, userId);
+        if (!proposalExists) {
+            proposalExists = await this.jobProposalModel.checkJobOwner(jobRequestId, userId);
+            return this.setResponseNoFoundError('Proposal not found');
         }
 
-        const job = await this.jobModel.getJobById(jobRequest.job_id);
-        if (!job) {
-            throw new Error('Job not found');
-        }
+        const disputeId = await this.disputeModel.create(jobProposalId, userId, description);
+        this.setResponseBaseSuccess("Dispute cancelled success", {
+            disputeId
+        });
+    });
 
-        if (job.user_id !== userId) {
-            throw new Error('You are not the owner of this job');
-        }
-    };
+    getById = async (req, res) => this.errorWrapper(res, async () => {
+        const {
+            disputeId
+        } = req.params;
 
-    getDisputeById = async (req, res) => {
-        try {
-            const {
-                disputeId
-            } = req.params;
-            const dispute = await this.disputeModel.getDisputeById(disputeId);
-            if (!dispute) {
-                return res.status(404).json({
-                    error: 'Dispute not found'
-                });
-            }
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to get dispute'
-            });
-        }
-    };
+        const dispute = await this.disputeModel.getById(disputeId);
+        if (!dispute) return this.setResponseNoFoundError('Dispute not found');
+        this.setResponseBaseSuccess("Find success", dispute);
+    });
 
-    getDisputeByJobId = async (req, res) => {
-        try {
-            const {
-                jobId
-            } = req.params;
-            const dispute = await this.disputeModel.getDisputeByJobId(jobId);
-            if (!dispute) {
-                return res.status(404).json({
-                    error: 'Dispute not found'
-                });
-            }
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to get dispute'
-            });
-        }
-    };
+    getByJobId = async (req, res) => this.errorWrapper(res, async () => {
+        const {
+            jobId
+        } = req.params;
 
-    getDisputeByJobRequestId = async (req, res) => {
-        try {
-            const {
-                jobRequestId
-            } = req.params;
-            const dispute = await this.disputeModel.getDisputeByJobRequestId(jobRequestId);
-            if (!dispute) {
-                return res.status(404).json({
-                    error: 'Dispute not found'
-                });
-            }
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to get dispute'
-            });
-        }
-    };
+        const dispute = await this.disputeModel.getByJobId(jobId);
+        if (!dispute) return this.setResponseNoFoundError('Dispute not found');
+        this.setResponseBaseSuccess("Find success", dispute);
+    });
 
-    updateDisputeStatus = async (req, res) => {
-        try {
-            const {
-                disputeId
-            } = req.params;
-            const {
-                status
-            } = req.body;
-            const dispute = await this.disputeModel.updateDisputeStatus(disputeId, status);
-            if (!dispute) {
-                return res.status(404).json({
-                    error: 'Dispute not found'
-                });
-            }
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to update dispute status'
-            });
-        }
-    };
+    updateDisputeStatus = async (req, res) => this.errorWrapper(res, async () => {
+        const {
+            disputeId,
+            status
+        } = req.body;
+        await this.disputeModel.setStatus(disputeId, status);
+        this.setResponseBaseSuccess("Status changes success");
+    });
 
-    assignAdminToDispute = async (req, res) => {
-        try {
-            const {
-                disputeId
-            } = req.params;
-            const {
-                adminId
-            } = req.body;
-            const dispute = await this.disputeModel.assignAdminToDispute(disputeId, adminId);
-            if (!dispute) {
-                return res.status(404).json({
-                    error: 'Dispute not found'
-                });
-            }
-            return res.status(200).json(dispute);
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Failed to assign admin to dispute'
-            });
-        }
-    };
+    assignAdminToDispute = async (req, res) => this.errorWrapper(res, async () => {
+        const {
+            disputeId,
+            adminId
+        } = req.body;
+        await this.disputeModel.assignAdmin(disputeId, adminId);
+        this.setResponseBaseSuccess("Dispute accepted success");
+    });
 }
 
-module.exports = DisputeController;
+module.exports = Dispute;

@@ -4,7 +4,8 @@ const {
 } = require('../utils');
 const {
     Chat: ChatController,
-    Socket: SocketController
+    Socket: SocketController,
+    User: UserController,
 } = require('../controllers')
 
 class Chat {
@@ -12,211 +13,193 @@ class Chat {
         this.db = db;
         this.io = io;
         this.sockets = {};
-        this.db.query("TRUNCATE sockets");
         this.chatController = new ChatController(db);
         this.socketController = new SocketController(db, io);
+        this.userController = new UserController(db);
+        this.onInit();
+    }
 
-        this.io.on('connection', async (socket) => {
-            const {
-                token
-            } = socket.handshake.query;
+    onInit = async () => {
+        await this.socketController.clearAll();
+        this.io.on('connection', this.onConnection);
+    }
 
-            const sendError = message => {
-                this.io.to(socket.id).emit("error", message)
-            };
+    onConnection = async (socket) => {
+        const sendError = (message) => this.io.to(socket.id).emit("error", message);
 
+        const token = socket.handshake.query.token;
+        const userId = validateToken(token);
+        if (!userId) return sendError("Authentication failed")
 
-            const userId = validateToken(token);
-            if (!userId) return sendError(socket, "Authentication failed")
-
-            await this.socketController.connect(socket, userId);
-
-            await this.chatController.getUsersToSendInfo(userId, (res) => {
-                res.forEach(elem => {
-                    this.io.to(elem["socket"]).emit("online", {
-                        userId
-                    })
-                })
-            }, sendError)
-
-            socket.on('create-personal-chat', (data) => {
-                this.chatController.createChat(data, userId,
-                    (message, sender) => {
-                        this.socketController.sendSocketMessageToUsers([data.userId, userId], "created-chat", {
-                            message,
-                            sender
-                        })
-                    }, sendError)
-            });
-
-            socket.on('send-message', (data) => {
-                this.chatController.createMessage(data, userId,
-                    (message, sender) => {
-                        this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
-                            message
-                        })
-                        this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
-                            message,
-                            sender
-                        })
-                    }, sendError)
-            });
-
-            socket.on('update-message', (data) => {
-                const onGetSockets = (sockets, chatId, messageId) => {
-                    const dataToSend = {
-                        chat_id: chatId,
-                        message_id: messageId,
-                        content: data.content
-                    };
-                    this.socketController.sendSocketMessageToUsers([userId], "success-updated-message", dataToSend);
-                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("updated-message", dataToSend));
-                }
-
-                const onUpdate = async (message) => {
-                    await this.chatController.getUserSocketsFromChat(message["chat_id"], userId, (sockets) => onGetSockets(sockets, message["chat_id"], message["message_id"]), sendError);
-                }
-                this.chatController.updateMessage(data, userId, onUpdate, sendError)
-            }, sendError);
-
-            socket.on('delete-message', (data) => {
-                const onGetChatReplacedMessage = async (sockets, messageToChat, deletedChatId, deletedMessageId, messageToList) => {
-                    const dataToSend = {
-                        messageToChat,
-                        messageToList,
-                        deletedChatId,
-                        deletedMessageId
-                    };
-
-                    this.socketController.sendSocketMessageToUsers([userId], "success-deleted-message", dataToSend);
-                    sockets.forEach(socket => {
-                        this.io.to(socket["socket"]).emit("deleted-message", dataToSend)
+        const user = await this.userController.getUserById(userId);
+        const bindFuncToEvent = (event, func) => {
+            socket.on(event, async (data) => {
+                try {
+                    await func(data, {
+                        socket,
+                        userId,
+                        user
                     });
+                } catch (e) {
+                    console.log(e)
+                    sendError(e.message);
                 }
-
-                const onGetListReplacedMessage = async (sockets, chatId, messageId, messageToList) => {
-                    await this.chatController.getNextMessage(chatId, data.lastMessageId,
-                        async (messageToChat) => await onGetChatReplacedMessage(sockets, messageToChat, chatId, messageId, messageToList),
-                            sendError)
-                }
-
-                const onGetSockets = async (sockets, chatId, messageId) => {
-                    await this.chatController.getNextMessage(chatId, messageId,
-                        async (messageToList) =>
-                            await onGetListReplacedMessage(sockets, chatId, messageId, messageToList),
-                            sendError)
-                }
-
-                const onDelete = async (message) => {
-                    await this.chatController.getUserSocketsFromChat(message["chat_id"], userId,
-                        async (sockets) => await onGetSockets(sockets, message["chat_id"], message["message_id"]),
-                            sendError);
-                }
-                this.chatController.hideMessage(data, userId, onDelete, sendError)
             });
+        }
 
-            socket.on('start-typing', async (data) => {
-                const chatId = data.chatId;
-
-                const onGetSockets = (sockets) => {
-                    const dataToSend = {
-                        chatId,
-                        userId
-                    };
-
-                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("typing", dataToSend));
-                }
-
-                await this.chatController.getUserSocketsFromChat(chatId,
-                    userId,
-                    (sockets) => onGetSockets(sockets),
-                    sendError);
+        await this.socketController.connect(socket, userId);
+        const users = await this.chatController.getUsersSocketToSend(userId);
+        users.forEach(user => {
+            this.io.to(user["socket"]).emit("online", {
+                userId
             })
+        })
 
-            socket.on('end-typing', async (data) => {
-                const chatId = data.chatId;
+        bindFuncToEvent('create-personal-chat', this.onCreateChat);
+        bindFuncToEvent('send-message', this.onSendMessage);
+        bindFuncToEvent('update-message', this.onUpdateMessage);
+        bindFuncToEvent('delete-message', this.onDeleteMessage);
+        bindFuncToEvent('start-typing', this.onStartTyping);
+        bindFuncToEvent('end-typing', this.onEndTyping);
+        bindFuncToEvent('file-part-upload', this.onFilePartUpload);
+        bindFuncToEvent('stop-file-upload', this.onStopFileUpload);
+        bindFuncToEvent('disconnect', this.onDisconnect);
+    }
 
-                const onGetSockets = (sockets) => {
-                    const dataToSend = {
-                        chatId,
-                        userId
-                    };
-                    this.socketController.sendSocketMessageToUsers([userId], "stop-typing", dataToSend);
-                    sockets.forEach(socket => this.io.to(socket["socket"]).emit("stop-typing", dataToSend));
-                }
-
-                await this.chatController.getUserSocketsFromChat(chatId,
-                    userId,
-                    (sockets) => onGetSockets(sockets),
-                    sendError);
-            })
-
-            socket.on('test', res => console.log(res));
-
-            socket.on('file-part-upload', async (data) => {
-                const {
-                    temp_key,
-                    data: fileBody,
-                    type,
-                    last
-                } = data;
-
-                this.chatController.uploadToFile(userId, temp_key, fileBody, type, (filename) => {
-                    if (last) {
-                        const dataToSend = {
-                            content: filename,
-                            typeMessage: indicateMediaTypeByExtension(type),
-                            getter_id: data.getter_id,
-                            chat_type: data.chat_type,
-                            userId: data.getter_id
-                        }
-
-                        this.chatController.createMessage(dataToSend, userId,
-                            (message, sender) => {
-                                this.socketController.sendSocketMessageToUsers([dataToSend.getter_id], "get-message", {
-                                    message,
-                                    sender
-                                })
-                                this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
-                                    temp_key,
-                                    message
-                                });
-                            }, sendError)
-                    } else {
-                        this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
-                            temp_key
-                        });
-                    }
-                }, (error) => {
-                    this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded-error", {
-                        temp_key,
-                        error
-                    });
-                })
-            })
-
-            socket.on('stop-file-upload', async ({
-                temp_key
-            }) => {
-                this.chatController.onStopFile(temp_key, userId, () => {
-                    this.socketController.sendSocketMessageToUsers([userId], "file-upload-stopped", {
-                        temp_key
-                    });
-                }, (err) => console.log(err))
-            })
-
-            socket.on('disconnect', async () => {
-                await this.socketController.disconnect(socket);
-                await this.chatController.getUsersToSendInfo(userId, (res) => {
-                    res.forEach(elem => {
-                        this.io.to(elem["socket"]).emit("offline", {
-                            userId
-                        })
-                    })
-                }, sendError)
-            });
-
+    onCreateChat = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const sender = sessionInfo.sender;
+        const message = await this.chatController.createChat(data, userId);
+        this.socketController.sendSocketMessageToUsers([data.userId, userId], "created-chat", {
+            message,
+            sender
         });
+    }
+
+    onSendMessage = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const sender = sessionInfo.user;
+        const message = await this.chatController.createMessage(data, userId);
+        this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
+            message
+        })
+        this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
+            message,
+            sender
+        })
+    }
+
+    onUpdateMessage = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const message = await this.chatController.updateMessage(data, userId);
+        const sockets = await this.chatController.getUserSocketsFromChat(message["chat_id"], userId);
+
+        const dataToSend = {
+            chat_id: message["chat_id"],
+            message_id: message["message_id"],
+            content: data.content
+        };
+        this.socketController.sendSocketMessageToUsers([userId], "success-updated-message", dataToSend);
+        sockets.forEach(socket => this.io.to(socket["socket"]).emit("updated-message", dataToSend));
+    }
+
+    onDeleteMessage = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const message = await this.chatController.hideMessage(data, userId);
+        const chatId = message["chat_id"];
+        const messageId = message["message_id"];
+        const sockets = await this.chatController.getUserSocketsFromChat(chatId, userId);
+
+        const messageToChat = await this.chatController.getNextMessage(chatId, messageId);
+        const messageToList = await this.chatController.getNextMessage(chatId, data["lastMessageId"]);
+
+        const dataToSend = {
+            messageToChat,
+            messageToList,
+            deletedChatId: chatId,
+            deletedMessageId: messageId
+        };
+        this.socketController.sendSocketMessageToUsers([userId], "success-deleted-message", dataToSend);
+        sockets.forEach(socket => {
+            this.io.to(socket["socket"]).emit("deleted-message", dataToSend)
+        });
+    }
+
+    __onChangeTyping = async (data, sessionInfo, typeAction) => {
+        const userId = sessionInfo.userId;
+        const chatId = data.chatId;
+        const sockets = await this.chatController.getUserSocketsFromChat(chatId, userId);
+        sockets.forEach(socket => this.io.to(socket["socket"]).emit(typeAction, {
+            chatId,
+            userId
+        }));
+    }
+
+    onStartTyping = (data, sessionInfo) => this.__onChangeTyping(data, sessionInfo, "typing");
+    onEndTyping = (data, sessionInfo) => this.__onChangeTyping(data, sessionInfo, "stop-typing");
+
+    onFilePartUpload = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const sender = sessionInfo.user;
+        const {
+            temp_key: tempKey,
+            data: fileBody,
+            type,
+            last
+        } = data;
+
+        try {
+            const filename = await this.chatController.uploadToFile(userId, tempKey, fileBody, type);
+            if (last) {
+                const dataToSend = {
+                    content: filename,
+                    typeMessage: indicateMediaTypeByExtension(type),
+                    getter_id: data.getter_id,
+                    chat_type: data.chat_type,
+                    userId: data.getter_id
+                }
+                const message = await this.chatController.createMessage(dataToSend, userId);
+                this.socketController.sendSocketMessageToUsers([dataToSend.getter_id], "get-message", {
+                    message,
+                    sender
+                })
+                this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
+                    temp_key: tempKey,
+                    message
+                });
+            } else {
+                this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
+                    temp_key: tempKey
+                });
+            }
+        } catch (error) {
+            console.log("File error: " + error)
+            this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded-error", {
+                temp_key: tempKey,
+                error
+            });
+        }
+    }
+
+    onStopFileUpload = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const tempKey = data.temp_key;
+        await this.chatController.onStopFile(tempKey, userId);
+        this.socketController.sendSocketMessageToUsers([userId], "file-upload-stopped", {
+            temp_key: tempKey
+        });
+    }
+
+    onDisconnect = async (data, sessionInfo) => {
+        const userId = sessionInfo.userId;
+        const socket = sessionInfo.socket;
+        await this.socketController.disconnect(socket);
+        const users = await this.chatController.getUsersSocketToSend(userId);
+        users.forEach(user => {
+            this.io.to(user["socket"]).emit("offline", {
+                userId
+            })
+        })
     }
 }
 

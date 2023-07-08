@@ -33,6 +33,7 @@ class Controller {
 
     sendResponse(res) {
         res.status(this.__actualResponseCode).json(this.__actualResponseBody);
+
     }
 
     setResponseBaseSuccess(message, data = {}) {
@@ -57,11 +58,11 @@ class Controller {
         this.userModel = new UserModel(db);
         this.passwordResetLinkModel = new PasswordResetLinkModel(db);
         this.socketModel = new SocketModel(db);
-        this.chatModel = ChatModel(db);
-        this.actionModel = ActionModel(db);
-        this.jobModel = JobModel(db);
-        this.jobProposalModel = JobProposalModel(db);
-        this.disputeModel = DisputeModel(db);
+        this.chatModel = new ChatModel(db);
+        this.actionModel = new ActionModel(db);
+        this.jobModel = new JobModel(db);
+        this.jobProposalModel = new JobProposalModel(db);
+        this.disputeModel = new DisputeModel(db);
 
         /*
         models.forEach(model => {
@@ -79,7 +80,6 @@ class Controller {
         } catch (e) {
             const status = e.status ? e.status : 500;
             const error = e.message
-            console.log(e);
             this.setResponse({
                 error
             }, status);

@@ -46,11 +46,13 @@ class User extends Controller {
         } = req.body;
 
         const userId = await validateTokenUtil(token);
+        const user = await this.userModel.getUserInfo(userId);
+
         this.setResponse({
             validated: false
         }, 200);
 
-        if (!userId) return;
+        if (!userId || !user) return;
 
         const updatedToken = jwt.sign({
             userId
@@ -149,6 +151,8 @@ class User extends Controller {
         await this.userModel.updatePassword(userId, newPassword);
         this.setResponseBaseSuccess('Password successfully reset');
     });
+
+    getUserById = (userId) => this.userModel.getUserInfo(userId);
 }
 
 module.exports = User;

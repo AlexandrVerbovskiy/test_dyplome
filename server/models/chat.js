@@ -89,8 +89,8 @@ class Chat extends Model {
         return null;
     }
 
-    getUsersToChatting = async (searcherId, callback, lastChatId = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
-        const query = `SELECT c1.chat_id, chats.type as chat_type, ${this.usersFields}, 
+    getUsersToChatting = async (searcherId, lastChatId = 0, limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING, searchString = "") => {
+        const query = `SELECT c1.chat_id, chats.type as chat_type, ${this.__usersFields}, 
         messages.type, messages.time_created as time_sended, messages_contents.content
         FROM (${this.__getUserChats}) AS c1 
         JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 

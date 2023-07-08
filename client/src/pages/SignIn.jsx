@@ -14,6 +14,7 @@ const SignIn = () => {
     await login(
       { email, password },
       userId => {
+        console.log(userId);
         main.setSuccess("Logged in successfully");
         main.setAuth(userId);
         redirect("/registration");

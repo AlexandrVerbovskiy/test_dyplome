@@ -29,7 +29,7 @@ function route(app, db) {
     app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
     app.post("/select-chat", isAuth, chatController.selectChat);
 
-    app.post("/create-job", isAuth, jobController.createJob);
+    app.post("/create-job", isAuth, jobController.create);
 
     app.post("/test", isAuth, async (req, res) => {
         res.status(200).json({

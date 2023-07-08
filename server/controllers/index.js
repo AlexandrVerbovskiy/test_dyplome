@@ -1,7 +1,7 @@
-module.exports={
+module.exports = {
     User: require('./user'),
     Chat: require('./chat'),
     Socket: require('./socket'),
     Job: require('./job'),
-    JobRequest: require('./jobRequest')
+    JobProposal: require('./jobProposal')
 }

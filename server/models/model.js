@@ -7,23 +7,27 @@ const {
 class Model {
     passwordCashSaltOrRounds = 10;
     __error = null;
-    __hasError = false;
 
     resetError() {
         this.__error = null;
-        this.__hasError = true;
     }
 
     setError(message, status = 500) {
-        if (this.__hasError) return;
-        this.__error = new CustomError(message, status)
-        this.__hasError = true;
+        if (this.__error) return;
+        this.__error = new CustomError(message, status);
         throw new Error(message);
     }
 
     throwMainError() {
-        if (this.__hasError) throw this.__error;
-        this.resetError();
+        if (!this.__error) return;
+
+        try {
+            throw this.__error;
+        } catch (error) {
+            throw error;
+        } finally {
+            this.resetError();
+        }
     }
 
     constructor(db) {

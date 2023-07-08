@@ -14,6 +14,7 @@ function App() {
   } = useSystemMessage();
 
   const { auth, logout, setAuth } = useAuth(setError);
+  console.log(auth);
 
   return (
     <MainContext.Provider

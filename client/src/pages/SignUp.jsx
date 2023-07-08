@@ -16,11 +16,12 @@ const SignUp = () => {
       return main.setError(
         "You must agree to the Terms &amp; Conditions for registering on the site"
       );
+
     await registration(
       { email, password },
       () => {
         main.setSuccess("User registered successfully");
-        redirect("/");
+        window.location = window.location.origin;
       },
       err => main.setError(err)
     );

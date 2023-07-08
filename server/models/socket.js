@@ -15,6 +15,10 @@ class Socket extends Model {
     delete = async (socket) => await this.errorWrapper(async () => {
         await this.dbQueryAsync("DELETE FROM sockets WHERE socket = ?", [socket.id]);
     });
+
+    clearAll = async() => await this.errorWrapper(async () => {
+        await this.dbQueryAsync("TRUNCATE sockets");
+    });
 }
 
 module.exports = Socket;

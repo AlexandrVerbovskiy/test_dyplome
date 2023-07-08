@@ -6,7 +6,7 @@ import config from "../config";
 const getUsersToChatting = async (data, successCallback, errorCallback) => {
     try {
         const res = await axios.post(config.API_URL + "/users-to-chatting", data);
-        successCallback(res.data);
+        successCallback(res.data.users);
     } catch (err) {
         const res = err.response;
         if (res && res.status && res.data && res.data.error)
