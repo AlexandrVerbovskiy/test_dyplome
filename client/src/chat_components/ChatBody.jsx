@@ -39,17 +39,23 @@ const ChatBody = ({ chatRef }) => {
       <div id="chat_body" className="card col-lg-8" ref={chatRef}>
         <ChatHeader />
         <div className="card-body">
-          {messages.map(message =>
-            <ChatMessage
-              key={message.message_id}
-              onRightBtnClick={() => openActiveMessagePopup(message.message_id)}
-              activePopup={activeMessageActionPopup == message.message_id}
-              closeActionPopup={() => setActiveMessageActionPopup(null)}
-              onDelete={deleteMessage}
-              onEdit={editMessage}
-              {...message}
-            />
-          )}
+          {messages.map(message => {
+            const key = message.in_process
+              ? message.temp_key
+              : message.message_id;
+            return (
+              <ChatMessage
+                key={key}
+                onRightBtnClick={() =>
+                  openActiveMessagePopup(message.message_id)}
+                activePopup={activeMessageActionPopup === message.message_id}
+                closeActionPopup={() => setActiveMessageActionPopup(null)}
+                onDelete={deleteMessage}
+                onEdit={editMessage}
+                {...message}
+              />
+            );
+          })}
         </div>
         <ChatMessagePanel
           textRef={textRef}

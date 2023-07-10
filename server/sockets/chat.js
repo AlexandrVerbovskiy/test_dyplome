@@ -80,13 +80,17 @@ class Chat {
         const userId = sessionInfo.userId;
         const sender = sessionInfo.user;
         const message = await this.chatController.createMessage(data, userId);
-        this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
-            message
-        })
+
         this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
             message,
             sender
-        })
+        });
+
+
+        message["temp_key"] = data["temp_key"];
+        this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
+            message
+        });
     }
 
     onUpdateMessage = async (data, sessionInfo) => {
@@ -163,6 +167,7 @@ class Chat {
                     message,
                     sender
                 })
+                message["temp_key"] = tempKey
                 this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded", {
                     temp_key: tempKey,
                     message

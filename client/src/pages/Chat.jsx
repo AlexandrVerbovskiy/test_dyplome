@@ -1,3 +1,4 @@
+import {useContext} from "react";
 import {
   useChatInit,
   useChatEmojiPopup,
@@ -6,8 +7,9 @@ import {
   useChatWindowsChanger
 } from "../chat_hooks";
 import { ChatList, ChatBody } from "../chat_components";
-import { ChatContext } from "../contexts";
+import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
+import { randomString } from "../utils";
 
 const Chat = () => {
   const {
@@ -30,13 +32,15 @@ const Chat = () => {
     chatTyping, chatOnline, selectedChatId
   } = useMainChat();
 
+  const {auth}= useContext(MainContext);
+
   const onEditMessage = (id, content)=>{
     console.log("edit start: ", id, content)
     setEditMessage(id, content);
   }
 
   const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
+  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
  
   const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 
@@ -52,11 +56,12 @@ const Chat = () => {
     if(editMessageId){
       if(message!=editMessageContent) {
         editMessage(editMessageId, message);
-        console.log("unhidded")
       }
       unsetEditMessage();
     }else{
-      const dop = {};
+      const dop = {
+        temp_key: randomString()
+      };
       if (activeChat.chat_type == "personal"){
         dop["chatId"] = activeChat?.chat_id;
         dop["getter_id"] = activeChat.user_id;

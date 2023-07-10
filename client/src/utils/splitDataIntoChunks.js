@@ -1,6 +1,6 @@
 function splitDataIntoChunks(data, chunkSize) {
     const base64Data = data.split(',')[1];
-    const decodedData = atob(base64Data); // Розкодування Base64
+    const decodedData = atob(base64Data);
     const totalChunks = Math.ceil(decodedData.length / chunkSize);
     const chunks = [];
 

@@ -1,8 +1,8 @@
 const config = {
     API_URL: "http://localhost:5000",
-    VIDEO_EXTENSIONS: ["mp4", "webm", "ogg", "ogv"],
-    AUDIO_EXTENSIONS: ["mp3", "wav", "aac", "m4a", "mpeg"],
-    IMAGE_EXTENSIONS: ["jpg", "jpeg", "png", "gif", "svg"],
+    VIDEO_EXTENSIONS: ["mp4", "avi", "mov", "wmv", "flv", "mkv", "mpg", "mpeg", "3gp", "swf"],
+    AUDIO_EXTENSIONS: ["mp3", "wav", "ogg", "aac", "wma", "flac", "m4a", "ac3", "aiff", "au", "mid", "midi"],
+    IMAGE_EXTENSIONS: ["jpg", "jpeg", "png", "gif", "bmp", "ico", "svg", "tif", "tiff", "webp"],
     BLOB_CHUNK_SIZE: 200 * 1024,
     UNBLOB_CHUNK_SIZE: 1024 * 1024,
     MAP_DEFAULT: {

@@ -2,8 +2,10 @@ import io from "socket.io-client";
 import { useEffect, useRef } from "react";
 import useMediaActions from "./useMediaActions";
 import config from "../config";
+import indicateMediaTypeByExtension from "../utils/indicateMediaTypeByExtension";
 
 const useChatInit = ({
+  auth,
   onGetMessageForSockets,
   onUpdateMessageForSockets,
   onDeleteMessageForSockets,
@@ -93,13 +95,27 @@ const useChatInit = ({
   };
 
   const sendMessage = (chatId, typeMessage, content, chat_type, dop) => {
-    ioRef.current.emit("send-message", {
+    const dataToSend = {
       chatId,
       typeMessage,
       content,
       chat_type,
       ...dop
-    });
+    };
+
+    const dataToInsert = {
+      chat_id: chatId,
+      type: typeMessage,
+      content,
+      chat_type,
+      user_id: auth,
+      in_process: true,
+      time_sended: new Date().toISOString(),
+      ...dop
+    };
+
+    ioRef.current.emit("send-message", dataToSend);
+    onGetMessageForSockets(dataToInsert);
   };
 
   const editMessage = (messageId, content) => {
@@ -130,9 +146,24 @@ const useChatInit = ({
     });
   };
 
-  const sendMedia = async (data, dataType, filetype, dop) => {
+  const sendMedia = async (data, dataType, filetype, dop, filename) => {
     const dataToSend = await createMediaActions(data, dataType, filetype, dop);
+    const messageType = indicateMediaTypeByExtension(filetype);
+    const content = messageType == "file" ? filename : data;
+    const dataToInsert = {
+      chat_id: dataToSend["chatId"],
+      type: messageType,
+      content: content,
+      chat_type: dataToSend["chat_type"],
+      user_id: auth,
+      in_process: true,
+      time_sended: new Date().toISOString(),
+      temp_key: dataToSend["temp_key"]
+    };
+
     ioRef.current.emit("file-part-upload", { ...dataToSend });
+    //dataToInsert["temp_key"] = "temp_key";
+    onGetMessageForSockets(dataToInsert);
   };
 
   const stopSendMedia = key => {};

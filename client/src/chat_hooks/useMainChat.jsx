@@ -72,10 +72,24 @@ const useMainChat = () => {
   };
 
   const onGetMessage = message => {
+    console.log(message);
     if (!message) return;
     onChatUpdate(message);
-    if (message.chat_id === activeChat.current.chat_id)
-      setMessages(prev => [...prev, message]);
+    if (message.chat_id === activeChat.current.chat_id) {
+      if (message.in_process) {
+        setMessages(prev => [...prev, message]);
+      } else {
+        setMessages(prev => {
+          const newMessages = [...prev.filter(m => !m.in_process), message];
+          const inProcessMessages = message.temp_key
+            ? prev.filter(m => m.in_process && m.temp_key !== message.temp_key)
+            : prev.filter(m => m.in_process);
+          return [...newMessages, ...inProcessMessages];
+        });
+      }
+
+      if (message.message_id) setLastMessageId(message.message_id);
+    }
   };
 
   const onGetMessageAtTheEndList = message => {

@@ -13,6 +13,7 @@ const ChatMessage = ({
   type,
   content,
   user_id,
+  in_process: inProcess,
   time_sended,
   onDelete,
   onEdit
@@ -79,8 +80,13 @@ const ChatMessage = ({
             className={contentClassName[myOrNormal]}
             onContextMenu={handleMenuClick}
           >
-            <ChatMessageContent type={type} content={content} />
-            {activePopup &&
+            <ChatMessageContent
+              type={type}
+              content={content}
+              inProcess={inProcess}
+            />
+            {!inProcess &&
+              activePopup &&
               <ChatMessageActions
                 onDeleteClick={handleMessageDeleteClick}
                 onEditClick={handleMessageEditClick}
