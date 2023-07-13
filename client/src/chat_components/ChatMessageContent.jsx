@@ -1,8 +1,6 @@
 import config from "../config";
 
 const ChatMessageContent = ({ type, content, inProcess }) => {
-  console.log("Type: ", type, "Content: ", content);
-
   const { API_URL } = config;
   const style = {};
   if (inProcess) style["backgroundColor"] = "red";

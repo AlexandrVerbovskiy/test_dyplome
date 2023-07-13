@@ -16,8 +16,12 @@ const ChatMessage = ({
   in_process: inProcess,
   time_sended,
   onDelete,
-  onEdit
+  onEdit,
+  stopSendMedia,
+  temp_key = null,
+  percent = null
 }) => {
+  console.log("new:", percent, temp_key);
   const main = useContext(MainContext);
   const { auth } = main;
 
@@ -80,6 +84,17 @@ const ChatMessage = ({
             className={contentClassName[myOrNormal]}
             onContextMenu={handleMenuClick}
           >
+            {percent &&
+              <div class="cancel-sending-message">
+                <div className="circle">
+                  <div />
+                </div>
+                <div class="plus">
+                  <span onClick={stopSendMedia}>
+                    {Math.floor(percent)}%
+                  </span>
+                </div>
+              </div>}
             <ChatMessageContent
               type={type}
               content={content}

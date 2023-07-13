@@ -10,7 +10,9 @@ const useChatInit = ({
   onUpdateMessageForSockets,
   onDeleteMessageForSockets,
   changeTypingForSockets,
-  changeOnlineForSockets
+  changeOnlineForSockets,
+  onUpdateMessagePercent,
+  onCancelledMessage
 }) => {
   const ioRef = useRef(null);
 
@@ -69,14 +71,25 @@ const useChatInit = ({
       "file-part-uploaded",
       async ({ temp_key, message = null }) => {
         const nextPartData = await onSuccessSendBlobPart(temp_key);
+        console.log("sended: ", nextPartData);
+
         if (!nextPartData) return console.log("data");
         if (nextPartData == "success saved" && message) {
           onGetMessageForSockets(message);
           return console.log("success saved");
         }
-        ioRef.current.emit("file-part-upload", { ...nextPartData });
+
+        onUpdateMessagePercent({ temp_key, percent: nextPartData["percent"] });
+        setTimeout(() => {
+          ioRef.current.emit("file-part-upload", { ...nextPartData });
+        }, 10000000);
       }
     );
+
+    ioRef.current.on("message-cancelled", async ({ temp_key }) => {
+      console.log("message-cancelled", temp_key);
+      onCancelledMessage({ temp_key });
+    });
   }, []);
 
   useEffect(
@@ -161,12 +174,19 @@ const useChatInit = ({
       temp_key: dataToSend["temp_key"]
     };
 
+    console.log(dataToSend["temp_key"]);
+
     ioRef.current.emit("file-part-upload", { ...dataToSend });
+
     //dataToInsert["temp_key"] = "temp_key";
+
     onGetMessageForSockets(dataToInsert);
   };
 
-  const stopSendMedia = key => {};
+  const stopSendMedia = key => {
+    console.log(key);
+    //ioRef.current.emit("stop-file-upload", { key });
+  };
 
   return {
     createChat,

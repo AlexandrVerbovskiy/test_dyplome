@@ -100,6 +100,23 @@ const useMainChat = () => {
     }
   };
 
+  const onUpdateMessagePercent = ({ temp_key, percent }) => {
+    setMessages(prev => {
+      const newMessages = prev.map(m => {
+        if (m.temp_key && m.temp_key == temp_key) return { ...m, percent };
+        return { ...m };
+      });
+      return [...newMessages];
+    });
+  };
+
+  const onCancelledMessage = ({ temp_key }) => {
+    setMessages(prev => {
+      const newMessages = [...prev.filter(m => m.temp_key != temp_key)];
+      return [...newMessages];
+    });
+  };
+
   const onUpdateMessage = message => {
     if (!message) return;
     if (message.chat_id === activeChat.current.chat_id) {
@@ -176,6 +193,8 @@ const useMainChat = () => {
     onDeleteMessage,
     onChangeTyping,
     onChangeOnline,
+    onUpdateMessagePercent,
+    onCancelledMessage,
     chatTyping: typing,
     chatOnline: online
   };

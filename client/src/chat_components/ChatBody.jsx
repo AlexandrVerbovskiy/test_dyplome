@@ -10,9 +10,13 @@ import { useMediaFileAccept, useRecorder } from "../chat_hooks";
 const ChatBody = ({ chatRef }) => {
   const textRef = useRef(null);
   const main = useContext(MainContext);
-  const { messages, emojiPopup, onEditMessage, onDeleteMessage } = useContext(
-    ChatContext
-  );
+  const {
+    messages,
+    emojiPopup,
+    onEditMessage,
+    onDeleteMessage,
+    stopSendMedia
+  } = useContext(ChatContext);
   const mediaFileAccept = useMediaFileAccept();
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
   const [activeMessageActionPopup, setActiveMessageActionPopup] = useState(
@@ -34,6 +38,11 @@ const ChatBody = ({ chatRef }) => {
     onEditMessage(id, content);
   };
 
+  const onStopClick = temp_key => {
+    if (!temp_key) return null;
+    return () => stopSendMedia(temp_key);
+  };
+
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>
       <div id="chat_body" className="card col-lg-8" ref={chatRef}>
@@ -52,6 +61,7 @@ const ChatBody = ({ chatRef }) => {
                 closeActionPopup={() => setActiveMessageActionPopup(null)}
                 onDelete={deleteMessage}
                 onEdit={editMessage}
+                stopSendMedia={onStopClick(message.temp_key)}
                 {...message}
               />
             );

@@ -7,19 +7,11 @@ const useMediaActions = () => {
 
   async function createMediaActions(data, dataType, filetype, dop) {
     const tempFileKey = randomString();
-    console.log(filetype);
-
     let arr = null;
-
-    console.log(data);
-
     if (dataType == "media")
       arr = await splitBlob(data, config["BLOB_CHUNK_SIZE"], data.type);
     else if (dataType == "notmedia")
       arr = splitDataIntoChunks(data, config["BLOB_CHUNK_SIZE"], data.type);
-
-    console.log(arr);
-
     mediaActionsRef.current[tempFileKey] = {
       data: arr,
       percent: 0,
@@ -68,6 +60,7 @@ const useMediaActions = () => {
       type,
       data: blob,
       last,
+      percent: action["percent"],
       ...dop
     };
   }

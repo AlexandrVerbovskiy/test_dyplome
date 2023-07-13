@@ -29,6 +29,8 @@ const Chat = () => {
     onDeleteMessage: onDeleteMessageForSockets,
     onChangeTyping: changeTypingForSockets,
     onChangeOnline: changeOnlineForSockets,
+    onUpdateMessagePercent,
+    onCancelledMessage,
     chatTyping, chatOnline, selectedChatId
   } = useMainChat();
 
@@ -40,7 +42,7 @@ const Chat = () => {
   }
 
   const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets});
+  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets, onUpdateMessagePercent, onCancelledMessage});
  
   const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 

@@ -20,6 +20,7 @@ const MediaFileAcceptPopup = () => {
       dop["chat_type"] = activeChat.chat_type;
       dop["getter_id"] = activeChat.user_id;
     }
+    console.log("sended")
     sendMedia(data, dataType, file.type, dop, file.name);
     close();
   };
@@ -51,8 +52,7 @@ const MediaFileAcceptPopup = () => {
 
   const checkFileExtension = extension => {
     if (!file || !file.type || !file.name) return false;
-
-    if (file.type != extension) return false;
+    if (file.type.toLowerCase() != extension.toLowerCase()) return false;
     return true;
   };
 

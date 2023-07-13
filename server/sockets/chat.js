@@ -151,9 +151,13 @@ class Chat {
             type,
             last
         } = data;
+        console.log(userId, tempKey, type);
+
 
         try {
             const filename = await this.chatController.uploadToFile(userId, tempKey, fileBody, type);
+            console.log("Filetype: ", type, indicateMediaTypeByExtension(type));
+
             if (last) {
                 const dataToSend = {
                     content: filename,
@@ -190,7 +194,7 @@ class Chat {
         const userId = sessionInfo.userId;
         const tempKey = data.temp_key;
         await this.chatController.onStopFile(tempKey, userId);
-        this.socketController.sendSocketMessageToUsers([userId], "file-upload-stopped", {
+        this.socketController.sendSocketMessageToUsers([userId], "message-cancelled", {
             temp_key: tempKey
         });
     }

@@ -127,18 +127,17 @@ class Chat extends Controller {
 
     uploadToFile = async (userId, key, data, type) => {
         const info = await this.actionModel.getByKeyAndType(userId, key, "sending_file");
-
         let filename = randomString() + "." + type;
-        if (!info) {
+
+        if (!info || !info.data) {
             fs.writeFileSync(this.__folder + "/" + filename, data);
             const actionInfo = JSON.stringify({
                 filename
             });
-            await this.actionModel.create("sending_file", userId, key, actionInfo);
+            await this.actionModel.create(userId, "sending_file", key, actionInfo);
         } else {
-            ({
-                filename
-            } = JSON.parse(info));
+            const resParsed = JSON.parse(info.data);
+            filename = resParsed.filename;
             fs.appendFileSync(this.__folder + "/" + filename, data);
         }
 
