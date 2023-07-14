@@ -24,6 +24,11 @@ class Action extends Model {
         const actions = await this.dbQueryAsync("SELECT data FROM users_actions WHERE user_id = ? AND id = ?", [userId, id]);
         return actions[0];
     });
+
+    getUserActions = async (userId) => await this.errorWrapper(async () => {
+        const actions = await this.dbQueryAsync("SELECT * FROM users_actions WHERE user_id = ?", [userId]);
+        return actions;
+    });
 }
 
 module.exports = Action;

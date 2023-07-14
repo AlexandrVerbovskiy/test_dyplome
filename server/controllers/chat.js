@@ -154,8 +154,23 @@ class Chat extends Controller {
         await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
         const {
             filename
-        } = JSON.parse(info);
+        } = JSON.parse(info.data);
         fs.unlinkSync(this.__folder + "/" + filename);
+    }
+
+    stopAllUserActions = async (socket, userId) => {
+        const actions = await this.actionModel.getUserActions(userId);
+        actions.forEach(async (action) => {
+            if (action.type == "sending_file") {
+                const key = action.key;
+                const info = action.data;
+                await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
+                const {
+                    filename
+                } = JSON.parse(info);
+                fs.unlinkSync(this.__folder + "/" + filename);
+            }
+        })
     }
 }
 

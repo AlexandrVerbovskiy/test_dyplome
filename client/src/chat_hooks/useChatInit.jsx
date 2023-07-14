@@ -183,9 +183,8 @@ const useChatInit = ({
     onGetMessageForSockets(dataToInsert);
   };
 
-  const stopSendMedia = key => {
-    console.log(key);
-    //ioRef.current.emit("stop-file-upload", { key });
+  const stopSendMedia = temp_key => {
+    ioRef.current.emit("stop-file-upload", { temp_key });
   };
 
   return {

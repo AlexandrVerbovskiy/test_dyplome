@@ -85,11 +85,11 @@ const ChatMessage = ({
             onContextMenu={handleMenuClick}
           >
             {percent &&
-              <div class="cancel-sending-message">
+              <div className="cancel-sending-message">
                 <div className="circle">
                   <div />
                 </div>
-                <div class="plus">
+                <div className="plus">
                   <span onClick={stopSendMedia}>
                     {Math.floor(percent)}%
                   </span>

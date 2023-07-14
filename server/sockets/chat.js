@@ -151,12 +151,9 @@ class Chat {
             type,
             last
         } = data;
-        console.log(userId, tempKey, type);
-
 
         try {
             const filename = await this.chatController.uploadToFile(userId, tempKey, fileBody, type);
-            console.log("Filetype: ", type, indicateMediaTypeByExtension(type));
 
             if (last) {
                 const dataToSend = {
@@ -202,13 +199,17 @@ class Chat {
     onDisconnect = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
         const socket = sessionInfo.socket;
+
+        await this.chatController.stopAllUserActions(socket, userId);
         await this.socketController.disconnect(socket);
+
         const users = await this.chatController.getUsersSocketToSend(userId);
         users.forEach(user => {
             this.io.to(user["socket"]).emit("offline", {
                 userId
             })
-        })
+        });
+        console.log("disconnected success");
     }
 }
 
