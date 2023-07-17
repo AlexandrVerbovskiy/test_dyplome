@@ -60,6 +60,13 @@
 
 .profile-edit-page .image-input-btn-block button {
   height: 170px;
+  width: 150px;
+}
+
+.profile-edit-page .image-input-btn-block button:hover {
+  color: #626262;
+  background-color: #ededed;
+  border-color: #ededed;
 }
 
 .profile-edit-page .image-input-btn-block button:has(img) {
@@ -68,4 +75,17 @@
 
 .profile-edit-page .secure-edit-inputs > div:not(:last-child) {
   margin-bottom: 10px;
+}
+
+.text-danger {
+  min-height: 1.5em;
+  font-size: 14px;
+}
+
+#avatarInput .text-danger {
+  min-height: auto;
+}
+
+#avatarInput img{
+  width: 100%;
 }

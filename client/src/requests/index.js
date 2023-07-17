@@ -29,3 +29,18 @@ export {
     default as selectChat
 }
 from "./selectChat";
+
+export {
+    default as updateProfile
+}
+from "./updateProfile";
+
+export {
+    default as saveJob
+}
+from "./saveJob";
+
+export {
+    default as getProfileInfo
+}
+from "./getProfileInfo";

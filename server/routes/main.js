@@ -1,4 +1,6 @@
 const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 const {
     User,
@@ -11,6 +13,23 @@ const {
     isNotAuth
 } = require("../middlewares");
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      const folder = 'files/temp';
+  
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+  
+      cb(null, folder);
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    },
+  });
+
+const upload = multer({ storage: storage });
+
 function route(app, db) {
     const userController = new User(db);
     const chatController = new Chat(db);
@@ -21,7 +40,9 @@ function route(app, db) {
     app.post("/reset-password-request", isNotAuth, userController.resetPasswordRequest);
     app.post("/reset-password-forgotten-password", isNotAuth, userController.updateForgottenPassword);
     app.post("/check-token", isAuth, userController.validateToken);
-    app.post("/update-profile", isAuth, userController.updateUserProfile);
+    app.post("/update-profile", isAuth, upload.single('avatar'), userController.updateUserProfile);
+    app.post("/get-user-profile", userController.getUserById);
+    app.post("/get-profile", userController.getPersonalProfile);
     app.post("/reset-password", isAuth, userController.resetPassword);
 
 
@@ -30,6 +51,9 @@ function route(app, db) {
     app.post("/select-chat", isAuth, chatController.selectChat);
 
     app.post("/create-job", isAuth, jobController.create);
+    app.post("/edit-job", isAuth, jobController.create);
+    app.get("/get-job", jobController.getById);
+
 
     app.post("/test", isAuth, async (req, res) => {
         res.status(200).json({

@@ -46,6 +46,15 @@ class Job extends Controller {
         await this.jobModel.edit(title, price, address, description, lat, lng, jobId);
         this.setResponseBaseSuccess("The job was updated successfully");
     });
+
+    getById = (req, res) => this.errorWrapper(res, async () => {
+        const {
+            jobId,
+        } = req.body;
+
+        const job = await this.jobModel.getById(jobId);
+        this.setResponseBaseSuccess("The job was updated successfully", job);
+    })
 }
 
 module.exports = Job;

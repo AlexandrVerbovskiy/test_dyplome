@@ -80,9 +80,9 @@ const useChatInit = ({
         }
 
         onUpdateMessagePercent({ temp_key, percent: nextPartData["percent"] });
-        setTimeout(() => {
-          ioRef.current.emit("file-part-upload", { ...nextPartData });
-        }, 10000000);
+        //setTimeout(() => {
+        ioRef.current.emit("file-part-upload", { ...nextPartData });
+        //}, 10000000);
       }
     );
 

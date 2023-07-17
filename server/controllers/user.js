@@ -12,6 +12,9 @@ const {
 const Controller = require("./controller");
 
 class User extends Controller {
+    __folder = "files/avatars";
+
+
     registration = (req, res) => this.errorWrapper(res, async () => {
         const {
             email,
@@ -65,28 +68,40 @@ class User extends Controller {
         }, 200);
     });
 
-    updateUserProfile = (req, res) => this.errorWrapper(res, async () => {
+    updateUserProfile = async (req, res) => this.errorWrapper(res, async () => {
         const {
+            email,
             nick,
             address,
             lat,
             lng
         } = req.body;
         const userId = req.userData.userId;
-        const avatarFile = req.files && req.files.image;
+        const avatarFile = req.file;
+        console.log(avatarFile)
 
-        if (!nick || !address || !lat || !lng) return this.setResponseValidationError("All fields are required");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!nick || !address || !lat || !lng || !email) return this.setResponseValidationError("All fields are required");
         if (nick.length < 3) return this.setResponseValidationError("Nick must be at least 3 characters long");
         if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) return this.setResponseValidationError("Invalid latitude or longitude values");
         if (address.length > 255) return this.setResponseValidationError("Address length must not exceed 255 characters");
+        if (!emailRegex.test(email)) return this.setResponseValidationError("Invalid email format. Please enter an email in the format 'example@example.com'.");
 
+        let avatar = null;
         //avatar saving
         if (avatarFile) {
             const randomName = randomString();
-            const fileExtension = avatarFile.name.split('.').pop();
-            const avatar = path.join(__dirname, 'files', 'avatars', `${randomName}.${fileExtension}`);
-            const avatarFileMove = promisify(avatarFile.mv);
-            await avatarFileMove(avatar);
+            const fileExtension = avatarFile.filename.split('.').pop();
+            const avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
+            const filePath = path.join('files/temp', avatarFile.filename);
+
+            if (!fs.existsSync("files/avatars")) {
+                fs.mkdirSync("files/avatars", {
+                    recursive: true
+                });
+            }
+
+            fs.renameSync(filePath, avatar);
         }
 
         await this.userModel.updateUserProfile(userId, {
@@ -96,6 +111,7 @@ class User extends Controller {
             lat,
             lng
         });
+        console.log("res sended")
         this.setResponseBaseSuccess('User profile updated successfully');
     });
 
@@ -152,7 +168,18 @@ class User extends Controller {
         this.setResponseBaseSuccess('Password successfully reset');
     });
 
-    getUserById = (userId) => this.userModel.getUserInfo(userId);
+    getUserById = (req, res) => this.errorWrapper(res, async () => {
+        const {
+            userId
+        } = req.body;
+
+        return await this.userModel.getUserInfo(userId);
+    });
+
+    getPersonalProfile = (req, res) => this.errorWrapper(res, async () => {
+        const userId = req.userData.userId;
+        return await this.userModel.getUserInfo(userId);
+    });
 }
 
 module.exports = User;

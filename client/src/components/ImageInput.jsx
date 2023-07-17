@@ -18,17 +18,36 @@ const ImageInput = ({ btnText, onChange, error }) => {
 
   const handleButtonClick = () => inputRef.current.click();
 
+  const handleDrop = e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) setFile(file);
+  };
+
+  const handleDragEnter = e => e.preventDefault();
+
+  const handleDragOver = e => e.preventDefault();
+
+  const handleDragLeave = e => e.preventDefault();
+
   return (
-    <div className="form-group" id="exampleForm.ControlInput1">
+    <div className="form-group" id="avatarInput">
       <div className="d-flex">
         <input
           ref={inputRef}
           type="file"
           className="form-control"
           name="image"
+          accept="image/*"
           onChange={e => setFile(e.target.files[0])}
         />
-        <div className="image-input-btn-block">
+        <div
+          className="image-input-btn-block"
+          onDrop={handleDrop}
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        >
           <button onClick={handleButtonClick} className="btn btn-light">
             {img
               ? <img

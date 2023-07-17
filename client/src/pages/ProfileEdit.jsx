@@ -7,6 +7,7 @@ import {
   SingleMarkMap
 } from "../components";
 import { useChangePassword, useProfileEdit } from "../hooks";
+import { updateProfile } from "../requests";
 
 const ProfileEdit = () => {
   const {
@@ -25,8 +26,23 @@ const ProfileEdit = () => {
     validateChangePassword
   } = useChangePassword();
 
-  const saveProfile = () => {
+  const saveProfile = async () => {
     const res = validateProfileEdit();
+    const avatar = profileImg.value ? profileImg.value.file : null;
+
+    const formData = new FormData();
+    formData.append("address", address.value);
+    formData.append("email", email.value);
+    formData.append("nick", nick.value);
+    formData.append("avatar", avatar);
+    formData.append("lat", coords.value.lat);
+    formData.append("lng", coords.value.lng);
+
+    await updateProfile(
+      formData,
+      success => console.log(success),
+      error => console.log(error)
+    );
     if (res) alert("done 1");
   };
 
