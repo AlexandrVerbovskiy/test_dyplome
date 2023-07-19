@@ -79,6 +79,8 @@ class User extends Controller {
         const userId = req.userData.userId;
         const avatarFile = req.file;
         console.log(avatarFile)
+        let avatar = req.body.avatar ? req.body.avatar : null;
+        console.log("Avatar: ", avatar)
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!nick || !address || !lat || !lng || !email) return this.setResponseValidationError("All fields are required");
@@ -87,12 +89,11 @@ class User extends Controller {
         if (address.length > 255) return this.setResponseValidationError("Address length must not exceed 255 characters");
         if (!emailRegex.test(email)) return this.setResponseValidationError("Invalid email format. Please enter an email in the format 'example@example.com'.");
 
-        let avatar = null;
         //avatar saving
         if (avatarFile) {
             const randomName = randomString();
             const fileExtension = avatarFile.filename.split('.').pop();
-            const avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
+            avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
             const filePath = path.join('files/temp', avatarFile.filename);
 
             if (!fs.existsSync("files/avatars")) {
@@ -173,12 +174,14 @@ class User extends Controller {
             userId
         } = req.body;
 
-        return await this.userModel.getUserInfo(userId);
+        const user = await this.userModel.getUserInfo(userId);
+        this.setResponseBaseSuccess('User profile was getted successfully', user);
     });
 
     getPersonalProfile = (req, res) => this.errorWrapper(res, async () => {
         const userId = req.userData.userId;
-        return await this.userModel.getUserInfo(userId);
+        const user = await this.userModel.getUserInfo(userId);
+        this.setResponseBaseSuccess('Personal profile userId getted successfully', user);
     });
 }
 

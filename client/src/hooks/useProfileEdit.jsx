@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
+import { getProfileInfo } from "../requests";
 
 const useProfileEdit = () => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [email, setEmail] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
+
+  useEffect(() => {
+    getProfileInfo(
+      res => {
+        if (res.lat != null && res.lng != null)
+          coords.change({ lat: res.lat, lng: res.lng });
+        if (res.address != null) address.change(res.address);
+        if (res.email != null) changeEmail(res.email);
+        if (res.nick != null) changeNick(res.nick);
+        if (res.avatar) changeImg(res.avatar);
+      },
+      err => console.log(err)
+    );
+  }, []);
 
   const changeEmail = email => {
     setEmail({ value: email, error: null });

@@ -28,7 +28,18 @@ const ProfileEdit = () => {
 
   const saveProfile = async () => {
     const res = validateProfileEdit();
-    const avatar = profileImg.value ? profileImg.value.file : null;
+    let avatar = null;
+    if (profileImg.value) {
+      if (typeof profileImg.value == "object") {
+        if (profileImg.value && profileImg.value.file) {
+          avatar = profileImg.value.file;
+        } else {
+          avatar = profileImg.value;
+        }
+      } else if (typeof profileImg.value == "string") {
+        avatar = profileImg.value;
+      }
+    }
 
     const formData = new FormData();
     formData.append("address", address.value);
@@ -97,6 +108,7 @@ const ProfileEdit = () => {
 
                 <ImageInput
                   btnText="Change avatar"
+                  url={profileImg.value}
                   onChange={img => profileImg.change(img)}
                   error={profileImg.error}
                 />

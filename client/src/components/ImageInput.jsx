@@ -1,20 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 import { getFileData } from "../utils";
 import ErrorSpan from "./ErrorSpan";
+import config from "../config";
 
-const ImageInput = ({ btnText, onChange, error }) => {
+const ImageInput = ({ btnText, onChange, error, url = null }) => {
   const [file, setFile] = useState(null);
   const [img, setImg] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(
     () => {
-      if (file) getFileData(file, setImg);
+      console.log("Test", typeof url);
+      if (typeof url == "string") {
+        setImg({ src: config.API_URL + "/" + url, name: "profile-avatar" });
+      } else {
+        setImg(url);
+      }
+    },
+    [url]
+  );
+
+  useEffect(() => console.log(img), [img]);
+
+  useEffect(
+    () => {
+      if (file)
+        getFileData(file, img => {
+          setImg(img);
+          onChange(img);
+        });
     },
     [file]
   );
-
-  useEffect(() => onChange(img), [img]);
 
   const handleButtonClick = () => inputRef.current.click();
 

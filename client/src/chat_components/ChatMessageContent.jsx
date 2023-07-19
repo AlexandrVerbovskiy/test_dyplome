@@ -11,7 +11,7 @@ const ChatMessageContent = ({ type, content, inProcess }) => {
       const blob = new Blob([content], { type: content["type"] });
       url = URL.createObjectURL(blob);
     } else {
-      url = API_URL + "/files/" + content;
+      url = API_URL + "/files/messages/" + content;
     }
   }
 

@@ -33,7 +33,7 @@ class User extends Model {
     });
 
     getUserInfo = async (userId) => await this.errorWrapper(async () => {
-        const findUserRes = await this.dbQueryAsync("SELECT * FROM users WHERE id = ?", [userId]);
+        const findUserRes = await this.dbQueryAsync("SELECT id, email, address, lat, lng, nick, avatar FROM users WHERE id = ?", [userId]);
         const user = findUserRes[0];
         return user;
     });
