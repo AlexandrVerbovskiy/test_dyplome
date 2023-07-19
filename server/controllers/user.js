@@ -78,9 +78,7 @@ class User extends Controller {
         } = req.body;
         const userId = req.userData.userId;
         const avatarFile = req.file;
-        console.log(avatarFile)
         let avatar = req.body.avatar ? req.body.avatar : null;
-        console.log("Avatar: ", avatar)
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!nick || !address || !lat || !lng || !email) return this.setResponseValidationError("All fields are required");
@@ -91,6 +89,10 @@ class User extends Controller {
 
         //avatar saving
         if (avatarFile) {
+            const user = await this.userModel.getUserInfo(userId);
+            const prevAvatarFile = user["avatar"];
+            if (prevAvatarFile) fs.unlinkSync(prevAvatarFile);
+
             const randomName = randomString();
             const fileExtension = avatarFile.filename.split('.').pop();
             avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
