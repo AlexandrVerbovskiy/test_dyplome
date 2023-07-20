@@ -3,9 +3,9 @@ import {
 } from "../utils";
 import config from "../config";
 
-const getProfileInfo = async (successCallback, errorCallback) => {
+const getJobInfo = async (id, successCallback, errorCallback) => {
     try {
-        const res = await axios.get(config.API_URL + "/get-profile");
+        const res = await axios.get(config.API_URL + `/get-job/${id}`);
         successCallback(res.data);
     } catch (err) {
         const res = err.response;
@@ -15,4 +15,4 @@ const getProfileInfo = async (successCallback, errorCallback) => {
     }
 }
 
-export default getProfileInfo;
+export default getJobInfo;

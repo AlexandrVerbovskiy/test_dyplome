@@ -38,6 +38,7 @@ class Model {
         try {
             return await func();
         } catch (err) {
+            console.log("Model error: ", err);
             this.setError("Internal server error", 500);
         } finally {
             this.throwMainError();

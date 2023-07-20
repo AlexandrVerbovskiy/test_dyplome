@@ -28,6 +28,8 @@ const ProfileEdit = () => {
 
   const saveProfile = async () => {
     const res = validateProfileEdit();
+    if (!res) return;
+
     let avatar = null;
     if (profileImg.value) {
       if (typeof profileImg.value == "object") {
@@ -42,10 +44,10 @@ const ProfileEdit = () => {
     }
 
     const formData = new FormData();
-    formData.append("address", address.value);
     formData.append("email", email.value);
     formData.append("nick", nick.value);
     formData.append("avatar", avatar);
+    formData.append("address", address.value);
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
 
@@ -54,7 +56,6 @@ const ProfileEdit = () => {
       success => console.log(success),
       error => console.log(error)
     );
-    if (res) alert("done 1");
   };
 
   const savePassword = () => {

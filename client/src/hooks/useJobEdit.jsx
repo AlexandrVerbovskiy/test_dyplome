@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
+import { getJobInfo } from "../requests";
 
-const useJobEdit = () => {
+const useJobEdit = ({ id }) => {
+  const [jobId, setJobId] = useState(id);
   const [title, setTitle] = useState({ value: "", error: null });
   const [price, setPrice] = useState({ value: 0, error: null });
   const [description, setDescription] = useState({ value: "", error: null });
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
+
+  useEffect(() => {
+    if (!id) return;
+    getJobInfo(
+      id,
+      res => {
+        if (!res) return;
+        coords.change({ lat: res.lat, lng: res.lng });
+        address.change(res.address);
+        changePrice(res.price);
+        changeTitle(res.title);
+        changeDescription(res.description);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }, []);
+
+  const changeJobId = id => {
+    setJobId(id);
+  };
 
   const changeTitle = title => {
     setTitle({ value: title, error: null });
@@ -58,6 +82,7 @@ const useJobEdit = () => {
     title: { ...title, change: changeTitle },
     price: { ...price, change: changePrice },
     description: { ...description, change: changeDescription },
+    jobId: { value: jobId, change: changeJobId },
     validateJobEdit
   };
 };

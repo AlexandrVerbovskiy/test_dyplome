@@ -12,7 +12,7 @@ const mainRouter = createBrowserRouter([
     element: <ProfileEdit />
   },
   {
-    path: "/job-edit",
+    path: "/job-edit/:id?",
     element: <JobEdit />
   },
   {

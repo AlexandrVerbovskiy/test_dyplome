@@ -9,7 +9,7 @@ class Job extends Controller {
         return false;
     }
 
-    create = (req, res) => this.errorWrapper(res, async () => {
+    __create = (req, res) => this.errorWrapper(res, async () => {
         const {
             title,
             price,
@@ -29,7 +29,7 @@ class Job extends Controller {
         });
     });
 
-    edit = (req, res) => this.errorWrapper(res, async () => {
+    __edit = (req, res) => this.errorWrapper(res, async () => {
         const {
             jobId,
             title,
@@ -43,15 +43,22 @@ class Job extends Controller {
         const resValidation = this.__validateEdit(title, price, description, lat, lng);
         if (resValidation) return resValidation;
 
-        await this.jobModel.edit(title, price, address, description, lat, lng, jobId);
+        await this.jobModel.edit(jobId, title, price, address, description, lat, lng);
         this.setResponseBaseSuccess("The job was updated successfully");
     });
 
-    getById = (req, res) => this.errorWrapper(res, async () => {
-        const {
-            jobId,
-        } = req.body;
+    edit = async (req, res) => {
+        const jobId = req.body.jobId;
+        if (!jobId) return this.__create(req, res);
 
+        const job = await this.jobModel.getById(jobId);
+        if (!job) return this.__create(req, res);
+
+        return this.__edit(req, res);
+    }
+
+    getById = (req, res) => this.errorWrapper(res, async () => {
+        const jobId = req.params.id;
         const job = await this.jobModel.getById(jobId);
         this.setResponseBaseSuccess("The job was updated successfully", job);
     })

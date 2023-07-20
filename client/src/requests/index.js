@@ -36,11 +36,16 @@ export {
 from "./updateProfile";
 
 export {
-    default as saveJob
+    default as updateJob
 }
-from "./saveJob";
+from "./updateJob";
 
 export {
     default as getProfileInfo
 }
 from "./getProfileInfo";
+
+export {
+    default as getJobInfo
+}
+from "./getJobInfo";

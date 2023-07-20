@@ -46,7 +46,7 @@ function route(app, db) {
   app.post("/check-token", isAuth, userController.validateToken);
   app.post("/update-profile", isAuth, upload.single('avatar'), userController.updateUserProfile);
   app.post("/get-user-profile", userController.getUserById);
-  app.post("/get-profile", isAuth, userController.getPersonalProfile);
+  app.get("/get-profile", isAuth, userController.getPersonalProfile);
   app.post("/reset-password", isAuth, userController.resetPassword);
 
 
@@ -54,9 +54,8 @@ function route(app, db) {
   app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
   app.post("/select-chat", isAuth, chatController.selectChat);
 
-  app.post("/create-job", isAuth, jobController.create);
-  app.post("/edit-job", isAuth, jobController.create);
-  app.get("/get-job", jobController.getById);
+  app.post("/edit-job", isAuth, jobController.edit);
+  app.get("/get-job/:id", isAuth, jobController.getById);
 
 
   app.post("/test", isAuth, async (req, res) => {

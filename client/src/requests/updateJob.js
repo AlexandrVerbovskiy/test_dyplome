@@ -3,8 +3,9 @@ import {
 } from "../utils";
 import config from "../config";
 
-const saveJob = async (data, successCallback, errorCallback, type = "create") => {
-    const path = config.API_URL + (type == "create" ? "/create-job" : "/edit-job");
+const updateJob = async (data, successCallback, errorCallback) => {
+    const path = config.API_URL + "/edit-job";
+
     try {
         const res = await axios.post(path, data);
         successCallback(res.data);
@@ -16,4 +17,4 @@ const saveJob = async (data, successCallback, errorCallback, type = "create") =>
     }
 }
 
-export default saveJob;
+export default updateJob;

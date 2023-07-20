@@ -1,19 +1,47 @@
 import { Textarea, Input, Navbar, SingleMarkMap } from "../components";
 import { useJobEdit } from "../hooks";
+import { updateJob } from "../requests";
+import { useParams } from "react-router-dom";
 
 const JobEdit = () => {
+  let { id } = useParams();
+
   const {
+    jobId,
     coords,
     address,
     title,
     price,
     description,
     validateJobEdit
-  } = useJobEdit();
+  } = useJobEdit({ id });
 
-  const saveJob = () => {
+  const saveJob = async () => {
     const res = validateJobEdit();
-    if (res) alert("done 1");
+    if (!res) return;
+
+    const jobData = {
+      price: price.value,
+      title: title.value,
+      description: description.value,
+      address: address.value,
+      lat: coords.value.lat,
+      lng: coords.value.lng,
+      jobId: jobId.value
+    };
+
+    await updateJob(
+      jobData,
+      success => {
+        console.log(success);
+        if (success["newId"]) {
+          const newUrl = window.origin + "/job-edit/" + success["newId"];
+          window.history.replaceState({}, null, newUrl);
+          jobId.change(success["newId"]);
+        }
+      },
+      error => console.log(error)
+    );
   };
 
   return (

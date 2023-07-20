@@ -11,11 +11,11 @@ const useProfileEdit = () => {
   useEffect(() => {
     getProfileInfo(
       res => {
-        if (res.lat != null && res.lng != null)
-          coords.change({ lat: res.lat, lng: res.lng });
-        if (res.address != null) address.change(res.address);
-        if (res.email != null) changeEmail(res.email);
-        if (res.nick != null) changeNick(res.nick);
+        if (!res) return;
+        coords.change({ lat: res.lat, lng: res.lng });
+        address.change(res.address);
+        changeEmail(res.email);
+        changeNick(res.nick);
         if (res.avatar) changeImg(res.avatar);
       },
       err => console.log(err)
