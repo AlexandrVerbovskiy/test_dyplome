@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   ImageInput,
   Input,
@@ -8,8 +8,11 @@ import {
 } from "../components";
 import { useChangePassword, useProfileEdit } from "../hooks";
 import { updateProfile } from "../requests";
+import { MainContext } from "../contexts";
 
 const ProfileEdit = () => {
+  const main = useContext(MainContext);
+
   const {
     coords,
     address,
@@ -27,8 +30,8 @@ const ProfileEdit = () => {
   } = useChangePassword();
 
   const saveProfile = async () => {
-    const res = validateProfileEdit();
-    if (!res) return;
+    const resValidation = validateProfileEdit();
+    if (!resValidation) return;
 
     let avatar = null;
     if (profileImg.value) {
@@ -53,8 +56,8 @@ const ProfileEdit = () => {
 
     await updateProfile(
       formData,
-      success => console.log(success),
-      error => console.log(error)
+      res => main.setSuccess(res["message"]),
+      err => main.setError(err)
     );
   };
 

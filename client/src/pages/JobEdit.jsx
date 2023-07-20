@@ -1,10 +1,13 @@
+import React, { useContext } from "react";
 import { Textarea, Input, Navbar, SingleMarkMap } from "../components";
 import { useJobEdit } from "../hooks";
 import { updateJob } from "../requests";
 import { useParams } from "react-router-dom";
+import { MainContext } from "../contexts";
 
 const JobEdit = () => {
   let { id } = useParams();
+  const main = useContext(MainContext);
 
   const {
     jobId,
@@ -17,8 +20,8 @@ const JobEdit = () => {
   } = useJobEdit({ id });
 
   const saveJob = async () => {
-    const res = validateJobEdit();
-    if (!res) return;
+    const resValidation = validateJobEdit();
+    if (!resValidation) return;
 
     const jobData = {
       price: price.value,
@@ -32,15 +35,15 @@ const JobEdit = () => {
 
     await updateJob(
       jobData,
-      success => {
-        console.log(success);
-        if (success["newId"]) {
-          const newUrl = window.origin + "/job-edit/" + success["newId"];
+      res => {
+        main.setSuccess(res["message"]);
+        if (res["newId"]) {
+          const newUrl = window.origin + "/job-edit/" + res["newId"];
           window.history.replaceState({}, null, newUrl);
-          jobId.change(success["newId"]);
+          jobId.change(res["newId"]);
         }
       },
-      error => console.log(error)
+      err => main.setError(err)
     );
   };
 

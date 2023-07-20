@@ -20,9 +20,9 @@ function App() {
     <MainContext.Provider
       value={{ auth, logout, setAuth, setSuccess, setError }}
     >
-      <div>
+      {/*<div>
         {auth && <button onClick={logout}>logout</button>}
-      </div>
+  </div>*/}
       {systemMessage &&
         <Message
           message={systemMessage.message}
