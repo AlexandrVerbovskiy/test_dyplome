@@ -4,3 +4,4 @@ export { default as Chat } from "./Chat";
 export { default as NoChats } from "./NoChats";
 export { default as ProfileEdit } from "./ProfileEdit";
 export { default as JobEdit } from "./JobEdit";
+export { default as MainJobs } from "./MainJobs";

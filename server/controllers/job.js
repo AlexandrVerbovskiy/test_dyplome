@@ -61,7 +61,13 @@ class Job extends Controller {
         const jobId = req.params.id;
         const job = await this.jobModel.getById(jobId);
         this.setResponseBaseSuccess("The job was updated successfully", job);
-    })
+    });
+
+    getByDistance = (req, res) => this.errorWrapper(res, async () => {
+        const lastJobId = req.params.id ?? null;
+        const job = await this.jobModel.getById(jobId);
+        this.setResponseBaseSuccess("The job was updated successfully", job);
+    });
 }
 
 module.exports = Job;

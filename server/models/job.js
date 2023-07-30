@@ -26,11 +26,20 @@ class Job extends Model {
         return null;
     });
 
-    getByDistance = async (latitude, longitude, distance) => await this.errorWrapper(async () => {
-        const jobs = await this.dbQueryAsync(`SELECT *, 
-            SQRT(POW(${this.__latitudeLongitudeToKilometers} * (latitude - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - longitude) * COS(latitude / ${this.__degreesToRadians}), 2)) AS distanceFromCenter 
-            FROM jobs HAVING distanceFromCenter <= ? ORDER BY distanceFromCenter ASC`,
-            [latitude, longitude, distance]);
+    getByDistance = async (latitude, longitude, distance, limit = 20, startId = null) => await this.errorWrapper(async () => {
+        let query = `SELECT *,  SQRT(POW(${this.__latitudeLongitudeToKilometers} * (latitude - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - longitude) * COS(latitude / ${this.__degreesToRadians}), 2)) AS distanceFromCenter FROM jobs`;
+        const params = [latitude, longitude];
+
+        if (startId) {
+            query += "WHERE id > ?";
+            params.push(startId);
+        }
+
+        query += `HAVING distanceFromCenter <= ? ORDER BY distanceFromCenter ASC LIMIT ?`;
+        params.push(distance);
+        params.push(limit);
+
+        const jobs = await this.dbQueryAsync(query, params);
         return jobs;
     });
 

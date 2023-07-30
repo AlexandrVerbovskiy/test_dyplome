@@ -2651,3 +2651,97 @@ body:has(.navbar) .alert {
 body:has(.alert) .page-wrapper {
   margin-top: 0px;
 }
+
+.main-jobs-page {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.jobs-map {
+  width: 100%;
+  height: 500px;
+  padding: 2rem;
+}
+
+.gm-style-iw-t button.gm-ui-hover-effect,
+.gm-style-iw-t button.gm-ui-hover-effect:focus,
+.gm-style-iw-t button.gm-ui-hover-effect:hover {
+  outline: 0px !important;
+}
+
+.job-list {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 20px;
+  justify-content: space-between;
+}
+
+.job-card {
+  width: 650px;
+  padding: 15px;
+  box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.13);
+}
+
+.job-dop-info,
+.job-main-info {
+  width: 100%;
+}
+
+.job-title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.job-address,
+.job-description {
+  margin-bottom: 42px;
+}
+
+.job-price,
+.job-created-time {
+  position: absolute;
+  bottom: 0;
+  font-size: 16px;
+}
+
+.job-created-time {
+  color: gray;
+  right: 0;
+}
+
+.show-more-job-description {
+  background: transparent;
+  border: 0 !important;
+  color: gray;
+  transition: all 0.2s ease-in-out;
+  outline: 0 !important;
+}
+
+.show-more-job-description:hover,
+.show-more-job-description:focus {
+  color: black;
+}
+
+.job-body {
+  display: flex;
+  position: relative;
+}
+
+.job-actions {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.write-to-author {
+  cursor: pointer;
+  color: gray;
+  font-weight: 700;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.write-to-author:hover {
+  color: black;
+}
