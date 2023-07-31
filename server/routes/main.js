@@ -56,7 +56,7 @@ function route(app, db) {
 
   app.post("/edit-job", isAuth, jobController.edit);
   app.get("/get-job/:id", isAuth, jobController.getById);
-
+  app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
 
   app.post("/test", isAuth, async (req, res) => {
     res.status(200).json({

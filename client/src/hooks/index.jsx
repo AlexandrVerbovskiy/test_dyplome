@@ -5,3 +5,4 @@ export { default as useJobEdit } from "./useJobEdit";
 export {
   default as useAddressCoordsRelation
 } from "./useAddressCoordsRelation";
+export { default as useGetJobs } from "./useGetJobs";

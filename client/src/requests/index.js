@@ -49,3 +49,8 @@ export {
     default as getJobInfo
 }
 from "./getJobInfo";
+
+export {
+    default as getJobsByLocation
+}
+from "./getJobsByLocation";

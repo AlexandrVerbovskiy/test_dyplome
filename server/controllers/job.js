@@ -44,7 +44,7 @@ class Job extends Controller {
         if (resValidation) return resValidation;
 
         await this.jobModel.edit(jobId, title, price, address, description, lat, lng);
-        this.setResponseBaseSuccess("The job was updated successfully");
+        this.setResponseBaseSuccess("The job was getted successfully");
     });
 
     edit = async (req, res) => {
@@ -60,13 +60,22 @@ class Job extends Controller {
     getById = (req, res) => this.errorWrapper(res, async () => {
         const jobId = req.params.id;
         const job = await this.jobModel.getById(jobId);
-        this.setResponseBaseSuccess("The job was updated successfully", job);
+        this.setResponseBaseSuccess("The jobs was getted successfully", {
+            job
+        });
     });
 
     getByDistance = (req, res) => this.errorWrapper(res, async () => {
-        const lastJobId = req.params.id ?? null;
-        const job = await this.jobModel.getById(jobId);
-        this.setResponseBaseSuccess("The job was updated successfully", job);
+        const userId = req.userData.userId;
+        const user = await this.userModel.getUserInfo(userId);
+        const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+        const needCountJobs = req.body.count ? req.body.count : 20;
+        const lat = user.lat ? user.lat : 0;
+        const lng = user.lng ? user.lng : 0;
+        const jobs = await this.jobModel.getByDistance(lat, lng, skippedIds, needCountJobs);
+        this.setResponseBaseSuccess("The job was updated successfully", {
+            jobs
+        });
     });
 }
 

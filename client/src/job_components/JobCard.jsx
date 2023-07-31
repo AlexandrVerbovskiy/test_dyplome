@@ -4,7 +4,8 @@ const JobCard = ({
   address,
   title,
   author,
-  price
+  price,
+  id
 }) => {
   const maxCharLimit = 250;
   const isLongText = description.length > maxCharLimit;
@@ -12,7 +13,7 @@ const JobCard = ({
   return (
     <div className="job-card">
       <div className="job-title">
-        {title}
+        {title} {id}
       </div>
       <div className="job-body">
         <div className="job-main-info">

@@ -3,7 +3,8 @@ import { Marker, InfoWindow } from "@react-google-maps/api";
 
 const MyMarker = ({
   title,
-  pos,
+  lat,
+  lng,
   main = false,
   markerClickHandler = () => {}
 }) => {
@@ -34,7 +35,7 @@ const MyMarker = ({
         );
       }}
       key={title}
-      position={pos}
+      position={{ lat, lng }}
       onClick={() => setVisibleWindow(prev => !prev)}
     >
       {visibleWindow &&

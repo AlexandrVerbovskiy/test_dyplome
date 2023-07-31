@@ -26,19 +26,20 @@ class Job extends Model {
         return null;
     });
 
-    getByDistance = async (latitude, longitude, distance, limit = 20, startId = null) => await this.errorWrapper(async () => {
-        let query = `SELECT *,  SQRT(POW(${this.__latitudeLongitudeToKilometers} * (latitude - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - longitude) * COS(latitude / ${this.__degreesToRadians}), 2)) AS distanceFromCenter FROM jobs`;
+    getByDistance = async (latitude, longitude, skippedIds = [], limit = 20) => await this.errorWrapper(async () => {
+        const generateDistanceRow = `SQRT(POW(${this.__latitudeLongitudeToKilometers} * (jobs.lat - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - jobs.lng) * COS(jobs.lat / ${this.__degreesToRadians}), 2))`;
+        let query = `SELECT jobs.*, nick as author, ${generateDistanceRow} AS distanceFromCenter FROM jobs
+            join users on users.id = jobs.author_id`;
         const params = [latitude, longitude];
 
-        if (startId) {
-            query += "WHERE id > ?";
-            params.push(startId);
+        if (skippedIds.length > 0) {
+            query += ` WHERE jobs.id NOT IN (?)`;
+            params.push(skippedIds);
         }
 
-        query += `HAVING distanceFromCenter <= ? ORDER BY distanceFromCenter ASC LIMIT ?`;
-        params.push(distance);
+        //HAVING distanceFromCenter <= ?
+        query += ` ORDER BY distanceFromCenter ASC LIMIT ?`;
         params.push(limit);
-
         const jobs = await this.dbQueryAsync(query, params);
         return jobs;
     });

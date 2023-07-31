@@ -14,3 +14,4 @@ export {default as SingleMarkMap} from "./SingleMarkMap";
 
 export { default as ImageInput } from "./ImageInput";
 export { default as ErrorSpan } from "./ErrorSpan";
+export { default as UploadTrigger } from "../components/UploadTrigger";
