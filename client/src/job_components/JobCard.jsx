@@ -5,7 +5,8 @@ const JobCard = ({
   title,
   author,
   price,
-  id
+  id,
+  author_id
 }) => {
   const maxCharLimit = 250;
   const isLongText = description.length > maxCharLimit;
@@ -39,7 +40,7 @@ const JobCard = ({
         </div>
       </div>
       <div className="job-actions">
-        <a href="#" className="btn btn-link write-to-author">
+        <a href={"/chat/personal/"+author_id} className="btn btn-link write-to-author">
             Write to author
           </a>
       </div>

@@ -54,3 +54,8 @@ export {
     default as getJobsByLocation
 }
 from "./getJobsByLocation";
+
+export {
+    default as getUsersChat
+}
+from "./getUsersChat";

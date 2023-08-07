@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { getJobsByLocation } from "../requests";
 
 const useGetJobs = () => {
-  const count = 1;
+  const count = 8;
   const [jobs, setJobs] = useState({});
   const jobIds = useRef([]);
   const [canShowMore, setCanShowMore] = useState(true);

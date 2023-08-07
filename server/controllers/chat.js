@@ -30,13 +30,13 @@ class Chat extends Controller {
         });
     });
 
-    createChat = async (data, userId) => {
+    __createChat = async (data, userId) => {
         const messageId = await this.chatModel.createPersonal(data.userId, data.typeMessage, data.content, userId);
         const message = await this.chatModel.getMessageInfo(messageId);
         return message;
     }
 
-    createMessage = async (data, userId) => {
+    __createMessage = async (data, userId) => {
         const localSend = async (chatId) => {
             const messageId = await this.chatModel.createMessage(chatId, userId, data.typeMessage, data.content);
             return await this.chatModel.getMessageById(messageId);
@@ -56,7 +56,7 @@ class Chat extends Controller {
         }
     }
 
-    updateMessage = async (data, userId) => {
+    __updateMessage = async (data, userId) => {
         const message = await this.chatModel.getMessageById(data.messageId);
         if (!message) return "No message found!";
         if (message["user_id"] != userId) return "Not the author of the message!";
@@ -64,7 +64,7 @@ class Chat extends Controller {
         return null;
     }
 
-    hideMessage = async (data, userId) => {
+    __hideMessage = async (data, userId) => {
         const message = await this.chatModel.getMessageById(data.messageId);
         if (!message) return "No message found!";
         if (message["user_id"] != userId) return "Not the author of the message!";
@@ -72,7 +72,7 @@ class Chat extends Controller {
         return null;
     }
 
-    getNextMessage = async (chatId, messageId) => {
+    __getNextMessage = async (chatId, messageId) => {
         const messages = await this.chatModel.getChatMessages(chatId, messageId, 1);
         return messages[0];
     }
@@ -82,7 +82,7 @@ class Chat extends Controller {
         return messages;
     }
 
-    getUserSocketsFromChat = async (chatId, userId) => {
+    __getUserSocketsFromChat = async (chatId, userId) => {
         const sockets = await this.chatModel.getUserSocketsFromChat(chatId, userId);
         return sockets;
     }
@@ -107,12 +107,14 @@ class Chat extends Controller {
 
     selectChat = (req, res) => this.errorWrapper(res, async () => {
         const {
-            chatId
+            chatId,
         } = req.body;
 
         const userId = req.userData.userId;
         const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
         if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
+
+        console.log(chatId);
 
         const messages = await this.chatModel.selectChat(userId, chatId)
         this.setResponseBaseSuccess("Found success", {
@@ -120,12 +122,40 @@ class Chat extends Controller {
         });
     });
 
-    getUsersSocketToSend = async (userId) => {
+    getUsersChat = (req, res) => this.errorWrapper(res, async () => {
+        const {
+            userId: companionId
+        } = req.body;
+
+        const userId = req.userData.userId;
+        const chatId = await this.chatModel.hasPersonal(userId, companionId);
+
+        const companionInfo = await this.userModel.getUserInfo(companionId);
+        companionInfo["chat_type"] = "personal";
+        companionInfo["user_email"] = companionInfo["email"];
+        companionInfo["user_id"] = companionInfo["id"];
+
+        if (chatId) {
+            companionInfo["chat_id"] = chatId;
+            companionInfo["messages"] = await this.chatModel.selectChat(userId, chatId);
+
+            if (companionInfo["messages"].length) {
+
+            }
+            companionInfo["content"] = companionInfo["messages"][0]["content"];
+            companionInfo["time_sended"] = companionInfo["messages"][0]["time_sended"];
+            companionInfo["type"] = companionInfo["messages"][0]["type"];
+        }
+
+        this.setResponseBaseSuccess("Chat was successfully found", companionInfo);
+    });
+
+    __getUsersSocketToSend = async (userId) => {
         const users = await this.chatModel.getUsersSocketToSend(userId);
         return users;
     }
 
-    uploadToFile = async (userId, key, data, type) => {
+    __uploadToFile = async (userId, key, data, type) => {
         const info = await this.actionModel.getByKeyAndType(userId, key, "sending_file");
         let filename = randomString() + "." + type;
 
@@ -149,7 +179,7 @@ class Chat extends Controller {
         await this.createMessage(data, userId);
     }
 
-    onStopFile = async (key, userId) => {
+    __onStopFile = async (key, userId) => {
         const info = await this.actionModel.getByKeyAndType(userId, key, "sending_file");
         await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
         const {
@@ -158,7 +188,7 @@ class Chat extends Controller {
         fs.unlinkSync(this.__folder + "/" + filename);
     }
 
-    stopAllUserActions = async (socket, userId) => {
+    __stopAllUserActions = async (socket, userId) => {
         const actions = await this.actionModel.getUserActions(userId);
         actions.forEach(async (action) => {
             if (action.type == "sending_file") {

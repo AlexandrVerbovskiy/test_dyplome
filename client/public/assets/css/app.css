@@ -2671,15 +2671,38 @@ body:has(.alert) .page-wrapper {
 
 .job-list {
   display: flex;
-  flex-wrap: wrap;
-  grid-gap: 20px;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
   justify-content: space-between;
+  /*padding: 20px 30px;*/
 }
 
 .job-card {
-  width: 650px;
+  width: 100%;
   padding: 15px;
   box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.13);
+  background-color: white;
+  border-radius: 6px;
+}
+
+@media (min-width: 576px) {
+  .job-card {
+    width: 49%;
+  }
+
+  .job-list {
+    grid-column-gap: 1%;
+  }
+}
+
+@media (min-width: 992px) {
+  .job-card {
+    width: 24%;
+  }
+
+  .job-list {
+    grid-column-gap: 1%;
+  }
 }
 
 .job-dop-info,
@@ -2744,4 +2767,10 @@ body:has(.alert) .page-wrapper {
 
 .write-to-author:hover {
   color: black;
+}
+
+.jobs-card-section {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }

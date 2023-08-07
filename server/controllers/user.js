@@ -171,12 +171,13 @@ class User extends Controller {
         this.setResponseBaseSuccess('Password successfully reset');
     });
 
+    __getUserById = async (userId) => await this.userModel.getUserInfo(userId);
+
     getUserById = (req, res) => this.errorWrapper(res, async () => {
         const {
             userId
         } = req.body;
-
-        const user = await this.userModel.getUserInfo(userId);
+        const user = await this.__getUserById(userId);
         this.setResponseBaseSuccess('User profile was getted successfully', user);
     });
 

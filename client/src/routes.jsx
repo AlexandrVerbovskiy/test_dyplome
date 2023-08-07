@@ -4,7 +4,7 @@ import { SignIn, SignUp, Chat, ProfileEdit, JobEdit, MainJobs } from "./pages";
 
 const mainRouter = createBrowserRouter([
   {
-    path: "/chat",
+    path: "/chat/:type?/:accountId?",
     element: <Chat />
   },
   {

@@ -20,8 +20,8 @@ const MainPage = () => {
       </div>
 
       <div className="page-content">
-        <div className="card">
-          <div className="card-body job-list">
+        <div className="card jobs-card-section">
+          <div className="card-body job-list row">
             {jobsIds.map(id => <JobCard key={id} {...jobs[id]} />)}
             <UploadTrigger onTriggerShown={getMoreJobs} />
           </div>

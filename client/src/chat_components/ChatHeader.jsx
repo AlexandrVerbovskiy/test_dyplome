@@ -13,7 +13,7 @@ const ChatHeader = () => {
         <i className="bx bx-menu-alt-left" />
       </div>
       <img
-        src="assets/images/avatars/avatar-1.png"
+        src="/assets/images/avatars/avatar-1.png"
         width="45"
         height="45"
         className="rounded-circle"

@@ -31,7 +31,7 @@ class Chat {
         const userId = validateToken(token);
         if (!userId) return sendError("Authentication failed")
 
-        const user = await this.userController.getUserById(userId);
+        const user = await this.userController.__getUserById(userId);
         const bindFuncToEvent = (event, func) => {
             socket.on(event, async (data) => {
                 try {
@@ -48,7 +48,7 @@ class Chat {
         }
 
         await this.socketController.connect(socket, userId);
-        const users = await this.chatController.getUsersSocketToSend(userId);
+        const users = await this.chatController.__getUsersSocketToSend(userId);
         users.forEach(user => {
             this.io.to(user["socket"]).emit("online", {
                 userId
@@ -69,7 +69,7 @@ class Chat {
     onCreateChat = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
         const sender = sessionInfo.sender;
-        const message = await this.chatController.createChat(data, userId);
+        const message = await this.chatController.__createChat(data, userId);
         this.socketController.sendSocketMessageToUsers([data.userId, userId], "created-chat", {
             message,
             sender
@@ -79,7 +79,7 @@ class Chat {
     onSendMessage = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
         const sender = sessionInfo.user;
-        const message = await this.chatController.createMessage(data, userId);
+        const message = await this.chatController.__createMessage(data, userId);
 
         this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
             message,
@@ -95,8 +95,8 @@ class Chat {
 
     onUpdateMessage = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
-        const message = await this.chatController.updateMessage(data, userId);
-        const sockets = await this.chatController.getUserSocketsFromChat(message["chat_id"], userId);
+        const message = await this.chatController.__updateMessage(data, userId);
+        const sockets = await this.chatController.__getUserSocketsFromChat(message["chat_id"], userId);
 
         const dataToSend = {
             chat_id: message["chat_id"],
@@ -109,13 +109,13 @@ class Chat {
 
     onDeleteMessage = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
-        const message = await this.chatController.hideMessage(data, userId);
+        const message = await this.chatController.__hideMessage(data, userId);
         const chatId = message["chat_id"];
         const messageId = message["message_id"];
-        const sockets = await this.chatController.getUserSocketsFromChat(chatId, userId);
+        const sockets = await this.chatController.__getUserSocketsFromChat(chatId, userId);
 
-        const messageToChat = await this.chatController.getNextMessage(chatId, messageId);
-        const messageToList = await this.chatController.getNextMessage(chatId, data["lastMessageId"]);
+        const messageToChat = await this.chatController.__getNextMessage(chatId, messageId);
+        const messageToList = await this.chatController.__getNextMessage(chatId, data["lastMessageId"]);
 
         const dataToSend = {
             messageToChat,
@@ -132,7 +132,7 @@ class Chat {
     __onChangeTyping = async (data, sessionInfo, typeAction) => {
         const userId = sessionInfo.userId;
         const chatId = data.chatId;
-        const sockets = await this.chatController.getUserSocketsFromChat(chatId, userId);
+        const sockets = await this.chatController.__getUserSocketsFromChat(chatId, userId);
         sockets.forEach(socket => this.io.to(socket["socket"]).emit(typeAction, {
             chatId,
             userId
@@ -153,7 +153,7 @@ class Chat {
         } = data;
 
         try {
-            const filename = await this.chatController.uploadToFile(userId, tempKey, fileBody, type);
+            const filename = await this.chatController.__uploadToFile(userId, tempKey, fileBody, type);
 
             if (last) {
                 const dataToSend = {
@@ -163,7 +163,7 @@ class Chat {
                     chat_type: data.chat_type,
                     userId: data.getter_id
                 }
-                const message = await this.chatController.createMessage(dataToSend, userId);
+                const message = await this.chatController.__createMessage(dataToSend, userId);
                 this.socketController.sendSocketMessageToUsers([dataToSend.getter_id], "get-message", {
                     message,
                     sender
@@ -190,7 +190,7 @@ class Chat {
     onStopFileUpload = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
         const tempKey = data.temp_key;
-        await this.chatController.onStopFile(tempKey, userId);
+        await this.chatController.__onStopFile(tempKey, userId);
         this.socketController.sendSocketMessageToUsers([userId], "message-cancelled", {
             temp_key: tempKey
         });
@@ -200,10 +200,10 @@ class Chat {
         const userId = sessionInfo.userId;
         const socket = sessionInfo.socket;
 
-        await this.chatController.stopAllUserActions(socket, userId);
+        await this.chatController.__stopAllUserActions(socket, userId);
         await this.socketController.disconnect(socket);
 
-        const users = await this.chatController.getUsersSocketToSend(userId);
+        const users = await this.chatController.__getUsersSocketToSend(userId);
         users.forEach(user => {
             this.io.to(user["socket"]).emit("offline", {
                 userId

@@ -53,6 +53,7 @@ function route(app, db) {
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
   app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
   app.post("/select-chat", isAuth, chatController.selectChat);
+  app.post("/get-users-chat", isAuth, chatController.getUsersChat);
 
   app.post("/edit-job", isAuth, jobController.edit);
   app.get("/get-job/:id", isAuth, jobController.getById);

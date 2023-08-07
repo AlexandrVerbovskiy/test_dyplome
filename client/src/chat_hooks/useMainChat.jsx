@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import useChatList from "./useChatList";
-import { getChatMessages, selectChat } from "../requests";
+import { getChatMessages, selectChat, getUsersChat } from "../requests";
 
-const useMainChat = () => {
+const useMainChat = ({ accountId, type = "personal" }) => {
   const needCountMessages = 10;
   const activeChat = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -21,8 +21,30 @@ const useMainChat = () => {
     onChangeTyping: onChangeListTyping,
     onChangeOnline: onChangeListOnline
   } = useChatList(chatList => {
+    console.log(chatList);
     const chatElem = chatList.length > 0 ? chatList[0] : null;
-    handleChangeChat(chatElem);
+    console.log(accountId, type);
+
+    if (accountId) {
+      if (type == "personal") {
+        getUsersChat(
+          accountId,
+          res => {
+            activeChat.current = res;
+            setMessages(res.messages);
+            const count = res.messages.length;
+            if (count > 0) {
+              setLastMessageId(res.messages[0].message_id);
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        );
+      }
+    } else {
+      handleChangeChat(chatElem);
+    }
   });
 
   function setEditMessage(id, content) {
@@ -36,6 +58,7 @@ const useMainChat = () => {
   }
 
   async function handleChangeChat(chat) {
+    console.log(chat);
     if (chat === null) return (activeChat.current = null);
 
     const chatId = chat.chat_id;
@@ -45,7 +68,6 @@ const useMainChat = () => {
 
     const successCallback = res => {
       activeChat.current = chat;
-      console.log(res);
       setMessages(res);
       const count = res.length;
       if (count > 0) {

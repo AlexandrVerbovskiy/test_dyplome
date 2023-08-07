@@ -1,4 +1,5 @@
 import {useContext} from "react";
+import { useParams } from "react-router-dom";
 import {
   useChatInit,
   useChatEmojiPopup,
@@ -12,6 +13,7 @@ import NoChats from "./NoChats";
 import { randomString } from "../utils";
 
 const Chat = () => {
+  const { accountId, type } = useParams();
   const {
     selectChat,
     activeChat,
@@ -32,10 +34,9 @@ const Chat = () => {
     onUpdateMessagePercent,
     onCancelledMessage,
     chatTyping, chatOnline, selectedChatId
-  } = useMainChat();
+  } = useMainChat({accountId, type});
 
   const {auth}= useContext(MainContext);
-
   const onEditMessage = (id, content)=>{
     console.log("edit start: ", id, content)
     setEditMessage(id, content);
@@ -53,7 +54,8 @@ const Chat = () => {
   
   const handleEndTyping = () => endTyping(activeChat.chat_id);
 
-  const handleCreateChat = userId => createChat(userId);
+  const handleCreateChat = () => createChat(accountId);
+  
   const handleSendTextMessage = message => {
     if(editMessageId){
       if(message!=editMessageContent) {

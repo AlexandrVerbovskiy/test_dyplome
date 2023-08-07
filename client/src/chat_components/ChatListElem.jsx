@@ -25,7 +25,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
       <div className="d-flex">
         <div className="chat-user-online">
           <img
-            src="assets/images/avatars/avatar-3.png"
+            src="/assets/images/avatars/avatar-3.png"
             width="42"
             height="42"
             className="rounded-circle"

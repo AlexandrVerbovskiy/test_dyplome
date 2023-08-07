@@ -3,10 +3,12 @@ import {
 } from "../utils";
 import config from "../config";
 
-const getChatMessages = async (data, successCallback, errorCallback) => {
+const getUsersChat = async (userId, successCallback, errorCallback) => {
     try {
-        const res = await axios.post(config.API_URL + "/get-chat-messages", data);
-        successCallback(res.data.messages);
+        const res = await axios.post(config.API_URL + "/get-users-chat", {
+            userId
+        });
+        successCallback(res.data);
     } catch (err) {
         const res = err.response;
         if (res && res.status && res.data && res.data.error)
@@ -15,4 +17,4 @@ const getChatMessages = async (data, successCallback, errorCallback) => {
     }
 }
 
-export default getChatMessages;
+export default getUsersChat;
