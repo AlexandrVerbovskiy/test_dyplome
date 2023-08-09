@@ -3,8 +3,9 @@ import useChatList from "./useChatList";
 import { getChatMessages, selectChat, getUsersChat } from "../requests";
 
 const useMainChat = ({ accountId, type = "personal" }) => {
+  console.log("rebuilded");
   const needCountMessages = 10;
-  const activeChat = useRef(null);
+  const activeChat = useRef({});
   const [messages, setMessages] = useState([]);
   const [lastMessageId, setLastMessageId] = useState(null);
   const [editMessageId, setEditMessageId] = useState(null);
@@ -17,13 +18,12 @@ const useMainChat = ({ accountId, type = "personal" }) => {
     setChatListSearch,
     getMoreChats,
     onChatUpdate,
+    onGetChat,
     onChatMessageDelete,
     onChangeTyping: onChangeListTyping,
     onChangeOnline: onChangeListOnline
   } = useChatList(chatList => {
-    console.log(chatList);
     const chatElem = chatList.length > 0 ? chatList[0] : null;
-    console.log(accountId, type);
 
     if (accountId) {
       if (type == "personal") {
@@ -31,10 +31,13 @@ const useMainChat = ({ accountId, type = "personal" }) => {
           accountId,
           res => {
             activeChat.current = res;
-            setMessages(res.messages);
-            const count = res.messages.length;
+            const count = res.messages ? res.messages.length : 0;
+
             if (count > 0) {
               setLastMessageId(res.messages[0].message_id);
+              setMessages(res.messages);
+            } else {
+              setMessages([]);
             }
           },
           err => {
@@ -58,7 +61,6 @@ const useMainChat = ({ accountId, type = "personal" }) => {
   }
 
   async function handleChangeChat(chat) {
-    console.log(chat);
     if (chat === null) return (activeChat.current = null);
 
     const chatId = chat.chat_id;
@@ -94,13 +96,21 @@ const useMainChat = ({ accountId, type = "personal" }) => {
   };
 
   const onGetMessage = message => {
-    console.log(message);
     if (!message) return;
     onChatUpdate(message);
-    if (message.chat_id === activeChat.current.chat_id) {
+
+    if (
+      (activeChat.current.chat_id &&
+        message.chat_id === activeChat.current.chat_id) ||
+      (message.chat_type === "personal" &&
+        message.getter_id === activeChat.current.user_id)
+    ) {
       if (message.in_process) {
         setMessages(prev => [...prev, message]);
       } else {
+        if (!activeChat.current.chat_id)
+          activeChat.current.chat_id = message.chat_id;
+
         setMessages(prev => {
           const newMessages = [...prev.filter(m => !m.in_process), message];
           const inProcessMessages = message.temp_key
@@ -196,6 +206,18 @@ const useMainChat = ({ accountId, type = "personal" }) => {
     setOnline(online);
   };
 
+  const onGetNewChat = data => {
+    onGetChat(data);
+
+    if (
+      data.chat_type == "personal" &&
+      activeChat.current.chat_type == "personal" &&
+      data.user_id == activeChat.current.user_id
+    ) {
+      console.log("work");
+    }
+  };
+
   return {
     selectChat: handleChangeChat,
     activeChat: activeChat.current,
@@ -205,6 +227,7 @@ const useMainChat = ({ accountId, type = "personal" }) => {
     setChatListSearch,
     getMoreChats,
     onGetMessage,
+    onGetNewChat,
     editMessageId,
     editMessageContent,
     setEditMessage,

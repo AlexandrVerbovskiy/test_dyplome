@@ -29,6 +29,7 @@ const Chat = () => {
     onGetMessage:onGetMessageForSockets,
     onUpdateMessage: onUpdateMessageForSockets,
     onDeleteMessage: onDeleteMessageForSockets,
+    onGetNewChat,
     onChangeTyping: changeTypingForSockets,
     onChangeOnline: changeOnlineForSockets,
     onUpdateMessagePercent,
@@ -43,7 +44,7 @@ const Chat = () => {
   }
 
   const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets, onUpdateMessagePercent, onCancelledMessage});
+  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, onGetNewChat,changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets, onUpdateMessagePercent, onCancelledMessage});
  
   const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
 
@@ -53,10 +54,14 @@ const Chat = () => {
   const handleStartTyping = () => startTyping(activeChat.chat_id);
   
   const handleEndTyping = () => endTyping(activeChat.chat_id);
-
-  const handleCreateChat = () => createChat(accountId);
   
+  const handleSendMedia = (data, dataType, filetype, dop, filename) => {
+    createChat(accountId)
+    sendMedia(data, dataType, filetype, dop, filename);
+  }
+
   const handleSendTextMessage = message => {
+    console.log(activeChat)
     if(editMessageId){
       if(message!=editMessageContent) {
         editMessage(editMessageId, message);
@@ -74,7 +79,7 @@ const Chat = () => {
     }
   };
 
-  if(chatList.length<1) return <NoChats/>;
+  if(chatList.length<1 && !activeChat) return <NoChats/>;
 
   return (
     <div id="chatPage" className="row">
@@ -98,7 +103,7 @@ const Chat = () => {
           onDeleteMessage,
           chatTyping, 
           chatOnline,
-          sendMedia, 
+          handleSendMedia, 
           stopSendMedia
         }}
       >

@@ -78,6 +78,7 @@ class Controller {
         try {
             await func();
         } catch (e) {
+            console.log(e)
             const status = e.status ? e.status : 500;
             const error = e.message
             this.setResponse({

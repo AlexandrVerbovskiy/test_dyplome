@@ -47,8 +47,8 @@ class Chat extends Controller {
             if (hasPersonalChat) {
                 return await localSend(hasPersonalChat);
             } else {
-                const chatId = await this.create("personal");
-                await this.addManyUsers(chatId, [data['getter_id'], userId]);
+                const chatId = await this.chatModel.create("personal");
+                await this.chatModel.addManyUsers(chatId, [data['getter_id'], userId]);
                 return await localSend(chatId);
             }
         } else {
@@ -140,11 +140,10 @@ class Chat extends Controller {
             companionInfo["messages"] = await this.chatModel.selectChat(userId, chatId);
 
             if (companionInfo["messages"].length) {
-
+                companionInfo["content"] = companionInfo["messages"][0]["content"];
+                companionInfo["time_sended"] = companionInfo["messages"][0]["time_sended"];
+                companionInfo["type"] = companionInfo["messages"][0]["type"];
             }
-            companionInfo["content"] = companionInfo["messages"][0]["content"];
-            companionInfo["time_sended"] = companionInfo["messages"][0]["time_sended"];
-            companionInfo["type"] = companionInfo["messages"][0]["type"];
         }
 
         this.setResponseBaseSuccess("Chat was successfully found", companionInfo);

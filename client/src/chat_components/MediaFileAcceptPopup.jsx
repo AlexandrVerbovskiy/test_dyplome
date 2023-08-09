@@ -6,7 +6,7 @@ import config from "../config";
 import { autoConvert } from "../utils";
 
 const MediaFileAcceptPopup = () => {
-  const { sendMedia, activeChat, activeChatId } = useContext(ChatContext);
+  const { handleSendMedia, activeChat, activeChatId } = useContext(ChatContext);
   const { mediaFileAccept } = useContext(ChatBodyContext);
   const { file, active, close } = mediaFileAccept;
 
@@ -20,8 +20,8 @@ const MediaFileAcceptPopup = () => {
       dop["chat_type"] = activeChat.chat_type;
       dop["getter_id"] = activeChat.user_id;
     }
-    console.log("sended")
-    sendMedia(data, dataType, file.type, dop, file.name);
+    console.log("sended");
+    handleSendMedia(data, dataType, file.type, dop, file.name);
     close();
   };
 

@@ -21,7 +21,6 @@ const ChatMessage = ({
   temp_key = null,
   percent = null
 }) => {
-  console.log("new:", percent, temp_key);
   const main = useContext(MainContext);
   const { auth } = main;
 

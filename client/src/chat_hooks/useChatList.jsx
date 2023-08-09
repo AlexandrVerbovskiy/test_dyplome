@@ -87,6 +87,10 @@ const useChatList = onInit => {
     });
   };
 
+  const onGetChat = chat => {
+    setChatList(prev => [chat, ...prev]);
+  };
+
   const onChatMessageDelete = (chatId, deletedMessageId, message) => {
     setChatList(prev => {
       const prevDataChat = prev.find(elem => elem.chat_id == chatId);
@@ -136,7 +140,8 @@ const useChatList = onInit => {
     onChatUpdate,
     onChatMessageDelete,
     onChangeTyping,
-    onChangeOnline
+    onChangeOnline,
+    onGetChat
   };
 };
 

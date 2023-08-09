@@ -14,7 +14,7 @@ const Message = ({ type, message, onClose }) => {
   };
 
   useEffect(() => {
-    setTimeout(handleCloseClick, 5000)
+    setTimeout(handleCloseClick, 5000);
   }, []);
 
   return (

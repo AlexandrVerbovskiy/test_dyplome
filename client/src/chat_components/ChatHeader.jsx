@@ -3,6 +3,7 @@ import { ChatContext } from "../contexts";
 
 const ChatHeader = () => {
   const { activeChat, setListWindow, chatTyping, chatOnline } = useContext(ChatContext);
+  console.log(activeChat)
   const handleGoBackClick = ()=>setListWindow();
 
   console.log(chatTyping)

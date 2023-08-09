@@ -79,18 +79,33 @@ class Chat {
     onSendMessage = async (data, sessionInfo) => {
         const userId = sessionInfo.userId;
         const sender = sessionInfo.user;
+        const hasChat = data.chatId || data.chat_id;
         const message = await this.chatController.__createMessage(data, userId);
 
-        this.socketController.sendSocketMessageToUsers([data.userId], "get-message", {
+        this.socketController.sendSocketMessageToUsers([data.getter_id], "get-message", {
             message,
             sender
         });
 
-
         message["temp_key"] = data["temp_key"];
+        message["getter_id"] = data["getter_id"];
+
         this.socketController.sendSocketMessageToUsers([userId], "success-sended-message", {
             message
         });
+
+        if (!hasChat) {
+            this.socketController.sendSocketMessageToUsers([data.getter_id], "created-chat", {
+                ...message
+            });
+
+            const getter = await this.userController.__getUserById(data.getter_id);
+            this.socketController.sendSocketMessageToUsers([userId], "created-chat", {
+                ...message,
+                user_email: getter["email"],
+                user_id: getter["id"]
+            });
+        }
     }
 
     onUpdateMessage = async (data, sessionInfo) => {

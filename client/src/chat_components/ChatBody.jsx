@@ -9,6 +9,7 @@ import { useMediaFileAccept, useRecorder } from "../chat_hooks";
 
 const ChatBody = ({ chatRef }) => {
   const textRef = useRef(null);
+
   const main = useContext(MainContext);
   const {
     messages,
@@ -21,6 +22,32 @@ const ChatBody = ({ chatRef }) => {
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
   const [activeMessageActionPopup, setActiveMessageActionPopup] = useState(
     null
+  );
+  const [countChanges, setCountChanges] = useState(0);
+
+  const scrollBottom = () => {
+    setTimeout(() => {
+      const messagesBlock = document.querySelectorAll(
+        ".chat-content-rightside"
+      );
+      if (messagesBlock.length) {
+        const last = messagesBlock[messagesBlock.length - 1];
+        last.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "end"
+        });
+      }
+    }, 100);
+  };
+
+  useEffect(
+    () => {
+      if (messages.length < 0 || countChanges) return;
+      setCountChanges(1);
+      scrollBottom();
+    },
+    [messages]
   );
 
   const closeActiveMessagePopup = () => setActiveMessageActionPopup(null);
@@ -42,6 +69,8 @@ const ChatBody = ({ chatRef }) => {
     if (!temp_key) return null;
     return () => stopSendMedia(temp_key);
   };
+
+  console.log("Messages", messages);
 
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>

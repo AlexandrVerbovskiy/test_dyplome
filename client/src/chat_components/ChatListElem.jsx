@@ -7,8 +7,6 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   if (!last) className += "pb-2";
   if (!first) className += " mt-4";
 
-  console.log(chat?.typing)
-
   const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
 
   if (activeChatId == chat.chat_id) className += " active";

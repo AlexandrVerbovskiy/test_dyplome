@@ -12,7 +12,8 @@ const useChatInit = ({
   changeTypingForSockets,
   changeOnlineForSockets,
   onUpdateMessagePercent,
-  onCancelledMessage
+  onCancelledMessage,
+  onGetNewChat
 }) => {
   const ioRef = useRef(null);
 
@@ -31,7 +32,7 @@ const useChatInit = ({
       }
     });
 
-    ioRef.current.on("created-chat", data => console.log("created: ", data));
+    ioRef.current.on("created-chat", data => onGetNewChat(data));
 
     ioRef.current.on("error", data => {
       let message =

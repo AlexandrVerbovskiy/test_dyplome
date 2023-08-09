@@ -41,9 +41,15 @@ class Chat extends Model {
         return insertRelationRes.insertId;
     });
 
+    getChatRelations = async (chatId) => {
+        return await this.dbQueryAsync(`SELECT * FROM chats_users where chat_id = ?`, [chatId]);
+    }
+
     addManyUsers = async (chatId, usersIds) => {
-        const insertRelationsRes = await this.dbQueryAsync("INSERT INTO chats_users (chat_id, user_id) VALUES ?", [usersIds.map(id => [chatId, id])]);
-        const insertedIds = insertRelationsRes[0].map(result => result.insertId);
+        await this.dbQueryAsync("INSERT INTO chats_users (chat_id, user_id) VALUES ?", [usersIds.map(id => [chatId, id])]);
+        const relations = await this.getChatRelations(chatId);
+        console.log(relations);
+        const insertedIds = relations.map(relation => relation.id);
         return insertedIds;
     }
 
