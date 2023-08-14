@@ -2774,3 +2774,7 @@ body:has(.alert) .page-wrapper {
   border: none !important;
   box-shadow: none !important;
 }
+
+.sign-page .text-danger.empty{
+  display: none;
+}

@@ -70,8 +70,6 @@ const useJobEdit = ({ id }) => {
       validated = false;
     }
 
-    console.log(validated);
-
     validated = addressCoordsValidate() && validated;
     return validated;
   };

@@ -6,7 +6,8 @@ const PasswordInput = ({
   onChange,
   label = "Password",
   placeholder = "Enter Password",
-  error = null
+  error = null,
+  style={}
 }) => {
   const [typePasswordInput, setTypePasswordInput] = useState("password");
 
@@ -19,6 +20,7 @@ const PasswordInput = ({
 
   return (
     <Input
+      style = {style}
       type={typePasswordInput}
       value={value}
       label={label}

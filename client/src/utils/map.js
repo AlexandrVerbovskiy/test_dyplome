@@ -37,18 +37,24 @@ const getAddressByCoords = async ({
     lat,
     lng
 }) => {
-    const res = await Geocode.fromLatLng(lat, lng);
-    const addressArray = res.results[0].address_components;
+    try {
+        const res = await Geocode.fromLatLng(lat, lng);
 
-    if (!addressArray) throw new Error("Undefined coords");
+        const addressArray = res.results[0].address_components;
 
-    const info = {};
-    addressArray.forEach(elem => {
-        const newObj = getAddressInfo(elem);
-        Object.assign(info, newObj);
-    });
+        if (!addressArray) throw new Error("Undefined coords");
 
-    return info;
+        const info = {};
+        addressArray.forEach(elem => {
+            const newObj = getAddressInfo(elem);
+            Object.assign(info, newObj);
+        });
+
+        return info;
+    } catch (err) {
+        console.log(err.message);
+        return "";
+    }
 }
 
 

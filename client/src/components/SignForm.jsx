@@ -6,7 +6,7 @@ const SignForm = ({
   relocateLinkInfo
 }) => {
   return (
-    <div className="wrapper">
+    <div className="wrapper sign-page">
       <div className="d-flex align-items-center justify-content-center my-5 my-lg-0">
         <div className="container">
           <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-2">

@@ -11,7 +11,6 @@ const useAddressCoordsRelation = () => {
   const [address, setAddress] = useState({ value: "", error: null });
 
   const changeCoords = async coords => {
-    console.log(coords);
     setCoords({ value: coords, error: null });
     const address = await getAddressByCoords(coords);
     const strAddress = fullAddressToString(address);
@@ -22,6 +21,7 @@ const useAddressCoordsRelation = () => {
     setAddress({ value: address, error: null });
     const res = await getCoordsByAddress(address);
     setCoords({ value: res, error: null });
+    setCoords({ value: { lat: 0, lng: 0 }, error: null });
   };
 
   const addressCoordsValidate = () => {

@@ -10,12 +10,13 @@ const Input = ({
   columnCounts = 12,
   children = null,
   required = true,
-  error = null
+  error = null,
+  style={}
 }) => {
   const id = useId();
   const className = "col-" + columnCounts;
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <label htmlFor={id} className="form-label">
         {label}
       </label>

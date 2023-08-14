@@ -4,7 +4,7 @@ const SingleMarkMap = ({ markerTitle, changeCoords, coords }) => {
   return (
     <>
       <Map onClick={changeCoords}>
-        {coords && <MapMarker title={markerTitle} pos={coords} />}
+        {coords && <MapMarker title={markerTitle} lat={coords?.lat} lng={coords?.lng}/>}
       </Map>
     </>
   );
