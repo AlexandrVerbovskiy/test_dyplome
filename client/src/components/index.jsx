@@ -10,8 +10,10 @@ export { default as Navbar } from "./Navbar";
 
 export { default as Map } from "./Map";
 export { default as MapMarker } from "./MapMarker";
-export {default as SingleMarkMap} from "./SingleMarkMap";
+export { default as SingleMarkMap } from "./SingleMarkMap";
 
 export { default as ImageInput } from "./ImageInput";
 export { default as ErrorSpan } from "./ErrorSpan";
-export { default as UploadTrigger } from "../components/UploadTrigger";
+export { default as UploadTrigger } from "./UploadTrigger";
+export { default as JobProposalForm } from "./JobProposalForm";
+export { default as PopupWrapper } from "./PopupWrapper"

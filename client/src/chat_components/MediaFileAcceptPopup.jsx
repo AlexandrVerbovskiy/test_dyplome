@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import PopupWrapper from "./PopupWrapper";
+import {PopupWrapper} from "../components";
 import CustomAudio from "./CustomAudio";
 import { ChatBodyContext, ChatContext } from "../contexts";
 import config from "../config";

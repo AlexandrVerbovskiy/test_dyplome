@@ -11,7 +11,7 @@ class JobProposal extends Controller {
 
     createJobRequest = async (req, res) => this.errorWrapper(res, async () => {
         const {
-            job_id: jobId,
+            jobId,
             price,
             time
         } = req.body;

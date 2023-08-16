@@ -6,3 +6,4 @@ export {
   default as useAddressCoordsRelation
 } from "./useAddressCoordsRelation";
 export { default as useGetJobs } from "./useGetJobs";
+export { default as usePopupController } from "./usePopupController"

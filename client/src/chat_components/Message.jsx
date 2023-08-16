@@ -14,6 +14,10 @@ const Message = ({ type, message, onClose }) => {
   };
 
   useEffect(() => {
+    messageRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
     setTimeout(handleCloseClick, 5000);
   }, []);
 

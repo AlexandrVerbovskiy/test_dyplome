@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { StopFill } from "react-bootstrap-icons";
-import PopupWrapper from "./PopupWrapper";
+import { PopupWrapper } from "../components";
 import { ChatBodyContext } from "../contexts";
 import { formatTime } from "../utils";
 import VisualizeCamera from "./VisualizeCamera";

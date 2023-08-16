@@ -5,7 +5,8 @@ const fs = require('fs');
 const {
   User,
   Chat,
-  Job
+  Job,
+  JobProposal
 } = require("../controllers");
 
 const {
@@ -38,6 +39,7 @@ function route(app, db) {
   const userController = new User(db);
   const chatController = new Chat(db);
   const jobController = new Job(db);
+  const jobProposalController = new JobProposal(db);
 
   app.post("/register", isNotAuth, userController.registration);
   app.post("/login", isNotAuth, userController.login);
@@ -58,6 +60,9 @@ function route(app, db) {
   app.post("/edit-job", isAuth, jobController.edit);
   app.get("/get-job/:id", isAuth, jobController.getById);
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
+
+  app.post("/send-job-proposal", isAuth, jobProposalController.createJobRequest);
+
 
   app.post("/test", isAuth, async (req, res) => {
     res.status(200).json({
