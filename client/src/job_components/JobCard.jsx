@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const JobCard = ({
   description,
   timeCreated,
@@ -41,18 +43,18 @@ const JobCard = ({
         </div>
       </div>
       <div className="job-actions">
-        <div>
-          <button>
-            View product
-          </button>
+        <div className="product-actions d-flex flex-column flex-sm-row">
+          <Link to={`/job-view/${id}`} className="btn btn-primary">
+            View job
+          </Link>
 
-          <button onClick={activateProposalForm}>
+          <button className="btn btn-success" onClick={activateProposalForm}>
             Send proposal
           </button>
         </div>
-        <a href={"/chat/personal/"+author_id} className="btn btn-link write-to-author">
-            Write to author
-          </a>
+        <a href={"/chat/personal/" + author_id} className="btn btn-link write-to-author">
+          Write to author
+        </a>
       </div>
     </div>
   );

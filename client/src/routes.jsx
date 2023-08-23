@@ -1,6 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SignIn, SignUp, Chat, ProfileEdit, JobEdit, MainJobs } from "./pages";
+import { SignIn, SignUp, Chat, ProfileEdit, JobEdit, MainJobs, JobView } from "./pages";
 
 const mainRouter = createBrowserRouter([
   {
@@ -14,6 +14,10 @@ const mainRouter = createBrowserRouter([
   {
     path: "/job-edit/:id?",
     element: <JobEdit />
+  },
+  {
+    path: "/job-view/:id?",
+    element: <JobView />
   },
   {
     path: "/",

@@ -21,9 +21,7 @@ const useJobEdit = ({ id }) => {
         changeTitle(res.title);
         changeDescription(res.description);
       },
-      err => {
-        console.log(err);
-      }
+      err => console.log(err)
     );
   }, []);
 

@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { MainContext } from "../contexts";
-
 import { Map, MapMarker, JobProposalForm, Navbar, UploadTrigger, PopupWrapper } from "../components";
 import { JobCard } from "../job_components";
 import { useGetJobs, usePopupController } from "../hooks";
