@@ -2698,6 +2698,7 @@ body:has(.alert) .page-wrapper {
   margin-top: 0px;
 }
 
+.job-view-page,
 .main-jobs-page {
   margin-left: 50px;
   margin-right: 50px;
@@ -2835,4 +2836,33 @@ body:has(.alert) .page-wrapper {
 .view-job-description .form-control {
   height: 120px;
   overflow-y: auto;
+}
+
+.btn-orange {
+  background-color: orange;
+  color: white !important;
+  transition: background-color 0.3s;
+}
+
+.btn-info {
+  color: white !important;
+}
+
+.btn-orange:hover {
+  background-color: darkorange;
+}
+
+.job-proposal-statuses-change {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-direction: column;
+  grid-row-gap: 10px;
+  align-items: end;
+  width: 100%;
+}
+
+.job-proposal-statuses-change>div {
+  display: flex;
+  grid-column-gap: 10px;
 }

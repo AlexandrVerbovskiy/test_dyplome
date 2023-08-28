@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MainContext } from "../contexts";
-import { MapMarker, Map, JobProposalForm, Navbar, ViewInput, PopupWrapper } from "../components";
+import { MapMarker, Map, JobProposalForm, Navbar, ViewInput, PopupWrapper, JobProposalChangerStatus, JobStatus } from "../components";
 import { getJobInfo } from "../requests";
 import { usePopupController } from "../hooks";
 
@@ -61,14 +61,16 @@ const JobView = () => {
                         <hr />
 
                         <div className="d-flex align-items-center">
-                            <div className="dropdown ms-auto">
-                                <a href={"/chat/personal/" + job.author_id} className="btn btn-primary">
-                                    Write to author
-                                </a>
+                            <div className="dropdown job-proposal-statuses-change">
+                                <div>
+                                    <a href={"/chat/personal/" + job.author_id} className="btn btn-primary">
+                                        Write to author
+                                    </a>
 
-                                <button className="btn btn-success" onClick={() => jobProposalForm.setJobId(id)}>
-                                    Send proposal
-                                </button>
+                                    <button className="btn btn-success" onClick={() => jobProposalForm.setJobId(id)}>
+                                        Send proposal
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

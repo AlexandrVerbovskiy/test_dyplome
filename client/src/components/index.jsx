@@ -18,3 +18,6 @@ export { default as ErrorSpan } from "./ErrorSpan";
 export { default as UploadTrigger } from "./UploadTrigger";
 export { default as JobProposalForm } from "./JobProposalForm";
 export { default as PopupWrapper } from "./PopupWrapper"
+
+export { default as JobStatus } from "./JobStatus";
+export { default as JobProposalChangerStatus } from "./JobProposalChangerStatus"
