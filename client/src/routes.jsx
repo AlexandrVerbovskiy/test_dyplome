@@ -1,43 +1,56 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SignIn, SignUp, Chat, ProfileEdit, JobEdit, MainJobs, JobView } from "./pages";
+import {
+  SignIn,
+  SignUp,
+  Chat,
+  ProfileEdit,
+  JobEdit,
+  MainJobs,
+  JobView,
+  JobProposalView,
+} from "./pages";
 
 const mainRouter = createBrowserRouter([
   {
     path: "/chat/:type?/:accountId?",
-    element: <Chat />
+    element: <Chat />,
   },
   {
     path: "/profile-edit",
-    element: <ProfileEdit />
+    element: <ProfileEdit />,
   },
   {
     path: "/job-edit/:id?",
-    element: <JobEdit />
+    element: <JobEdit />,
   },
   {
     path: "/job-view/:id?",
-    element: <JobView />
+    element: <JobView />,
+  },
+  {
+    path: "/job-proposal/:proposalId?",
+    element: <JobProposalView />,
   },
   {
     path: "/",
-    element: <MainJobs />
+    element: <MainJobs />,
   },
   {
     path: "*",
-    element: <div>Test </div>
-  }
+    element: <div>Test </div>,
+  },
 ]);
 
 export const signRouter = createBrowserRouter([
   {
     path: "/registration",
-    element: <SignUp />
+    element: <SignUp />,
   },
   {
     path: "*",
-    element: <SignIn />
-  }
+    element: <SignIn />,
+  },
 ]);
 
 export const MainRouter = () => {

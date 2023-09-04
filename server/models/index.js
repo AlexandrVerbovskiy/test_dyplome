@@ -5,6 +5,6 @@ module.exports = {
     Action: require('./action'),
     Job: require('./job'),
     PasswordResetLink: require('./passwordResetLink'),
-    JobProposal: require('./JobProposal'),
+    JobProposal: require('./jobProposal'),
     Dispute: require('./dispute')
 }

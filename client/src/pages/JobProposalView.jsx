@@ -8,21 +8,23 @@ import {
   Navbar,
   ViewInput,
   PopupWrapper,
+  JobProposalChangerStatus,
+  JobStatus,
 } from "../components";
-import { getJobInfo } from "../requests";
+import { getJobProposalInfo } from "../requests";
 import { usePopupController } from "../hooks";
 
-const JobView = () => {
-  let { id } = useParams();
-  const [job, setJob] = useState(null);
+const JobProposalView = () => {
+  let { proposalId } = useParams();
+  const [proposal, setProposal] = useState(null);
 
   useEffect(() => {
-    getJobInfo(
-      id,
-      (res) => setJob(res),
+    getJobProposalInfo(
+      proposalId,
+      (res) => setProposal({ ...res, status: res.status.toLocaleLowerCase() }),
       (err) => console.log(err)
     );
-  }, [id]);
+  }, [proposalId]);
 
   const { setSuccess, setError } = useContext(MainContext);
   const { jobProposalFormState } = usePopupController({
@@ -30,7 +32,7 @@ const JobView = () => {
     onError: setError,
   });
 
-  if (!job) return;
+  if (!proposal) return;
 
   return (
     <div className="page-wrapper job-view-page">
@@ -38,24 +40,29 @@ const JobView = () => {
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <h6 className="text-uppercase">Job Info</h6>
+            <h6 className="text-uppercase">Proposal Info</h6>
             <hr />
 
             <div className="row">
               <div className="job-edit-map col-12 col-md-6">
                 <Map>
-                  <MapMarker title={job.title} lat={job.lat} lng={job.lng} />
+                  <MapMarker
+                    title={proposal.title}
+                    lat={proposal.lat}
+                    lng={proposal.lng}
+                  />
                 </Map>
               </div>
 
               <div className="col-12 col-md-6 job-edit-inputs">
-                <ViewInput label="Job title" value={job.title} />
-                <ViewInput label="Job price" value={job.price} />
-                <ViewInput label="Job address" value={job.address} />
+                <ViewInput label="Proposal title" value={proposal.title} />
+                <JobStatus actualStatus={proposal.status} />
+                <ViewInput label="Proposal price" value={proposal.price} />
+                <ViewInput label="Proposal address" value={proposal.address} />
                 <ViewInput
-                  label="Job description"
+                  label="Proposal description"
                   className="view-job-description"
-                  value={job.description}
+                  value={proposal.description}
                 />
               </div>
             </div>
@@ -66,41 +73,25 @@ const JobView = () => {
               <div className="dropdown job-proposal-statuses-change">
                 <div>
                   <a
-                    href={"/chat/personal/" + job.author_id}
+                    href={"/chat/personal/" + proposal.author_id}
                     className="btn btn-primary"
                   >
                     Write to author
                   </a>
 
-                  <button
-                    className="btn btn-success"
-                    onClick={() => jobProposalFormState.setJobId(id)}
-                  >
-                    Send proposal
-                  </button>
+                  <JobProposalChangerStatus
+                    actualStatus={proposal.status}
+                    isSeller={true}
+                    isBuyers={true}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <PopupWrapper
-        onClose={jobProposalFormState.hide}
-        activeTrigger={jobProposalFormState.data.active}
-        title="Send proposal"
-        id="send_proposal"
-      >
-        <JobProposalForm
-          send={jobProposalFormState.sendProposal}
-          price={jobProposalFormState.data.price}
-          time={jobProposalFormState.data.time}
-          setTime={jobProposalFormState.setTime}
-          setPrice={jobProposalFormState.setPrice}
-        />
-      </PopupWrapper>
     </div>
   );
 };
 
-export default JobView;
+export default JobProposalView;
