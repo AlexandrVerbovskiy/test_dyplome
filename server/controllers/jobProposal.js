@@ -128,6 +128,38 @@ class JobProposal extends Controller {
       });
     });
   };
+
+  getForProposalAuthor = async (req, res) => {
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+      const needCountJobs = req.body.count ? req.body.count : 20;
+      const proposals = await this.jobProposalModel.getForProposalAuthor(
+        userId,
+        skippedIds,
+        needCountJobs
+      );
+      this.setResponseBaseSuccess("Proposals was get successfully", {
+        proposals,
+      });
+    });
+  };
+
+  getForJobAuthor = async (req, res) => {
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+      const needCountJobs = req.body.count ? req.body.count : 20;
+      const proposals = await this.jobProposalModel.getForJobAuthor(
+        userId,
+        skippedIds,
+        needCountJobs
+      );
+      this.setResponseBaseSuccess("Proposals was get successfully", {
+        proposals,
+      });
+    });
+  };
 }
 
 module.exports = JobProposal;

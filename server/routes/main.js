@@ -65,6 +65,9 @@ function route(app, db) {
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
   app.post("/edit-job", isAuth, jobController.edit);
 
+  app.post("/get-my-proposals", isAuth, jobProposalController.getForProposalAuthor);
+  app.post("/get-proposals-for-me", isAuth, jobProposalController.getForJobAuthor);
+
   app.get("/get-job-proposal/:id", isAuth, jobProposalController.getById);
   app.post("/send-job-proposal", isAuth, jobProposalController.create);
 

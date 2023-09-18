@@ -12,17 +12,53 @@ class JobProposal extends Model {
     awaitingCancellationConfirmation: "Awaiting Cancellation Confirmation",
   };
 
+  __fullJobRequestInfo =
+    "job_requests.*, jobs.title, jobs.price, jobs.address, jobs.description, jobs.lat, jobs.lng, jobs.author_id FROM job_requests JOIN jobs ON job_requests.job_id = jobs.id";
+
   getById = async (proposalId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(
-        `SELECT job_requests.*, jobs.title, jobs.price, jobs.address, jobs.description, jobs.lat, jobs.lng, jobs.author_id 
-          FROM job_requests JOIN jobs ON job_requests.job_id = jobs.id WHERE job_requests.id = ?`,
+        `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.id = ?`,
         [proposalId]
       );
 
       if (proposals.length) return proposals[0];
       return null;
     });
+
+  getForJobAuthor = async (userId, skippedIds, limit) => {
+    let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
+    console.log(query);
+
+    const params = [userId];
+
+    if (skippedIds.length > 0) {
+      query += ` AND job_requests.id NOT IN (?)`;
+      params.push(skippedIds);
+    }
+
+    query += ` LIMIT ?`;
+
+    params.push(limit);
+    const requests = await this.dbQueryAsync(query, params);
+    return requests;
+  };
+
+  getForProposalAuthor = async (userId, skippedIds, limit) => {
+    let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
+
+    const params = [userId];
+
+    if (skippedIds.length > 0) {
+      query += ` AND job_requests.id NOT IN (?)`;
+      params.push(skippedIds);
+    }
+
+    query += ` LIMIT ?`;
+    params.push(limit);
+    const requests = await this.dbQueryAsync(query, params);
+    return requests;
+  };
 
   create = async (jobId, candidateId, pricePerHour, time) =>
     await this.errorWrapper(async () => {

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const JobCard = ({
+const ProposalCard = ({
   description,
   timeCreated,
   address,
@@ -8,8 +8,9 @@ const JobCard = ({
   author,
   price,
   id,
-  author_id,
-  activateProposalForm,
+  userId,
+  userType = "Author",
+  writeBtnText = "Write to author",
 }) => {
   const maxCharLimit = 250;
   const isLongText = description.length > maxCharLimit;
@@ -22,7 +23,7 @@ const JobCard = ({
       <div className="job-body">
         <div className="job-main-info">
           <div className="job-author">
-            <b>Author: </b>
+            <b>{userType}: </b>
             {author}
           </div>
           <div className="job-address">
@@ -48,23 +49,17 @@ const JobCard = ({
       </div>
       <div className="job-actions">
         <div className="product-actions d-flex flex-column flex-sm-row">
-          <Link to={`/job-view/${id}`} className="btn btn-primary">
-            View job
+          <Link to={`/job-proposal/${id}`} className="btn btn-primary">
+            View proposal
           </Link>
-
-          <button className="btn btn-success" onClick={activateProposalForm}>
-            Send proposal
-          </button>
         </div>
         <a
-          href={"/chat/personal/" + author_id}
+          href={"/chat/personal/" + userId}
           className="btn btn-link write-to-author"
-        >
-          Write to author
-        </a>
+        >{writeBtnText}</a>
       </div>
     </div>
   );
 };
 
-export default JobCard;
+export default ProposalCard;

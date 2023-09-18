@@ -7,3 +7,5 @@ export { default as JobEdit } from "./JobEdit";
 export { default as JobView } from "./JobView";
 export { default as MainJobs } from "./MainJobs";
 export { default as JobProposalView } from "./JobProposalView";
+export { default as ProposalsOnMyJobs } from "./ProposalsOnMyJobs";
+export { default as MyProposals } from "./MyProposals";

@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MainContext } from "../contexts";
 import {
   MapMarker,
   Map,
-  JobProposalForm,
   Navbar,
   ViewInput,
-  PopupWrapper,
   JobProposalChangerStatus,
   JobStatus,
 } from "../components";

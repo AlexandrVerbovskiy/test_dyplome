@@ -9,6 +9,8 @@ import {
   MainJobs,
   JobView,
   JobProposalView,
+  MyProposals,
+  ProposalsOnMyJobs,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -27,6 +29,14 @@ const mainRouter = createBrowserRouter([
   {
     path: "/job-view/:id?",
     element: <JobView />,
+  },
+  {
+    path: "/my-job-proposals",
+    element: <MyProposals />,
+  },
+  {
+    path: "/proposals-on-my-jobs",
+    element: <ProposalsOnMyJobs />,
   },
   {
     path: "/job-proposal/:proposalId?",
