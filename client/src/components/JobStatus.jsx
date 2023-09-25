@@ -1,10 +1,12 @@
 import CONFIG from "../config";
+import { firstToLower } from "../utils";
 
 const JobStatus = ({ actualStatus, className = "", style = {} }) => {
   const statusInfo = CONFIG["JOB_STATUSES"][actualStatus];
+  const statusClassName = `job-status-view ${className}`;
 
   return (
-    <div className={className} style={style}>
+    <div className={statusClassName} style={style}>
       <label className="form-label">Status</label>
       <div className="input-group">
         <button

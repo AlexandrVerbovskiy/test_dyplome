@@ -78,7 +78,11 @@ const JobProposalView = () => {
                   </a>
 
                   <JobProposalChangerStatus
+                    setProposal={setProposal}
+                    proposalId={proposalId}
                     actualStatus={proposal.status}
+                    setSuccessMessage={setSuccess}
+                    setErrorMessage={setError}
                     isSeller={true}
                     isBuyers={true}
                   />

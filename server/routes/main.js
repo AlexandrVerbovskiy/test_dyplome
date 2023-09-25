@@ -77,6 +77,14 @@ function route(app, db) {
     });
   });
 
+  app.post("/proposal-accept",isAuth, jobProposalController.accept);
+  app.post("/proposal-reject",isAuth, jobProposalController.reject);
+  app.post("/proposal-cancel",isAuth, jobProposalController.requestToCancel);
+  app.post("/proposal-accept-cancel",isAuth, jobProposalController.acceptCancelled);
+  app.post("/proposal-complete",isAuth, jobProposalController.requestToComplete);
+  app.post("/proposal-accept-complete",isAuth, jobProposalController.acceptCompleted);
+  
+
   app.get("/files/:folder/:filename", (req, res) => {
     const filename = req.params.filename;
     const folder = req.params.folder;

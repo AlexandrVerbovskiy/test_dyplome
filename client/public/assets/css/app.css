@@ -2889,3 +2889,13 @@ body:has(.alert) .page-wrapper {
   display: flex;
   grid-column-gap: 10px;
 }
+
+.job-status-view {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.job-status-view label {
+  margin:0 0.5rem 0 0;
+}

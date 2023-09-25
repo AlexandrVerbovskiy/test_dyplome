@@ -66,7 +66,10 @@ class JobProposal extends Controller {
 
   __changeStatus = async (req, res, validationType, validationCallback) =>
     this.errorWrapper(res, async () => {
-      const { job_id: jobId, proposal_id: proposalId } = req.body;
+      const { proposal_id: proposalId } = req.body;
+
+      const job = await this.jobProposalModel.getById(proposalId);
+      const jobId = job.id;
 
       const userId = req.userData.userId;
       const validation =
@@ -81,42 +84,46 @@ class JobProposal extends Controller {
 
   accept = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
-      await this.jobProposalModel.accept(proposalId);
-      this.setResponseBaseSuccess("Proposal accepted success");
+      const proposal = await this.jobProposalModel.accept(proposalId);
+      this.setResponseBaseSuccess("Proposal accepted success", { proposal });
     });
 
   reject = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
-      await this.jobProposalModel.reject(proposalId);
-      this.setResponseBaseSuccess("Proposal rejected success");
+      const proposal = await this.jobProposalModel.reject(proposalId);
+      this.setResponseBaseSuccess("Proposal rejected success", { proposal });
     });
 
   requestToCancel = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
-      await this.jobProposalModel.requestToCancel(proposalId);
+      const proposal = await this.jobProposalModel.requestToCancel(proposalId);
       this.setResponseBaseSuccess(
-        "Request to cancel contract was sended success"
+        "Request to cancel contract was sended success",
+        { proposal }
       );
     });
 
   acceptCancelled = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
-      await this.jobProposalModel.acceptCancelled(proposalId);
-      this.setResponseBaseSuccess("Job cancelled success");
+      const proposal = await this.jobProposalModel.acceptCancelled(proposalId);
+      this.setResponseBaseSuccess("Job cancelled success", { proposal });
     });
 
   requestToComplete = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
-      await this.jobProposalModel.requestToComplete(proposalId);
+      const proposal = await this.jobProposalModel.requestToComplete(
+        proposalId
+      );
       this.setResponseBaseSuccess(
-        "Request to close contract was sended success"
+        "Request to close contract was sended success",
+        { proposal }
       );
     });
 
   acceptCompleted = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
-      await this.jobProposalModel.acceptCompleted(proposalId);
-      this.setResponseBaseSuccess("Contract closed success");
+      const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
+      this.setResponseBaseSuccess("Contract closed success", { proposal });
     });
 
   getById = async (req, res) => {

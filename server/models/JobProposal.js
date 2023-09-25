@@ -77,13 +77,17 @@ class JobProposal extends Model {
       };
     });
 
-  changeStatus = async (proposalId, status) =>
+  changeStatus = async (proposalId, status) => {
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
         `UPDATE job_proposals SET status = '${status}' WHERE id = ?`,
         [proposalId]
       );
     });
+
+    const proposal = await this.getById(proposalId);
+    return proposal;
+  };
 
   accept = (proposalId) =>
     this.changeStatus(proposalId, this.statuses.inProgress);
