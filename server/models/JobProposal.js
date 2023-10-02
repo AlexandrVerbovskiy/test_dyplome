@@ -26,15 +26,17 @@ class JobProposal extends Model {
       return null;
     });
 
-  getForJobAuthor = async (userId, skippedIds, limit) => {
+  getForJobAuthor = async (userId, skippedIds, filter = "", limit) => {
     let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
-    console.log(query);
-
     const params = [userId];
 
     if (skippedIds.length > 0) {
       query += ` AND job_requests.id NOT IN (?)`;
       params.push(skippedIds);
+    }
+
+    if (filter && filter.length > 0) {
+      query += ` AND (jobs.title like "%${filter}%")`;
     }
 
     query += ` LIMIT ?`;
@@ -44,7 +46,7 @@ class JobProposal extends Model {
     return requests;
   };
 
-  getForProposalAuthor = async (userId, skippedIds, limit) => {
+  getForProposalAuthor = async (userId, skippedIds, filter = "", limit) => {
     let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
 
     const params = [userId];
@@ -52,6 +54,10 @@ class JobProposal extends Model {
     if (skippedIds.length > 0) {
       query += ` AND job_requests.id NOT IN (?)`;
       params.push(skippedIds);
+    }
+
+    if (filter && filter.length > 0) {
+      query += ` AND (jobs.title like "%${filter}%")`;
     }
 
     query += ` LIMIT ?`;

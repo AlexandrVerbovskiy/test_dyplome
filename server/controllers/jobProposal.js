@@ -140,10 +140,12 @@ class JobProposal extends Controller {
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;
       const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+      const filter = req.body.filter ?? "";
       const needCountJobs = req.body.count ? req.body.count : 20;
       const proposals = await this.jobProposalModel.getForProposalAuthor(
         userId,
         skippedIds,
+        filter,
         needCountJobs
       );
       this.setResponseBaseSuccess("Proposals was get successfully", {
@@ -156,10 +158,12 @@ class JobProposal extends Controller {
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;
       const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+      const filter = req.body.filter ?? "";
       const needCountJobs = req.body.count ? req.body.count : 20;
       const proposals = await this.jobProposalModel.getForJobAuthor(
         userId,
         skippedIds,
+        filter,
         needCountJobs
       );
       this.setResponseBaseSuccess("Proposals was get successfully", {

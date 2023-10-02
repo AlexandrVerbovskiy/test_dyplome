@@ -104,6 +104,10 @@ a {
   padding: 1.5rem 1.5rem 0.7rem 1.5rem;
 }
 
+.page-content + .page-content {
+  padding: 0 1.5rem 0.7rem 1.5rem;
+}
+
 .page-footer {
   background: #fff;
   left: 250px;
@@ -2897,5 +2901,9 @@ body:has(.alert) .page-wrapper {
 }
 
 .job-status-view label {
-  margin:0 0.5rem 0 0;
+  margin: 0 0.5rem 0 0;
+}
+
+.search-filter span {
+  cursor: pointer;
 }

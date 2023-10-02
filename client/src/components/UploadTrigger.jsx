@@ -7,7 +7,7 @@ const UploadTrigger = ({ onTriggerShown }) => {
     const options = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.1
+      threshold: 0.1,
     };
 
     const intersectionObserver = new IntersectionObserver(
@@ -23,9 +23,12 @@ const UploadTrigger = ({ onTriggerShown }) => {
     };
   }, []);
 
-  const handleIntersection = entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) onTriggerShown();
+  const handleIntersection = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        console.log("1");
+        onTriggerShown();
+      }
     });
   };
 
