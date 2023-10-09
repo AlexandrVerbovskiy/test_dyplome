@@ -18,37 +18,37 @@ const config = {
         pending: {
             color: "warning",
             text: "Pending",
-            value: "pending"
+            value: "Pending"
         },
         rejected: {
             color: "danger",
             text: "Rejected",
-            value: "rejected"
+            value: "Rejected"
         },
         completed: {
             color: "sucess",
             text: "Completed",
-            value: "completed"
+            value: "Completed"
         },
         inProgress: {
             color: "orange",
             text: "In Progress",
-            value: "inProgress"
+            value: "In Progress"
         },
         cancelled: {
             color: "secondary",
             text: "Cancelled",
-            value: "cancelled"
+            value: "Cancelled"
         },
         awaitingExecutionConfirmation: {
             color: "primary",
             text: "Awaiting Execution Confirmation",
-            value: "awaitingExecutionConfirmation"
+            value: "Awaiting Execution Confirmation"
         },
         awaitingCancellationConfirmation: {
             color: "info",
             text: "Awaiting Cancellation Confirmation",
-            value: "awaitingCancellationConfirmation"
+            value: "Awaiting Cancellation Confirmation"
         }
     }
 };

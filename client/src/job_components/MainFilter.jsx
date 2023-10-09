@@ -19,13 +19,14 @@ const MainFilter = ({ value, onClick = (value) => {} }) => {
         onKeyDown={handleInputEnter}
         onInput={(e) => setFilterValue(e.target.value)}
       />
-      <span
+      <button
+        type="button"
         onClick={handleSearch}
-        className="input-group-text"
+        className="input-group-text btn btn-primary"
         id="basic-addon2"
       >
         Search
-      </span>
+      </button>
     </div>
   );
 };

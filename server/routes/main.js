@@ -4,7 +4,11 @@ const fs = require("fs");
 
 const { User, Chat, Job, JobProposal } = require("../controllers");
 
-const { isAuth, isNotAuth } = require("../middlewares");
+const {
+  generateIsAdmin,
+  generateIsAuth,
+  generateIsNotAuth,
+} = require("../middlewares");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,6 +36,10 @@ function route(app, db) {
   const chatController = new Chat(db);
   const jobController = new Job(db);
   const jobProposalController = new JobProposal(db);
+
+  const isAdmin = generateIsAdmin(db);
+  const isAuth = generateIsAuth();
+  const isNotAuth = generateIsNotAuth();
 
   app.post("/register", isNotAuth, userController.registration);
   app.post("/login", isNotAuth, userController.login);
@@ -65,25 +73,44 @@ function route(app, db) {
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
   app.post("/edit-job", isAuth, jobController.edit);
 
-  app.post("/get-my-proposals", isAuth, jobProposalController.getForProposalAuthor);
-  app.post("/get-proposals-for-me", isAuth, jobProposalController.getForJobAuthor);
+  app.post(
+    "/get-my-proposals",
+    isAuth,
+    jobProposalController.getForProposalAuthor
+  );
+  app.post(
+    "/get-proposals-for-me",
+    isAuth,
+    jobProposalController.getForJobAuthor
+  );
 
   app.get("/get-job-proposal/:id", isAuth, jobProposalController.getById);
   app.post("/send-job-proposal", isAuth, jobProposalController.create);
 
-  app.post("/test", isAuth, async (req, res) => {
+  app.post("/proposal-accept", isAuth, jobProposalController.accept);
+  app.post("/proposal-reject", isAuth, jobProposalController.reject);
+  app.post("/proposal-cancel", isAuth, jobProposalController.requestToCancel);
+  app.post(
+    "/proposal-accept-cancel",
+    isAuth,
+    jobProposalController.acceptCancelled
+  );
+  app.post(
+    "/proposal-complete",
+    isAuth,
+    jobProposalController.requestToComplete
+  );
+  app.post(
+    "/proposal-accept-complete",
+    isAuth,
+    jobProposalController.acceptCompleted
+  );
+
+  app.post("/test", isAuth, isAdmin, (req, res) => {
     res.status(200).json({
       mess: "well done",
     });
   });
-
-  app.post("/proposal-accept",isAuth, jobProposalController.accept);
-  app.post("/proposal-reject",isAuth, jobProposalController.reject);
-  app.post("/proposal-cancel",isAuth, jobProposalController.requestToCancel);
-  app.post("/proposal-accept-cancel",isAuth, jobProposalController.acceptCancelled);
-  app.post("/proposal-complete",isAuth, jobProposalController.requestToComplete);
-  app.post("/proposal-accept-complete",isAuth, jobProposalController.acceptCompleted);
-  
 
   app.get("/files/:folder/:filename", (req, res) => {
     const filename = req.params.filename;

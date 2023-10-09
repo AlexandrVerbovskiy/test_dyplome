@@ -86,7 +86,7 @@ class JobProposal extends Model {
   changeStatus = async (proposalId, status) => {
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        `UPDATE job_proposals SET status = '${status}' WHERE id = ?`,
+        `UPDATE job_requests SET status = '${status}' WHERE id = ?`,
         [proposalId]
       );
     });

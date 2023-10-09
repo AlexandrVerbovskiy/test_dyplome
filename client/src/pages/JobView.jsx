@@ -87,7 +87,7 @@ const JobView = () => {
 
       <PopupWrapper
         onClose={jobProposalFormState.hide}
-        activeTrigger={jobProposalFormState.data.active}
+        activeTrigger={jobProposalFormState.active}
         title="Send proposal"
         id="send_proposal"
       >

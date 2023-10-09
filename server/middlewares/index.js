@@ -1,4 +1,5 @@
-module.exports={
-    isAuth: require('./isAuth'),
-    isNotAuth: require('./isNotAuth'),
-}
+module.exports = {
+  generateIsAuth: require("./generateIsAuth"),
+  generateIsNotAuth: require("./generateIsNotAuth"),
+  generateIsAdmin: require("./generateIsAdmin"),
+};

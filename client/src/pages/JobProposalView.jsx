@@ -7,14 +7,20 @@ import {
   Navbar,
   ViewInput,
   JobProposalChangerStatus,
+  DisputeBtn,
   JobStatus,
+  PopupWrapper,
+  AcceptPopup,
 } from "../components";
 import { getJobProposalInfo } from "../requests";
 import { usePopupController } from "../hooks";
+import { test } from "../requests";
 
 const JobProposalView = () => {
   let { proposalId } = useParams();
   const [proposal, setProposal] = useState(null);
+  const isSeller = true;
+  const isBuyer = true;
 
   useEffect(() => {
     getJobProposalInfo(
@@ -25,7 +31,7 @@ const JobProposalView = () => {
   }, [proposalId]);
 
   const { setSuccess, setError } = useContext(MainContext);
-  const { jobProposalFormState } = usePopupController({
+  const { acceptJobDisputeForm } = usePopupController({
     onSuccess: setSuccess,
     onError: setError,
   });
@@ -70,6 +76,12 @@ const JobProposalView = () => {
             <div className="d-flex align-items-center">
               <div className="dropdown job-proposal-statuses-change">
                 <div>
+                  <DisputeBtn
+                    onClick={() =>
+                      acceptJobDisputeForm.setProposalId(proposalId)
+                    }
+                    actualStatus={proposal.status}
+                  />
                   <a
                     href={"/chat/personal/" + proposal.author_id}
                     className="btn btn-primary"
@@ -83,12 +95,27 @@ const JobProposalView = () => {
                     actualStatus={proposal.status}
                     setSuccessMessage={setSuccess}
                     setErrorMessage={setError}
-                    isSeller={true}
-                    isBuyers={true}
+                    isSeller={isSeller}
+                    isBuyer={isBuyer}
                   />
                 </div>
               </div>
             </div>
+
+            <AcceptPopup
+              id="action_accept"
+              formInfo={acceptJobDisputeForm}
+              onAccept={() =>
+                test(
+                  {},
+                  () => {},
+                  () => {}
+                )
+              }
+              text={`Do you really want the administrators to help you resolve the dispute? (by clicking "Accept", you provide access to your chat with the ${
+                isSeller ? "buyer" : "seller"
+              })`}
+            />
           </div>
         </div>
       </div>

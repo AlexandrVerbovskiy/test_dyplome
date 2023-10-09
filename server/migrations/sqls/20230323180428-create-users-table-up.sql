@@ -8,5 +8,6 @@ CREATE TABLE users (
     lat double DEFAULT NULL,
     lng double DEFAULT NULL,
     profile_authorized boolean DEFAULT false,
+    isAdmin BOOLEAN DEFAULT false,
     time_created timestamp DEFAULT CURRENT_TIMESTAMP
 );

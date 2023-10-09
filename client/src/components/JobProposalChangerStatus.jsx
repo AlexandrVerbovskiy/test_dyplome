@@ -24,31 +24,31 @@ const JobProposalChangerStatus = ({
 
   if (isSeller) {
     if (actualStatus == jobStatus["pending"]["value"]) {
-      nextStatus = "inProgress";
+      nextStatus = "In Progress";
       changeStatusBtn = acceptJobProposal;
     }
 
     if (actualStatus == jobStatus["awaitingExecutionConfirmation"]["value"]) {
-      nextStatus = "completed";
+      nextStatus = "Completed";
       changeStatusBtn = acceptCompleteJobProposal;
     }
   }
 
   if (isBuyer) {
     if (actualStatus == jobStatus["inProgress"]["value"]) {
-      nextStatus = "awaitingExecutionConfirmation";
+      nextStatus = "Awaiting Execution Confirmation";
       changeStatusBtn = completeJobProposal;
     }
 
     if (actualStatus == jobStatus["pending"]["value"]) {
-      nextStatus = "cancelled";
+      nextStatus = "Cancelled";
       changeStatusBtn = acceptCancelJobProposal;
     }
 
     if (
       actualStatus == jobStatus["awaitingCancellationConfirmation"]["value"]
     ) {
-      nextStatus = "rejected";
+      nextStatus = "Rejected";
       changeStatusBtn = rejectJobProposal;
     }
   }
@@ -67,16 +67,19 @@ const JobProposalChangerStatus = ({
 
   return (
     <div className="status-changer-row">
-      <button
-        type="button"
-        className={`btn btn-${nextStatusInfo["color"]} px-5`}
-        onClick={() =>
-          changeStatusBtn(proposalId, onSuccessChangeStatus, setErrorMessage)
-        }
-      >
-        Make "{nextStatusInfo["text"]}"
-      </button>
-      {isSeller && (
+      {nextStatusInfo && (
+        <button
+          type="button"
+          className={`btn btn-${nextStatusInfo["color"]} px-5`}
+          onClick={() =>
+            changeStatusBtn(proposalId, onSuccessChangeStatus, setErrorMessage)
+          }
+        >
+          Make "{nextStatusInfo["text"]}"
+        </button>
+      )}
+
+      {actualStatus && isSeller && (
         <button
           type="button"
           onClick={() =>

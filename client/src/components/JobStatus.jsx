@@ -2,8 +2,16 @@ import CONFIG from "../config";
 import { firstToLower } from "../utils";
 
 const JobStatus = ({ actualStatus, className = "", style = {} }) => {
-  const statusInfo = CONFIG["JOB_STATUSES"][actualStatus];
+  const statuses = CONFIG["JOB_STATUSES"];
+
+  const statusInfoKey = Object.keys(statuses).find(
+    (key) => statuses[key]["value"].toLowerCase() === actualStatus.toLowerCase()
+  );
+  if (!statusInfoKey) return;
+
+  const statusInfo = statuses[statusInfoKey];
   const statusClassName = `job-status-view ${className}`;
+  console.log(actualStatus, statusInfo);
 
   return (
     <div className={statusClassName} style={style}>

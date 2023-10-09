@@ -1,4 +1,4 @@
-const CardWrapper = ({ children, contentClass, cardClass, bodyClass }) => {
+const CardWrapper = ({ children, contentClass="", cardClass="", bodyClass="" }) => {
   return (
     <div className={`page-content ${contentClass}`}>
       <div className={`card ${cardClass}`}>
