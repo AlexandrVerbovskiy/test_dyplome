@@ -15,4 +15,6 @@ export { default as sendJobProposal } from "./sendJobProposal";
 export { default as getJobProposalInfo } from "./getJobProposalInfo";
 export { default as getMyProposals } from "./getMyProposals";
 export { default as getProposalsOnMyJobs } from "./getProposalsOnMyJobs";
+export { default as createDispute } from "./createDispute";
+export { default as getAdminDisputes } from "./getAdminDisputes";
 export * from "./changeProposalsStatus";

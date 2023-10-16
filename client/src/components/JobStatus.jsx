@@ -1,31 +1,76 @@
 import CONFIG from "../config";
-import { firstToLower } from "../utils";
 
-const JobStatus = ({ actualStatus, className = "", style = {} }) => {
-  const statuses = CONFIG["JOB_STATUSES"];
-
-  const statusInfoKey = Object.keys(statuses).find(
-    (key) => statuses[key]["value"].toLowerCase() === actualStatus.toLowerCase()
-  );
-  if (!statusInfoKey) return;
-
-  const statusInfo = statuses[statusInfoKey];
-  const statusClassName = `job-status-view ${className}`;
-  console.log(actualStatus, statusInfo);
-
+const StatusElement = ({
+  statusClassName,
+  style,
+  statusColor,
+  statusText,
+  statusLabel = "Status",
+}) => {
   return (
     <div className={statusClassName} style={style}>
-      <label className="form-label">Status</label>
+      <label className="form-label">{statusLabel}</label>
       <div className="input-group">
         <button
           type="button"
-          className={`btn btn-${statusInfo["color"]} px-5 radius-5`}
+          className={`btn btn-${statusColor} px-5 radius-5`}
           disabled
         >
-          {statusInfo["text"]}
+          {statusText}
         </button>
       </div>
     </div>
+  );
+};
+
+const JobStatus = ({
+  actualStatus,
+  disputeStatus = null,
+  className = "",
+  style = {},
+}) => {
+  const disputeStatuses = CONFIG["DISPUTE_STATUSES"];
+
+  let disputeStatusInfoKey = null;
+  if (disputeStatus) {
+    disputeStatusInfoKey = Object.keys(disputeStatuses).find(
+      (key) =>
+        disputeStatuses[key]["value"].toLowerCase() ===
+        disputeStatus.toLowerCase()
+    );
+
+    const disputeStatusInfo = disputeStatuses[disputeStatusInfoKey];
+
+    return (
+      <StatusElement
+        statusClassName={`dispute-status-view ${className}`}
+        style={style}
+        statusColor={disputeStatusInfo["color"]}
+        statusText={disputeStatusInfo["text"]}
+        statusLabel={"Dispute Status"}
+      />
+    );
+  }
+
+  const jobStatuses = CONFIG["JOB_STATUSES"];
+
+  const statusInfoKey = Object.keys(jobStatuses).find(
+    (key) =>
+      jobStatuses[key]["value"].toLowerCase() === actualStatus.toLowerCase()
+  );
+
+  if (!statusInfoKey) return;
+
+  const statusInfo = jobStatuses[statusInfoKey];
+
+  return (
+    <StatusElement
+      statusClassName={`job-status-view ${className}`}
+      style={style}
+      statusColor={statusInfo["color"]}
+      statusText={statusInfo["text"]}
+      statusLabel={"Status"}
+    />
   );
 };
 

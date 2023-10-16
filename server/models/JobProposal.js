@@ -13,7 +13,7 @@ class JobProposal extends Model {
   };
 
   __fullJobRequestInfo =
-    "job_requests.*, jobs.title, jobs.price, jobs.address, jobs.description, jobs.lat, jobs.lng, jobs.author_id FROM job_requests JOIN jobs ON job_requests.job_id = jobs.id";
+    "disputes.id as dispute_id, disputes.status as dispute_status, job_requests.*, jobs.title, jobs.price, jobs.address, jobs.description, jobs.lat, jobs.lng, jobs.author_id FROM job_requests JOIN jobs ON job_requests.job_id = jobs.id LEFT JOIN disputes ON job_requests.id = disputes.job_request_id";
 
   getById = async (proposalId) =>
     await this.errorWrapper(async () => {

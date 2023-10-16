@@ -7,3 +7,4 @@ export { default as useGetJobs } from "./useGetJobs";
 export { default as useMyProposals } from "./useMyProposals";
 export { default as useProposalsOnMyJobs } from "./useProposalsOnMyJobs";
 export { default as usePopupController } from "./usePopupController";
+export { default as useAdminDisputes } from "./useAdminDisputes";

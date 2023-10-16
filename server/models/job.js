@@ -52,8 +52,6 @@ class Job extends Model {
       const jobSkipIdsRequest = "jobs.id NOT IN (?)";
       const jobFilterRequest = `(jobs.title like "%${filter}%" OR nick like "%${filter}%")`;
 
-      console.log(filter);
-
       if (skippedIds.length > 0 && filter && filter.length > 0) {
         query += ` WHERE ${jobSkipIdsRequest} AND ${jobFilterRequest}`;
         params.push(skippedIds);

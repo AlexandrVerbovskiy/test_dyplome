@@ -2,7 +2,7 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 
-const { User, Chat, Job, JobProposal } = require("../controllers");
+const { User, Chat, Job, JobProposal, Dispute } = require("../controllers");
 
 const {
   generateIsAdmin,
@@ -36,6 +36,7 @@ function route(app, db) {
   const chatController = new Chat(db);
   const jobController = new Job(db);
   const jobProposalController = new JobProposal(db);
+  const disputeController = new Dispute(db);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();
@@ -106,11 +107,14 @@ function route(app, db) {
     jobProposalController.acceptCompleted
   );
 
-  app.post("/test", isAuth, isAdmin, (req, res) => {
-    res.status(200).json({
-      mess: "well done",
-    });
-  });
+  app.post("/create-dispute", isAuth, disputeController.create);
+
+  app.post(
+    "/get-admin-disputes/:status?",
+    isAuth,
+    isAdmin,
+    disputeController.getAllByStatus
+  );
 
   app.get("/files/:folder/:filename", (req, res) => {
     const filename = req.params.filename;

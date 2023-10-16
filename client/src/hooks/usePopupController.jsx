@@ -11,6 +11,7 @@ const usePopupController = ({ onSuccess, onError }) => {
 
   const [acceptJobDisputeForm, setAcceptJobDisputeForm] = useState({
     proposalId: null,
+    description: "",
     active: false,
   });
 
@@ -61,6 +62,9 @@ const usePopupController = ({ onSuccess, onError }) => {
   const acceptJobDisputeFormActivate = () =>
     setAcceptJobDisputeForm((prev) => ({ ...prev, active: true }));
 
+  const jobDisputeFormSetDescription = (description) =>
+    setAcceptJobDisputeForm((prev) => ({ ...prev, description, active: true }));
+
   return {
     jobProposalFormState: {
       active: jobProposalForm.active,
@@ -78,6 +82,7 @@ const usePopupController = ({ onSuccess, onError }) => {
       activate: acceptJobDisputeFormActivate,
       hide: acceptJobDisputeFormHide,
       setProposalId: acceptJobDisputeFormHideSetProposalId,
+      setDescription: jobDisputeFormSetDescription
     },
   };
 };

@@ -14,7 +14,7 @@ import {
 } from "../components";
 import { getJobProposalInfo } from "../requests";
 import { usePopupController } from "../hooks";
-import { test } from "../requests";
+import { createDispute } from "../requests";
 
 const JobProposalView = () => {
   let { proposalId } = useParams();
@@ -25,7 +25,14 @@ const JobProposalView = () => {
   useEffect(() => {
     getJobProposalInfo(
       proposalId,
-      (res) => setProposal({ ...res, status: res.status.toLocaleLowerCase() }),
+      (res) => {
+        setProposal({
+          ...res,
+          status: res.status.toLocaleLowerCase(),
+          disputeId: res.dispute_id,
+          disputeStatus: res.dispute_status,
+        });
+      },
       (err) => console.log(err)
     );
   }, [proposalId]);
@@ -36,7 +43,36 @@ const JobProposalView = () => {
     onError: setError,
   });
 
+  const handleDisputeAccept = () => {
+    const data = acceptJobDisputeForm.data;
+    createDispute(
+      {
+        jobRequestId: data.proposalId,
+        description: data.description,
+      },
+      (res) => {
+        setProposal((prev) => ({
+          ...prev,
+          disputeStatus: res.disputeStatus,
+          disputeId: res.disputeId,
+        }));
+        acceptJobDisputeForm.hide();
+      },
+      setError
+    );
+  };
+
   if (!proposal) return;
+
+  let disputeText = "";
+  if (proposal.disputeStatus == "Pending")
+    disputeText = `Offer suspended due to dispute. Please wait for an administrator to review your issue!`;
+
+  if (proposal.disputeStatus == "In Progress")
+    disputeText = `Offer suspended due to dispute. Wait for the administrator's decision on the situation!`;
+
+  if (proposal.disputeStatus == "Resolved")
+    disputeText = `Offer suspended due to dispute. The administrator has already completed reviewing the issue and resolved it`;
 
   return (
     <div className="page-wrapper job-view-page">
@@ -60,7 +96,10 @@ const JobProposalView = () => {
 
               <div className="col-12 col-md-6 job-edit-inputs">
                 <ViewInput label="Proposal title" value={proposal.title} />
-                <JobStatus actualStatus={proposal.status} />
+                <JobStatus
+                  actualStatus={proposal.status}
+                  disputeStatus={proposal.disputeStatus}
+                />
                 <ViewInput label="Proposal price" value={proposal.price} />
                 <ViewInput label="Proposal address" value={proposal.address} />
                 <ViewInput
@@ -75,29 +114,40 @@ const JobProposalView = () => {
 
             <div className="d-flex align-items-center">
               <div className="dropdown job-proposal-statuses-change">
-                <div>
-                  <DisputeBtn
-                    onClick={() =>
-                      acceptJobDisputeForm.setProposalId(proposalId)
-                    }
-                    actualStatus={proposal.status}
-                  />
+                <div className="d-block d-md-flex">
+                  {proposal.disputeId && (
+                    <div className="dispute-proposal-notification text-danger d-flex align-items-center">
+                      {disputeText}
+                    </div>
+                  )}
+
+                  {!proposal.disputeId && (
+                    <DisputeBtn
+                      onClick={() =>
+                        acceptJobDisputeForm.setProposalId(proposalId)
+                      }
+                      actualStatus={proposal.status}
+                    />
+                  )}
+
                   <a
                     href={"/chat/personal/" + proposal.author_id}
-                    className="btn btn-primary"
+                    className="btn btn-primary mt-2 mt-md-0"
                   >
                     Write to author
                   </a>
 
-                  <JobProposalChangerStatus
-                    setProposal={setProposal}
-                    proposalId={proposalId}
-                    actualStatus={proposal.status}
-                    setSuccessMessage={setSuccess}
-                    setErrorMessage={setError}
-                    isSeller={isSeller}
-                    isBuyer={isBuyer}
-                  />
+                  {!proposal.disputeId && (
+                    <JobProposalChangerStatus
+                      setProposal={setProposal}
+                      proposalId={proposalId}
+                      actualStatus={proposal.status}
+                      setSuccessMessage={setSuccess}
+                      setErrorMessage={setError}
+                      isSeller={isSeller}
+                      isBuyer={isBuyer}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -105,17 +155,26 @@ const JobProposalView = () => {
             <AcceptPopup
               id="action_accept"
               formInfo={acceptJobDisputeForm}
-              onAccept={() =>
-                test(
-                  {},
-                  () => {},
-                  () => {}
-                )
-              }
-              text={`Do you really want the administrators to help you resolve the dispute? (by clicking "Accept", you provide access to your chat with the ${
-                isSeller ? "buyer" : "seller"
-              })`}
-            />
+              onAccept={handleDisputeAccept}
+            >
+              <div className="px-2">
+                <textarea
+                  placeholder="Enter Dispute Description"
+                  className="accept-dispute-description form-control"
+                  onChange={(e) =>
+                    acceptJobDisputeForm.setDescription(e.target.value)
+                  }
+                  rows="5"
+                  value={acceptJobDisputeForm.data.description}
+                />
+              </div>
+
+              <span className="dispute-warning mt-2">
+                Do you really want the administrators to help you resolve the
+                dispute? by clicking "Accept", you provide access to your chat
+                with the {isSeller ? "buyer" : "seller"}
+              </span>
+            </AcceptPopup>
           </div>
         </div>
       </div>
