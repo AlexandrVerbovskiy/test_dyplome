@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { validateToken } from "../requests";
 import { redirect } from "react-router-dom";
 
-const useAuth = setError => {
+const useAuth = (setError) => {
   const [auth, setAuth] = useState(false);
 
   const init = async () => {
@@ -12,8 +12,8 @@ const useAuth = setError => {
     } else {
       await validateToken(
         token,
-        res => setAuth(res),
-        message => {
+        (res) => setAuth(res),
+        (message) => {
           setError(message);
         }
       );

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Activator, Input, PasswordInput, SignForm } from "../components";
 import { MainContext } from "../contexts";
 import { registration } from "../requests";
@@ -10,7 +10,7 @@ const SignUp = () => {
   const [readTerms, setReadTerms] = useState(false);
   const main = useContext(MainContext);
 
-  const handleSignUp = async e => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     if (!readTerms)
       return main.setError(
@@ -23,7 +23,7 @@ const SignUp = () => {
         main.setSuccess("User registered successfully");
         window.location = window.location.origin;
       },
-      err => main.setError(err)
+      (err) => main.setError(err)
     );
   };
 
@@ -35,25 +35,25 @@ const SignUp = () => {
       relocateLinkInfo={{
         question: "Already have an account?",
         link: "/",
-        title: "Sign in here"
+        title: "Sign in here",
       }}
     >
       <Input
         type="email"
         value={email}
         label="Email Address"
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="example@gmail.com"
       />
 
       <PasswordInput
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <Activator
         value={readTerms}
-        onChange={e => setReadTerms(e.target.checked)}
+        onChange={(e) => setReadTerms(e.target.checked)}
         label="I read and agree to Terms &amp; Conditions"
       />
     </SignForm>

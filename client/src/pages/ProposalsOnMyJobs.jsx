@@ -1,3 +1,4 @@
+import React from "react";
 import { Navbar } from "../components";
 import { ProposalCard, MainFilter, CardWrapper } from "../job_components";
 import { UploadTrigger } from "../components";

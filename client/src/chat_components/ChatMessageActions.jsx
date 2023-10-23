@@ -1,11 +1,14 @@
+import React from "react";
+
 const ChatMessageActions = ({ onDeleteClick, onEditClick, canEdit }) => {
   return (
     <div className="card message-action">
-      {canEdit &&
+      {canEdit && (
         <div onClick={onEditClick} className="card-body">
           Edit
-        </div>}
-        
+        </div>
+      )}
+
       <div onClick={onDeleteClick} className="card-body">
         Delete
       </div>

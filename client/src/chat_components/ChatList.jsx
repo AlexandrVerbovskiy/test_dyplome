@@ -1,3 +1,4 @@
+import React from "react";
 import ChatListElem from "./ChatListElem";
 
 const ChatList = ({ chatList, listRef }) => {
@@ -13,14 +14,14 @@ const ChatList = ({ chatList, listRef }) => {
           </div>
         </div>
         <ul className="list-unstyled">
-          {chatList.map((chat, index) =>
+          {chatList.map((chat, index) => (
             <ChatListElem
               key={chat.chat_id}
               chat={chat}
               first={index == 0}
               last={index == chatList.length - 1}
             />
-          )}
+          ))}
         </ul>
       </div>
     </div>

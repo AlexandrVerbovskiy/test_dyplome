@@ -1,4 +1,4 @@
-import { useId } from "react";
+import React, { useId } from "react";
 import ErrorSpan from "./ErrorSpan";
 
 const Input = ({
@@ -11,7 +11,7 @@ const Input = ({
   children = null,
   required = true,
   error = null,
-  style={}
+  style = {},
 }) => {
   const id = useId();
   const className = "col-" + columnCounts;

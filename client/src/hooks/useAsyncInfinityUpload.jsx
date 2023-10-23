@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const useAsyncInfinityUpload = (functionToGetMore) => {
   const count = 8;
@@ -51,10 +51,10 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
     getMoreElements();
   }, []);
 
-  const setFilterValue = async (value) => {
-    filterValue.current = value;
+  const resetElements = async () => {
     setLoading(true);
     elementIds.current = [];
+    setElements([]);
 
     await functionToGetMore(
       { skippedIds: [], count, filter: filterValue.current },
@@ -67,12 +67,18 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
     );
   };
 
+  const setFilterValue = async (value) => {
+    filterValue.current = value;
+    await resetElements();
+  };
+
   return {
     elements,
     getMoreElements,
     elemIds: elementIds.current,
     filterValue: filterValue.current,
     setFilterValueChange: setFilterValue,
+    resetElements,
   };
 };
 

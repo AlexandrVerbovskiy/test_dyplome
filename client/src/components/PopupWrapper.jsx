@@ -1,5 +1,7 @@
+import React from "react";
+
 const PopupWrapper = ({ children, onClose, activeTrigger, title, id }) => {
-  const handleBackgroundClose = e => {
+  const handleBackgroundClose = (e) => {
     if (e.target.classList.contains("modal")) onClose();
   };
 

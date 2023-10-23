@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatMessagePanel from "./ChatMessagePanel";
 import ChatHeader from "./ChatHeader";
@@ -16,13 +16,12 @@ const ChatBody = ({ chatRef }) => {
     emojiPopup,
     onEditMessage,
     onDeleteMessage,
-    stopSendMedia
+    stopSendMedia,
   } = useContext(ChatContext);
   const mediaFileAccept = useMediaFileAccept();
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
-  const [activeMessageActionPopup, setActiveMessageActionPopup] = useState(
-    null
-  );
+  const [activeMessageActionPopup, setActiveMessageActionPopup] =
+    useState(null);
   const [countChanges, setCountChanges] = useState(0);
 
   const scrollBottom = () => {
@@ -35,37 +34,31 @@ const ChatBody = ({ chatRef }) => {
         last.scrollIntoView({
           behavior: "smooth",
           block: "end",
-          inline: "end"
+          inline: "end",
         });
       }
     }, 100);
   };
 
-  useEffect(
-    () => {
-      if (messages.length < 0 || countChanges) return;
-      setCountChanges(1);
-      scrollBottom();
-    },
-    [messages]
-  );
+  useEffect(() => {
+    if (messages.length < 0 || countChanges) return;
+    setCountChanges(1);
+    scrollBottom();
+  }, [messages]);
 
   const closeActiveMessagePopup = () => setActiveMessageActionPopup(null);
-  const openActiveMessagePopup = id => setActiveMessageActionPopup(id);
+  const openActiveMessagePopup = (id) => setActiveMessageActionPopup(id);
 
-  const {
-    activeEmojiPopup,
-    closeEmojiPopup,
-    changeActivationEmojiPopup
-  } = emojiPopup;
+  const { activeEmojiPopup, closeEmojiPopup, changeActivationEmojiPopup } =
+    emojiPopup;
 
-  const deleteMessage = id => onDeleteMessage(id);
+  const deleteMessage = (id) => onDeleteMessage(id);
   const editMessage = (id, content) => {
     textRef.current.innerHTML = content;
     onEditMessage(id, content);
   };
 
-  const onStopClick = temp_key => {
+  const onStopClick = (temp_key) => {
     if (!temp_key) return null;
     return () => stopSendMedia(temp_key);
   };
@@ -77,7 +70,7 @@ const ChatBody = ({ chatRef }) => {
       <div id="chat_body" className="card col-lg-8" ref={chatRef}>
         <ChatHeader />
         <div className="card-body">
-          {messages.map(message => {
+          {messages.map((message) => {
             const key = message.in_process
               ? message.temp_key
               : message.message_id;
@@ -85,7 +78,8 @@ const ChatBody = ({ chatRef }) => {
               <ChatMessage
                 key={key}
                 onRightBtnClick={() =>
-                  openActiveMessagePopup(message.message_id)}
+                  openActiveMessagePopup(message.message_id)
+                }
                 activePopup={activeMessageActionPopup === message.message_id}
                 closeActionPopup={() => setActiveMessageActionPopup(null)}
                 onDelete={deleteMessage}
@@ -101,19 +95,21 @@ const ChatBody = ({ chatRef }) => {
           activeEmojiPopup={activeEmojiPopup}
           changeActivationEmojiPopup={changeActivationEmojiPopup}
         />
-        {activeEmojiPopup &&
+        {activeEmojiPopup && (
           <div
             onClick={closeEmojiPopup}
             onWheel={closeEmojiPopup}
             className="popup-wrapper"
-          />}
+          />
+        )}
 
-        {activeMessageActionPopup &&
+        {activeMessageActionPopup && (
           <div
             onClick={closeActiveMessagePopup}
             onWheel={closeActiveMessagePopup}
             className="popup-wrapper"
-          />}
+          />
+        )}
         <MediaFileAcceptPopup />
         <RecorderPopup />
       </div>

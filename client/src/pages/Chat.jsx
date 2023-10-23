@@ -1,11 +1,11 @@
-import {useContext} from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   useChatInit,
   useChatEmojiPopup,
   useChatTextEditor,
   useMainChat,
-  useChatWindowsChanger
+  useChatWindowsChanger,
 } from "../chat_hooks";
 import { ChatList, ChatBody } from "../chat_components";
 import { ChatContext, MainContext } from "../contexts";
@@ -26,7 +26,7 @@ const Chat = () => {
     setEditMessage,
     unsetEditMessage,
     lastMessageId,
-    onGetMessage:onGetMessageForSockets,
+    onGetMessage: onGetMessageForSockets,
     onUpdateMessage: onUpdateMessageForSockets,
     onDeleteMessage: onDeleteMessageForSockets,
     onGetNewChat,
@@ -34,52 +34,80 @@ const Chat = () => {
     onChangeOnline: changeOnlineForSockets,
     onUpdateMessagePercent,
     onCancelledMessage,
-    chatTyping, chatOnline, selectedChatId
-  } = useMainChat({accountId, type});
+    chatTyping,
+    chatOnline,
+    selectedChatId,
+  } = useMainChat({ accountId, type });
 
-  const {auth}= useContext(MainContext);
-  const onEditMessage = (id, content)=>{
-    console.log("edit start: ", id, content)
+  const { auth } = useContext(MainContext);
+  const onEditMessage = (id, content) => {
+    console.log("edit start: ", id, content);
     setEditMessage(id, content);
-  }
+  };
 
-  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow} = useChatWindowsChanger();
-  const { createChat, sendMessage, editMessage, deleteMessage, startTyping, endTyping, sendMedia, stopSendMedia } = useChatInit({auth, onGetNewChat,changeTypingForSockets, changeOnlineForSockets, onGetMessageForSockets, onUpdateMessageForSockets, onDeleteMessageForSockets, onUpdateMessagePercent, onCancelledMessage});
- 
-  const onDeleteMessage = (id)=> deleteMessage(id, lastMessageId);
+  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow } =
+    useChatWindowsChanger();
+  const {
+    createChat,
+    sendMessage,
+    editMessage,
+    deleteMessage,
+    startTyping,
+    endTyping,
+    sendMedia,
+    stopSendMedia,
+  } = useChatInit({
+    auth,
+    onGetNewChat,
+    changeTypingForSockets,
+    changeOnlineForSockets,
+    onGetMessageForSockets,
+    onUpdateMessageForSockets,
+    onDeleteMessageForSockets,
+    onUpdateMessagePercent,
+    onCancelledMessage,
+  });
+
+  const onDeleteMessage = (id) => deleteMessage(id, lastMessageId);
 
   const editor = useChatTextEditor();
   const emojiPopup = useChatEmojiPopup();
 
   const handleStartTyping = () => startTyping(activeChat.chat_id);
-  
-  const handleEndTyping = () => endTyping(activeChat.chat_id);
-  
-  const handleSendMedia = (data, dataType, filetype, dop, filename) => {
-    createChat(accountId)
-    sendMedia(data, dataType, filetype, dop, filename);
-  }
 
-  const handleSendTextMessage = message => {
-    console.log(activeChat)
-    if(editMessageId){
-      if(message!=editMessageContent) {
+  const handleEndTyping = () => endTyping(activeChat.chat_id);
+
+  const handleSendMedia = (data, dataType, filetype, dop, filename) => {
+    createChat(accountId);
+    sendMedia(data, dataType, filetype, dop, filename);
+  };
+
+  const handleSendTextMessage = (message) => {
+    console.log(activeChat);
+    if (editMessageId) {
+      if (message != editMessageContent) {
         editMessage(editMessageId, message);
       }
       unsetEditMessage();
-    }else{
+    } else {
       const dop = {
-        temp_key: randomString()
+        temp_key: randomString(),
       };
-      if (activeChat.chat_type == "personal"){
+      if (activeChat.chat_type == "personal") {
         dop["chatId"] = activeChat?.chat_id;
         dop["getter_id"] = activeChat.user_id;
       }
-      sendMessage(activeChat.chat_id, "text", message, activeChat.chat_type, dop);
+      sendMessage(
+        activeChat.chat_id,
+        "text",
+        message,
+        activeChat.chat_type,
+        dop
+      );
     }
   };
 
-  if(chatList.length<1 && !activeChat) return <NoChats/>;
+  if (chatList.length < 1 && !activeChat) return <NoChats />;
 
   return (
     <div id="chatPage" className="row">
@@ -90,7 +118,7 @@ const Chat = () => {
           setChatListSearch,
           getMoreChats,
           handleSendTextMessage,
-          handleStartTyping, 
+          handleStartTyping,
           handleEndTyping,
           editor,
           emojiPopup,
@@ -101,14 +129,14 @@ const Chat = () => {
           activeWindow,
           onEditMessage,
           onDeleteMessage,
-          chatTyping, 
+          chatTyping,
           chatOnline,
-          handleSendMedia, 
-          stopSendMedia
+          handleSendMedia,
+          stopSendMedia,
         }}
       >
         <ChatList chatList={chatList} listRef={listRef} />
-        <ChatBody chatRef={chatRef}/>
+        <ChatBody chatRef={chatRef} />
       </ChatContext.Provider>
     </div>
   );

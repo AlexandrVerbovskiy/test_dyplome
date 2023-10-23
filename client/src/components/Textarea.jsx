@@ -1,3 +1,4 @@
+import React from "react";
 import ErrorSpan from "./ErrorSpan";
 
 const Textarea = ({ title, value, onChange, error, placeholder = "" }) => {

@@ -10,3 +10,4 @@ export { default as JobProposalView } from "./JobProposalView";
 export { default as ProposalsOnMyJobs } from "./ProposalsOnMyJobs";
 export { default as MyProposals } from "./MyProposals";
 export { default as AdminDisputes } from "./AdminDisputes";
+export { default as AdminDispute } from "./AdminDispute";

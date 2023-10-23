@@ -1,3 +1,4 @@
+import React from "react";
 import config from "../config";
 
 const ChatMessageContent = ({ type, content, inProcess }) => {
@@ -26,12 +27,7 @@ const ChatMessageContent = ({ type, content, inProcess }) => {
   if (type === "image") return <img className="" src={url} />;
   if (type === "video") return <video className="" src={url} />;
   if (type === "audio") return <audio className="" src={url} />;
-  if (type === "file")
-    return (
-      <div>
-        {content}
-      </div>
-    );
+  if (type === "file") return <div>{content}</div>;
   return "WHAT??????????????????";
 };
 

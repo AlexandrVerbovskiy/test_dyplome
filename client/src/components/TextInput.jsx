@@ -1,14 +1,14 @@
+import React from "react";
 import { useContext } from "react";
 import { getCursorPosition } from "../utils";
 import { ChatContext } from "../contexts";
 
 const TextInput = ({ textRef }) => {
-  const { editor, handleStartTyping, handleEndTyping } = useContext(
-    ChatContext
-  );
+  const { editor, handleStartTyping, handleEndTyping } =
+    useContext(ChatContext);
   const { activateTextEditor } = editor;
 
-  const handleContextMenu = e => {
+  const handleContextMenu = (e) => {
     e.preventDefault();
 
     const messageSendDivParent = textRef.current;

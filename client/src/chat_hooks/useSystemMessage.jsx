@@ -1,16 +1,14 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 const useSystemMessage = () => {
   const [systemMessage, setSystemMessage] = useState(null);
 
-  useEffect(
-    () => {
-      console.log(systemMessage);
-    },
-    [systemMessage]
-  );
+  useEffect(() => {
+    console.log(systemMessage);
+  }, [systemMessage]);
 
-  const setSuccess = message => setSystemMessage({ message, type: "success" });
-  const setError = message => setSystemMessage({ message, type: "error" });
+  const setSuccess = (message) =>
+    setSystemMessage({ message, type: "success" });
+  const setError = (message) => setSystemMessage({ message, type: "error" });
   const clearMessage = () => setSystemMessage(null);
   return { setSuccess, setError, systemMessage, clearMessage };
 };

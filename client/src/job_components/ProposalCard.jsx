@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 
 const ProposalCard = ({
@@ -56,7 +57,9 @@ const ProposalCard = ({
         <a
           href={"/chat/personal/" + userId}
           className="btn btn-link write-to-author"
-        >{writeBtnText}</a>
+        >
+          {writeBtnText}
+        </a>
       </div>
     </div>
   );

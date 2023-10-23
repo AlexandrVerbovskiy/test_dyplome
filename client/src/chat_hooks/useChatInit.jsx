@@ -1,5 +1,5 @@
+import React, { useEffect, useRef } from "react";
 import io from "socket.io-client";
-import { useEffect, useRef } from "react";
 import useMediaActions from "./useMediaActions";
 import config from "../config";
 import indicateMediaTypeByExtension from "../utils/indicateMediaTypeByExtension";
@@ -13,28 +13,25 @@ const useChatInit = ({
   changeOnlineForSockets,
   onUpdateMessagePercent,
   onCancelledMessage,
-  onGetNewChat
+  onGetNewChat,
 }) => {
   const ioRef = useRef(null);
 
-  const {
-    createMediaActions,
-    onSuccessSendBlobPart,
-    onStopSendMedia
-  } = useMediaActions();
+  const { createMediaActions, onSuccessSendBlobPart, onStopSendMedia } =
+    useMediaActions();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     ioRef.current = io(config.API_URL, {
       query: {
-        token
-      }
+        token,
+      },
     });
 
-    ioRef.current.on("created-chat", data => onGetNewChat(data));
+    ioRef.current.on("created-chat", (data) => onGetNewChat(data));
 
-    ioRef.current.on("error", data => {
+    ioRef.current.on("error", (data) => {
       let message =
         "Something went wrong. Please take a screenshot of the console.log and send to the admins";
       if (data.sqlMessage) message = data.sqlMessage;
@@ -42,31 +39,31 @@ const useChatInit = ({
       console.log(data);
     });
 
-    ioRef.current.on("success-sended-message", data =>
+    ioRef.current.on("success-sended-message", (data) =>
       onGetMessageForSockets(data.message)
     );
-    ioRef.current.on("get-message", data =>
+    ioRef.current.on("get-message", (data) =>
       onGetMessageForSockets(data.message)
     );
 
-    ioRef.current.on("success-deleted-message", data =>
+    ioRef.current.on("success-deleted-message", (data) =>
       onDeleteMessageForSockets(data)
     );
-    ioRef.current.on("deleted-message", data =>
+    ioRef.current.on("deleted-message", (data) =>
       onDeleteMessageForSockets(data)
     );
-    ioRef.current.on("success-updated-message", data =>
+    ioRef.current.on("success-updated-message", (data) =>
       onUpdateMessageForSockets(data)
     );
-    ioRef.current.on("updated-message", data =>
+    ioRef.current.on("updated-message", (data) =>
       onUpdateMessageForSockets(data.message)
     );
-    ioRef.current.on("typing", data => changeTypingForSockets(data, true));
-    ioRef.current.on("stop-typing", data =>
+    ioRef.current.on("typing", (data) => changeTypingForSockets(data, true));
+    ioRef.current.on("stop-typing", (data) =>
       changeTypingForSockets(data, false)
     );
-    ioRef.current.on("online", data => changeOnlineForSockets(data, true));
-    ioRef.current.on("offline", data => changeOnlineForSockets(data, false));
+    ioRef.current.on("online", (data) => changeOnlineForSockets(data, true));
+    ioRef.current.on("offline", (data) => changeOnlineForSockets(data, false));
 
     ioRef.current.on(
       "file-part-uploaded",
@@ -93,18 +90,15 @@ const useChatInit = ({
     });
   }, []);
 
-  useEffect(
-    () => {
-      ioRef.current.emit("test");
-    },
-    [ioRef.current]
-  );
+  useEffect(() => {
+    ioRef.current.emit("test");
+  }, [ioRef.current]);
 
-  const createChat = userId => {
+  const createChat = (userId) => {
     ioRef.current.emit("create-personal-chat", {
       userId,
       typeMessage: "test",
-      content: "test"
+      content: "test",
     });
   };
 
@@ -114,7 +108,7 @@ const useChatInit = ({
       typeMessage,
       content,
       chat_type,
-      ...dop
+      ...dop,
     };
 
     const dataToInsert = {
@@ -125,7 +119,7 @@ const useChatInit = ({
       user_id: auth,
       in_process: true,
       time_sended: new Date().toISOString(),
-      ...dop
+      ...dop,
     };
 
     ioRef.current.emit("send-message", dataToSend);
@@ -135,28 +129,28 @@ const useChatInit = ({
   const editMessage = (messageId, content) => {
     ioRef.current.emit("update-message", {
       messageId,
-      content
+      content,
     });
   };
 
   const deleteMessage = (messageId, lastMessageId) => {
     ioRef.current.emit("delete-message", {
       messageId,
-      lastMessageId
+      lastMessageId,
     });
   };
 
-  const startTyping = chatId => {
+  const startTyping = (chatId) => {
     console.log(chatId);
     ioRef.current.emit("start-typing", {
-      chatId
+      chatId,
     });
   };
 
-  const endTyping = chatId => {
+  const endTyping = (chatId) => {
     console.log(chatId);
     ioRef.current.emit("end-typing", {
-      chatId
+      chatId,
     });
   };
 
@@ -172,7 +166,7 @@ const useChatInit = ({
       user_id: auth,
       in_process: true,
       time_sended: new Date().toISOString(),
-      temp_key: dataToSend["temp_key"]
+      temp_key: dataToSend["temp_key"],
     };
 
     console.log(dataToSend["temp_key"]);
@@ -184,7 +178,7 @@ const useChatInit = ({
     onGetMessageForSockets(dataToInsert);
   };
 
-  const stopSendMedia = temp_key => {
+  const stopSendMedia = (temp_key) => {
     ioRef.current.emit("stop-file-upload", { temp_key });
   };
 
@@ -196,7 +190,7 @@ const useChatInit = ({
     startTyping,
     endTyping,
     sendMedia,
-    stopSendMedia
+    stopSendMedia,
   };
 };
 

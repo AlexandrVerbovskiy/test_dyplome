@@ -1,3 +1,4 @@
+import React from "react";
 import PopupWrapper from "./PopupWrapper";
 
 const AcceptPopup = ({ id, formInfo, onAccept, children = null }) => {

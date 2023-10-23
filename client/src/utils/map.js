@@ -1,8 +1,9 @@
 import Geocode from "react-geocode";
 
 //Geocode.setApiKey("AIzaSyDzzi_VBcf2Oef6LTViLU767UPNHlnIze4");
-Geocode.setApiKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
+//Geocode.setApiKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
 //Geocode.setApiKey("AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w");
+Geocode.setApiKey("AIzaSyCuprhlOtAFpOfhaYMs5fYdjdnnla57BLg");
 Geocode.enableDebug();
 
 const getAddressInfo = (elem) => {

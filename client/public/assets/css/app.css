@@ -2906,12 +2906,19 @@ body:has(.alert) .page-wrapper {
   grid-column-gap: 10px;
 }
 
+.dispute-status-view,
 .job-status-view {
   display: flex;
   align-items: center;
   margin: 0.5rem 0;
 }
 
+.dispute-status-view .input-group,
+.job-status-view .input-group{
+  width: fit-content!important;
+}
+
+.dispute-status-view label,
 .job-status-view label {
   margin: 0 0.5rem 0 0;
 }
@@ -2921,5 +2928,43 @@ body:has(.alert) .page-wrapper {
 }
 
 #action_accept .dispute-warning {
+  font-size: 12px !important;
+}
+
+.submenu-under-filter {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
+}
+
+.card-field {
+  display: flex;
+}
+
+.card-field .card-field-label {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.card-field:has(.card-field-text) {
+  flex-direction: column;
+}
+
+.card-field:not(:has(.card-field-text)) {
+  align-items: center;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-title .card-sublabel {
+  font-size: 12px;
+}
+
+.card-field-value .status-view {
+  padding: 5px 10px !important;
   font-size: 12px !important;
 }

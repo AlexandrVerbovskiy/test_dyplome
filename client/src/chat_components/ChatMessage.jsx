@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import React, { useRef, useContext } from "react";
 import ChatMessageContent from "./ChatMessageContent";
 import ChatMessageActions from "./ChatMessageActions";
 import AcceptDeleteMessageModal from "./AcceptDeleteMessageModal";
@@ -19,7 +19,7 @@ const ChatMessage = ({
   onEdit,
   stopSendMedia,
   temp_key = null,
-  percent = null
+  percent = null,
 }) => {
   const main = useContext(MainContext);
   const { auth } = main;
@@ -29,19 +29,19 @@ const ChatMessage = ({
 
   const mainClassName = {
     normal: "chat-content-leftside",
-    my: "chat-content-rightside"
+    my: "chat-content-rightside",
   };
 
   const contentClassName = {
     normal: "chat-left-msg card",
-    my: "chat-right-msg card"
+    my: "chat-right-msg card",
   };
 
   const myOrNormal = auth == user_id ? "my" : "normal";
   const timeAlign = auth == user_id ? "end" : "start";
   const displayImage = auth == user_id ? { display: "none" } : {};
 
-  const handleMenuClick = e => {
+  const handleMenuClick = (e) => {
     e.preventDefault();
     onRightBtnClick();
   };
@@ -83,29 +83,28 @@ const ChatMessage = ({
             className={contentClassName[myOrNormal]}
             onContextMenu={handleMenuClick}
           >
-            {percent &&
+            {percent && (
               <div className="cancel-sending-message">
                 <div className="circle">
                   <div />
                 </div>
                 <div className="plus">
-                  <span onClick={stopSendMedia}>
-                    {Math.floor(percent)}%
-                  </span>
+                  <span onClick={stopSendMedia}>{Math.floor(percent)}%</span>
                 </div>
-              </div>}
+              </div>
+            )}
             <ChatMessageContent
               type={type}
               content={content}
               inProcess={inProcess}
             />
-            {!inProcess &&
-              activePopup &&
+            {!inProcess && activePopup && (
               <ChatMessageActions
                 onDeleteClick={handleMessageDeleteClick}
                 onEditClick={handleMessageEditClick}
                 canEdit={type == "text"}
-              />}
+              />
+            )}
 
             <AcceptDeleteMessageModal
               id={message_id}

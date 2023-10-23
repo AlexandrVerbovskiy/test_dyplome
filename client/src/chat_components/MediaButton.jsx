@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { MicFill, CameraVideoFill } from "react-bootstrap-icons";
 import { ChatBodyContext } from "../contexts";
 
@@ -6,7 +6,7 @@ const MediaButton = () => {
   const { recorder } = useContext(ChatBodyContext);
   const { recordingMediaType, changeRecordingMediaType, open } = recorder;
 
-  const handleMenuClick = e => {
+  const handleMenuClick = (e) => {
     e.preventDefault();
     changeRecordingMediaType();
   };

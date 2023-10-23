@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Input from "./Input";
 
 const PasswordInput = ({
@@ -7,12 +7,12 @@ const PasswordInput = ({
   label = "Password",
   placeholder = "Enter Password",
   error = null,
-  style={}
+  style = {},
 }) => {
   const [typePasswordInput, setTypePasswordInput] = useState("password");
 
   const handleChangeEmailType = () => {
-    setTypePasswordInput(prev => {
+    setTypePasswordInput((prev) => {
       if (prev == "password") return "text";
       return "password";
     });
@@ -20,7 +20,7 @@ const PasswordInput = ({
 
   return (
     <Input
-      style = {style}
+      style={style}
       type={typePasswordInput}
       value={value}
       label={label}

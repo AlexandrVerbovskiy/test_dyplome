@@ -15,8 +15,9 @@ class Dispute extends Model {
 
   __fullDisputeInfo = `disputes.status as status, disputes.description as description,
      disputes.created_at as created_at, disputes.id as id, disputes.*,
-     job_requests.status as job_status, jobs.description as job_description, jobs.title, jobs.price, 
-     jobs.address, jobs.lat, jobs.lng, jobs.author_id FROM disputes
+     job_requests.status as job_status, jobs.description as job_description, jobs.title, job_requests.price, 
+     job_requests.user_id as worker_id, job_requests.execution_time,
+     jobs.address, jobs.lat, jobs.lng, jobs.author_id as job_author_id FROM disputes
      JOIN job_requests ON job_requests.id = disputes.job_request_id
      JOIN jobs ON job_requests.job_id = jobs.id`;
 
@@ -60,10 +61,10 @@ class Dispute extends Model {
 
   assignAdmin = async (disputeId, adminId) =>
     await this.errorWrapper(async () => {
-      await this.dbQueryAsync("UPDATE disputes SET admin_id = ? WHERE id = ?", [
-        adminId,
-        disputeId,
-      ]);
+      await this.dbQueryAsync(
+        "UPDATE disputes SET admin_id = ?, status = 'In Progress' WHERE id = ?",
+        [adminId, disputeId]
+      );
     });
 
   checkProposalHasDispute = async (proposalId) => {

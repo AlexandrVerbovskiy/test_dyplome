@@ -39,10 +39,9 @@ class Dispute extends Controller {
   getById = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { disputeId } = req.params;
-
       const dispute = await this.disputeModel.getById(disputeId);
       if (!dispute) return this.setResponseNoFoundError("Dispute not found");
-      this.setResponseBaseSuccess("Find success", dispute);
+      this.setResponseBaseSuccess("Find success", {dispute});
     });
 
   getByJobId = async (req, res) =>
@@ -51,7 +50,7 @@ class Dispute extends Controller {
 
       const dispute = await this.disputeModel.getByJobId(jobId);
       if (!dispute) return this.setResponseNoFoundError("Dispute not found");
-      this.setResponseBaseSuccess("Find success", dispute);
+      this.setResponseBaseSuccess("Find success", {dispute});
     });
 
   updateDisputeStatus = async (req, res) =>
@@ -63,7 +62,8 @@ class Dispute extends Controller {
 
   assignAdminToDispute = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { disputeId, adminId } = req.body;
+      const { disputeId } = req.body;
+      const adminId = req.userData.userId;
       await this.disputeModel.assignAdmin(disputeId, adminId);
       this.setResponseBaseSuccess("Dispute accepted success");
     });

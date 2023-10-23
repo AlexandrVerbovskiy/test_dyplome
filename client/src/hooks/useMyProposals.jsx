@@ -1,9 +1,15 @@
+import React from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
 import { getMyProposals } from "../requests";
 
 const useMyProposals = () => {
-  const { elements, getMoreElements, elemIds, filterValue, setFilterValueChange } =
-    useAsyncInfinityUpload(getMyProposals);
+  const {
+    elements,
+    getMoreElements,
+    elemIds,
+    filterValue,
+    setFilterValueChange,
+  } = useAsyncInfinityUpload(getMyProposals);
   return {
     proposals: elements,
     getMoreProposals: getMoreElements,

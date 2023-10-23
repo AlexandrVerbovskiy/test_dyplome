@@ -1,9 +1,17 @@
 import { axios } from "../utils";
 import config from "../config";
 
-const getAdminDisputes = async (data, successCallback, errorCallback) => {
+const getAdminDisputes = async (
+  data,
+  status = "pending",
+  successCallback,
+  errorCallback
+) => {
   try {
-    const res = await axios.post(config.API_URL + `/get-admin-disputes`, data);
+    const res = await axios.post(
+      config.API_URL + `/get-admin-disputes/${status}`,
+      data
+    );
     const disputes = res.data["disputes"] ?? [];
     successCallback(disputes);
   } catch (err) {

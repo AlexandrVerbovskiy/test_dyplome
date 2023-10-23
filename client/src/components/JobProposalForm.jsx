@@ -1,3 +1,5 @@
+import React from "react";
+
 const JobProposalForm = ({ send, price, time, setTime, setPrice }) => {
   const handleInputPrice = (e) => setPrice(e.target.value);
   const handleInputTime = (e) => setTime(e.target.value);

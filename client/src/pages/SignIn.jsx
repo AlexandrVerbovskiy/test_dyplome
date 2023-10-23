@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Input, PasswordInput, SignForm } from "../components";
 import { MainContext } from "../contexts";
 import { login } from "../requests";
@@ -9,17 +9,17 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const main = useContext(MainContext);
 
-  const handleSignIn = async e => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     await login(
       { email, password },
-      userId => {
+      (userId) => {
         console.log(userId);
         main.setSuccess("Logged in successfully");
         main.setAuth(userId);
         redirect("/registration");
       },
-      err => main.setError(err)
+      (err) => main.setError(err)
     );
   };
 
@@ -31,20 +31,20 @@ const SignIn = () => {
       relocateLinkInfo={{
         question: "Have not an account?",
         link: "/registration",
-        title: "Sign up here"
+        title: "Sign up here",
       }}
     >
       <Input
         type="email"
         value={email}
         label="Email Address"
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="example@gmail.com"
       />
 
       <PasswordInput
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
       />
     </SignForm>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const MainFilter = ({ value, onClick = (value) => {} }) => {
   const [filterValue, setFilterValue] = useState(value);

@@ -1,3 +1,4 @@
+import React from "react";
 import { Navbar } from "../components";
 
 const NoChats = () => {
@@ -12,11 +13,12 @@ const NoChats = () => {
             </h2>
             <p>
               It looks like you have no chats with other users.
-              <br />This means that you have not yet had any proposition
-              discussions.
-              <br />Neither as a performer nor as a seller.
-              <br />For chats to appear on this page, start an proposition
-              discussion.
+              <br />
+              This means that you have not yet had any proposition discussions.
+              <br />
+              Neither as a performer nor as a seller.
+              <br />
+              For chats to appear on this page, start an proposition discussion.
             </p>
             <div className="mt-5">
               <a href="#" className="btn btn-primary btn-lg px-md-5 radius-30">

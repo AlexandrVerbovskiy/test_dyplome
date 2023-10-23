@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getFileData } from "../utils";
 import ErrorSpan from "./ErrorSpan";
 import config from "../config";
@@ -8,44 +8,38 @@ const ImageInput = ({ btnText, onChange, error, url = null }) => {
   const [img, setImg] = useState(null);
   const inputRef = useRef(null);
 
-  useEffect(
-    () => {
-      console.log("Test", typeof url);
-      if (typeof url == "string") {
-        setImg({ src: config.API_URL + "/" + url, name: "profile-avatar" });
-      } else {
-        setImg(url);
-      }
-    },
-    [url]
-  );
+  useEffect(() => {
+    console.log("Test", typeof url);
+    if (typeof url == "string") {
+      setImg({ src: config.API_URL + "/" + url, name: "profile-avatar" });
+    } else {
+      setImg(url);
+    }
+  }, [url]);
 
   useEffect(() => console.log(img), [img]);
 
-  useEffect(
-    () => {
-      if (file)
-        getFileData(file, img => {
-          setImg(img);
-          onChange(img);
-        });
-    },
-    [file]
-  );
+  useEffect(() => {
+    if (file)
+      getFileData(file, (img) => {
+        setImg(img);
+        onChange(img);
+      });
+  }, [file]);
 
   const handleButtonClick = () => inputRef.current.click();
 
-  const handleDrop = e => {
+  const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) setFile(file);
   };
 
-  const handleDragEnter = e => e.preventDefault();
+  const handleDragEnter = (e) => e.preventDefault();
 
-  const handleDragOver = e => e.preventDefault();
+  const handleDragOver = (e) => e.preventDefault();
 
-  const handleDragLeave = e => e.preventDefault();
+  const handleDragLeave = (e) => e.preventDefault();
 
   return (
     <div className="form-group" id="avatarInput">
@@ -56,7 +50,7 @@ const ImageInput = ({ btnText, onChange, error, url = null }) => {
           className="form-control"
           name="image"
           accept="image/*"
-          onChange={e => setFile(e.target.files[0])}
+          onChange={(e) => setFile(e.target.files[0])}
         />
         <div
           className="image-input-btn-block"
@@ -66,15 +60,17 @@ const ImageInput = ({ btnText, onChange, error, url = null }) => {
           onDragLeave={handleDragLeave}
         >
           <button onClick={handleButtonClick} className="btn btn-light">
-            {img
-              ? <img
-                  src={img.src}
-                  alt={img.name}
-                  height="170"
-                  width="170"
-                  className="small-img"
-                />
-              : btnText}
+            {img ? (
+              <img
+                src={img.src}
+                alt={img.name}
+                height="170"
+                width="170"
+                className="small-img"
+              />
+            ) : (
+              btnText
+            )}
           </button>
         </div>
       </div>

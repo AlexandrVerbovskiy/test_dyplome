@@ -1,3 +1,5 @@
+import React from "react";
+
 const AcceptDeleteMessageModal = ({ id, triggerRef, wrapperRef, onAccept }) => {
   return (
     <div className="col">

@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { randomString, startRecording } from "../utils";
 
-const useRecorder = setFile => {
+const useRecorder = (setFile) => {
   const [active, setActive] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const timerRef = useRef(null);
@@ -15,16 +15,13 @@ const useRecorder = setFile => {
     setRecording(false);
   };
 
-  useEffect(
-    () => {
-      if (active) setRecordingTime(0);
-      if (!active) stop();
-    },
-    [active]
-  );
+  useEffect(() => {
+    if (active) setRecordingTime(0);
+    if (!active) stop();
+  }, [active]);
 
   const changeRecordingMediaType = () => {
-    setRecordingMediaType(prev => {
+    setRecordingMediaType((prev) => {
       if (prev == "audio") return "video";
       if (prev == "video") return "audio";
       return null;
@@ -34,7 +31,7 @@ const useRecorder = setFile => {
   const handleStartRecording = async () => {
     const name = randomString();
 
-    const afterRecording = blob => {
+    const afterRecording = (blob) => {
       const src = window.URL.createObjectURL(blob);
       const file = { src };
       file["type"] = recordingMediaType === "audio" ? "mp3" : "mp4";
@@ -48,7 +45,7 @@ const useRecorder = setFile => {
       () => {
         setRecording(true);
         timerRef.current = setInterval(
-          () => setRecordingTime(prev => (prev += 100)),
+          () => setRecordingTime((prev) => (prev += 100)),
           100
         );
         setRecorder(() => stopper);
@@ -74,7 +71,7 @@ const useRecorder = setFile => {
     recordingMediaType,
     changeRecordingMediaType,
     startRecording,
-    handleStartRecording
+    handleStartRecording,
   };
 };
 

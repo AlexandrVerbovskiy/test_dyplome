@@ -1,4 +1,6 @@
+import React from "react";
 import CONFIG from "../config";
+
 const DisputeBtn = ({ actualStatus, onClick }) => {
   const jobStatus = CONFIG["JOB_STATUSES"];
 

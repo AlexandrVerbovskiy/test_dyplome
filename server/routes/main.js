@@ -116,11 +116,19 @@ function route(app, db) {
     disputeController.getAllByStatus
   );
 
+  app.post(
+    "/assign-dispute",
+    isAuth,
+    isAdmin,
+    disputeController.assignAdminToDispute
+  );
+
+  app.get("/get-job-dispute/:disputeId", isAuth, isAdmin, disputeController.getById);
+
   app.get("/files/:folder/:filename", (req, res) => {
     const filename = req.params.filename;
     const folder = req.params.folder;
     const fileUrl = path.join(__dirname, `../files/`, folder, filename);
-    console.log(fileUrl);
     res.sendFile(fileUrl);
   });
 }

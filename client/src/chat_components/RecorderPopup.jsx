@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { StopFill } from "react-bootstrap-icons";
 import { PopupWrapper } from "../components";
 import { ChatBodyContext } from "../contexts";

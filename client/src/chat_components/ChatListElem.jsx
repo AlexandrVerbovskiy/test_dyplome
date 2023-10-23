@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { ChatContext } from "../contexts";
 import { fullTimeFormat } from "../utils";
 
@@ -31,17 +31,13 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
           />
         </div>
         <div className="flex-grow-1 ms-2">
-          <h6 className="mb-0 chat-title">
-            {chat.user_email}
-          </h6>
+          <h6 className="mb-0 chat-title">{chat.user_email}</h6>
           <p
             className="mb-0 chat-msg"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
-        <div className="chat-time">
-          {fullTimeFormat(chat.time_sended)}
-        </div>
+        <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
       </div>
     </li>
   );

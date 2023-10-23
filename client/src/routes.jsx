@@ -11,7 +11,8 @@ import {
   JobProposalView,
   MyProposals,
   ProposalsOnMyJobs,
-  AdminDisputes
+  AdminDisputes,
+  AdminDispute
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -45,7 +46,23 @@ const mainRouter = createBrowserRouter([
   },
   {
     path: "/admin-disputes",
-    element: <AdminDisputes />,
+    element: <AdminDisputes status="pending" />,
+  },
+  {
+    path: "/admin-disputes/pending",
+    element: <AdminDisputes status="pending" />,
+  },
+  {
+    path: "/admin-disputes/in-progress",
+    element: <AdminDisputes status="in-progress" />,
+  },
+  {
+    path: "/admin-disputes/resolved",
+    element: <AdminDisputes status="resolved" />,
+  },
+  {
+    path:"/admin-dispute/:disputeId",
+    element: <AdminDispute />,
   },
   {
     path: "/",

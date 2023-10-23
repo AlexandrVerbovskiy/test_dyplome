@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const useChatTextEditor = () => {
   const [editor, setEditor] = useState({ active: false });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const useMediaFileAccept = () => {
   const [file, setFile] = useState(null);
@@ -6,7 +6,7 @@ const useMediaFileAccept = () => {
   const close = () => setActive(false);
   const open = () => setActive(true);
 
-  const handleSetFile = newFile => {
+  const handleSetFile = (newFile) => {
     setFile(newFile);
     setActive(true);
     open();

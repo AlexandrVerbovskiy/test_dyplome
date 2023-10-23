@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { sendJobProposal } from "../requests";
 
 const usePopupController = ({ onSuccess, onError }) => {
@@ -82,7 +82,7 @@ const usePopupController = ({ onSuccess, onError }) => {
       activate: acceptJobDisputeFormActivate,
       hide: acceptJobDisputeFormHide,
       setProposalId: acceptJobDisputeFormHideSetProposalId,
-      setDescription: jobDisputeFormSetDescription
+      setDescription: jobDisputeFormSetDescription,
     },
   };
 };
