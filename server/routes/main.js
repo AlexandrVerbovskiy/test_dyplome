@@ -123,7 +123,12 @@ function route(app, db) {
     disputeController.assignAdminToDispute
   );
 
-  app.get("/get-job-dispute/:disputeId", isAuth, isAdmin, disputeController.getById);
+  app.get(
+    "/get-job-dispute/:disputeId",
+    isAuth,
+    isAdmin,
+    disputeController.getById
+  );
 
   app.get("/files/:folder/:filename", (req, res) => {
     const filename = req.params.filename;
@@ -131,6 +136,19 @@ function route(app, db) {
     const fileUrl = path.join(__dirname, `../files/`, folder, filename);
     res.sendFile(fileUrl);
   });
+
+  app.get(
+    "/get-chat-user-infos/:chatId",
+    isAuth,
+    isAdmin,
+    chatController.getChatUserInfos
+  );
+  app.post(
+    "/get-full-chat-messages",
+    isAuth,
+    isAdmin,
+    chatController.getChatMessagesFullContents
+  );
 }
 
 module.exports = route;

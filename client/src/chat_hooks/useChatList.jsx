@@ -1,60 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getUsersToChatting } from "../requests";
 
-const useChatList = onInit => {
+const useChatList = (onInit) => {
   const limit = 20;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [chatList, setChatList] = useState([]);
   const [search, setChatListSearch] = useState("");
   const [canSearch, setCanSearch] = useState(true);
 
-  useEffect(
-    () => {
-      setChatList([]);
-      getMoreChats();
-    },
-    [search]
-  );
+  useEffect(() => {
+    setChatList([]);
+    getMoreChats([]);
+  }, [search]);
 
-  const getLastChatId = () => {
-    let minId = -1;
-    chatList.forEach(elem => {
-      if (elem.id < minId || minId == -1) minId = elem.id;
+  const handleChatListSearch = (value) => {
+    setCanSearch(true);
+    setChatListSearch(value);
+  };
+
+  const getLastChatId = (chats = null) => {
+    let minId = 0;
+    if (!chats) chats = chatList;
+    
+    chats.forEach((elem) => {
+      if (elem.id < minId || minId == 0) minId = elem.chat_id;
     });
+
     return minId;
   };
 
-  const getChats = async () => {
+  const getChats = async (prevChats = null) => {
     setCanSearch(false);
+    const lastChatId = getLastChatId(prevChats);
+    console.log(lastChatId);
+
     const data = {
-      lastChatId: getLastChatId(),
+      lastChatId,
       limit,
-      searchString: search
+      searchString: search,
     };
 
     await getUsersToChatting(
       data,
-      chats => {
+      (chats) => {
         if (chats.length === limit) setCanSearch(true);
-        setChatList(prev => [...prev, ...chats]);
+        setChatList((prev) => [...prev, ...chats]);
         if (isFirstAction) {
           setIsFirstAction(false);
           onInit(chats);
         }
       },
-      e => console.log(e)
+      (e) => console.log(e)
     );
   };
 
-  const getMoreChats = async () => {
-    if (canSearch) await getChats();
+  const getMoreChats = async (prevChats = null) => {
+    if (canSearch) await getChats(prevChats);
   };
 
-  const onChatUpdate = chat => {
+  const onChatUpdate = (chat) => {
     if (!chat) return;
 
-    setChatList(prev => {
-      const prevDataChat = prev.find(elem => elem.chat_id == chat.chat_id);
+    setChatList((prev) => {
+      const prevDataChat = prev.find((elem) => elem.chat_id == chat.chat_id);
 
       if (
         prevDataChat &&
@@ -63,17 +71,17 @@ const useChatList = onInit => {
       ) {
         const partToUpdate = {
           content: chat.content,
-          message_id: chat.message_id
+          message_id: chat.message_id,
         };
         if (chat.time_sended) partToUpdate["time_sended"] = chat.time_sended;
         if (chat.type) partToUpdate["type"] = chat.type;
 
         const newChat = {
           ...prevDataChat,
-          ...partToUpdate
+          ...partToUpdate,
         };
 
-        let chats = prev.filter(elem => elem.chat_id != chat.chat_id);
+        let chats = prev.filter((elem) => elem.chat_id != chat.chat_id);
         chats = [newChat, ...chats];
 
         chats = chats.sort(
@@ -87,15 +95,15 @@ const useChatList = onInit => {
     });
   };
 
-  const onGetChat = chat => {
-    setChatList(prev => [chat, ...prev]);
+  const onGetChat = (chat) => {
+    setChatList((prev) => [chat, ...prev]);
   };
 
   const onChatMessageDelete = (chatId, deletedMessageId, message) => {
-    setChatList(prev => {
-      const prevDataChat = prev.find(elem => elem.chat_id == chatId);
+    setChatList((prev) => {
+      const prevDataChat = prev.find((elem) => elem.chat_id == chatId);
       if (prevDataChat && prevDataChat.message_id == deletedMessageId) {
-        let chats = prev.filter(elem => elem.chat_id != chatId);
+        let chats = prev.filter((elem) => elem.chat_id != chatId);
         if (!message) return chats;
 
         const newChat = {
@@ -103,7 +111,7 @@ const useChatList = onInit => {
           content: message.content,
           message_id: message.message_id,
           time_sended: message.time_sended,
-          type: message.type
+          type: message.type,
         };
         chats = [newChat, ...chats];
         chats = chats.sort(
@@ -116,8 +124,8 @@ const useChatList = onInit => {
   };
 
   const onChangeTyping = (data, typing) => {
-    setChatList(prev =>
-      prev.map(elem => {
+    setChatList((prev) =>
+      prev.map((elem) => {
         if (elem.chat_id == data.chatId) return { ...elem, typing };
         return { ...elem };
       })
@@ -125,8 +133,8 @@ const useChatList = onInit => {
   };
 
   const onChangeOnline = (data, online) => {
-    setChatList(prev =>
-      prev.map(elem => {
+    setChatList((prev) =>
+      prev.map((elem) => {
         if (elem.chat_id == data.chatId) return { ...elem, online };
         return { ...elem };
       })
@@ -135,13 +143,13 @@ const useChatList = onInit => {
 
   return {
     chatList,
-    setChatListSearch,
+    setChatListSearch: handleChatListSearch,
     getMoreChats,
     onChatUpdate,
     onChatMessageDelete,
     onChangeTyping,
     onChangeOnline,
-    onGetChat
+    onGetChat,
   };
 };
 
