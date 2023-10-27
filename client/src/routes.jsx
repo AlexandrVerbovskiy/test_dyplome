@@ -12,7 +12,8 @@ import {
   MyProposals,
   ProposalsOnMyJobs,
   AdminDisputes,
-  AdminDispute
+  AdminDispute,
+  AdminClientChatView,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -61,8 +62,12 @@ const mainRouter = createBrowserRouter([
     element: <AdminDisputes status="resolved" />,
   },
   {
-    path:"/admin-dispute/:disputeId",
+    path: "/admin-dispute/:disputeId",
     element: <AdminDispute />,
+  },
+  {
+    path: "/admin-client-chat-view/:chatId",
+    element: <AdminClientChatView />,
   },
   {
     path: "/",

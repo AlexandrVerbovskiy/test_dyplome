@@ -2914,8 +2914,8 @@ body:has(.alert) .page-wrapper {
 }
 
 .dispute-status-view .input-group,
-.job-status-view .input-group{
-  width: fit-content!important;
+.job-status-view .input-group {
+  width: fit-content !important;
 }
 
 .dispute-status-view label,
@@ -2967,4 +2967,43 @@ body:has(.alert) .page-wrapper {
 .card-field-value .status-view {
   padding: 5px 10px !important;
   font-size: 12px !important;
+}
+
+.admin-view-chat-header {
+  display: flex;
+  align-items: flex-end;
+  padding: calc(0.5rem + 10px) 1rem;
+}
+
+.admin-view-chat-header * {
+  font-size: calc(0.75rem + 0.3vw) !important;
+}
+
+.admin-view-chat-header span {
+  margin: 0 20px;
+}
+
+.admin-chat-user-profile,
+.admin-chat-user-profile a {
+  display: flex;
+  align-items: flex-end;
+}
+
+.admin-view-chat-body {
+  max-height: calc(100vh - 8.2rem - 130px);
+  height: calc(100vh - 8.2rem - 130px);
+  overflow-y: auto;
+}
+
+.base-main-page {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.admin-chat-views {
+  align-items: flex-end;
+}
+
+.admin-chat-views .sender-message-avatar {
+  margin-bottom: 1rem;
 }

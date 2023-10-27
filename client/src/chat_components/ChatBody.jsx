@@ -63,8 +63,6 @@ const ChatBody = ({ chatRef }) => {
     return () => stopSendMedia(temp_key);
   };
 
-  console.log("Messages", messages);
-
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>
       <div id="chat_body" className="card col-lg-8" ref={chatRef}>

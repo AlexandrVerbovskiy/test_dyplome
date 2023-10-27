@@ -130,25 +130,26 @@ function route(app, db) {
     disputeController.getById
   );
 
-  app.get("/files/:folder/:filename", (req, res) => {
-    const filename = req.params.filename;
-    const folder = req.params.folder;
-    const fileUrl = path.join(__dirname, `../files/`, folder, filename);
-    res.sendFile(fileUrl);
-  });
-
   app.get(
     "/get-chat-user-infos/:chatId",
     isAuth,
     isAdmin,
     chatController.getChatUserInfos
   );
+  
   app.post(
     "/get-full-chat-messages",
     isAuth,
     isAdmin,
     chatController.getChatMessagesFullContents
   );
+
+  app.get("/files/:folder/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const folder = req.params.folder;
+    const fileUrl = path.join(__dirname, `../files/`, folder, filename);
+    res.sendFile(fileUrl);
+  });
 }
 
 module.exports = route;

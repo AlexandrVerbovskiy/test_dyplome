@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { MainContext } from "../contexts";
 import { getJobDisputeInfo } from "../requests";
 import { BaseJobEntityTemplate } from "../job_components";
+import { Link } from "react-router-dom";
 
 const AdminDispute = () => {
   let { disputeId } = useParams();
@@ -38,6 +39,16 @@ const AdminDispute = () => {
       needShowAllStatus={true}
     >
       <hr />
+      <div className="d-flex justify-content-end">
+        {dispute.chat_id && (
+          <Link
+            className="btn btn-primary"
+            to={"/admin-client-chat-view/" + dispute.chat_id}
+          >
+            View Chat
+          </Link>
+        )}
+      </div>
     </BaseJobEntityTemplate>
   );
 };

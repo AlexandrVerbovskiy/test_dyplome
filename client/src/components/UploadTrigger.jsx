@@ -25,10 +25,7 @@ const UploadTrigger = ({ onTriggerShown }) => {
 
   const handleIntersection = (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        console.log("1");
-        onTriggerShown();
-      }
+      if (entry.isIntersecting) onTriggerShown();
     });
   };
 

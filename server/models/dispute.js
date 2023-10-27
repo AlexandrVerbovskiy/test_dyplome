@@ -24,7 +24,12 @@ class Dispute extends Model {
   getById = async (id) =>
     await this.errorWrapper(async () => {
       const disputes = await this.dbQueryAsync(
-        `SELECT ${this.__fullDisputeInfo} WHERE disputes.id = ?`,
+        `SELECT cu1.chat_id, ${this.__fullDisputeInfo} 
+        
+        JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
+        JOIN chats_users as cu2 ON (cu2.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)
+        
+        WHERE disputes.id = ?`,
         [id]
       );
       if (disputes.length > 0) return disputes[0];
@@ -77,7 +82,12 @@ class Dispute extends Model {
     await this.errorWrapper(async () => {
       const params = [];
 
-      let query = `SELECT ${this.__fullDisputeInfo} WHERE disputes.status = '${status}'`;
+      let query = `SELECT cu1.chat_id, ${this.__fullDisputeInfo} 
+      
+      JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
+      JOIN chats_users as cu2 ON (cu2.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)
+
+      WHERE disputes.status = '${status}'`;
       const skipIdsRequest = "disputes.id NOT IN (?)";
       const filterRequest = `(jobs.title like "%${filter}%")`;
 

@@ -1,7 +1,7 @@
 import { axios } from "../utils";
 import config from "../config";
 
-const adminAssign = async (disputeId, successCallback, errorCallback) => {
+const adminAssignDispute = async (disputeId, successCallback, errorCallback) => {
   try {
     const res = await axios.post(config.API_URL + `/assign-dispute`, {
       disputeId,
@@ -15,4 +15,4 @@ const adminAssign = async (disputeId, successCallback, errorCallback) => {
   }
 };
 
-export default adminAssign;
+export default adminAssignDispute;

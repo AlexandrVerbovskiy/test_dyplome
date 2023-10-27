@@ -8,3 +8,4 @@ export { default as useMyProposals } from "./useMyProposals";
 export { default as useProposalsOnMyJobs } from "./useProposalsOnMyJobs";
 export { default as usePopupController } from "./usePopupController";
 export { default as useAdminDisputes } from "./useAdminDisputes";
+export { default as useAdminChatMessages } from "./useAdminChatMessages";

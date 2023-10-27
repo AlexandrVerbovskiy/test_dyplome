@@ -5,7 +5,7 @@ import { useAdminDisputes } from "../hooks";
 import { CardWrapper, JobCard, MainFilter } from "../job_components";
 import { UploadTrigger } from "../components";
 import { fullTimeFormat } from "../utils";
-import { adminAssign } from "../requests";
+import { adminAssignDispute } from "../requests";
 import { MainContext } from "../contexts";
 
 const AdminDisputes = ({ status = "pending" }) => {
@@ -25,7 +25,7 @@ const AdminDisputes = ({ status = "pending" }) => {
   }, [status]);
 
   const handleAcceptDispute = (id) => {
-    adminAssign(
+    adminAssignDispute(
       id,
       () => navigate(`/admin-dispute/${id}`),
       (err) => setError(err)

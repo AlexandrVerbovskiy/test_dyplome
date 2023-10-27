@@ -3,8 +3,8 @@ const Model = require("./model");
 
 class Chat extends Model {
   __usersFields =
-    "users.email as user_email, users.nick as user_nick, users.id as user_id";
-  __messageSelect = `SELECT messages.type as type, messages.id as message_id, messages.time_created as time_sended,
+    "users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+  __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
     ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type
     FROM messages
     JOIN (SELECT mc.content, mc.message_id, mc.time_edited
@@ -27,8 +27,6 @@ class Chat extends Model {
     JOIN chats on c1.chat_id = chats.id and type=?
     `;
 
-
-    
   hasUserAccess = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       const relations = await this.dbQueryAsync(
@@ -213,7 +211,7 @@ class Chat extends Model {
 
   getMessageById = async (messageId) => {
     const messages = await this.dbQueryAsync(
-      `${this.__messageSelect} WHERE messages.id = ?`,
+      `SELECT ${this.__messageSelect} WHERE messages.id = ?`,
       [messageId]
     );
     if (messages.length > 0) return messages[0];
@@ -224,7 +222,9 @@ class Chat extends Model {
     let where = `messages.chat_id = ?`;
     if (showAllContent) where += `AND messages.hidden=false`;
 
-    let query = `${this.__messageSelect} WHERE ${where}`;
+    let query = `SELECT`;
+    if (showAllContent) query += " messages.hidden, ";
+    query += ` ${this.__messageSelect} WHERE ${where}`;
     const params = [chatId];
 
     if (lastId > 0) {
@@ -251,6 +251,16 @@ class Chat extends Model {
     );
     return messages;
   };
+
+  getChatUsers = async (chatId) =>
+    await this.errorWrapper(async () => {
+      const users = await this.dbQueryAsync(
+        `SELECT ${this.__usersFields} FROM chats_users 
+          JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ?`,
+        [chatId]
+      );
+      return users;
+    });
 
   getUserSocketsFromChat = async (chatId, userId) => {
     const query = `SELECT s.socket FROM chats AS c1 

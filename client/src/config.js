@@ -104,6 +104,7 @@ const config = {
       value: "Resolved",
     },
   },
+  MESSAGES_UPLOAD_COUNT: 20,
 };
 
 export default config;

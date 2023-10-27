@@ -120,12 +120,13 @@ class Chat extends Controller {
       const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
       if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
 
-      const messages = this.chatModel.getChatMessages(
+      const messages = await this.chatModel.getChatMessages(
         chatId,
         lastId,
         count,
         showAllContent
       );
+
       if (!showAllContent)
         return this.setResponseBaseSuccess("Found success", {
           messages,
@@ -134,10 +135,13 @@ class Chat extends Controller {
       const resMessages = [];
       for (let i = 0; i < messages.length; i++) {
         const resFullMessageInfo = messages[i];
-        resFullMessageInfo["contents"] =
-          await this.chatModel.getAllMessageContents();
+        resFullMessageInfo["story"] =
+          await this.chatModel.getAllMessageContents(
+            resFullMessageInfo["message_id"]
+          );
         resMessages.push(resFullMessageInfo);
       }
+
       return this.setResponseBaseSuccess("Found success", {
         messages: resMessages,
       });
@@ -250,10 +254,11 @@ class Chat extends Controller {
     });
   };
 
-  getChatUserInfos = async () =>
+  getChatUserInfos = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { chatId } = req.params;
-      this.setResponseBaseSuccess("Chat info was got success", {chatId});
+      const users = await this.chatModel.getChatUsers(chatId);
+      this.setResponseBaseSuccess("Chat info was got success", { users });
     });
 }
 
