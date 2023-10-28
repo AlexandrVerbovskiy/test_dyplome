@@ -1288,6 +1288,7 @@ a {
   height: 520px;
 }
 
+.chat-base-msg,
 .chat-content-leftside .chat-left-msg {
   width: fit-content;
   padding: 0.8rem;
@@ -3006,4 +3007,75 @@ body:has(.alert) .page-wrapper {
 
 .admin-chat-views .sender-message-avatar {
   margin-bottom: 1rem;
+}
+
+.message-story-popup-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: black;
+  opacity: 0.2;
+  z-index: 9999999;
+}
+
+.chat-time {
+  position: relative;
+}
+
+.message-story-popup {
+  position: fixed;
+  z-index: 99999999;
+  width: calc(80%);
+  top: 5vh;
+  left: 10%;
+}
+
+.message-story-popup .card-body {
+  height: calc(90vh - 36px);
+  max-height: calc(90vh - 36px);
+  overflow-y: auto;
+}
+
+.message-story-popup .card {
+  box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%),
+    0 2px 6px 0 rgb(206 206 238 / 54%);
+}
+
+.chat-time {
+  display: flex;
+}
+
+.message-story-popup .flex-grow-1 + .flex-grow-1 .chat-base-msg {
+  margin-bottom: 0 !important;
+}
+
+.edited-message-label .card-header .btn-close-modal,
+.edited-message-label {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.edited-message-label:hover {
+  color: black;
+}
+
+.deleted-message-label,
+.edited-message-label {
+  margin-left: 5px;
+}
+
+.message-story-popup .card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.message-story-popup .card-header .btn-close-modal {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.message-story-popup .card-header .btn-close-modal:hover {
+  color: black;
 }

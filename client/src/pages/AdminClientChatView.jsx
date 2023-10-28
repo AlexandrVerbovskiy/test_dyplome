@@ -43,6 +43,49 @@ const MessageContent = ({ type, content }) => {
   return "WHAT??????????????????";
 };
 
+const TimeRow = ({ text, story, timeSended, textAlign }) => {
+  const [active, setActive] = useState(false);
+
+  const show = () => setActive(true);
+  const hide = () => setActive(false);
+
+  return (
+    <div className="mb-0 chat-time" style={{ textAlign }}>
+      {shortTimeFormat(timeSended)}
+      <div className="edited-message-label">
+        <span onClick={show}>{text}</span>
+      </div>
+      {active && (
+        <>
+          <div className="message-story-popup">
+            <div className="card">
+              <div className="card-header">
+                <span>Message Story</span>
+                <span className="btn-close-modal" onClick={hide}>
+                  x
+                </span>
+              </div>
+              <div className="card-body">
+                {story.map((elem) => (
+                  <div key={elem["id"]} className="flex-grow-1">
+                    <p className="mb-0 chat-time">
+                      {shortTimeFormat(elem["time_edited"])}
+                    </p>
+                    <div className="chat-base-msg card">
+                      <MessageContent type="text" content={elem.content} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="message-story-popup-wrapper" onClick={hide}></div>
+        </>
+      )}
+    </div>
+  );
+};
+
 const Message = ({
   time_sended,
   type,
@@ -51,15 +94,53 @@ const Message = ({
   user_email,
   content,
   senderIndex = 0,
+  hidden = false,
+  story = [],
 }) => {
   if (!user_avatar) user_avatar = "/assets/images/avatars/avatar-3.png";
 
   const timeTextAlign = senderIndex === 0 ? "start" : "end";
-  const contentCardClass =
+  let contentCardClass =
     senderIndex === 0 ? "chat-left-msg card" : "chat-right-msg card";
 
   const mainCardClass =
     senderIndex === 0 ? "chat-content-leftside" : "chat-content-rightside";
+
+  let nearTimeMessage = (
+    <div className="mb-0 chat-time" style={{ timeTextAlign }}>
+      {shortTimeFormat(time_sended)}
+    </div>
+  );
+  if (hidden && story.length > 1) {
+    nearTimeMessage = (
+      <TimeRow
+        timeSended={time_sended}
+        textAlign={timeTextAlign}
+        text="(edited & deleted)"
+        story={story}
+      />
+    );
+
+    contentCardClass += " bg-light-danger";
+  } else if (hidden) {
+    nearTimeMessage = (
+      <div className="mb-0 chat-time" style={{ timeTextAlign }}>
+        {shortTimeFormat(time_sended)}
+        <div className="deleted-message-label">(deleted)</div>
+      </div>
+    );
+    contentCardClass += " bg-light-danger";
+  } else if (story.length > 1) {
+    nearTimeMessage = (
+      <TimeRow
+        timeSended={time_sended}
+        textAlign={timeTextAlign}
+        text="(edited)"
+        story={story}
+      />
+    );
+    contentCardClass += " bg-light-success";
+  }
 
   return (
     <div className={"d-flex admin-chat-views " + mainCardClass}>
@@ -72,9 +153,7 @@ const Message = ({
         title={user_id}
       />
       <div className="flex-grow-1 ms-2">
-        <p className="mb-0 chat-time" style={{ timeTextAlign }}>
-          {shortTimeFormat(time_sended)}
-        </p>
+        {nearTimeMessage}
         <div className={contentCardClass}>
           <MessageContent type={type} content={content} />
         </div>
