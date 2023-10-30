@@ -132,11 +132,102 @@ class JobProposal extends Model {
   checkJobOwner = async (proposalId, userId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(
-        `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND jobs.user_id = ?`,
+        `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND jobs.author_id = ?`,
         [proposalId, userId]
       );
       return proposals.length;
     });
+
+  __getAllStatusesForUserBase = async (userId, where = "", params = []) =>
+    await this.errorWrapper(async () => {
+      let request = `SELECT job_requests.* FROM job_requests WHERE job_requests.user_id = ?`;
+      if (where.length > 0) request += ` AND ${where}`;
+      const proposals = await this.dbQueryAsync(request, [userId, ...params]);
+      return proposals.length;
+    });
+
+  __getAllStatusesFromUserBase = async (userId, where = "", params = []) =>
+    await this.errorWrapper(async () => {
+      let request = `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id AND jobs.author_id = ?`;
+      if (where.length > 0) request += ` WHERE ${where}`;
+      const proposals = await this.dbQueryAsync(request, [userId, ...params]);
+      return proposals.length;
+    });
+
+  getAllForUser = (userId) => this.__getAllStatusesForUserBase(userId);
+  getAllFromUser = (userId) => this.__getAllStatusesFromUserBase(userId);
+
+  getAllAcceptedForUser = (userId) =>
+    this.__getAllStatusesForUserBase(
+      userId,
+      `(NOT(status = '${this.statuses.rejected}') AND NOT (status = '${this.statuses.pending}'))`
+    );
+
+  getAllAcceptedFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `(NOT(status = '${this.statuses.rejected}') AND NOT (status = '${this.statuses.pending}'))`
+    );
+
+  getAllRejectedForUser = (userId) =>
+    this.__getAllStatusesForUserBase(
+      userId,
+      `status = '${this.statuses.rejected}'`
+    );
+
+  getAllRejectedFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.rejected}'`
+    );
+
+  getAllInWaitingCancelForUser = (userId) =>
+    this.__getAllStatusesForUserBase(
+      userId,
+      `status = '${this.statuses.awaitingCancellationConfirmation}'`
+    );
+
+  getAllInWaitingCancelFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.awaitingCancellationConfirmation}'`
+    );
+
+  getAllInWaitingCompleteForUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.awaitingExecutionConfirmation}'`
+    );
+
+  getAllInWaitingCompleteFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.awaitingExecutionConfirmation}'`
+    );
+
+  getAllCancelledForUser = (userId) =>
+    this.__getAllStatusesForUserBase(
+      userId,
+      `status = '${this.statuses.cancelled}'`
+    );
+
+  getAllCancelledFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.cancelled}'`
+    );
+
+  getAllCompletedForUser = (userId) =>
+    this.__getAllStatusesForUserBase(
+      userId,
+      `status = '${this.statuses.completed}'`
+    );
+
+  getAllCompletedFromUser = (userId) =>
+    this.__getAllStatusesFromUserBase(
+      userId,
+      `status = '${this.statuses.completed}'`
+    );
 }
 
 module.exports = JobProposal;

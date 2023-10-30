@@ -21,5 +21,6 @@ export { default as adminAssignDispute } from "./adminAssignDispute";
 export { default as getJobDisputeInfo } from "./getJobDisputeInfo";
 export { default as getChatMessagesByAdmin } from "./getChatMessagesByAdmin";
 export { default as getChatInfoByAdmin } from "./getChatInfoByAdmin";
+export { default as getUserStatistic } from "./getUserStatistic";
 
 export * from "./changeProposalsStatus";

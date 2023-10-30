@@ -136,7 +136,7 @@ function route(app, db) {
     isAdmin,
     chatController.getChatUserInfos
   );
-  
+
   app.post(
     "/get-full-chat-messages",
     isAuth,
@@ -150,6 +150,12 @@ function route(app, db) {
     const fileUrl = path.join(__dirname, `../files/`, folder, filename);
     res.sendFile(fileUrl);
   });
+
+  app.get(
+    "/get-user-statistic/:userId",
+    isAuth,
+    userController.getUserStatistic
+  );
 }
 
 module.exports = route;

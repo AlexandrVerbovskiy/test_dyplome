@@ -119,5 +119,20 @@ class Dispute extends Model {
 
   getAllResolved = (skippedIds = [], filter = "", limit = 20) =>
     this.__getAllByStatus("Resolved", skippedIds, filter, limit);
+
+  __getByUserId = async (where, params) =>
+    await this.errorWrapper(async () => {
+      const disputes = await this.dbQueryAsync(
+        `SELECT ${this.__fullDisputeInfo} WHERE ${where}`,
+        params
+      );
+      return disputes[0];
+    });
+
+  getWhereUserSended = (userId) =>
+    this.__getByUserId("disputes.user_id = ?", [userId]);
+
+  getWhereUserAccused = async (userId) =>
+    this.__getByUserId("NOT(disputes.user_id = ?)", [userId]);
 }
 module.exports = Dispute;

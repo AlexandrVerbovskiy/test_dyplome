@@ -40,15 +40,20 @@ class User extends Model {
       return user.id;
     });
 
-  getUserInfo = async (userId) =>
+  __baseGetUserInfo = async (select, userId) =>
     await this.errorWrapper(async () => {
       const findUserRes = await this.dbQueryAsync(
-        "SELECT id, email, address, lat, lng, nick, avatar FROM users WHERE id = ?",
+        `SELECT ${select} WHERE id = ?`,
         [userId]
       );
-      const user = findUserRes[0];
-      return user;
+      return findUserRes[0];
     });
+
+  getUserInfo = (userId) =>
+    this.__baseGetUserInfo(
+      "id, email, address, lat, lng, nick, avatar FROM users ",
+      userId
+    );
 
   checkIsAdmin = async (userId) =>
     await this.errorWrapper(async () => {

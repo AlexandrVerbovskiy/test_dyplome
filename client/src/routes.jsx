@@ -14,6 +14,7 @@ import {
   AdminDisputes,
   AdminDispute,
   AdminClientChatView,
+  UserProfile,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -68,6 +69,10 @@ const mainRouter = createBrowserRouter([
   {
     path: "/admin-client-chat-view/:chatId",
     element: <AdminClientChatView />,
+  },
+  {
+    path: "/profile/:userId",
+    element: <UserProfile />,
   },
   {
     path: "/",
