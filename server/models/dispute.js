@@ -132,7 +132,7 @@ class Dispute extends Model {
   getWhereUserSended = (userId) =>
     this.__getByUserId("disputes.user_id = ?", [userId]);
 
-  getWhereUserAccused = async (userId) =>
+  getWhereUserAccused = (userId) =>
     this.__getByUserId("NOT(disputes.user_id = ?)", [userId]);
 }
 module.exports = Dispute;

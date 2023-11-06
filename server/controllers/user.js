@@ -238,10 +238,11 @@ class User extends Controller {
         userId
       );
 
-      user["accusedDisputes"] = await this.disputeModel.getWhereUserSended(
+      user["sendedDisputes"] = await this.disputeModel.getWhereUserSended(
         userId
       );
-      user["sendedDisputes"] = await this.disputeModel.getWhereUserAccused(
+
+      user["accusedDisputes"] = await this.disputeModel.getWhereUserAccused(
         userId
       );
 
