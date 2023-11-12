@@ -54,23 +54,20 @@ class Controller {
   setResponseNoFoundError = (message) => this.setResponseError(message, 404);
 
   constructor(db) {
-    this.userModel = new UserModel(db);
-    this.passwordResetLinkModel = new PasswordResetLinkModel(db);
-    this.socketModel = new SocketModel(db);
-    this.chatModel = new ChatModel(db);
-    this.actionModel = new ActionModel(db);
-    this.jobModel = new JobModel(db);
-    this.jobProposalModel = new JobProposalModel(db);
-    this.disputeModel = new DisputeModel(db);
+    if (!Controller.instance) {
+      this.userModel = new UserModel(db);
+      this.passwordResetLinkModel = new PasswordResetLinkModel(db);
+      this.socketModel = new SocketModel(db);
+      this.chatModel = new ChatModel(db);
+      this.actionModel = new ActionModel(db);
+      this.jobModel = new JobModel(db);
+      this.jobProposalModel = new JobProposalModel(db);
+      this.disputeModel = new DisputeModel(db);
 
-    /*
-        models.forEach(model => {
-            const modelObject = new model(db);
-            const modelName = modelObject.constructor.name;
-            const name = modelName.charAt(0).toLowerCase() + modelName.slice(1) + "Model";
-            this[name] = modelObject;
-        });
-        */
+      Controller.instance = this;
+    }
+
+    return Controller.instance;
   }
 
   async errorWrapper(res, func) {
@@ -91,5 +88,7 @@ class Controller {
     }
   }
 }
+
+Controller.instance = null;
 
 module.exports = Controller;

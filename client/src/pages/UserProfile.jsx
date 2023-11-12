@@ -3,21 +3,120 @@ import { useParams } from "react-router-dom";
 import { getUserStatistic } from "../requests";
 import { Navbar } from "../components";
 import { generateFullUserImgPath } from "../utils";
+import { LineChart } from "../charts";
 
 const svgSize = 16;
+
+const sortCountByMonths = (data, months) => {
+  const findMinYearMonth = () => {
+    if (data.length === 0) {
+      return null;
+    }
+
+    let minDate = new Date(data[0].time_created);
+
+    data.forEach((item) => {
+      const itemDate = new Date(item.time_created);
+      if (itemDate < minDate) {
+        minDate = itemDate;
+      }
+    });
+
+    return minDate;
+  };
+
+  const generateMonthlyReport = (minDate) => {
+    const currentDate = new Date();
+    let currentMonth = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+    const report = {};
+
+    while (currentMonth <= currentDate) {
+      const label = `${currentMonth.getFullYear()} ${getMonthName(
+        currentMonth.getMonth()
+      )}`;
+      report[label] = 0;
+
+      data.forEach((item) => {
+        const itemDate = new Date(item.time_created);
+        if (
+          itemDate.getFullYear() === currentMonth.getFullYear() &&
+          itemDate.getMonth() === currentMonth.getMonth()
+        ) {
+          report[label]++;
+        }
+      });
+
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+    }
+
+    return report;
+  };
+
+  const getMonthName = (monthIndex) => months[monthIndex];
+
+  const minDate = findMinYearMonth();
+  if (!minDate) return [];
+
+  return generateMonthlyReport(minDate);
+};
 
 const UserProfile = () => {
   let { userId } = useParams();
   const [userInfo, setUserInfo] = useState(null);
+  const [forUserInfo, setForUserInfo] = useState({});
+  const [byUserInfo, setByUserInfo] = useState({});
+  const [countFinishedByKeys, setCountFinishedByKeys] = useState([]);
+  const [countFinishedForKeys, setCountFinishedForKeys] = useState([]);
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   useEffect(() => {
-    console.log(userId);
-
     getUserStatistic(
       userId,
       (data) => {
         console.log(data);
         setUserInfo(data);
+
+        const countCompletedFor = sortCountByMonths(
+          data["allCompletedForUser"],
+          months
+        );
+        setForUserInfo({
+          "Total Completed": {
+            color: { r: "255", g: "0", b: "70" },
+            data: countCompletedFor,
+          },
+        });
+
+        if (countFinishedForKeys.length < Object.keys(countCompletedFor).length)
+          setCountFinishedForKeys(Object.keys(countCompletedFor));
+
+        const countCompletedBy = sortCountByMonths(
+          data["allCompletedFromUser"],
+          months
+        );
+        setByUserInfo({
+          "Total Completed": {
+            color: { r: "255", g: "70", b: "0" },
+            data: countCompletedBy,
+          },
+        });
+
+        if (countFinishedByKeys.length < Object.keys(countCompletedBy).length)
+          setCountFinishedByKeys(Object.keys(countCompletedBy));
       },
       () => {}
     );
@@ -37,7 +136,7 @@ const UserProfile = () => {
             </h6>
             <hr />
 
-            <div className="row">
+            <div className="row mb-5">
               <div className="col-md-6 d-flex justify-content-center mt-4">
                 <img
                   src={generateFullUserImgPath(userInfo["avatar"])}
@@ -81,10 +180,10 @@ const UserProfile = () => {
                   <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
                 </svg>
                 <span className="statistic-info-title">
-                  Count Job Proposals
+                  Count Got Job Proposals
                 </span>
                 <span className="statistic-info-value">
-                  {userInfo["countJobProposals"]}
+                  {userInfo["countJobProposalsFor"]}
                 </span>
               </div>
 
@@ -102,6 +201,26 @@ const UserProfile = () => {
                 <span className="statistic-info-title">Count Job</span>
                 <span className="statistic-info-value">
                   {userInfo["countJobs"]}
+                </span>
+              </div>
+
+              <div className="col statistic-info">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={svgSize}
+                  height={svgSize}
+                  fill="currentColor"
+                  className="bi bi-file-earmark-text"
+                  viewBox={`0 0 ${svgSize} ${svgSize}`}
+                >
+                  <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                  <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                </svg>
+                <span className="statistic-info-title">
+                  Count Sended Job Proposals
+                </span>
+                <span className="statistic-info-value">
+                  {userInfo["countJobProposalsFrom"]}
                 </span>
               </div>
             </div>
@@ -223,6 +342,17 @@ const UserProfile = () => {
             </div>
           </div>
         </div>
+
+        <LineChart
+          info={byUserInfo}
+          title="Count finished jobs by "
+          keys={countFinishedByKeys}
+        />
+        <LineChart
+          info={forUserInfo}
+          title="Count finished jobs for "
+          keys={countFinishedForKeys}
+        />
       </div>
     </div>
   );

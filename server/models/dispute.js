@@ -126,7 +126,7 @@ class Dispute extends Model {
         `SELECT ${this.__fullDisputeInfo} WHERE ${where}`,
         params
       );
-      return disputes[0];
+      return disputes;
     });
 
   getWhereUserSended = (userId) =>
@@ -134,5 +134,11 @@ class Dispute extends Model {
 
   getWhereUserAccused = (userId) =>
     this.__getByUserId("NOT(disputes.user_id = ?)", [userId]);
+
+  getCountWhereUserSended = (userId) =>
+    this.__getCountFromSelectRequest(this.getWhereUserSended, [userId]);
+
+  getCountWhereUserAccused = (userId) =>
+    this.__getCountFromSelectRequest(this.getWhereUserAccused, [userId]);
 }
 module.exports = Dispute;

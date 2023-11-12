@@ -3109,3 +3109,7 @@ body:has(.alert) .page-wrapper {
   font-weight: 500;
   font-size: 24px;
 }
+
+.canvas-parent {
+  margin-top: -30px;
+}

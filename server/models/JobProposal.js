@@ -138,23 +138,24 @@ class JobProposal extends Model {
       return proposals.length;
     });
 
-  __getAllStatusesForUserBase = async (userId, where = "", params = []) =>
+  __getAllStatusesFromUserBase = async (userId, where = "", params = []) =>
     await this.errorWrapper(async () => {
       let request = `SELECT job_requests.* FROM job_requests WHERE job_requests.user_id = ?`;
       if (where.length > 0) request += ` AND ${where}`;
       const proposals = await this.dbQueryAsync(request, [userId, ...params]);
-      return proposals.length;
+      return proposals;
     });
 
-  __getAllStatusesFromUserBase = async (userId, where = "", params = []) =>
+  __getAllStatusesForUserBase = async (userId, where = "", params = []) =>
     await this.errorWrapper(async () => {
       let request = `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id AND jobs.author_id = ?`;
       if (where.length > 0) request += ` WHERE ${where}`;
       const proposals = await this.dbQueryAsync(request, [userId, ...params]);
-      return proposals.length;
+      return proposals;
     });
 
   getAllForUser = (userId) => this.__getAllStatusesForUserBase(userId);
+
   getAllFromUser = (userId) => this.__getAllStatusesFromUserBase(userId);
 
   getAllAcceptedForUser = (userId) =>
@@ -228,6 +229,56 @@ class JobProposal extends Model {
       userId,
       `status = '${this.statuses.completed}'`
     );
+
+  getCountAllForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllForUser, [userId]);
+
+  getCountAllFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllFromUser, [userId]);
+
+  getCountAllAcceptedForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllAcceptedForUser, [userId]);
+
+  getCountAllAcceptedFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllAcceptedFromUser, [userId]);
+
+  getCountAllRejectedForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllRejectedForUser, [userId]);
+
+  getCountAllRejectedFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllRejectedFromUser, [userId]);
+
+  getCountAllInWaitingCancelForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllInWaitingCancelForUser, [
+      userId,
+    ]);
+
+  getCountAllInWaitingCancelFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllInWaitingCancelFromUser, [
+      userId,
+    ]);
+
+  getCountAllInWaitingCompleteForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllInWaitingCompleteForUser, [
+      userId,
+    ]);
+
+  getCountAllInWaitingCompleteFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllInWaitingCompleteFromUser, [
+      userId,
+    ]);
+
+  getCountAllCancelledForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllCancelledForUser, [userId]);
+
+  getCountAllCancelledFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllCancelledFromUser, [userId]);
+
+  getCountAllCompletedForUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllCompletedForUser, [userId]);
+
+  getCountAllCompletedFromUser = (userId) =>
+    this.__getCountFromSelectRequest(this.getAllCompletedFromUser, [userId]);
 }
 
 module.exports = JobProposal;

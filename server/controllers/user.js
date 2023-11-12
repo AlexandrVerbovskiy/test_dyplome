@@ -231,40 +231,43 @@ class User extends Controller {
       const user = await this.__getUserById(userId);
 
       user["countJobs"] = await this.jobModel.getCountByAuthor(userId);
-      user["countJobProposals"] = await this.jobProposalModel.getAllForUser(
-        userId
-      );
-      user["countJobProposals"] = await this.jobProposalModel.getAllFromUser(
+      user["countJobProposalsFor"] =
+        await this.jobProposalModel.getCountAllForUser(userId);
+      user["countJobProposalsFrom"] =
+        await this.jobProposalModel.getCountAllFromUser(userId);
+
+      user["sendedDisputes"] = await this.disputeModel.getCountWhereUserSended(
         userId
       );
 
-      user["sendedDisputes"] = await this.disputeModel.getWhereUserSended(
-        userId
-      );
-
-      user["accusedDisputes"] = await this.disputeModel.getWhereUserAccused(
-        userId
-      );
+      user["accusedDisputes"] =
+        await this.disputeModel.getCountWhereUserAccused(userId);
 
       user["allAcceptedForUser"] =
-        await this.jobProposalModel.getAllAcceptedForUser(userId);
+        await this.jobProposalModel.getCountAllAcceptedForUser(userId);
       user["allAcceptedFromUser"] =
-        await this.jobProposalModel.getAllAcceptedFromUser(userId);
+        await this.jobProposalModel.getCountAllAcceptedFromUser(userId);
+
+      user["allCompletedForUser"] =
+        await this.jobProposalModel.getAllCompletedForUser(userId);
+      user["allCompletedFromUser"] =
+        await this.jobProposalModel.getAllCompletedFromUser(userId);
 
       user["allRejectedForUser"] =
-        await this.jobProposalModel.getAllRejectedForUser(userId);
+        await this.jobProposalModel.getCountAllRejectedForUser(userId);
       user["allRejectedFromUser"] =
-        await this.jobProposalModel.getAllRejectedFromUser(userId);
+        await this.jobProposalModel.getCountAllRejectedFromUser(userId);
 
       user["allRejectedForUser"] =
-        await this.jobProposalModel.getAllRejectedForUser(userId);
+        await this.jobProposalModel.getCountAllRejectedForUser(userId);
       user["allRejectedFromUser"] =
-        await this.jobProposalModel.getAllRejectedFromUser(userId);
+        await this.jobProposalModel.getCountAllRejectedFromUser(userId);
 
       user["allCancelledForUser"] =
-        await this.jobProposalModel.getAllCancelledForUser(userId);
+        await this.jobProposalModel.getCountAllCancelledForUser(userId);
       user["allCancelledFromUser"] =
-        await this.jobProposalModel.getAllCancelledFromUser(userId);
+        await this.jobProposalModel.getCountAllCancelledFromUser(userId);
+
       return this.setResponseBaseSuccess("User getted success", user);
     });
 }
