@@ -3113,3 +3113,55 @@ body:has(.alert) .page-wrapper {
 .canvas-parent {
   margin-top: -30px;
 }
+
+.profile-comments-type-select .card-title {
+  padding: 0;
+  border-bottom: 1px solid #d2d4d5;
+}
+
+.profile-comments-type-select .card-title .row {
+  margin: 0;
+  width: 100%;
+}
+
+.profile-comments-type-select .card-title .col {
+  margin-bottom: 0 !important;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-comments-type-select h6 {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-comments-type-select h6.active {
+  background-color: #f8f9fa;
+}
+
+.star-form-submit-row {
+  display: flex !important;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.select-star-section {
+  display: flex;
+  align-items: flex-end;
+}
+
+.select-star-section label {
+  margin-bottom: 0;
+}
+
+.star-select-parent svg {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.star-select-parent .star-container {
+  padding-right: 8px !important;
+  padding-left: 8px !important;
+}

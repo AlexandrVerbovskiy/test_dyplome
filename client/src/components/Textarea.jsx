@@ -1,7 +1,14 @@
 import React from "react";
 import ErrorSpan from "./ErrorSpan";
 
-const Textarea = ({ title, value, onChange, error, placeholder = "" }) => {
+const Textarea = ({
+  title,
+  value,
+  onChange,
+  error,
+  placeholder = "",
+  rows = 3,
+}) => {
   return (
     <div className="form-group">
       <label htmlFor="myTextarea" className="form-label">
@@ -10,7 +17,7 @@ const Textarea = ({ title, value, onChange, error, placeholder = "" }) => {
       <textarea
         className="form-control"
         id="myTextarea"
-        rows="3"
+        rows={rows}
         value={value}
         placeholder={placeholder}
         onChange={onChange}

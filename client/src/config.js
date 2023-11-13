@@ -105,6 +105,20 @@ const config = {
     },
   },
   MESSAGES_UPLOAD_COUNT: 20,
+  MONTH_NAMES: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
 };
 
 export default config;

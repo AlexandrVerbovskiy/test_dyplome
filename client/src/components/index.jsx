@@ -24,3 +24,4 @@ export { default as JobProposalChangerStatus } from "./JobProposalChangerStatus"
 export { default as DisputeBtn } from "./DisputeBtn";
 
 export { default as AcceptPopup } from "./AcceptPopup";
+export { default as StarCommentForm } from "./StarCommentForm";
