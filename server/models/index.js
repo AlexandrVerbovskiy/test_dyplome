@@ -6,5 +6,9 @@ module.exports = {
     Job: require('./job'),
     PasswordResetLink: require('./passwordResetLink'),
     JobProposal: require('./jobProposal'),
-    Dispute: require('./dispute')
+    Dispute: require('./dispute'),
+    JobComment: require('./jobComment'),
+    WorkerComment: require('./workerComment.js'),
+    EmployeeComment: require('./employeeComment'),
+    ReplyComment: require('./replyComment'),
 }

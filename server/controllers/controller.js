@@ -8,6 +8,10 @@ const {
   Job: JobModel,
   JobProposal: JobProposalModel,
   Dispute: DisputeModel,
+  JobComment: JobCommentModel,
+  WorkerComment: WorkerCommentModel,
+  EmployeeComment: EmployeeCommentModel,
+  ReplyComment: ReplyCommentModel,
 } = require("../models");
 
 class Controller {
@@ -63,7 +67,10 @@ class Controller {
       this.jobModel = new JobModel(db);
       this.jobProposalModel = new JobProposalModel(db);
       this.disputeModel = new DisputeModel(db);
-
+      this.jobCommentModel = new JobCommentModel(db);
+      this.workerCommentModel = new WorkerCommentModel(db);
+      this.employeeCommentModel = new EmployeeCommentModel(db);
+      this.replyCommentModel = new ReplyCommentModel(db);
       Controller.instance = this;
     }
 

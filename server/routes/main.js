@@ -2,7 +2,7 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 
-const { User, Chat, Job, JobProposal, Dispute } = require("../controllers");
+const { User, Chat, Job, JobProposal, Dispute, Comment } = require("../controllers");
 
 const {
   generateIsAdmin,
@@ -37,6 +37,7 @@ function route(app, db) {
   const jobController = new Job(db);
   const jobProposalController = new JobProposal(db);
   const disputeController = new Dispute(db);
+  const commentController = new Comment(db);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();
@@ -155,6 +156,18 @@ function route(app, db) {
     "/get-user-statistic/:userId",
     isAuth,
     userController.getUserStatistic
+  );
+
+  app.post(
+    "/create-comment/:type?",
+    isAuth,
+    commentController.create
+  );
+
+  app.post(
+    "/get-comments-by-entity/:type?",
+    isAuth,
+    commentController.getAllByEntityId
   );
 }
 
