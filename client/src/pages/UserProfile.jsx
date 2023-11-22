@@ -37,6 +37,20 @@ const UserProfile = () => {
     <div className="page-wrapper user-page">
       <Navbar />
       <div className="page-content">
+        <UserProfileStatisticInfo userInfo={userInfo} />
+
+        <LineChart
+          info={byUserInfo}
+          title="Count finished jobs by "
+          keys={countFinishedByKeys}
+        />
+
+        <LineChart
+          info={forUserInfo}
+          title="Count finished jobs for "
+          keys={countFinishedForKeys}
+        />
+
         <div className="card profile-comments-type-select">
           <div className="card-title">
             <div className="row">
@@ -64,19 +78,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-/*
-<UserProfileStatisticInfo userInfo={userInfo} />
-
-        <LineChart
-          info={byUserInfo}
-          title="Count finished jobs by "
-          keys={countFinishedByKeys}
-        />
-
-        <LineChart
-          info={forUserInfo}
-          title="Count finished jobs for "
-          keys={countFinishedForKeys}
-        />
- */
