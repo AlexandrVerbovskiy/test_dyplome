@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Navbar, StarCommentForm } from "../components";
+import { CommentList, Navbar, StarCommentForm } from "../components";
 import { LineChart } from "../charts";
-import { useProfileStatisticInfo } from "../hooks";
+import { useProfileStatisticInfo, useComments } from "../hooks";
 import { UserProfileStatisticInfo } from "../profile_components";
 
-const sellerType = "seller";
+const sellerType = "employee";
 const workerType = "worker";
 
 const UserProfile = () => {
@@ -20,6 +20,13 @@ const UserProfile = () => {
     countFinishedForKeys,
   } = useProfileStatisticInfo({ userId });
 
+  const {
+    comments,
+    totalCount,
+    handleCreateComment,
+    handleCreateReplyComment,
+  } = useComments({ entityId: userId, type });
+
   if (!userInfo) return <div></div>;
 
   const onChangeType = (newType) => {
@@ -29,28 +36,10 @@ const UserProfile = () => {
   const handleSetWorkerType = () => onChangeType(workerType);
   const handleSetSellerType = () => onChangeType(sellerType);
 
-  const handleSendComment = (res) => {
-    console.log({ ...res, commentType: type, userId });
-  };
-
   return (
     <div className="page-wrapper user-page">
       <Navbar />
       <div className="page-content">
-        <UserProfileStatisticInfo userInfo={userInfo} />
-
-        <LineChart
-          info={byUserInfo}
-          title="Count finished jobs by "
-          keys={countFinishedByKeys}
-        />
-
-        <LineChart
-          info={forUserInfo}
-          title="Count finished jobs for "
-          keys={countFinishedForKeys}
-        />
-
         <div className="card profile-comments-type-select">
           <div className="card-title">
             <div className="row">
@@ -69,7 +58,12 @@ const UserProfile = () => {
             </div>
           </div>
           <div className="card-body">
-            <StarCommentForm onSubmit={handleSendComment} />
+            <StarCommentForm onSubmit={handleCreateComment} />
+            <CommentList
+              comments={comments}
+              onCreateReplyComment={handleCreateReplyComment}
+              totalCount={totalCount}
+            />
           </div>
         </div>
       </div>
@@ -78,3 +72,21 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+/*
+
+        <UserProfileStatisticInfo userInfo={userInfo} />
+
+        <LineChart
+          info={byUserInfo}
+          title="Count finished jobs by "
+          keys={countFinishedByKeys}
+        />
+
+        <LineChart
+          info={forUserInfo}
+          title="Count finished jobs for "
+          keys={countFinishedForKeys}
+        />
+
+*/

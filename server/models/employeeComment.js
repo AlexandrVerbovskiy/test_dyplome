@@ -8,14 +8,14 @@ class EmployeeComment extends BaseComment {
   __commentType = "employee";
   __mustBeUniqueParent = true;
 
-  create = async ({ senderId, employeeId, rating, description }) => {
+  create = async ({ senderId, employeeId, rating, body }) => {
     await this.checkUserCommented(senderId, employeeId);
 
-    return await this.__create("sender_id, employee_id, rating, description", [
+    return await this.__create("sender_id, employee_id, rating, body", [
       senderId,
       employeeId,
       rating,
-      description,
+      body,
     ]);
   };
 }

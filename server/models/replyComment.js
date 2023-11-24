@@ -6,12 +6,12 @@ class ReplyComment extends BaseComment {
   __entityId = "parent_id";
   __commentType="reply";
 
-  create = async ({ senderId, parentId, parentType, description }) =>
-    this.__create("sender_id, parent_id, parent_type, description", [
+  create = async ({ senderId, parentId, parentType, body }) =>
+    this.__create("sender_id, parent_id, parent_type, body", [
       senderId,
       parentId,
       parentType,
-      description,
+      body,
     ]);
 }
 

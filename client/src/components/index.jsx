@@ -27,3 +27,4 @@ export { default as AcceptPopup } from "./AcceptPopup";
 export { default as StarCommentForm } from "./StarCommentForm";
 
 export { default as CommentsSection } from "./CommentsSection";
+export { default as CommentList } from "./CommentList";

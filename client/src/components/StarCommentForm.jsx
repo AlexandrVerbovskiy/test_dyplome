@@ -4,38 +4,39 @@ import Textarea from "./Textarea";
 
 const StarCommentForm = ({ onSubmit }) => {
   const [commentText, setCommentText] = useState("");
-  const [rating, setRating] = useState(1);
+  const [rating, setRating] = useState(5);
 
   const handleTextChange = (e) => {
     setCommentText(e.target.value);
   };
 
   const handleRatingClick = (selectedRating) => {
+    console.log("click");
     setRating(selectedRating);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ text: commentText, rating });
+    onSubmit({ body: commentText, rating });
     setCommentText("");
-    setRating(0);
+    setRating(5);
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      <div className="select-star-section">
+        <label className="form-label">Rating: </label>
+        <div className="input-group">
+          <StarRating value={rating} onClick={handleRatingClick} />
+        </div>
+      </div>
+
       <Textarea
-        title="Comment"
         value={commentText}
         rows={6}
         placeholder="Enter comment..."
         onChange={handleTextChange}
       />
-      <div className="select-star-section">
-        <label className="form-label">Rating</label>
-        <div className="input-group">
-          <StarRating value={rating} onClick={handleRatingClick} />
-        </div>
-      </div>
 
       <hr />
 

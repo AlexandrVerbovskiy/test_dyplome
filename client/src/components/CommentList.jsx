@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Textarea from "./Textarea";
+import { generateFullUserImgPath } from "../utils";
 
 const ReplySend = ({
   replyDescription,
@@ -7,8 +8,8 @@ const ReplySend = ({
   shownSend,
   setShownSend,
 }) => {
-  const handleShowTextareaSection = () => shownSend(true);
-  const handleHideTextareaSection = () => shownSend(false);
+  const handleShowTextareaSection = () => setShownSend(true);
+  const handleHideTextareaSection = () => setShownSend(false);
 
   if (!shownSend)
     return (
@@ -55,7 +56,7 @@ const BaseComment = ({
   return (
     <>
       <div className="comment-avatar">
-        <img src={avatarSrc} />
+        <img src={generateFullUserImgPath(avatarSrc)} />
       </div>
       <div className="comment-info">
         <div className="comment-send-info">
@@ -79,34 +80,6 @@ const BaseComment = ({
   );
 };
 
-const ReplyComment = ({
-  id,
-  senderId,
-  name,
-  sendTime,
-  description,
-  avatarSrc = null,
-}) => {
-  return (
-    <div className="reply-comment">
-      <div className="comment-avatar">
-        <img src={avatarSrc} />
-      </div>
-      <div className="comment-info">
-        <div className="comment-send-info">
-          <div className="comment-send-author">{name}</div>
-          <div className="comment-send-time">{sendTime}</div>
-        </div>
-
-        <div className="comment-description">{description}</div>
-        <div className="comment-actions">
-          <button className="btn btn-link btn-reply">Reply</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const ShowMoreComments = (hasCount, maxCount, showCount) => {
   if (maxCount <= hasCount) return <></>;
 
@@ -122,11 +95,11 @@ const Comment = ({ comment, onCreateReplyComment }) => {
     <div className="comment-parent">
       <div className="comment">
         <BaseComment
-          name={comment["name"]}
-          sendTime={comment["sendTime"]}
-          description={comment["description"]}
+          name={comment["sender_nick"] ?? comment["sender_email"]}
+          sendTime={comment["created_time"]}
+          description={comment["body"]}
           rating={comment["rating"] ?? null}
-          avatarSrc={comment["avatarSrc"]}
+          avatarSrc={comment["sender_avatar"]}
         />
       </div>
 

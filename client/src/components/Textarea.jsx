@@ -2,7 +2,7 @@ import React from "react";
 import ErrorSpan from "./ErrorSpan";
 
 const Textarea = ({
-  title,
+  title = null,
   value,
   onChange,
   error,
@@ -11,9 +11,11 @@ const Textarea = ({
 }) => {
   return (
     <div className="form-group">
-      <label htmlFor="myTextarea" className="form-label">
-        {title}
-      </label>
+      {title && (
+        <label htmlFor="myTextarea" className="form-label">
+          {title}
+        </label>
+      )}
       <textarea
         className="form-control"
         id="myTextarea"

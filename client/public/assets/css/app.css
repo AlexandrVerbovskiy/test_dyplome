@@ -3150,6 +3150,7 @@ body:has(.alert) .page-wrapper {
 .select-star-section {
   display: flex;
   align-items: flex-end;
+  margin-bottom: 10px;
 }
 
 .select-star-section label {
@@ -3164,4 +3165,14 @@ body:has(.alert) .page-wrapper {
 .star-select-parent .star-container {
   padding-right: 8px !important;
   padding-left: 8px !important;
+}
+
+.comment {
+  display: flex;
+}
+
+.comment-avatar img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
 }

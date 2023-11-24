@@ -4,54 +4,60 @@ class Comment extends Controller {
   create = async (req, res) =>
     this.errorWrapper(res, async () => {
       const commentType = req.params.type ?? "reply";
-
-      let commentId = null;
-      const description = req.body.description;
+      let comment = null;
+      const body = req.body.body;
+      if (!body) return this.setResponseError("No comment body", 400);
       const userId = req.userData.userId;
 
       if (commentType == "employee") {
-        const employeeId = req.body.employeeId;
+        const employeeId = req.body.entityId;
         const rating = req.body.rating;
 
-        commentId = await this.employeeCommentModel.create({
+        if (!rating) return this.setResponseError("No comment rating", 400);
+        if (!employeeId)
+          return this.setResponseError("No comment employee", 400);
+
+        comment = await this.employeeCommentModel.create({
           senderId: userId,
           employeeId,
           rating,
-          description,
+          body,
         });
       } else if (commentType == "worker") {
-        const workerId = req.body.workerId;
+        const workerId = req.body.entityId;
         const rating = req.body.rating;
 
-        commentId = await this.workerCommentModel.create({
+        if (!rating) return this.setResponseError("No comment rating", 400);
+        if (!workerId) return this.setResponseError("No comment worker", 400);
+
+        comment = await this.workerCommentModel.create({
           senderId: userId,
           workerId,
           rating,
-          description,
+          body,
         });
       } else if (commentType == "job") {
-        const jobId = req.body.jobId;
+        const jobId = req.body.entityId;
+        if (!jobId) return this.setResponseError("No comment job", 400);
 
-        commentId = await this.jobCommentModel.create({
+        comment = await this.jobCommentModel.create({
           senderId: userId,
           jobId,
-          description,
+          body,
         });
       } else {
-        const parentId = req.body.parentId;
+        const parentId = req.body.entityId;
         const parentType = req.body.parentType;
 
-        commentId = await this.replyCommentModel.create({
+        comment = await this.replyCommentModel.create({
           senderId: userId,
           parentId,
           parentType,
-          description,
+          body,
         });
       }
 
-      this.setResponseBaseSuccess("Comment sended success", {
-        commentId,
-      });
+      this.setResponseBaseSuccess("Comment sended success", comment);
     });
 
   getById = async (req, res) =>
@@ -77,7 +83,7 @@ class Comment extends Controller {
 
   getAll = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const commentType = req.params.status ?? "reply";
+      const commentType = req.params.type ?? "reply";
       const lastId = req.body.lastId ?? 0;
       const limit = req.body.limit ?? 25;
 
@@ -99,30 +105,38 @@ class Comment extends Controller {
 
   getAllByEntityId = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const commentType = req.params.status ?? "reply";
+      const commentType = req.params.type ?? "reply";
       const parentId = req.body.parentId;
       const lastId = req.body.lastId ?? 0;
       const limit = req.body.limit ?? 25;
+      const needCount = req.body.needCount ?? false;
 
       let getComments = this.replyCommentModel.getAllByEntityId;
+      let getCountComments = this.replyCommentModel.getAllCountByEntityId;
 
       if (commentType == "employee") {
         getComments = this.employeeCommentModel.getAllByEntityId;
+        getCountComments = this.employeeCommentModel.getAllCountByEntityId;
       } else if (commentType == "worker") {
         getComments = this.workerCommentModel.getAllByEntityId;
+        getCountComments = this.workerCommentModel.getAllCountByEntityId;
       } else if (commentType == "job") {
         getComments = this.jobCommentModel.getAllByEntityId;
+        getCountComments = this.jobCommentModel.getAllCountByEntityId;
       }
 
-      const comments = await this.replyCommentModel.getComments(
-        parentId,
-        lastId,
-        limit
-      );
+      const comments = await getComments(parentId, lastId, limit);
 
-      this.setResponseBaseSuccess("Comments got success", {
+      const res = {
         comments,
-      });
+      };
+
+      if (needCount) {
+        res["totalCount"] =
+          await getCountComments();
+      }
+
+      this.setResponseBaseSuccess("Comments got success", res);
     });
 }
 

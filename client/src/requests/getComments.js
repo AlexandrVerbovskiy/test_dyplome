@@ -4,10 +4,10 @@ import config from "../config";
 const getComments = async (data, type, successCallback, errorCallback) => {
   try {
     const res = await axios.post(
-      config.API_URL + `/get-full-chat-messages/${type}`,
+      config.API_URL + `/get-comments-by-entity/${type}`,
       data
     );
-    successCallback(res.data.comments);
+    successCallback(res.data);
   } catch (err) {
     const res = err.response;
     if (res && res.status && res.data && res.data.error)

@@ -1,7 +1,7 @@
 import { axios } from "../utils";
 import config from "../config";
 
-const createDispute = async (data, type, successCallback, errorCallback) => {
+const createComment = async (data, type, successCallback, errorCallback) => {
   try {
     const res = await axios.post(
       config.API_URL + `/create-comment/${type}`,
@@ -16,4 +16,4 @@ const createDispute = async (data, type, successCallback, errorCallback) => {
   }
 };
 
-export default createDispute;
+export default createComment;
