@@ -38,8 +38,6 @@ const StarCommentForm = ({ onSubmit }) => {
         onChange={handleTextChange}
       />
 
-      <hr />
-
       <div className="star-form-submit-row">
         <button type="submit" className="btn btn-primary">
           Send Comment

@@ -2,7 +2,7 @@ import React, { useRef, useContext } from "react";
 import ChatMessageContent from "./ChatMessageContent";
 import ChatMessageActions from "./ChatMessageActions";
 import AcceptDeleteMessageModal from "./AcceptDeleteMessageModal";
-import { shortTimeFormat } from "../utils";
+import { fullTimeFormat } from "../utils";
 import { MainContext } from "../contexts";
 
 const ChatMessage = ({
@@ -77,7 +77,7 @@ const ChatMessage = ({
         />
         <div className="flex-grow-1 ms-2">
           <p className="mb-0 chat-time" style={{ textAlign: timeAlign }}>
-            {shortTimeFormat(time_sended)}
+            {fullTimeFormat(time_sended)}
           </p>
           <div
             className={contentClassName[myOrNormal]}

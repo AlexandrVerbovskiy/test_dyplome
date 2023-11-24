@@ -59,6 +59,9 @@ const UserProfile = () => {
           </div>
           <div className="card-body">
             <StarCommentForm onSubmit={handleCreateComment} />
+
+            <hr />
+
             <CommentList
               comments={comments}
               onCreateReplyComment={handleCreateReplyComment}

@@ -3163,8 +3163,8 @@ body:has(.alert) .page-wrapper {
 }
 
 .star-select-parent .star-container {
-  padding-right: 8px !important;
-  padding-left: 8px !important;
+  padding-right: 4px !important;
+  padding-left: 4px !important;
 }
 
 .comment {
@@ -3172,7 +3172,96 @@ body:has(.alert) .page-wrapper {
 }
 
 .comment-avatar img {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+}
+
+.comment-info {
+  margin-left: 10px;
+  width: 100%;
+}
+
+.comment-send-info {
+  display: flex;
+}
+
+.comment-send-author {
+  font-weight: 700;
+}
+
+.comment-send-time {
+  color: lightgray;
+  font-style: italic;
+  margin-left: 5px;
+}
+
+.view-star-container {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  padding-right: 15px;
+}
+
+.view-star-container .widget-svg {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.2s ease-in-out 0s;
+}
+
+.view-star-container .widget-svg path {
+  fill: rgb(203, 211, 227);
+}
+
+.view-star-container.active .widget-svg path {
+  fill: rgb(255, 193, 7);
+}
+
+.star-select-parent .view-star-container {
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+
+.view-star-container:first-child {
+  padding-left: 0 !important;
+}
+
+.view-star-container:last-child {
+  padding-right: 0 !important;
+}
+
+.star-select-parent .view-star-container svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.rating-visual {
+  color: lightgray !important;
+  font-style: italic !important;
+  font-size: 12px !important;
+  margin-left: 2px !important;
+}
+
+.comment-rating {
+  display: flex;
+}
+
+.comment-send-reply-section {
+  margin: 10px 0;
+  width: 100%;
+}
+
+.comment-actions,
+.comment-send-reply-actions {
+  margin-top: 10px;
+  display: flex;
+}
+
+.comment-send-reply-actions button {
+  margin-right: 10px;
+}
+
+.btn-reply {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
