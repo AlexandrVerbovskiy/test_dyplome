@@ -5,28 +5,23 @@ const CommentReply = ({
   replyDescription,
   handleReplyDescriptionChange,
   shownSend,
-  setShownSend,
+  onReplyClick,
+  onCancelReply,
 }) => {
   const textareaRef = useRef(null);
 
-  const handleShowTextareaSection = () => setShownSend(true);
-  const handleHideTextareaSection = () => setShownSend(false);
-
   useEffect(() => {
     if (shownSend) {
-      if (textareaRef.current) textareaRef.current.focus();
+      if (textareaRef.current) {
+        const textarea = textareaRef.current;
+        textarea.focus();
+        const textLength = textarea.value.length;
+        textarea.setSelectionRange(textLength, textLength);
+      }
     }
   }, [shownSend]);
 
-  if (!shownSend)
-    return (
-      <button
-        className="btn btn-link btn-reply"
-        onClick={handleShowTextareaSection}
-      >
-        Reply
-      </button>
-    );
+  if (!shownSend) return <></>;
 
   return (
     <div className="comment-send-reply-section">
@@ -39,11 +34,10 @@ const CommentReply = ({
         noError={true}
       />
       <div className="comment-send-reply-actions">
-        <button className="btn btn-primary">Reply</button>
-        <button
-          className="btn btn-secondary"
-          onClick={handleHideTextareaSection}
-        >
+        <button className="btn btn-primary" onClick={onReplyClick}>
+          Reply
+        </button>
+        <button className="btn btn-secondary" onClick={onCancelReply}>
           Cancel
         </button>
       </div>

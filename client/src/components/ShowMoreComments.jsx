@@ -1,12 +1,30 @@
 import React from "react";
 
-const ShowMoreComments = (hasCount, maxCount, showCount) => {
-  if (maxCount <= hasCount) return <></>;
-
+const ShowMoreComments = ({
+  hasCount,
+  maxCount,
+  showCount,
+  onClick,
+  entities = "comments",
+}) => {
   const diff = maxCount - hasCount;
-  const canShowCount = Math.min(showCount, canShowCount);
+  maxCount = Number(maxCount);
+  hasCount = Number(hasCount);
+
+  if (diff <= 0) return <></>;
+
+  const canShowCount = Math.min(showCount, diff);
+  const title =
+    hasCount == 0
+      ? `Show (${canShowCount}) ${entities}`
+      : `Show more (${canShowCount}) ${entities}`;
+
   return (
-    <button className="show-more-comments">Show more ({canShowCount})</button>
+    <div className="show-more-comments-section">
+      <button className="show-more-comments" onClick={onClick}>
+        {title}
+      </button>
+    </div>
   );
 };
 

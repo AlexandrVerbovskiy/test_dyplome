@@ -25,6 +25,8 @@ const UserProfile = () => {
     totalCount,
     handleCreateComment,
     handleCreateReplyComment,
+    handleGetMoreComments,
+    handleGetMoreReplyComments,
   } = useComments({ entityId: userId, type });
 
   if (!userInfo) return <div></div>;
@@ -35,6 +37,10 @@ const UserProfile = () => {
 
   const handleSetWorkerType = () => onChangeType(workerType);
   const handleSetSellerType = () => onChangeType(sellerType);
+  const onGetMoreCommentsClick = () => handleGetMoreComments();
+  const onGetMoreReplyCommentsClick = (parentCommentId) =>{
+    handleGetMoreReplyComments(parentCommentId);
+  }
 
   return (
     <div className="page-wrapper user-page">
@@ -66,6 +72,8 @@ const UserProfile = () => {
               comments={comments}
               onCreateReplyComment={handleCreateReplyComment}
               totalCount={totalCount}
+              onGetMoreComments={onGetMoreCommentsClick}
+              onGetMoreReplyComments={onGetMoreReplyCommentsClick}
             />
           </div>
         </div>

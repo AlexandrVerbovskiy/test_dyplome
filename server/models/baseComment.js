@@ -8,7 +8,8 @@ class BaseComment extends Model {
   __commentType = "";
   __mustBeUniqueParent = false;
 
-  __fullCommentSelect = ()=>`SELECT ${this.__table}.*, users.nick as sender_nick, users.email as sender_email,
+  __fullCommentSelect =
+    () => `SELECT ${this.__table}.*, users.nick as sender_nick, users.email as sender_email,
   users.avatar as sender_avatar, users.id as sender_id FROM ${this.__table}
   JOIN users ON ${this.__table}.sender_id = users.id`;
 
@@ -49,25 +50,36 @@ class BaseComment extends Model {
       }
     });
 
-  getAll = async (startCommentId = 0, limit = 25) =>
+  getAll = async (startCommentId = null, limit = 25) =>
     await this.errorWrapper(async () => {
-      const selectCommentsRes = await this.dbQueryAsync(
-        `${this.__fullCommentSelect()} WHERE id >= ? LIMIT ?`,
-        [startCommentId, limit]
-      );
-      return selectCommentsRes;
+      let query = `${this.__fullCommentSelect()}`;
+      const params = [];
+
+      if (startCommentId !== null) {
+        query += ` WHERE id >= ?`;
+        params.push(startCommentId);
+      }
+
+      query += ` LIMIT ?`;
+      params.push(limit);
+
+      return await this.dbQueryAsync(query, params);
     });
 
-  getAllByEntityId = async (entityId, startCommentId = 0, limit = 25) =>
+  getAllByEntityId = async (entityId, startCommentId = null, limit = 25) =>
     await this.errorWrapper(async () => {
-      const query = `${this.__fullCommentSelect()}
-       WHERE ${this.__entityId} = ? AND ${this.__table}.id > ? ORDER BY created_at DESC LIMIT ?`;
+      let query = `${this.__fullCommentSelect()} WHERE ${this.__entityId} = ?`;
+      const params = [entityId];
 
-      const selectComments = await this.dbQueryAsync(query, [
-        entityId,
-        startCommentId,
-        limit,
-      ]);
+      if (startCommentId) {
+        query += ` AND ${this.__table}.id < ? `;
+        params.push(startCommentId);
+      }
+
+      query += ` ORDER BY created_at DESC LIMIT ?`;
+      params.push(limit);
+
+      const selectComments = await this.dbQueryAsync(query, params);
 
       if (this.__needCountReply && selectComments.length > 0) {
         const ids = selectComments.map((comment) => comment.id);
@@ -79,7 +91,7 @@ class BaseComment extends Model {
           const id = elem.id;
           selectComments[index]["repliesCount"] = 0;
           replyCommentsInfo.forEach((replyComment) => {
-            if ((replyComment.parent_id = id)) {
+            if (replyComment.parent_id == id) {
               selectComments[index]["repliesCount"] = replyComment.count;
             }
           });

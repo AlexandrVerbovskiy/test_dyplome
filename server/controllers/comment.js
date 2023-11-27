@@ -48,12 +48,14 @@ class Comment extends Controller {
       } else {
         const parentId = req.body.entityId;
         const parentType = req.body.parentType;
+        const replyCommentId = req.body.replyCommentId;
 
         comment = await this.replyCommentModel.create({
           senderId: userId,
           parentId,
           parentType,
           body,
+          replyCommentId,
         });
       }
 
@@ -97,7 +99,7 @@ class Comment extends Controller {
         getComments = this.jobCommentModel.getAll;
       }
 
-      const comments = await getById(lastId, limit);
+      const comments = await getComments(lastId, limit);
       this.setResponseBaseSuccess("Comment got success", {
         comments,
       });
@@ -132,8 +134,7 @@ class Comment extends Controller {
       };
 
       if (needCount) {
-        res["totalCount"] =
-          await getCountComments();
+        res["totalCount"] = await getCountComments();
       }
 
       this.setResponseBaseSuccess("Comments got success", res);

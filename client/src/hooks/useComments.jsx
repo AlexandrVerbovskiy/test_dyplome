@@ -19,7 +19,11 @@ const useComments = ({ type, entityId }) => {
       const newConvertedComments = [];
 
       newComments.forEach((comment) => {
-        newConvertedComments.push({ ...comment, replies: [] });
+        newConvertedComments.push({
+          ...comment,
+          replies: [],
+          countReplyShown: 0,
+        });
       });
 
       if (isNew) {
@@ -34,10 +38,38 @@ const useComments = ({ type, entityId }) => {
     handleGetMoreComments(true);
   }, [type, entityId]);
 
-  const handleCreateReplyComment = async (data, commentId) => {
-    data["entityId"] = commentId;
-    await createComment(data, "reply", (res) => {
-      console.log(res);
+  const addReplyComments = (
+    commentId,
+    replyComments,
+    position = "end",
+    needAddCount = true
+  ) => {
+    setComments((prev) => {
+      const res = [];
+      prev.forEach((comment) => {
+        let replies = [...comment.replies];
+
+        if (comment["id"] == commentId) {
+          replies = [...comment.replies, ...replyComments];
+
+          if (position == "start") {
+            replies = [...replyComments, ...comment.replies];
+          }
+        }
+
+        let countReplyShown = comment.countReplyShown;
+
+        if (needAddCount) {
+          countReplyShown += replyComments.length;
+        }
+
+        res.push({
+          ...comment,
+          replies,
+          countReplyShown,
+        });
+      });
+      return res;
     });
   };
 
@@ -48,12 +80,21 @@ const useComments = ({ type, entityId }) => {
     });
   };
 
+  const handleCreateReplyComment = async (data, commentId) => {
+    data["entityId"] = commentId;
+    data["parentType"] = "comment";
+
+    await createComment(data, "reply", (res) => {
+      addReplyComments(commentId, [{ ...res }], "start", false);
+    });
+  };
+
   const handleGetMoreReplyComments = async (commentId) => {
     const sendData = { parentId: commentId, needCount: true };
-    console.log("reply", sendData);
-    /*await getComments(sendData, "reply", (data) => {
-      console.log(data);
-    });*/
+    await getComments(sendData, "reply", (data) => {
+      const comments = data["comments"] ?? [];
+      addReplyComments(commentId, comments);
+    });
   };
 
   return {
