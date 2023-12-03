@@ -8,9 +8,13 @@ import {
   Navbar,
   ViewInput,
   PopupWrapper,
+  CommentCard,
 } from "../components";
+import config from "../config";
 import { getJobInfo } from "../requests";
-import { usePopupController } from "../hooks";
+import { usePopupController, useComments } from "../hooks";
+
+const jobType = config.COMMENT_TYPES.job;
 
 const JobView = () => {
   let { id } = useParams();
@@ -30,7 +34,21 @@ const JobView = () => {
     onError: setError,
   });
 
+  const {
+    comments,
+    totalCount,
+    handleCreateComment,
+    handleCreateReplyComment,
+    handleGetMoreComments,
+    handleGetMoreReplyComments,
+  } = useComments({ entityId: id, type: jobType });
+
   if (!job) return;
+
+  const onGetMoreCommentsClick = () => handleGetMoreComments();
+  const onGetMoreReplyCommentsClick = (parentCommentId) => {
+    handleGetMoreReplyComments(parentCommentId);
+  };
 
   return (
     <div className="page-wrapper job-view-page">
@@ -82,6 +100,18 @@ const JobView = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="card">
+          <CommentCard
+            comments={comments}
+            totalCount={totalCount}
+            handleCreateComment={handleCreateComment}
+            handleCreateReplyComment={handleCreateReplyComment}
+            onGetMoreCommentsClick={onGetMoreCommentsClick}
+            onGetMoreReplyCommentsClick={onGetMoreReplyCommentsClick}
+            needStarField={false}
+          />
         </div>
       </div>
 

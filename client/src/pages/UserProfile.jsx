@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CommentList, Navbar, StarCommentForm } from "../components";
+import { CommentCard, Navbar } from "../components";
 import { LineChart } from "../charts";
 import { useProfileStatisticInfo, useComments } from "../hooks";
 import { UserProfileStatisticInfo } from "../profile_components";
+import config from "../config";
 
-const sellerType = "employee";
-const workerType = "worker";
+const sellerType = config.COMMENT_TYPES.employee;
+const workerType = config.COMMENT_TYPES.worker;
 
 const UserProfile = () => {
   let { userId } = useParams();
@@ -38,9 +39,9 @@ const UserProfile = () => {
   const handleSetWorkerType = () => onChangeType(workerType);
   const handleSetSellerType = () => onChangeType(sellerType);
   const onGetMoreCommentsClick = () => handleGetMoreComments();
-  const onGetMoreReplyCommentsClick = (parentCommentId) =>{
+  const onGetMoreReplyCommentsClick = (parentCommentId) => {
     handleGetMoreReplyComments(parentCommentId);
-  }
+  };
 
   return (
     <div className="page-wrapper user-page">
@@ -63,19 +64,16 @@ const UserProfile = () => {
               </h6>
             </div>
           </div>
-          <div className="card-body">
-            <StarCommentForm onSubmit={handleCreateComment} />
 
-            <hr />
-
-            <CommentList
-              comments={comments}
-              onCreateReplyComment={handleCreateReplyComment}
-              totalCount={totalCount}
-              onGetMoreComments={onGetMoreCommentsClick}
-              onGetMoreReplyComments={onGetMoreReplyCommentsClick}
-            />
-          </div>
+          <CommentCard
+            comments={comments}
+            totalCount={totalCount}
+            handleCreateComment={handleCreateComment}
+            handleCreateReplyComment={handleCreateReplyComment}
+            onGetMoreCommentsClick={onGetMoreCommentsClick}
+            onGetMoreReplyCommentsClick={onGetMoreReplyCommentsClick}
+            needStarField={true}
+          />
         </div>
       </div>
     </div>

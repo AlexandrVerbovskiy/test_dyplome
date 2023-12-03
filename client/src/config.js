@@ -119,6 +119,11 @@ const config = {
     "November",
     "December",
   ],
+  COMMENT_TYPES: {
+    employee: "employee",
+    worker: "worker",
+    job: "job",
+  },
 };
 
 export default config;

@@ -25,6 +25,8 @@ export { default as DisputeBtn } from "./DisputeBtn";
 
 export { default as AcceptPopup } from "./AcceptPopup";
 export { default as StarCommentForm } from "./StarCommentForm";
+export { default as NoStarCommentForm } from "./NoStarCommentForm";
+export { default as CommentCard } from "./CommentCard";
 
 export { default as CommentsSection } from "./CommentsSection";
 export { default as CommentList } from "./CommentList";

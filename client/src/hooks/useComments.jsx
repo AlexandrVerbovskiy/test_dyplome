@@ -76,7 +76,10 @@ const useComments = ({ type, entityId }) => {
   const handleCreateComment = async (data) => {
     data["entityId"] = entityId;
     await createComment(data, type, (res) => {
-      setComments((prev) => [{ ...res, replies: [] }, ...prev]);
+      setComments((prev) => [
+        { ...res, replies: [], countReplyShown: 0, repliesCount: 0 },
+        ...prev,
+      ]);
     });
   };
 

@@ -58,21 +58,18 @@ class Controller {
   setResponseNoFoundError = (message) => this.setResponseError(message, 404);
 
   constructor(db) {
-    if (!Controller.instance) {
-      this.userModel = new UserModel(db);
-      this.passwordResetLinkModel = new PasswordResetLinkModel(db);
-      this.socketModel = new SocketModel(db);
-      this.chatModel = new ChatModel(db);
-      this.actionModel = new ActionModel(db);
-      this.jobModel = new JobModel(db);
-      this.jobProposalModel = new JobProposalModel(db);
-      this.disputeModel = new DisputeModel(db);
-      this.jobCommentModel = new JobCommentModel(db);
-      this.workerCommentModel = new WorkerCommentModel(db);
-      this.employeeCommentModel = new EmployeeCommentModel(db);
-      this.replyCommentModel = new ReplyCommentModel(db);
-      Controller.instance = this;
-    }
+    this.userModel = new UserModel(db);
+    this.passwordResetLinkModel = new PasswordResetLinkModel(db);
+    this.socketModel = new SocketModel(db);
+    this.chatModel = new ChatModel(db);
+    this.actionModel = new ActionModel(db);
+    this.jobModel = new JobModel(db);
+    this.jobProposalModel = new JobProposalModel(db);
+    this.disputeModel = new DisputeModel(db);
+    this.jobCommentModel = new JobCommentModel(db);
+    this.workerCommentModel = new WorkerCommentModel(db);
+    this.employeeCommentModel = new EmployeeCommentModel(db);
+    this.replyCommentModel = new ReplyCommentModel(db);
 
     return Controller.instance;
   }
@@ -95,7 +92,5 @@ class Controller {
     }
   }
 }
-
-Controller.instance = null;
 
 module.exports = Controller;
