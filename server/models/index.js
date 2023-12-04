@@ -11,4 +11,5 @@ module.exports = {
     WorkerComment: require('./workerComment.js'),
     EmployeeComment: require('./employeeComment'),
     ReplyComment: require('./replyComment'),
+    Notification: require('./notification'),
 }

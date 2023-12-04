@@ -11,16 +11,20 @@ const SignIn = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    await login(
-      { email, password },
-      (userId) => {
-        console.log(userId);
-        main.setSuccess("Logged in successfully");
-        main.setAuth(userId);
-        redirect("/registration");
-      },
-      (err) => main.setError(err)
-    );
+
+    try {
+      const { token, userId } = await main.request({
+        url: login.url(),
+        type: login.type,
+        data: { email, password },
+        convertRes: login.convertRes,
+      });
+
+      localStorage.setItem("token", token);
+      main.setSuccess("Logged in successfully");
+      main.setAuth(userId);
+      redirect("/");
+    } catch(e) {}
   };
 
   return (

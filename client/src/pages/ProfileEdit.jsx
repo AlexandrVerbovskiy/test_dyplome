@@ -4,7 +4,7 @@ import {
   Input,
   Navbar,
   PasswordInput,
-  SingleMarkMap
+  SingleMarkMap,
 } from "../components";
 import { useChangePassword, useProfileEdit } from "../hooks";
 import { updateProfile } from "../requests";
@@ -13,21 +13,11 @@ import { MainContext } from "../contexts";
 const ProfileEdit = () => {
   const main = useContext(MainContext);
 
-  const {
-    coords,
-    address,
-    email,
-    nick,
-    profileImg,
-    validateProfileEdit
-  } = useProfileEdit();
+  const { coords, address, email, nick, profileImg, validateProfileEdit } =
+    useProfileEdit();
 
-  const {
-    password,
-    repeatedPassword,
-    oldPassword,
-    validateChangePassword
-  } = useChangePassword();
+  const { password, repeatedPassword, oldPassword, validateChangePassword } =
+    useChangePassword();
 
   const saveProfile = async () => {
     const resValidation = validateProfileEdit();
@@ -54,11 +44,14 @@ const ProfileEdit = () => {
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
 
-    await updateProfile(
-      formData,
-      res => main.setSuccess(res["message"]),
-      err => main.setError(err)
-    );
+    try {
+      await main.request({
+        url: updateProfile.url(),
+        type: updateProfile.type,
+        data: formData,
+        convertRes: updateProfile.convertRes,
+      });
+    } catch (e) {}
   };
 
   const savePassword = () => {
@@ -91,7 +84,7 @@ const ProfileEdit = () => {
                   value={nick.value}
                   error={nick.error}
                   placeholder="Nickname"
-                  onChange={e => nick.change(e.target.value)}
+                  onChange={(e) => nick.change(e.target.value)}
                 />
                 <Input
                   type="text"
@@ -99,7 +92,7 @@ const ProfileEdit = () => {
                   value={email.value}
                   error={email.error}
                   placeholder="email@gmail.com"
-                  onChange={e => email.change(e.target.value)}
+                  onChange={(e) => email.change(e.target.value)}
                 />
                 <Input
                   type="text"
@@ -107,13 +100,13 @@ const ProfileEdit = () => {
                   placeholder="London Backer street"
                   value={address.value}
                   error={address.error}
-                  onChange={e => address.change(e.target.value)}
+                  onChange={(e) => address.change(e.target.value)}
                 />
 
                 <ImageInput
                   btnText="Change avatar"
                   url={profileImg.value}
-                  onChange={img => profileImg.change(img)}
+                  onChange={(img) => profileImg.change(img)}
                   error={profileImg.error}
                 />
               </div>
@@ -139,21 +132,21 @@ const ProfileEdit = () => {
                 label="Old password"
                 value={oldPassword.value}
                 error={oldPassword.error}
-                onChange={e => oldPassword.change(e.target.value)}
+                onChange={(e) => oldPassword.change(e.target.value)}
               />
 
               <PasswordInput
                 label="New password"
                 value={password.value}
                 error={password.error}
-                onChange={e => password.change(e.target.value)}
+                onChange={(e) => password.change(e.target.value)}
               />
 
               <PasswordInput
                 label="Repeated password"
                 value={repeatedPassword.value}
                 error={repeatedPassword.error}
-                onChange={e => repeatedPassword.change(e.target.value)}
+                onChange={(e) => repeatedPassword.change(e.target.value)}
               />
             </div>
 

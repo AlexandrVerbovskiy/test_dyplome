@@ -12,6 +12,7 @@ const {
   WorkerComment: WorkerCommentModel,
   EmployeeComment: EmployeeCommentModel,
   ReplyComment: ReplyCommentModel,
+  Notification: NotificationModel
 } = require("../models");
 
 class Controller {
@@ -70,6 +71,7 @@ class Controller {
     this.workerCommentModel = new WorkerCommentModel(db);
     this.employeeCommentModel = new EmployeeCommentModel(db);
     this.replyCommentModel = new ReplyCommentModel(db);
+    this.notificationModel = new NotificationModel(db);
 
     return Controller.instance;
   }

@@ -168,6 +168,12 @@ function route(app, db) {
   app.post("/create-comment/:type?", isAuth, commentController.create);
 
   app.post(
+    "/get-notifications",
+    isAuth,
+    userController.getPersonalNotifications
+  );
+
+  app.post(
     "/get-comments-by-entity/:type?",
     isAuth,
     commentController.getAllByEntityId

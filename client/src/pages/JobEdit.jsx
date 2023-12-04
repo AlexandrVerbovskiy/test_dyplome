@@ -9,15 +9,8 @@ const JobEdit = () => {
   let { id } = useParams();
   const main = useContext(MainContext);
 
-  const {
-    jobId,
-    coords,
-    address,
-    title,
-    price,
-    description,
-    validateJobEdit
-  } = useJobEdit({ id });
+  const { jobId, coords, address, title, price, description, validateJobEdit } =
+    useJobEdit({ id });
 
   const saveJob = async () => {
     const resValidation = validateJobEdit();
@@ -30,21 +23,25 @@ const JobEdit = () => {
       address: address.value,
       lat: coords.value.lat,
       lng: coords.value.lng,
-      jobId: jobId.value
+      jobId: jobId.value,
     };
 
-    await updateJob(
-      jobData,
-      res => {
-        main.setSuccess(res["message"]);
-        if (res["newId"]) {
-          const newUrl = window.origin + "/job-edit/" + res["newId"];
-          window.history.replaceState({}, null, newUrl);
-          jobId.change(res["newId"]);
-        }
-      },
-      err => main.setError(err)
-    );
+    try {
+      const res = await main.request({
+        url: updateJob.url(),
+        type: updateJob.type,
+        data: jobData,
+        convertRes: updateJob.convertRes,
+      });
+
+      main.setSuccess(res["message"]);
+
+      if (res["newId"]) {
+        const newUrl = window.origin + "/job-edit/" + res["newId"];
+        window.history.replaceState({}, null, newUrl);
+        jobId.change(res["newId"]);
+      }
+    } catch (e) {}
   };
 
   return (
@@ -72,7 +69,7 @@ const JobEdit = () => {
                   label="Job title"
                   placeholder="title"
                   value={title.value}
-                  onChange={e => title.change(e.target.value)}
+                  onChange={(e) => title.change(e.target.value)}
                   error={title.error}
                 />
 
@@ -81,7 +78,7 @@ const JobEdit = () => {
                   label="Job price"
                   placeholder="12.00"
                   value={price.value}
-                  onChange={e => price.change(e.target.value)}
+                  onChange={(e) => price.change(e.target.value)}
                   error={price.error}
                 />
 
@@ -90,7 +87,7 @@ const JobEdit = () => {
                   label="Job address"
                   placeholder="London Backer street"
                   value={address.value}
-                  onChange={e => address.change(e.target.value)}
+                  onChange={(e) => address.change(e.target.value)}
                   error={address.error}
                 />
 
@@ -98,7 +95,7 @@ const JobEdit = () => {
                   title="Job description"
                   value={description.value}
                   placeholder="Description..."
-                  onChange={e => description.change(e.target.value)}
+                  onChange={(e) => description.change(e.target.value)}
                   error={description.error}
                 />
               </div>

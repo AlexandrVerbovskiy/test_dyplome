@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
+import { MainContext } from "../contexts";
 
 const useAsyncInfinityUpload = (functionToGetMore) => {
   const count = 8;
@@ -7,8 +8,9 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
   const [canShowMore, setCanShowMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const filterValue = useRef("");
+  const main = useContext(MainContext);
 
-  const onGetJobs = (res) => {
+  const onGetEntites = (res) => {
     const gettedElements = res;
 
     if (gettedElements.length > 0) {
@@ -35,15 +37,17 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
 
     setLoading(true);
 
-    await functionToGetMore(
-      { skippedIds: savedIds, count, filter: filterValue.current },
-      (res) => {
-        onGetJobs(res);
-      },
-      (e) => {
-        setLoading(false);
-      }
-    );
+    try {
+      const res = await main.request({
+        url: functionToGetMore.url(),
+        data: { skippedIds: savedIds, count, filter: filterValue.current },
+        type: functionToGetMore.type,
+        convertRes: functionToGetMore.convertRes ?? null,
+      });
+      onGetEntites(res);
+    } catch (e) {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -56,15 +60,17 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
     elementIds.current = [];
     setElements([]);
 
-    await functionToGetMore(
-      { skippedIds: [], count, filter: filterValue.current },
-      (res) => {
-        onGetJobs(res);
-      },
-      (e) => {
-        setLoading(false);
-      }
-    );
+    try {
+      const res = await main.request({
+        url: functionToGetMore.url(),
+        data: { skippedIds: [], count, filter: filterValue.current },
+        type: functionToGetMore.type,
+        convertRes: functionToGetMore.convertRes ?? null,
+      });
+      onGetEntites(res);
+    } catch (e) {
+      setLoading(false);
+    }
   };
 
   const setFilterValue = async (value) => {

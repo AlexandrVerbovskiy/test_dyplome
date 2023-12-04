@@ -8,7 +8,9 @@ const validateToken = async (token, successCallback, errorCallback) => {
         const res = await axios.post(config.API_URL + "/check-token", {
             token
         });
+
         const validated = res.data.validated;
+        
         if (validated) {
             const token = res.headers.authorization.split(" ")[1];
             if (!token) return successCallback(false);

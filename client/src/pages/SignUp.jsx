@@ -17,14 +17,16 @@ const SignUp = () => {
         "You must agree to the Terms &amp; Conditions for registering on the site"
       );
 
-    await registration(
-      { email, password },
-      () => {
-        main.setSuccess("User registered successfully");
-        window.location = window.location.origin;
-      },
-      (err) => main.setError(err)
-    );
+    try {
+      await main.request({
+        url: registration.url(),
+        type: registration.type,
+        data: { email, password },
+      });
+
+      main.setSuccess("User registered successfully");
+      window.location = window.location.origin;
+    } catch {}
   };
 
   return (

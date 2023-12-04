@@ -4,7 +4,6 @@ import config from "../config";
 const getJobInfo = async (id, successCallback, errorCallback) => {
   try {
     const res = await axios.get(config.API_URL + `/get-job/${id}`);
-    console.log(res);
     successCallback(res.data.job);
   } catch (err) {
     const res = err.response;

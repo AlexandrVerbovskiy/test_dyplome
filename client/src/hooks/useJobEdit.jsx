@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
 import { getJobInfo } from "../requests";
+import { MainContext } from "../contexts";
 
 const useJobEdit = ({ id }) => {
   const [jobId, setJobId] = useState(id);
@@ -8,36 +9,44 @@ const useJobEdit = ({ id }) => {
   const [price, setPrice] = useState({ value: 0, error: null });
   const [description, setDescription] = useState({ value: "", error: null });
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
+  const main = useContext(MainContext);
 
   useEffect(() => {
     if (!id) return;
-    getJobInfo(
-      id,
-      res => {
+
+    (async () => {
+      try {
+        const res = await main.request({
+          url: getJobInfo.url(id),
+          type: getJobInfo.type,
+          convertRes: getJobInfo.convertRes,
+        });
+
         if (!res) return;
+
         coords.change({ lat: res.lat, lng: res.lng });
         address.change(res.address);
+
         changePrice(res.price);
         changeTitle(res.title);
         changeDescription(res.description);
-      },
-      err => console.log(err)
-    );
+      } catch (e) {}
+    })();
   }, []);
 
-  const changeJobId = id => {
+  const changeJobId = (id) => {
     setJobId(id);
   };
 
-  const changeTitle = title => {
+  const changeTitle = (title) => {
     setTitle({ value: title, error: null });
   };
 
-  const changePrice = price => {
+  const changePrice = (price) => {
     setPrice({ value: price, error: null });
   };
 
-  const changeDescription = description => {
+  const changeDescription = (description) => {
     setDescription({ value: description, error: null });
   };
 
@@ -45,25 +54,25 @@ const useJobEdit = ({ id }) => {
     let validated = true;
 
     if (price.value <= 0) {
-      setPrice(prev => ({
+      setPrice((prev) => ({
         ...prev,
-        error: "Price cannot be less than or equal to zero"
+        error: "Price cannot be less than or equal to zero",
       }));
       validated = false;
     }
 
     if (title.value.length < 2) {
-      setTitle(prev => ({
+      setTitle((prev) => ({
         ...prev,
-        error: "Title must be longer than 2 characters"
+        error: "Title must be longer than 2 characters",
       }));
       validated = false;
     }
 
     if (description.value.length < 20) {
-      setDescription(prev => ({
+      setDescription((prev) => ({
         ...prev,
-        error: "Description must be longer than 20 characters"
+        error: "Description must be longer than 20 characters",
       }));
       validated = false;
     }
@@ -79,7 +88,7 @@ const useJobEdit = ({ id }) => {
     price: { ...price, change: changePrice },
     description: { ...description, change: changeDescription },
     jobId: { value: jobId, change: changeJobId },
-    validateJobEdit
+    validateJobEdit,
   };
 };
 

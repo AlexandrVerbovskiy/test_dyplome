@@ -32,7 +32,7 @@ const JobProposalView = () => {
     );
   }, [proposalId]);
 
-  const { setSuccess, setError } = useContext(MainContext);
+  const { setSuccess, setError, request } = useContext(MainContext);
   const { acceptJobDisputeForm } = usePopupController({
     onSuccess: setSuccess,
     onError: setError,

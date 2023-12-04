@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getComments, createComment } from "../requests";
+import { MainContext } from "../contexts";
 
 const useComments = ({ type, entityId }) => {
   const [comments, setComments] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const main = useContext(MainContext);
 
   const handleGetMoreComments = async (isNew = false) => {
     let lastId = null;
@@ -12,26 +14,31 @@ const useComments = ({ type, entityId }) => {
     const needCount = isNew;
     const sendData = { parentId: entityId, needCount };
 
-    await getComments(sendData, type, (data) => {
-      if (needCount) setTotalCount(data.totalCount);
-
-      const newComments = data.comments;
-      const newConvertedComments = [];
-
-      newComments.forEach((comment) => {
-        newConvertedComments.push({
-          ...comment,
-          replies: [],
-          countReplyShown: 0,
-        });
-      });
-
-      if (isNew) {
-        setComments([...newConvertedComments]);
-      } else {
-        setComments((prev) => [...prev, ...newConvertedComments]);
-      }
+    const data = await main.request({
+      url: getComments.url(type),
+      type: getComments.type,
+      data: sendData,
+      convertRes: getComments.convertRes,
     });
+
+    if (needCount) setTotalCount(data.totalCount);
+
+    const newComments = data.comments ?? [];
+    const newConvertedComments = [];
+
+    newComments.forEach((comment) => {
+      newConvertedComments.push({
+        ...comment,
+        replies: [],
+        countReplyShown: 0,
+      });
+    });
+
+    if (isNew) {
+      setComments([...newConvertedComments]);
+    } else {
+      setComments((prev) => [...prev, ...newConvertedComments]);
+    }
   };
 
   useEffect(() => {
@@ -75,29 +82,46 @@ const useComments = ({ type, entityId }) => {
 
   const handleCreateComment = async (data) => {
     data["entityId"] = entityId;
-    await createComment(data, type, (res) => {
-      setComments((prev) => [
-        { ...res, replies: [], countReplyShown: 0, repliesCount: 0 },
-        ...prev,
-      ]);
+
+    const res = await main.request({
+      data,
+      url: createComment.url(type),
+      type: createComment.type,
+      convertRes: createComment.convertRes,
     });
+
+    setComments((prev) => [
+      { ...res, replies: [], countReplyShown: 0, repliesCount: 0 },
+      ...prev,
+    ]);
   };
 
   const handleCreateReplyComment = async (data, commentId) => {
     data["entityId"] = commentId;
     data["parentType"] = "comment";
 
-    await createComment(data, "reply", (res) => {
-      addReplyComments(commentId, [{ ...res }], "start", false);
+    const res = await main.request({
+      data,
+      url: createComment.url("reply"),
+      type: createComment.type,
+      convertRes: createComment.convertRes,
     });
+
+    addReplyComments(commentId, [{ ...res }], "start", false);
   };
 
   const handleGetMoreReplyComments = async (commentId) => {
     const sendData = { parentId: commentId, needCount: true };
-    await getComments(sendData, "reply", (data) => {
-      const comments = data["comments"] ?? [];
-      addReplyComments(commentId, comments);
+
+    const data = await main.request({
+      url: getComments.url("reply"),
+      type: createComment.type,
+      data: sendData,
+      convertRes: getComments.convertRes,
     });
+
+    const comments = data.comments ?? [];
+    addReplyComments(commentId, comments);
   };
 
   return {

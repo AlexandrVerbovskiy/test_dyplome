@@ -270,6 +270,23 @@ class User extends Controller {
 
       return this.setResponseBaseSuccess("User getted success", user);
     });
+
+  getPersonalNotifications = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const count = req.body.count ?? 20;
+      const lastId = req.body.lastId ?? 0;
+
+      const notifications = await this.notificationModel.getUserNotifications(
+        userId,
+        lastId,
+        count
+      );
+
+      this.setResponseBaseSuccess("User notifications got success", {
+        notifications,
+      });
+    });
 }
 
 module.exports = User;

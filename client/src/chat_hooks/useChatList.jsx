@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { getUsersToChatting } from "../requests";
+import { MainContext } from "../contexts";
 
 const useChatList = (onInit) => {
   const limit = 20;
@@ -7,6 +8,7 @@ const useChatList = (onInit) => {
   const [chatList, setChatList] = useState([]);
   const [search, setChatListSearch] = useState("");
   const [canSearch, setCanSearch] = useState(true);
+  const main = useContext(MainContext);
 
   useEffect(() => {
     setChatList([]);
@@ -21,7 +23,7 @@ const useChatList = (onInit) => {
   const getLastChatId = (chats = null) => {
     let minId = 0;
     if (!chats) chats = chatList;
-    
+
     chats.forEach((elem) => {
       if (elem.id < minId || minId == 0) minId = elem.chat_id;
     });
@@ -32,7 +34,6 @@ const useChatList = (onInit) => {
   const getChats = async (prevChats = null) => {
     setCanSearch(false);
     const lastChatId = getLastChatId(prevChats);
-    console.log(lastChatId);
 
     const data = {
       lastChatId,
@@ -40,18 +41,24 @@ const useChatList = (onInit) => {
       searchString: search,
     };
 
-    await getUsersToChatting(
-      data,
-      (chats) => {
-        if (chats.length === limit) setCanSearch(true);
-        setChatList((prev) => [...prev, ...chats]);
-        if (isFirstAction) {
-          setIsFirstAction(false);
-          onInit(chats);
-        }
-      },
-      (e) => console.log(e)
-    );
+    try {
+      const chats = await main.request({
+        url: getUsersToChatting.url(),
+        type: getUsersToChatting.type,
+        convertRes: getUsersToChatting.convertRes,
+      });
+
+      if (chats.length === limit) {
+        setCanSearch(true);
+      }
+
+      setChatList((prev) => [...prev, ...chats]);
+
+      if (isFirstAction) {
+        setIsFirstAction(false);
+        onInit(chats);
+      }
+    } catch (e) {}
   };
 
   const getMoreChats = async (prevChats = null) => {

@@ -19,13 +19,23 @@ const jobType = config.COMMENT_TYPES.job;
 const JobView = () => {
   let { id } = useParams();
   const [job, setJob] = useState(null);
+  const main = useContext(MainContext);
 
   useEffect(() => {
-    getJobInfo(
-      id,
-      (res) => setJob(res),
-      (err) => console.log(err)
-    );
+    (async () => {
+      try {
+        const res = await main.request({
+          url: getJobInfo.url(id),
+          type: getJobInfo.type,
+          convertRes: getJobInfo.convertRes,
+        });
+        console.log(res);
+
+        if (!res) return;
+
+        setJob(res);
+      } catch (e) {}
+    })();
   }, [id]);
 
   const { setSuccess, setError } = useContext(MainContext);

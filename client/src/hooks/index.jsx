@@ -11,3 +11,4 @@ export { default as useAdminDisputes } from "./useAdminDisputes";
 export { default as useAdminChatMessages } from "./useAdminChatMessages";
 export { default as useProfileStatisticInfo } from "./useProfileStatisticInfo";
 export { default as useComments } from "./useComments";
+export { default as useAjaxRequest } from "./useAjaxRequest";

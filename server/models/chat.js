@@ -273,4 +273,5 @@ class Chat extends Model {
     return sockets;
   };
 }
+
 module.exports = Chat;
