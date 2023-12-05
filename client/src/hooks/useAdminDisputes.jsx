@@ -3,8 +3,11 @@ import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
 import { getAdminDisputes } from "../requests";
 
 const useAdminDisputes = ({ disputesStatus = "pending" }) => {
-  const request = (data = {}, onSuccess = () => {}, onError = () => {}) =>
-    getAdminDisputes({ ...data }, disputesStatus, onSuccess, onError);
+  const getAdminDisputesCurrentStatus = {
+    url: () => getAdminDisputes.url(disputesStatus),
+    type: getAdminDisputes.type,
+    convertRes: getAdminDisputes.convertRes,
+  };
 
   const {
     elements,
@@ -13,7 +16,7 @@ const useAdminDisputes = ({ disputesStatus = "pending" }) => {
     filterValue,
     setFilterValueChange,
     resetElements,
-  } = useAsyncInfinityUpload(request);
+  } = useAsyncInfinityUpload(getAdminDisputesCurrentStatus);
 
   return {
     disputes: elements,

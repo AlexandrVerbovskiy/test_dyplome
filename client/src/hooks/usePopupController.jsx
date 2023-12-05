@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { sendJobProposal } from "../requests";
+import { MainContext } from "../contexts";
 
 const usePopupController = ({ onSuccess, onError }) => {
+  const main = useContext(MainContext);
+
   const [jobProposalForm, setJobProposalForm] = useState({
     jobId: null,
     active: false,
@@ -32,22 +35,24 @@ const usePopupController = ({ onSuccess, onError }) => {
   const jobProposalSetTime = (time) =>
     setJobProposalForm((prev) => ({ ...prev, time, active: true }));
 
-  const sendJobProposalForm = () => {
-    sendJobProposal(
-      {
-        jobId: jobProposalForm.jobId,
-        price: jobProposalForm.price,
-        time: jobProposalForm.time,
-      },
-      () => {
-        jobProposalFormHide();
-        onSuccess("Proposal sended success!");
-      },
-      (err) => {
-        jobProposalFormHide();
-        onError(err);
-      }
-    );
+  const sendJobProposalForm = async () => {
+    try {
+      await main.request({
+        url: sendJobProposal.url(),
+        type: sendJobProposal.type,
+        data: {
+          jobId: jobProposalForm.jobId,
+          price: jobProposalForm.price,
+          time: jobProposalForm.time,
+        },
+        convertRes: jobProposalForm.convertRes,
+      });
+
+      jobProposalFormHide();
+      onSuccess("Proposal sended success!");
+    } catch (e) {
+      jobProposalFormHide();
+    }
   };
 
   const acceptJobDisputeFormHide = () =>

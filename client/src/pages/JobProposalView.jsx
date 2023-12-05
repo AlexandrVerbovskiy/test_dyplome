@@ -12,49 +12,58 @@ import { createDispute } from "../requests";
 import { BaseJobEntityTemplate } from "../job_components";
 
 const JobProposalView = () => {
-  let { proposalId } = useParams();
-  const [proposal, setProposal] = useState(null);
   const isSeller = true;
   const isBuyer = true;
+  let { proposalId } = useParams();
+  const [proposal, setProposal] = useState(null);
+
+  const { setSuccess, setError, request } = useContext(MainContext);
 
   useEffect(() => {
-    getJobProposalInfo(
-      proposalId,
-      (res) => {
+    (async () => {
+      try {
+        const res = await request({
+          url: getJobProposalInfo.url(proposalId),
+          type: getJobProposalInfo.type,
+          convertRes: getJobProposalInfo.convertRes,
+        });
+
         setProposal({
           ...res,
           status: res.status.toLocaleLowerCase(),
           disputeId: res.dispute_id,
           disputeStatus: res.dispute_status,
         });
-      },
-      (err) => console.log(err)
-    );
+      } catch (e) {}
+    })();
   }, [proposalId]);
 
-  const { setSuccess, setError, request } = useContext(MainContext);
   const { acceptJobDisputeForm } = usePopupController({
     onSuccess: setSuccess,
     onError: setError,
   });
 
-  const handleDisputeAccept = () => {
+  const handleDisputeAccept = async () => {
     const data = acceptJobDisputeForm.data;
-    createDispute(
-      {
-        jobRequestId: data.proposalId,
-        description: data.description,
-      },
-      (res) => {
-        setProposal((prev) => ({
-          ...prev,
-          disputeStatus: res.disputeStatus,
-          disputeId: res.disputeId,
-        }));
-        acceptJobDisputeForm.hide();
-      },
-      setError
-    );
+
+    try {
+      const res = await request({
+        url: createDispute.url(),
+        type: createDispute.type,
+        data: {
+          jobRequestId: data.proposalId,
+          description: data.description,
+        },
+        convertRes: createDispute.convertRes,
+      });
+
+      setProposal((prev) => ({
+        ...prev,
+        disputeStatus: res.disputeStatus,
+        disputeId: res.disputeId,
+      }));
+      acceptJobDisputeForm.hide();
+    } catch (e) {}
   };
 
   if (!proposal) return;

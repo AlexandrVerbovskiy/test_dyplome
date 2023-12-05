@@ -8,20 +8,23 @@ import { Link } from "react-router-dom";
 const AdminDispute = () => {
   let { disputeId } = useParams();
   const [dispute, setDispute] = useState(null);
+  const { setSuccess, setError, request } = useContext(MainContext);
 
   useEffect(() => {
-    getJobDisputeInfo(
-      disputeId,
-      (res) => {
+    (async () => {
+      try {
+        const res = await request({
+          url: getJobDisputeInfo.url(disputeId),
+          type: getJobDisputeInfo.type,
+          convertRes: getJobDisputeInfo.convertRes,
+        });
+
         setDispute({
           ...res,
         });
-      },
-      (err) => console.log(err)
-    );
+      } catch (e) {}
+    })();
   }, [disputeId]);
-
-  const { setSuccess, setError } = useContext(MainContext);
 
   if (!dispute) return;
 

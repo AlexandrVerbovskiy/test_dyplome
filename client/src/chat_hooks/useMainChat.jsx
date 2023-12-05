@@ -23,28 +23,29 @@ const useMainChat = ({ accountId, type = "personal" }) => {
     onChatMessageDelete,
     onChangeTyping: onChangeListTyping,
     onChangeOnline: onChangeListOnline,
-  } = useChatList((chatList) => {
+  } = useChatList(async (chatList) => {
     const chatElem = chatList.length > 0 ? chatList[0] : null;
 
     if (accountId) {
       if (type == "personal") {
-        getUsersChat(
-          accountId,
-          (res) => {
-            activeChat.current = res;
-            const count = res.messages ? res.messages.length : 0;
+        try {
+          const res = await main.request({
+            url: getUsersChat.url(),
+            type: getUsersChat.type,
+            data: getUsersChat.convertData(accountId),
+            convertRes: getUsersChat.convertRes,
+          });
 
-            if (count > 0) {
-              setLastMessageId(res.messages[0].message_id);
-              setMessages(res.messages);
-            } else {
-              setMessages([]);
-            }
-          },
-          (err) => {
-            console.log(err);
+          activeChat.current = res;
+          const count = res.messages ? res.messages.length : 0;
+
+          if (count > 0) {
+            setLastMessageId(res.messages[0].message_id);
+            setMessages(res.messages);
+          } else {
+            setMessages([]);
           }
-        );
+        } catch (e) {}
       }
     } else {
       handleChangeChat(chatElem);

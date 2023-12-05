@@ -56,7 +56,7 @@ const useChatList = (onInit) => {
 
       if (isFirstAction) {
         setIsFirstAction(false);
-        onInit(chats);
+        await onInit(chats);
       }
     } catch (e) {}
   };

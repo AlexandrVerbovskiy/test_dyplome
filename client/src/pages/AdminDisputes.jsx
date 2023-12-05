@@ -17,19 +17,24 @@ const AdminDisputes = ({ status = "pending" }) => {
     disputesReset,
   } = useAdminDisputes({ disputesStatus: status });
 
-  const { setSuccess, setError } = useContext(MainContext);
+  const { setSuccess, setError, request } = useContext(MainContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     disputesReset();
   }, [status]);
 
-  const handleAcceptDispute = (id) => {
-    adminAssignDispute(
-      id,
-      () => navigate(`/admin-dispute/${id}`),
-      (err) => setError(err)
-    );
+  const handleAcceptDispute = async (id) => {
+    try {
+      await request({
+        url: adminAssignDispute.url(),
+        type: adminAssignDispute.type,
+        data: adminAssignDispute.convertData(id),
+        convertRes: adminAssignDispute.convertRes,
+      });
+
+      navigate(`/admin-dispute/${id}`);
+    } catch (e) {}
   };
 
   return (

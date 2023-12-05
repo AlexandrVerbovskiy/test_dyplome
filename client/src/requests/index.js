@@ -80,19 +80,19 @@ export const getUsersChat = {
   url: () => `get-users-chat`,
   type: "post",
   convertData: (userId) => ({ userId }),
-  convertRes: (res) => res.data ?? [],
+  convertRes: (res) => res.data ?? {},
 };
 
 export const sendJobProposal = {
   url: () => `send-job-proposal`,
   type: "post",
-  convertRes: (res) => res.data ?? [],
+  convertRes: (res) => res.data ?? {},
 };
 
 export const getJobProposalInfo = {
   url: (id) => `get-job-proposal/${id}`,
   type: "get",
-  convertRes: (res) => res.data.proposal ?? [],
+  convertRes: (res) => res.data.proposal ?? {},
 };
 
 export const getMyProposals = {
@@ -122,13 +122,16 @@ export const getAdminDisputes = {
 export const adminAssignDispute = {
   url: () => `assign-dispute`,
   type: "post",
-  convertRes: (res) => res.data ?? [],
+  convertData: (disputeId) => {
+    disputeId;
+  },
+  convertRes: (res) => res.data ?? {},
 };
 
 export const getJobDisputeInfo = {
   url: (id) => `get-job-dispute/${id}`,
   type: "get",
-  convertRes: (res) => res.data.dispute ?? [],
+  convertRes: (res) => res.data.dispute ?? {},
 };
 
 export const getChatMessagesByAdmin = {
@@ -146,7 +149,7 @@ export const getChatInfoByAdmin = {
 export const getUserStatistic = {
   url: (id) => `get-user-statistic/${id}`,
   type: "get",
-  convertRes: (res) => res.data ?? [],
+  convertRes: (res) => res.data ?? {},
 };
 
 export const createComment = {
