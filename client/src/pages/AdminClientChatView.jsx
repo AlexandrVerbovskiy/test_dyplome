@@ -1,14 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getChatInfoByAdmin } from "../requests";
 import { Navbar, UploadTrigger } from "../components";
 import { useAdminChatMessages } from "../hooks";
 import { shortTimeFormat } from "../utils";
+import { MainContext } from "../contexts";
 import config from "../config";
 const { API_URL } = config;
 
 const UserProfileLink = ({ user_id, user_email, user_avatar }) => {
   if (!user_avatar) user_avatar = "/assets/images/avatars/avatar-1.png";
+
   return (
     <div className="admin-chat-user-profile">
       <a href={"#" + user_id}>
@@ -163,6 +165,7 @@ const Message = ({
 };
 
 const AdminClientChatView = () => {
+  const main = useContext(MainContext);
   let { chatId } = useParams();
   const [users, setUsers] = useState([]);
   const { messages, loadMore } = useAdminChatMessages({ chatId });
@@ -170,11 +173,16 @@ const AdminClientChatView = () => {
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
   useEffect(() => {
-    getChatInfoByAdmin(
-      chatId,
-      (res) => setUsers([...res]),
-      (err) => console.log(err)
-    );
+    (async () => {
+      try {
+        const res = await main.request({
+          url: getChatInfoByAdmin.url(chatId),
+          type: getChatInfoByAdmin.type,
+          convertRes: getChatInfoByAdmin.convertRes,
+        });
+        setUsers([...res]);
+      } catch (e) {}
+    })();
   }, [chatId]);
 
   useEffect(() => {

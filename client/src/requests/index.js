@@ -170,9 +170,30 @@ export const getNotifications = {
   convertRes: (res) => res.data ?? [],
 };
 
+const __changeProposalStatus = (url) => ({
+  url: () => url,
+  type: "post",
+  convertData: (proposalId) => ({ id: proposalId }),
+  convertRes: (res) => res.data ?? {},
+});
+
+export const acceptJobProposal = __changeProposalStatus("proposal-accept");
+
+export const rejectJobProposal = __changeProposalStatus("proposal-reject");
+
+export const cancelJobProposal = __changeProposalStatus("proposal-cancel");
+
+export const acceptCancelJobProposal = __changeProposalStatus(
+  "proposal-accept-cancel"
+);
+
+export const completeJobProposal = __changeProposalStatus("proposal-complete");
+
+export const acceptCompleteJobProposal = __changeProposalStatus(
+  "proposal-accept-complete"
+);
+
 export const test = {
   url: () => "test",
   type: "post",
 };
-
-export * from "./changeProposalsStatus";

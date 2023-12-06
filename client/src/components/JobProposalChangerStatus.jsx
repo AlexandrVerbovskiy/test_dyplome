@@ -1,5 +1,6 @@
-import React from "react";
-import CONFIG from "../config";
+import React, { useContext } from "react";
+import { MainContext } from "../contexts";
+
 import {
   acceptJobProposal,
   rejectJobProposal,
@@ -8,6 +9,8 @@ import {
   completeJobProposal,
   acceptCompleteJobProposal,
 } from "../requests";
+
+import config from "../config";
 
 const JobProposalChangerStatus = ({
   setProposal,
@@ -19,38 +22,38 @@ const JobProposalChangerStatus = ({
   setErrorMessage,
 }) => {
   let nextStatus = null;
-  const jobStatus = CONFIG["JOB_STATUSES"];
-
-  let changeStatusBtn = null;
+  let changeStatusReq = null;
+  const jobStatus = config["JOB_STATUSES"];
+  const main = useContext(MainContext);
 
   if (isSeller) {
     if (actualStatus == jobStatus["pending"]["value"]) {
       nextStatus = "In Progress";
-      changeStatusBtn = acceptJobProposal;
+      changeStatusReq = acceptJobProposal;
     }
 
     if (actualStatus == jobStatus["awaitingExecutionConfirmation"]["value"]) {
       nextStatus = "Completed";
-      changeStatusBtn = acceptCompleteJobProposal;
+      changeStatusReq = acceptCompleteJobProposal;
     }
   }
 
   if (isBuyer) {
     if (actualStatus == jobStatus["inProgress"]["value"]) {
       nextStatus = "Awaiting Execution Confirmation";
-      changeStatusBtn = completeJobProposal;
+      changeStatusReq = completeJobProposal;
     }
 
     if (actualStatus == jobStatus["pending"]["value"]) {
       nextStatus = "Cancelled";
-      changeStatusBtn = acceptCancelJobProposal;
+      changeStatusReq = acceptCancelJobProposal;
     }
 
     if (
       actualStatus == jobStatus["awaitingCancellationConfirmation"]["value"]
     ) {
       nextStatus = "Rejected";
-      changeStatusBtn = rejectJobProposal;
+      changeStatusReq = rejectJobProposal;
     }
   }
 
@@ -66,15 +69,23 @@ const JobProposalChangerStatus = ({
     setSuccessMessage(res.message);
   };
 
+  const handleChangeClick = async () => {
+    const res = await main.request({
+      url: changeStatusReq.url(proposalId),
+      type: changeStatusReq.type,
+      convertRes: changeStatusReq.convertRes,
+    });
+
+    onSuccessChangeStatus(res);
+  };
+
   return (
     <div className="status-changer-row">
       {nextStatusInfo && (
         <button
           type="button"
           className={`btn btn-${nextStatusInfo["color"]} px-5`}
-          onClick={() =>
-            changeStatusBtn(proposalId, onSuccessChangeStatus, setErrorMessage)
-          }
+          onClick={handleChangeClick}
         >
           Make "{nextStatusInfo["text"]}"
         </button>
