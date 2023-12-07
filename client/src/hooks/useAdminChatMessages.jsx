@@ -21,7 +21,7 @@ const useAdminChatMessages = ({ chatId }) => {
     try {
       const res = await main.request({
         url: getChatMessagesByAdmin.url(),
-        type: convertRes.type,
+        type: getChatMessagesByAdmin.type,
         data: {
           lastId: lastMessageId.current,
           chatId,

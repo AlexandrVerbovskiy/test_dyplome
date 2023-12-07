@@ -12,3 +12,4 @@ export { default as useAdminChatMessages } from "./useAdminChatMessages";
 export { default as useProfileStatisticInfo } from "./useProfileStatisticInfo";
 export { default as useComments } from "./useComments";
 export { default as useAjaxRequest } from "./useAjaxRequest";
+export { default as useNotifications } from "./useNotifications";

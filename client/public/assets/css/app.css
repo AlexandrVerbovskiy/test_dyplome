@@ -2256,6 +2256,13 @@ input.search-control-2::placeholder {
 .header-notifications-list {
   position: relative;
   height: 360px;
+  max-height: 360px;
+  overflow-y: auto;
+  overflow-y: auto !important;
+}
+
+.transparent-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent !important;
 }
 
 .dropdown-large .notify {
@@ -3314,4 +3321,37 @@ body:has(.alert) .page-wrapper {
 
 .reply-comment {
   margin-bottom: 20px;
+}
+
+.navbar .icons-menu {
+  padding-right: 0.8rem;
+  padding-left: 0.8rem;
+  color: #252323;
+  font-size: 22px;
+}
+
+.navbar .icons-menu .alert-count {
+  left: 18px;
+}
+
+.navbar .icons-menu {
+  border-right: 1px solid #f0f0f0 !important;
+}
+
+.popup-helper {
+  display: none;
+  position: fixed;
+  background-color: transparent;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.popup-helper.show {
+  display: block !important;
+}
+
+.no-cursor-event {
+  cursor: auto !important;
 }

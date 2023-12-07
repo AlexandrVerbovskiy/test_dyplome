@@ -122,9 +122,9 @@ export const getAdminDisputes = {
 export const adminAssignDispute = {
   url: () => `assign-dispute`,
   type: "post",
-  convertData: (disputeId) => {
-    disputeId;
-  },
+  convertData: (disputeId) => ({
+    disputeId,
+  }),
   convertRes: (res) => res.data ?? {},
 };
 
@@ -167,7 +167,7 @@ export const getComments = {
 export const getNotifications = {
   url: () => `get-notifications`,
   type: "post",
-  convertRes: (res) => res.data ?? [],
+  convertRes: (res) => res.data.notifications ?? [],
 };
 
 const __changeProposalStatus = (url) => ({

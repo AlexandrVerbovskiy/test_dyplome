@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { MainContext } from "../contexts";
 
-const useAsyncInfinityUpload = (functionToGetMore) => {
-  const count = 8;
+const useAsyncInfinityUpload = (functionToGetMore, count = 8) => {
   const [elements, setElements] = useState({});
   const elementIds = useRef([]);
   const [canShowMore, setCanShowMore] = useState(true);
@@ -10,7 +9,7 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
   const filterValue = useRef("");
   const main = useContext(MainContext);
 
-  const onGetEntites = (res) => {
+  const onGetEntities = (res) => {
     const gettedElements = res;
 
     if (gettedElements.length > 0) {
@@ -44,30 +43,29 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
         type: functionToGetMore.type,
         convertRes: functionToGetMore.convertRes ?? null,
       });
-      onGetEntites(res);
+      onGetEntities(res);
     } catch (e) {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log("inited");
     getMoreElements();
   }, []);
 
   const resetElements = async () => {
     setLoading(true);
     elementIds.current = [];
-    setElements([]);
+    setElements({});
 
     try {
       const res = await main.request({
         url: functionToGetMore.url(),
         data: { skippedIds: [], count, filter: filterValue.current },
         type: functionToGetMore.type,
-        convertRes: functionToGetMore.convertRes ?? null,
+        convertRes: functionToGetMore.convertRes ?? {},
       });
-      onGetEntites(res);
+      onGetEntities(res);
     } catch (e) {
       setLoading(false);
     }
@@ -78,6 +76,12 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
     await resetElements();
   };
 
+  const prependElement = (element) =>
+    setElements((prev) => {
+      prev[element.id] = { ...element };
+      return { ...prev };
+    });
+
   return {
     elements,
     getMoreElements,
@@ -85,6 +89,7 @@ const useAsyncInfinityUpload = (functionToGetMore) => {
     filterValue: filterValue.current,
     setFilterValueChange: setFilterValue,
     resetElements,
+    prependElement,
   };
 };
 
