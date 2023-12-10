@@ -1,28 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
 import { getNotifications } from "../requests";
 
-const useNotifications = () => {
+const useNotifications = ({ io, onGetNotification }) => {
+  const [newNotifications, setNewNotifications] = useState([
+    { type: "message", body: "{}", id: 1 },
+    { type: "system", body: "{}", id: 2 },
+    { type: "job", body: "{}", id: 3 },
+    { type: "message", body: "{}", id: 4 },
+    { type: "system", body: "{}", id: 5 },
+  ]);
+
   const { elements, getMoreElements, prependElement } = useAsyncInfinityUpload(
     getNotifications,
     20
   );
-  const [countNewNotifications, setCountNewNotifications] = useState(0);
 
-  const incrementCountNewNotifications = () => {
-    setCountNewNotifications((prev) => prev + 1);
-  };
+  useEffect(() => {
+    if (!io) return;
 
-  const resetCountNewNotifications = () => {
-    setCountNewNotifications(0);
-  };
+    io.on("get-notification", (notification) => {
+      prependElement(notification);
+
+      setNewNotifications((prev) => {
+        prev.push(notification);
+        return prev;
+      });
+
+      onGetNotification(notification);
+    });
+  }, [io]);
+
+  const resetCountNewNotifications = () => setNewNotifications([]);
 
   return {
+    newNotifications,
+    setNewNotifications,
     notifications: elements,
     getMoreNotifications: getMoreElements,
-    prependNotification: prependElement,
-    countNewNotifications,
-    incrementCountNewNotifications,
     resetCountNewNotifications,
   };
 };

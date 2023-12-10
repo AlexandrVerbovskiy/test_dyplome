@@ -1,5 +1,5 @@
 .profile-edit-page,
-.job-edit-page {
+.default-edit-page {
   margin-left: 0;
 }
 
@@ -39,7 +39,7 @@
     height: 800px;
   }
 
-  .job-edit-page textarea {
+  .default-edit-page textarea {
     height: 480px;
   }
 }

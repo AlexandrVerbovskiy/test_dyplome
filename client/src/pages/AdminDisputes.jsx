@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Navbar, JobStatus } from "../components";
+import { JobStatus, DefaultPageLayout } from "../components";
 import { useAdminDisputes } from "../hooks";
-import { CardWrapper, JobCard, MainFilter } from "../job_components";
+import { CardWrapper, MainFilter } from "../job_components";
 import { UploadTrigger } from "../components";
 import { fullTimeFormat } from "../utils";
 import { adminAssignDispute } from "../requests";
@@ -17,7 +17,7 @@ const AdminDisputes = ({ status = "pending" }) => {
     disputesReset,
   } = useAdminDisputes({ disputesStatus: status });
 
-  const { setSuccess, setError, request } = useContext(MainContext);
+  const { request } = useContext(MainContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,9 +38,7 @@ const AdminDisputes = ({ status = "pending" }) => {
   };
 
   return (
-    <div className="page-wrapper job-edit-page">
-      <Navbar />
-
+    <DefaultPageLayout pageClassName="default-edit-page">
       <CardWrapper>
         <MainFilter value={disputesFilter} onClick={disputesFilterChange} />
         <div className="submenu-under-filter">
@@ -55,7 +53,6 @@ const AdminDisputes = ({ status = "pending" }) => {
           </div>
         </div>
       </CardWrapper>
-
       <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
         {Object.keys(disputes).map((disputeKey) => {
           const dispute = disputes[disputeKey];
@@ -145,7 +142,7 @@ const AdminDisputes = ({ status = "pending" }) => {
         })}
         <UploadTrigger onTriggerShown={getMoreDisputes} />
       </CardWrapper>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

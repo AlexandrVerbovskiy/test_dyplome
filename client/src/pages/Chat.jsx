@@ -39,7 +39,7 @@ const Chat = () => {
     selectedChatId,
   } = useMainChat({ accountId, type });
 
-  const { auth } = useContext(MainContext);
+  const { auth, io } = useContext(MainContext);
   const onEditMessage = (id, content) => {
     console.log("edit start: ", id, content);
     setEditMessage(id, content);
@@ -66,6 +66,7 @@ const Chat = () => {
     onDeleteMessageForSockets,
     onUpdateMessagePercent,
     onCancelledMessage,
+    io,
   });
 
   const onDeleteMessage = (id) => deleteMessage(id, lastMessageId);

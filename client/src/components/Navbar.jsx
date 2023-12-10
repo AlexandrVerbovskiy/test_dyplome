@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useNotifications } from "../hooks";
 import { SmallNotificationList } from "../notification_components";
 
-const Navbar = () => {
-  const [notificationPopupActive, setNotificationPopupActive] = useState(false);
+const Navbar = ({
+  notifications,
+  countNewNotifications,
+  resetCountNewNotifications,
+}) => {
   const [notificationClassName, setNotificationClassName] = useState("");
-
-  const {
-    notifications,
-    prependNotification,
-    countNewNotifications,
-    incrementCountNewNotifications,
-    resetCountNewNotifications,
-  } = useNotifications();
+  const [notificationPopupActive, setNotificationPopupActive] = useState(false);
 
   useEffect(() => {
     let notificationClassName =
-      "nav-link dropdown-toggle dropdown-toggle-nocaret position-relative no-cursor-event";
+      "nav-link dropdown-toggle dropdown-toggle-nocaret position-relative";
+
+    if (notifications.length == 0) notificationClassName += ` no-cursor-event`;
 
     setNotificationClassName(notificationClassName);
   }, [countNewNotifications]);

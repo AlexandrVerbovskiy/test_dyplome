@@ -13,3 +13,4 @@ export { default as useProfileStatisticInfo } from "./useProfileStatisticInfo";
 export { default as useComments } from "./useComments";
 export { default as useAjaxRequest } from "./useAjaxRequest";
 export { default as useNotifications } from "./useNotifications";
+export { default as useSocketInit } from "./useSocketInit";

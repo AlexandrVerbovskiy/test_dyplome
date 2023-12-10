@@ -1,5 +1,11 @@
 import React from "react";
-import { MapMarker, Map, Navbar, ViewInput, JobStatus } from "../components";
+import {
+  MapMarker,
+  Map,
+  DefaultPageLayout,
+  ViewInput,
+  JobStatus,
+} from "../components";
 
 const BaseJobEntityTemplate = ({
   pageTitle,
@@ -15,8 +21,7 @@ const BaseJobEntityTemplate = ({
   needShowAllStatus = false,
 }) => {
   return (
-    <div className="page-wrapper job-view-page">
-      <Navbar />
+    <DefaultPageLayout pageClassName="job-view-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -51,7 +56,7 @@ const BaseJobEntityTemplate = ({
           </div>
         </div>
       </div>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

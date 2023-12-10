@@ -1,10 +1,9 @@
 import React from "react";
-import { Navbar } from "../components";
+import { DefaultPageLayout } from "../components";
 
 const NoChats = () => {
   return (
-    <div className="wrapper">
-      <Navbar />
+    <DefaultPageLayout pageClassName="default-view-page">
       <div className="no-chats-page d-flex align-items-center justify-content-center">
         <div className="card p-5">
           <div className="card-body p-4">
@@ -34,7 +33,7 @@ const NoChats = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

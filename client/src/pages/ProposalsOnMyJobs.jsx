@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar } from "../components";
+import { DefaultPageLayout } from "../components";
 import { ProposalCard, MainFilter, CardWrapper } from "../job_components";
 import { UploadTrigger } from "../components";
 import { useProposalsOnMyJobs } from "../hooks";
@@ -14,9 +14,7 @@ const ProposalsOnMyJobs = () => {
   } = useProposalsOnMyJobs();
 
   return (
-    <div className="page-wrapper main-jobs-page">
-      <Navbar />
-
+    <DefaultPageLayout pageClassName="default-view-page">
       <CardWrapper>
         <MainFilter value={proposalsFilter} onClick={proposalsFilterChange} />
       </CardWrapper>
@@ -33,7 +31,7 @@ const ProposalsOnMyJobs = () => {
         ))}
         <UploadTrigger onTriggerShown={getMoreProposals} />
       </CardWrapper>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

@@ -1,18 +1,26 @@
 import React from "react";
-import { shortTimeFormat } from "../utils";
-import Icon from "./Icon";
-
-const getNotificationTitleByType = (type, body) => {};
-
-const getNotificationBodyByType = (type, body) => {};
+import {
+  shortTimeFormat,
+  getNotificationMainColor,
+  getNotificationIcon,
+  getNotificationBodyByType,
+  getNotificationTitleByType,
+} from "../utils";
 
 const NotificationElem = ({ type, body, createdAt }) => {
   body = JSON.parse(body);
+  const iconClass = getNotificationIcon(type);
+  const mainNotificationColor = getNotificationMainColor(type);
 
   return (
     <a className="dropdown-item">
       <div className="d-flex align-items-center">
-        <Icon type={type} />
+        <div
+          className={`bx bg-light-${mainNotificationColor} text-${mainNotificationColor}`}
+        >
+          <i className={`notify ${iconClass}`}></i>
+        </div>
+
         <div className="flex-grow-1">
           <h6 className="msg-name">
             {getNotificationTitleByType(type, body)}
@@ -20,7 +28,7 @@ const NotificationElem = ({ type, body, createdAt }) => {
               {shortTimeFormat(createdAt)}
             </span>
           </h6>
-          <p className="msg-info"> {getNotificationBodyByType(type, body)}</p>
+          <p className="msg-info">{getNotificationBodyByType(type, body)}</p>
         </div>
       </div>
     </a>

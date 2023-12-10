@@ -1,6 +1,11 @@
 import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
-import { Textarea, Input, Navbar, SingleMarkMap } from "../components";
+import {
+  Textarea,
+  Input,
+  DefaultPageLayout,
+  SingleMarkMap,
+} from "../components";
 import { useJobEdit } from "../hooks";
 import { updateJob } from "../requests";
 import { MainContext } from "../contexts";
@@ -45,8 +50,7 @@ const JobEdit = () => {
   };
 
   return (
-    <div className="page-wrapper job-edit-page">
-      <Navbar />
+    <DefaultPageLayout pageClassName="default-edit-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -112,7 +116,7 @@ const JobEdit = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

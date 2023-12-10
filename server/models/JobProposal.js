@@ -26,7 +26,7 @@ class JobProposal extends Model {
       return null;
     });
 
-  getForJobAuthor = async (userId, skippedIds, filter = "", limit) => {
+  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) => {
     let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
     const params = [userId];
 
@@ -46,7 +46,7 @@ class JobProposal extends Model {
     return requests;
   };
 
-  getForProposalAuthor = async (userId, skippedIds, filter = "", limit) => {
+  getForProposalAuthor = async (userId, skippedIds, filter = "", limit=8) => {
     let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
 
     const params = [userId];

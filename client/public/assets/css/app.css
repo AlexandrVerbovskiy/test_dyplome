@@ -2740,9 +2740,7 @@ body:has(.alert) .page-wrapper {
   margin-top: 0px;
 }
 
-.user-page,
-.job-view-page,
-.main-jobs-page {
+.default-view-page {
   margin-left: 50px;
   margin-right: 50px;
 }
@@ -3354,4 +3352,20 @@ body:has(.alert) .page-wrapper {
 
 .no-cursor-event {
   cursor: auto !important;
+}
+
+.new-notifications-list {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 999999;
+}
+
+.new-notification-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: black !important;
+  font-size: 20px !important;
+  line-height: 14px;
 }

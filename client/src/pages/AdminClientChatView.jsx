@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getChatInfoByAdmin } from "../requests";
-import { Navbar, UploadTrigger } from "../components";
+import { DefaultPageLayout, UploadTrigger } from "../components";
 import { useAdminChatMessages } from "../hooks";
 import { shortTimeFormat } from "../utils";
 import { MainContext } from "../contexts";
@@ -196,8 +196,7 @@ const AdminClientChatView = () => {
   if (!users.length) return;
 
   return (
-    <div className="page-wrapper base-main-page">
-      <Navbar />
+    <DefaultPageLayout pageClassName="base-main-page">
       <div className="page-content">
         <div className="card">
           <div className="card-header admin-view-chat-header">
@@ -223,7 +222,7 @@ const AdminClientChatView = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

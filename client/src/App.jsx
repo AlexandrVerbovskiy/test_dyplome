@@ -1,6 +1,6 @@
 import React from "react";
 import { useSystemMessage } from "./chat_hooks";
-import { useAuth, useAjaxRequest } from "./hooks";
+import { useAuth, useAjaxRequest, useSocketInit } from "./hooks";
 import { MainRouter, SignRouter } from "./routes";
 import { MainContext } from "./contexts";
 import { Message } from "./chat_components";
@@ -11,10 +11,11 @@ function App() {
 
   const request = useAjaxRequest(setError);
   const { auth, logout, setAuth } = useAuth(request);
+  const { socketIo: io } = useSocketInit();
 
   return (
     <MainContext.Provider
-      value={{ auth, logout, setAuth, setSuccess, setError, request }}
+      value={{ auth, logout, setAuth, setSuccess, setError, request, io }}
     >
       {/*<div>
         {auth && <button onClick={logout}>logout</button>}

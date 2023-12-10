@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CommentCard, Navbar } from "../components";
+import { CommentCard, DefaultPageLayout } from "../components";
 import { LineChart } from "../charts";
 import { useProfileStatisticInfo, useComments } from "../hooks";
 import { UserProfileStatisticInfo } from "../profile_components";
@@ -44,8 +44,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="page-wrapper user-page">
-      <Navbar />
+    <DefaultPageLayout pageClassName="default-view-page">
       <div className="page-content">
         <div className="card profile-comments-type-select">
           <div className="card-title">
@@ -76,7 +75,7 @@ const UserProfile = () => {
           />
         </div>
       </div>
-    </div>
+    </DefaultPageLayout>
   );
 };
 

@@ -4,7 +4,7 @@ import {
   Map,
   MapMarker,
   JobProposalForm,
-  Navbar,
+  DefaultPageLayout,
   UploadTrigger,
   PopupWrapper,
 } from "../components";
@@ -21,9 +21,7 @@ const MainPage = () => {
   });
 
   return (
-    <div className="page-wrapper main-jobs-page">
-      <Navbar />
-
+    <DefaultPageLayout pageClassName="default-view-page">
       <CardWrapper bodyClass="jobs-map">
         <Map>
           {jobsIds.map((id) => (
@@ -61,7 +59,7 @@ const MainPage = () => {
           setPrice={jobProposalFormState.setPrice}
         />
       </PopupWrapper>
-    </div>
+    </DefaultPageLayout>
   );
 };
 
