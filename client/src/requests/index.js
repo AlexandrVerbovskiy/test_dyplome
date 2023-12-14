@@ -3,7 +3,7 @@ export const login = {
   type: "post",
   convertRes: (res) => {
     const token = res.headers.authorization.split(" ")[1];
-    return { token, userId: res.data.userId };
+    return { token, user: { ...res.data.user } };
   },
 };
 
@@ -23,7 +23,7 @@ export const validateToken = {
     if (!validated) return null;
 
     const token = res.headers.authorization.split(" ")[1];
-    return { token, userId: res.data.userId };
+    return { token, user: { ...res.data.user } };
   },
 };
 

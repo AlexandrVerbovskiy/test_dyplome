@@ -72,7 +72,7 @@ class User extends Controller {
       this.setResponse(
         {
           validated: true,
-          userId,
+          user,
         },
         200
       );

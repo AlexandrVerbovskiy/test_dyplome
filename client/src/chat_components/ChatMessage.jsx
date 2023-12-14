@@ -18,11 +18,10 @@ const ChatMessage = ({
   onDelete,
   onEdit,
   stopSendMedia,
-  temp_key = null,
   percent = null,
 }) => {
   const main = useContext(MainContext);
-  const { auth } = main;
+  const { sessionUser } = main;
 
   const deleteMessageRef = useRef(null);
   const deleteMessageWrapperRef = useRef(null);
@@ -37,9 +36,9 @@ const ChatMessage = ({
     my: "chat-right-msg card",
   };
 
-  const myOrNormal = auth == user_id ? "my" : "normal";
-  const timeAlign = auth == user_id ? "end" : "start";
-  const displayImage = auth == user_id ? { display: "none" } : {};
+  const myOrNormal = sessionUser.id == user_id ? "my" : "normal";
+  const timeAlign = sessionUser.id == user_id ? "end" : "start";
+  const displayImage = sessionUser.id == user_id ? { display: "none" } : {};
 
   const handleMenuClick = (e) => {
     e.preventDefault();
@@ -47,7 +46,6 @@ const ChatMessage = ({
   };
 
   const handleMessageEditClick = () => {
-    console.log("edit");
     onEdit(message_id, content);
     closeActionPopup();
   };
@@ -58,7 +56,6 @@ const ChatMessage = ({
   };
 
   const onAcceptDelete = () => {
-    console.log("deleted");
     onDelete(message_id);
     deleteMessageWrapperRef.current.click();
   };

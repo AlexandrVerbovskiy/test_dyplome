@@ -3,7 +3,7 @@ import useMediaActions from "./useMediaActions";
 import indicateMediaTypeByExtension from "../utils/indicateMediaTypeByExtension";
 
 const useChatInit = ({
-  auth,
+  sessionUser,
   onGetMessageForSockets,
   onUpdateMessageForSockets,
   onDeleteMessageForSockets,
@@ -85,7 +85,7 @@ const useChatInit = ({
       type: typeMessage,
       content,
       chat_type,
-      user_id: auth,
+      user_id: sessionUser.id,
       in_process: true,
       time_sended: new Date().toISOString(),
       ...dop,
@@ -130,7 +130,7 @@ const useChatInit = ({
       type: messageType,
       content: content,
       chat_type: dataToSend["chat_type"],
-      user_id: auth,
+      user_id: sessionUser.id,
       in_process: true,
       time_sended: new Date().toISOString(),
       temp_key: dataToSend["temp_key"],

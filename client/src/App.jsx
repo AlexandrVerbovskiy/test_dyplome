@@ -10,16 +10,22 @@ function App() {
     useSystemMessage();
 
   const request = useAjaxRequest(setError);
-  const { auth, logout, setAuth } = useAuth(request);
+  const { logout, sessionUser, setSessionUser } =
+    useAuth(request);
   const { socketIo: io } = useSocketInit();
 
   return (
     <MainContext.Provider
-      value={{ auth, logout, setAuth, setSuccess, setError, request, io }}
+      value={{
+        logout,
+        setSuccess,
+        setError,
+        request,
+        io,
+        sessionUser,
+        setSessionUser,
+      }}
     >
-      {/*<div>
-        {auth && <button onClick={logout}>logout</button>}
-  </div>*/}
       {systemMessage && (
         <Message
           message={systemMessage.message}
@@ -27,7 +33,7 @@ function App() {
           onClose={clearMessage}
         />
       )}
-      {auth ? <MainRouter /> : <SignRouter />}
+      {sessionUser ? <MainRouter /> : <SignRouter />}
     </MainContext.Provider>
   );
 }

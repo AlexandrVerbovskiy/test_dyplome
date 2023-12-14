@@ -3,20 +3,17 @@ import { validateToken } from "../requests";
 import { redirect } from "react-router-dom";
 
 const useAuth = (request) => {
-  const [auth, setAuth] = useState(false);
+  const [sessionUser, setSessionUser] = useState(null);
 
   const init = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
 
     if (!token) {
-      setAuth(false);
+      setSessionUser(null);
       return;
     }
 
     try {
-      console.log(validateToken);
-
       const res = await request({
         url: validateToken.url(),
         data: validateToken.convertData(token),
@@ -26,11 +23,12 @@ const useAuth = (request) => {
 
       if (!res) {
         localStorage.removeItem("token");
+        setSessionUser(null);
         return;
       }
 
       localStorage.setItem("token", res.token);
-      setAuth(res.userId);
+      setSessionUser(res.user);
     } catch (e) {}
   };
 
@@ -40,11 +38,11 @@ const useAuth = (request) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setAuth(false);
+    setSessionUser(null);
     redirect("/");
   };
 
-  return { auth, logout, setAuth };
+  return { logout, sessionUser, setSessionUser };
 };
 
 export default useAuth;

@@ -7,13 +7,13 @@ import { redirect } from "react-router-dom";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const main = useContext(MainContext);
+  const { request, setSuccess, setAuth } = useContext(MainContext);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
 
     try {
-      const { token, userId } = await main.request({
+      const { token, user } = await request({
         url: login.url(),
         type: login.type,
         data: { email, password },
@@ -21,10 +21,10 @@ const SignIn = () => {
       });
 
       localStorage.setItem("token", token);
-      main.setSuccess("Logged in successfully");
-      main.setAuth(userId);
+      setSuccess("Logged in successfully");
+      setSessionUser(user);
       redirect("/");
-    } catch(e) {}
+    } catch (e) {}
   };
 
   return (

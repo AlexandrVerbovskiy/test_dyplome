@@ -36,12 +36,19 @@ class Chat extends Model {
       return relations.length;
     });
 
-  create = async (type) =>
+  create = async (type, chatName = null) =>
     await this.errorWrapper(async () => {
-      const insertChatRes = await this.dbQueryAsync(
-        "INSERT INTO chats (type) VALUES (?)",
-        [type]
-      );
+      let query = "";
+      const params = [type];
+
+      if (chatName) {
+        query = "INSERT INTO chats (type, name) VALUES (?, ?)";
+        params.push(chatName);
+      } else {
+        query = "INSERT INTO chats (type) VALUES (?)";
+      }
+
+      const insertChatRes = await this.dbQueryAsync(query, params);
       return insertChatRes.insertId;
     });
 
@@ -54,23 +61,56 @@ class Chat extends Model {
       return insertRelationRes.insertId;
     });
 
-  getChatRelations = async (chatId) => {
-    return await this.dbQueryAsync(
-      `SELECT * FROM chats_users where chat_id = ?`,
-      [chatId]
-    );
-  };
+  getChatRelations = async (chatId) =>
+    await this.errorWrapper(async () => {
+      return await this.dbQueryAsync(
+        `SELECT * FROM chats_users where chat_id = ?`,
+        [chatId]
+      );
+    });
 
-  addManyUsers = async (chatId, usersIds) => {
-    await this.dbQueryAsync(
-      "INSERT INTO chats_users (chat_id, user_id) VALUES ?",
-      [usersIds.map((id) => [chatId, id])]
-    );
-    const relations = await this.getChatRelations(chatId);
-    console.log(relations);
-    const insertedIds = relations.map((relation) => relation.id);
-    return insertedIds;
-  };
+  addManyUsers = async (chatId, usersIds) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "INSERT INTO chats_users (chat_id, user_id) VALUES ?",
+        [usersIds.map((id) => [chatId, id])]
+      );
+      const relations = await this.getChatRelations(chatId);
+      const insertedIds = relations.map((relation) => relation.id);
+      return insertedIds;
+    });
+
+  deleteUserFromChat = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE chats_users SET delete_time = CURRENT_TIMESTAMP  WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
+        [chatId, userId]
+      );
+    });
+
+  setMainAdminRole = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE chats_users SET role = 'main-admin' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
+        [chatId, userId]
+      );
+    });
+
+  setAdminRole = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE chats_users SET role = 'admin' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'main-admin'",
+        [chatId, userId]
+      );
+    });
+
+  unsetAdminRole = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE chats_users SET role = NULL WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'main-admin'",
+        [chatId, userId]
+      );
+    });
 
   addContentToMessage = async (messageId, content) =>
     await this.errorWrapper(async () => {
@@ -89,74 +129,89 @@ class Chat extends Model {
       );
     });
 
-  createMessage = async (chatId, senderId, typeMessage, contentMessage) => {
-    const insertMessageRes = await this.dbQueryAsync(
-      "INSERT INTO messages (chat_id, sender_id, type) VALUES (?, ?, ?)",
-      [chatId, senderId, typeMessage]
-    );
-    const messageId = insertMessageRes.insertId;
-    const contentId = await this.addContentToMessage(messageId, contentMessage);
-    return messageId;
-  };
+  createMessage = async (chatId, senderId, typeMessage, contentMessage) =>
+    await this.errorWrapper(async () => {
+      const insertMessageRes = await this.dbQueryAsync(
+        "INSERT INTO messages (chat_id, sender_id, type) VALUES (?, ?, ?)",
+        [chatId, senderId, typeMessage]
+      );
+      const messageId = insertMessageRes.insertId;
+      await this.addContentToMessage(messageId, contentMessage);
+      return messageId;
+    });
 
-  hideMessage = async (messageId) => {
-    await this.dbQueryAsync("UPDATE messages SET hidden = true WHERE id = ?", [
-      messageId,
-    ]);
-  };
+  hideMessage = async (messageId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE messages SET hidden = true WHERE id = ?",
+        [messageId]
+      );
+    });
 
-  hasPersonal = async (userId1, userId2) => {
-    const chats = await this.dbQueryAsync(
-      `SELECT c.id FROM chats c
+  hasPersonal = async (userId, userCheckerId) =>
+    await this.errorWrapper(async () => {
+      const chats = await this.dbQueryAsync(
+        `SELECT c.id FROM chats c
         JOIN chats_users as cu1 ON c.id=cu1.chat_id AND cu1.user_id = ?
-        JOIN chats_users as cu2  ON c.id=cu2.chat_id AND cu2.user_id = ?
+        JOIN chats_users as cu2  ON c.id=cu2.chat_id AND cu2.user_id = ? AND cu2.delete_time IS NULL
         WHERE c.type = 'personal'`,
-      [userId1, userId2]
-    );
-    if (chats.length > 0) return chats[0].id;
-    return null;
-  };
+        [userId, userCheckerId]
+      );
+      if (chats.length > 0) return chats[0].id;
+      return null;
+    });
 
-  createPersonal = async (userId2, typeMessage, contentMessage, userId1) => {
-    const chatId = await this.create("personal");
-    await this.addManyUsers(chatId, [userId2, userId1]);
-    const messageId = await this.createMessage(
-      chatId,
-      userId1,
-      typeMessage,
-      contentMessage
-    );
-    return messageId;
-  };
+  createPersonal = async (userId, typeMessage, contentMessage, createId) =>
+    await this.errorWrapper(async () => {
+      const chatId = await this.create("personal");
+      await this.addManyUsers(chatId, [userId, createId]);
+      const messageId = await this.createMessage(
+        chatId,
+        userId,
+        typeMessage,
+        contentMessage
+      );
+      return messageId;
+    });
 
-  getAllMessageContents = async (messageId) => {
-    const contents = await this.dbQueryAsync(
-      "SELECT * FROM messages_contents WHERE message_id = ?",
-      [messageId]
-    );
-    if (contents.length > 0) return contents;
-    return [];
-  };
+  createGroup = async (chatName, userIds, createId) =>
+    await this.errorWrapper(async () => {
+      const chatId = await this.create("group", chatName);
+      await this.addManyUsers(chatId, [...userIds, createId]);
+      return chatId;
+    });
 
-  getMessageContent = async (messageId) => {
-    const contents = await this.dbQueryAsync(
-      "SELECT * FROM messages_contents WHERE message_id = ?",
-      [messageId]
-    );
-    if (contents.length > 0) return contents[0];
-    return null;
-  };
+  getAllMessageContents = async (messageId) =>
+    await this.errorWrapper(async () => {
+      const contents = await this.dbQueryAsync(
+        "SELECT * FROM messages_contents WHERE message_id = ?",
+        [messageId]
+      );
+      if (contents.length > 0) return contents;
+      return [];
+    });
+
+  getMessageContent = async (messageId) =>
+    await this.errorWrapper(async () => {
+      const contents = await this.dbQueryAsync(
+        "SELECT * FROM messages_contents WHERE message_id = ?",
+        [messageId]
+      );
+      if (contents.length > 0) return contents[0];
+      return null;
+    });
 
   getUsersToChatting = async (
     searcherId,
     lastChatId = 0,
     limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
     searchString = ""
-  ) => {
-    let query = `SELECT c1.chat_id, chats.type as chat_type, ${this.__usersFields}, 
+  ) =>
+    await this.errorWrapper(async () => {
+      let query = `SELECT c1.chat_id, chats.type as chat_type, ${this.__usersFields}, 
         messages.type, messages.time_created as time_sended, messages_contents.content
         FROM (${this.__getUserChats}) AS c1 
-        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ? 
+        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.delete_time is NULL AND chats_users.user_id != ? 
         JOIN users ON chats_users.user_id = users.id
         JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
             SELECT MAX(time_created)
@@ -171,86 +226,90 @@ class Chat extends Model {
         )
         JOIN chats ON c1.chat_id=chats.id`;
 
-    const params = [searcherId, searcherId, "personal", searcherId];
+      const params = [searcherId, searcherId, "personal", searcherId];
 
-    if (lastChatId) {
-      query += " WHERE c1.chat_id < ?";
-      params.push(lastChatId);
+      if (lastChatId) {
+        query += " WHERE c1.chat_id < ?";
+        params.push(lastChatId);
 
-      if (searchString) {
-        query += " AND (users.email like ? or users.nick like ?)";
-        params.push(`%${searchString}%`);
-        params.push(`%${searchString}%`);
+        if (searchString) {
+          query += " AND (users.email like ? or users.nick like ?)";
+          params.push(`%${searchString}%`);
+          params.push(`%${searchString}%`);
+        }
+      } else {
+        if (searchString) {
+          query += " WHERE (users.email like ? or users.nick like ?)";
+          params.push(`%${searchString}%`);
+          params.push(`%${searchString}%`);
+        }
       }
-    } else {
-      if (searchString) {
-        query += " WHERE (users.email like ? or users.nick like ?)";
-        params.push(`%${searchString}%`);
-        params.push(`%${searchString}%`);
-      }
-    }
 
-    query += " LIMIT 0, ?;";
-    params.push(Number(limit));
+      query += " LIMIT 0, ?;";
+      params.push(Number(limit));
 
-    const users = await this.dbQueryAsync(query, params);
-    return users;
-  };
+      const users = await this.dbQueryAsync(query, params);
+      return users;
+    });
 
-  getUsersSocketToSend = async (userId) => {
-    const users = await this.dbQueryAsync(
-      `
+  getUsersSocketToSend = async (userId) =>
+    await this.errorWrapper(async () => {
+      const users = await this.dbQueryAsync(
+        `
         SELECT DISTINCT s.socket as socket FROM chats_users as cu1 
             JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
             JOIN sockets as s ON s.user_id = cu1.user_id
         `,
-      [userId, userId]
-    );
-    return users;
-  };
+        [userId, userId]
+      );
+      return users;
+    });
 
-  getMessageById = async (messageId) => {
-    const messages = await this.dbQueryAsync(
-      `SELECT ${this.__messageSelect} WHERE messages.id = ?`,
-      [messageId]
-    );
-    if (messages.length > 0) return messages[0];
-    return null;
-  };
+  getMessageById = async (messageId) =>
+    await this.errorWrapper(async () => {
+      const messages = await this.dbQueryAsync(
+        `SELECT ${this.__messageSelect} WHERE messages.id = ?`,
+        [messageId]
+      );
+      if (messages.length > 0) return messages[0];
+      return null;
+    });
 
-  getChatMessages = async (chatId, lastId, count, showAllContent = false) => {
-    let where = `messages.chat_id = ?`;
-    if (!showAllContent) where += `AND messages.hidden=false`;
+  getChatMessages = async (chatId, lastId, count, showAllContent = false) =>
+    await this.errorWrapper(async () => {
+      let where = `messages.chat_id = ?`;
+      if (!showAllContent) where += `AND messages.hidden=false`;
 
-    let query = `SELECT`;
-    if (showAllContent) query += " messages.hidden, ";
-    query += ` ${this.__messageSelect} WHERE ${where}`;
-    const params = [chatId];
+      let query = `SELECT`;
+      if (showAllContent) query += " messages.hidden, ";
+      query += ` ${this.__messageSelect} WHERE ${where}`;
+      const params = [chatId];
 
-    if (lastId > 0) {
-      query += ` AND messages.id < ?`;
-      params.push(Number(lastId));
-    }
+      if (lastId > 0) {
+        query += ` AND messages.id < ?`;
+        params.push(Number(lastId));
+      }
 
-    query += ` ORDER BY time_sended DESC LIMIT 0, ?;`;
-    params.push(Number(count));
+      query += ` ORDER BY time_sended DESC LIMIT 0, ?;`;
+      params.push(Number(count));
 
-    const messages = await this.dbQueryAsync(query, params);
-    return messages.reverse();
-  };
+      const messages = await this.dbQueryAsync(query, params);
+      return messages.reverse();
+    });
 
-  selectChat = async (userId, chatId) => {
-    await this.dbQueryAsync(`UPDATE sockets SET chat_id=? WHERE user_id=?`, [
-      chatId,
-      userId,
-    ]);
-    const messages = await this.getChatMessages(
-      chatId,
-      -1,
-      process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES
-    );
-    return messages;
-  };
+  selectChat = async (userId, chatId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(`UPDATE sockets SET chat_id=? WHERE user_id=?`, [
+        chatId,
+        userId,
+      ]);
+      const messages = await this.getChatMessages(
+        chatId,
+        -1,
+        process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES
+      );
+      return messages;
+    });
 
   getChatUsers = async (chatId) =>
     await this.errorWrapper(async () => {
@@ -262,16 +321,17 @@ class Chat extends Model {
       return users;
     });
 
-  getUserSocketsFromChat = async (chatId, userId) => {
-    const query = `SELECT s.socket FROM chats AS c1 
+  getUserSocketsFromChat = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      const query = `SELECT s.socket FROM chats AS c1 
         JOIN chats_users ON chats_users.chat_id = c1.id
         JOIN users ON chats_users.user_id = users.id AND NOT(users.id = ?)
         join sockets as s ON s.user_id = users.id
         where c1.id=?`;
 
-    const sockets = await this.dbQueryAsync(query, [userId, chatId]);
-    return sockets;
-  };
+      const sockets = await this.dbQueryAsync(query, [userId, chatId]);
+      return sockets;
+    });
 }
 
 module.exports = Chat;

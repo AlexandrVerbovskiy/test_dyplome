@@ -172,7 +172,7 @@ class Chat extends Controller {
       const { userId: companionId } = req.body;
 
       const userId = req.userData.userId;
-      const chatId = await this.chatModel.hasPersonal(userId, companionId);
+      const chatId = await this.chatModel.hasPersonal(companionId, userId);
 
       const companionInfo = await this.userModel.getUserInfo(companionId);
       companionInfo["chat_type"] = "personal";

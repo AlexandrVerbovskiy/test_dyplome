@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const Model = require("./model");
 
 class User extends Model {
+  __visibleFields = "id, email, address, lat, lng, nick, avatar, admin";
+
   create = async (email, password) =>
     await this.errorWrapper(async () => {
       const hashedPassword = await bcrypt.hash(
@@ -28,7 +30,7 @@ class User extends Model {
       const authError = () => this.setError("Invalid email or password", 401);
 
       const findUserRes = await this.dbQueryAsync(
-        "SELECT * FROM users WHERE email = ?",
+        `SELECT * FROM users WHERE email = ?`,
         [email]
       );
       if (!findUserRes.length) authError();
@@ -37,7 +39,19 @@ class User extends Model {
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) authError();
-      return user.id;
+
+      const res = {
+        id: user.id,
+        email: user.email,
+        address: user.address,
+        lat: user.lat,
+        lng: user.lng,
+        nick: user.nick,
+        avatar: user.avatar,
+        admin: user.admin,
+      };
+
+      return res;
     });
 
   __baseGetUserInfo = async (select, userId) =>
@@ -50,10 +64,7 @@ class User extends Model {
     });
 
   getUserInfo = (userId) =>
-    this.__baseGetUserInfo(
-      "id, email, address, lat, lng, nick, avatar FROM users ",
-      userId
-    );
+    this.__baseGetUserInfo(`${this.__visibleFields} FROM users `, userId);
 
   checkIsAdmin = async (userId) =>
     await this.errorWrapper(async () => {
