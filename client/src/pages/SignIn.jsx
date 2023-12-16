@@ -7,7 +7,7 @@ import { redirect } from "react-router-dom";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { request, setSuccess, setAuth } = useContext(MainContext);
+  const { request, setSuccess, setSessionUser } = useContext(MainContext);
 
   const handleSignIn = async (e) => {
     e.preventDefault();

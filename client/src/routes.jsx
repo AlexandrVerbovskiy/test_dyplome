@@ -84,7 +84,14 @@ const mainRouter = createBrowserRouter([
   },
 ]);
 
-export const signRouter = createBrowserRouter([
+const adminRouter = createBrowserRouter([
+  {
+    path: "*",
+    element: <div>Test </div>,
+  },
+]);
+
+const signRouter = createBrowserRouter([
   {
     path: "/registration",
     element: <SignUp />,
@@ -97,6 +104,10 @@ export const signRouter = createBrowserRouter([
 
 export const MainRouter = () => {
   return <RouterProvider router={mainRouter} />;
+};
+
+export const AdminRouter = () => {
+  return <RouterProvider router={adminRouter} />;
 };
 
 export const SignRouter = () => {

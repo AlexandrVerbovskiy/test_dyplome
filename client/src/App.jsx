@@ -1,7 +1,7 @@
 import React from "react";
 import { useSystemMessage } from "./chat_hooks";
 import { useAuth, useAjaxRequest, useSocketInit } from "./hooks";
-import { MainRouter, SignRouter } from "./routes";
+import { MainRouter, SignRouter, AdminRouter } from "./routes";
 import { MainContext } from "./contexts";
 import { Message } from "./chat_components";
 
@@ -10,9 +10,14 @@ function App() {
     useSystemMessage();
 
   const request = useAjaxRequest(setError);
-  const { logout, sessionUser, setSessionUser } =
-    useAuth(request);
+  const { logout, sessionUser, setSessionUser } = useAuth(request);
   const { socketIo: io } = useSocketInit();
+
+  let routeBody = <SignRouter />;
+
+  if (sessionUser) {
+    routeBody = sessionUser.admin ? <AdminRouter /> : <MainRouter />;
+  }
 
   return (
     <MainContext.Provider
@@ -33,7 +38,7 @@ function App() {
           onClose={clearMessage}
         />
       )}
-      {sessionUser ? <MainRouter /> : <SignRouter />}
+      {routeBody}
     </MainContext.Provider>
   );
 }

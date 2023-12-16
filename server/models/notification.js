@@ -91,6 +91,7 @@ class Notification extends Model {
       jobId,
       jobTitle,
       message,
+      type: "created",
     });
 
     return this.create({
@@ -106,6 +107,7 @@ class Notification extends Model {
       jobTitle,
       message,
       getMoney,
+      type: "resolved",
     });
 
     return this.create({
@@ -132,6 +134,25 @@ class Notification extends Model {
 
     return this.create({
       type: "comment",
+      user_id: userId,
+      body,
+    });
+  };
+
+  sentMessage = (
+    { type, authorNick, authorId, authorEmail, messageBody = null },
+    userId
+  ) => {
+    const body = JSON.stringify({
+      type,
+      authorNick,
+      authorId,
+      authorEmail,
+      messageBody,
+    });
+
+    return this.create({
+      type: "message",
       user_id: userId,
       body,
     });

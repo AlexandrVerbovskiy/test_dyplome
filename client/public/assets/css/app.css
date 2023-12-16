@@ -2871,7 +2871,22 @@ body:has(.alert) .page-wrapper {
 
 .product-actions {
   justify-content: space-evenly;
-  grid-row-gap: 10px;
+}
+
+.product-actions > * {
+  width: 100%;
+  margin-right: 5px;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.product-actions > *:first-child {
+  margin-left: 0;
+}
+
+.product-actions > *:last-child {
+  margin-right: 0;
 }
 
 .view-job-description .form-control {
@@ -3365,7 +3380,51 @@ body:has(.alert) .page-wrapper {
   position: absolute;
   top: 8px;
   right: 8px;
-  color: black !important;
+  color: #4c5258 !important;
   font-size: 20px !important;
   line-height: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.new-notification-close:hover {
+  color: black !important;
+}
+
+.new-notifications-list .widgets-icons-2 i {
+  font-style: normal;
+}
+
+.new-notifications-list .widgets-icons-2 {
+  margin-right: 10px;
+  margin-left: 0 !important;
+}
+
+.new-notifications-list > .card {
+  min-width: 400px;
+  max-width: 400px;
+  opacity: 1;
+  transition: all 0.4s ease-in-out;
+}
+
+.new-notifications-list > .card:nth-child(1) {
+  opacity: 0.5;
+}
+
+.new-notifications-list > .card:nth-child(2) {
+  opacity: 0.7;
+}
+
+.new-notifications-list > .card:hover {
+  opacity: 1;
+}
+
+.new-notifications-list > .card.hidden {
+  opacity: 0;
+}
+
+@media (max-width: 576px) {
+  .new-notifications-list > .card:nth-child(1),
+  .new-notifications-list > .card:nth-child(2) {
+    display: none;
+  }
 }
