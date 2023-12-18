@@ -97,6 +97,32 @@ class User extends Model {
         accountId,
       ]);
     });
+
+  getAdminsToGroup = async (lastId = 0, ignoreIds = [], filter = "") =>
+    await this.errorWrapper(async () => {
+      const params = [];
+      let query =
+        "SELECT nick, email, id, avatar FROM users WHERE admin = true";
+
+      if (lastId > 0) {
+        query += " AND id > ?";
+        params.push(lastId);
+      }
+
+      if (ignoreIds.length > 0) {
+        query += " AND id NOT IN (?)";
+        params.push(ignoreIds);
+      }
+
+      if (filter.length > 0) {
+        query += " AND (nick like '%?%' OR email like '%?%')";
+        params.push(filter, filter);
+      }
+
+      query += " ORDER BY id";
+
+      return await this.dbQueryAsync(query, params);
+    });
 }
 
 module.exports = User;

@@ -3428,3 +3428,22 @@ body:has(.alert) .page-wrapper {
     display: none;
   }
 }
+
+.user-to-group-row {
+  display: flex !important;
+}
+
+.user-to-group-row-info {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.user-to-group-row-email {
+  color: black;
+  font-weight: 700;
+}
+
+.user-to-group-row-nick {
+  color: gray;
+}

@@ -178,6 +178,8 @@ function route(app, db) {
     isAuth,
     commentController.getAllByEntityId
   );
+
+  app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup)
 }
 
 module.exports = route;

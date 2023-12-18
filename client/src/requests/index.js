@@ -197,3 +197,14 @@ export const test = {
   url: () => "test",
   type: "post",
 };
+
+export const getUsersToGroup = {
+  url: () => `get-users-to-group`,
+  type: "post",
+  convertData: (lastId = 0, ignoreIds = [], filter = "") => ({
+    ignoreIds,
+    lastId,
+    filter,
+  }),
+  convertRes: (res) => res.data.users ?? [],
+};

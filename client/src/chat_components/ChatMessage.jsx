@@ -2,7 +2,7 @@ import React, { useRef, useContext } from "react";
 import ChatMessageContent from "./ChatMessageContent";
 import ChatMessageActions from "./ChatMessageActions";
 import AcceptDeleteMessageModal from "./AcceptDeleteMessageModal";
-import { fullTimeFormat } from "../utils";
+import { generateFullUserImgPath, fullTimeFormat } from "../utils";
 import { MainContext } from "../contexts";
 
 const ChatMessage = ({
@@ -19,6 +19,7 @@ const ChatMessage = ({
   onEdit,
   stopSendMedia,
   percent = null,
+  sender_avatar = null,
 }) => {
   const main = useContext(MainContext);
   const { sessionUser } = main;
@@ -64,7 +65,7 @@ const ChatMessage = ({
     <div className={mainClassName[myOrNormal]}>
       <div className="d-flex">
         <img
-          src="assets/images/avatars/avatar-3.png"
+          src={generateFullUserImgPath(sender_avatar)}
           width="48"
           height="48"
           className="rounded-circle"
