@@ -18,7 +18,7 @@ const AdminChatListHeader = () => {
 
   return (
     <div className="chat-sidebar-header">
-      <div className="input-group input-group-sm">
+      <div className="input-group input-group-sm mb-2">
         <input
           value={searchValue}
           type="text"

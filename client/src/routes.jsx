@@ -89,6 +89,10 @@ const adminRouter = createBrowserRouter([
     path: "*",
     element: <div>Test </div>,
   },
+  {
+    path: "/chat/:type?/:accountId?",
+    element: <Chat isAdmin={true} />,
+  },
 ]);
 
 const signRouter = createBrowserRouter([

@@ -35,15 +35,10 @@ const useChatList = (onInit) => {
     setCanSearch(false);
     const lastChatId = getLastChatId(prevChats);
 
-    const data = {
-      lastChatId,
-      limit,
-      searchString: search,
-    };
-
     try {
       const chats = await main.request({
         url: getUsersToChatting.url(),
+        data: getUsersToChatting.convertData(lastChatId, limit, search),
         type: getUsersToChatting.type,
         convertRes: getUsersToChatting.convertRes,
       });

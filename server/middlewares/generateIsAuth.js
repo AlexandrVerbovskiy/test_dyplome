@@ -19,7 +19,7 @@ function generateIsAuth() {
     request.userData = {
       userId,
     };
-    next();
+    return next();
   };
 }
 

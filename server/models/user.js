@@ -104,7 +104,7 @@ class User extends Model {
       let query =
         "SELECT nick, email, id, avatar FROM users WHERE admin = true";
 
-      if (lastId > 0) {
+      if (lastId && lastId > 0) {
         query += " AND id > ?";
         params.push(lastId);
       }
@@ -115,8 +115,8 @@ class User extends Model {
       }
 
       if (filter.length > 0) {
-        query += " AND (nick like '%?%' OR email like '%?%')";
-        params.push(filter, filter);
+        query += " AND (nick like ? OR email like ?)";
+        params.push(`%${filter}%`, `%${filter}%`);
       }
 
       query += " ORDER BY id";

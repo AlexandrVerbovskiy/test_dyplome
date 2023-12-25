@@ -9,7 +9,7 @@ function App() {
   const { setSuccess, setError, systemMessage, clearMessage } =
     useSystemMessage();
 
-  const request = useAjaxRequest(setError);
+  const request = useAjaxRequest({ onError: setError });
   const { logout, sessionUser, setSessionUser } = useAuth(request);
   const { socketIo: io } = useSocketInit();
 
@@ -38,6 +38,7 @@ function App() {
           onClose={clearMessage}
         />
       )}
+
       {routeBody}
     </MainContext.Provider>
   );

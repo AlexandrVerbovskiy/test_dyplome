@@ -10,6 +10,7 @@ const useAjaxRequest = ({ onError }) => {
     onSuccess = () => {},
     convertRes = () => {},
   }) {
+
     try {
       let res = null;
 

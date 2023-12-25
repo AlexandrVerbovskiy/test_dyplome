@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 const Message = ({ type, message, onClose }) => {
   const className =
-    "alert border-0 alert-dismissible fade show py-2 " +
+    "d-flex alert border-0 alert-dismissible fade show py-2 " +
     (type == "success" ? "alert-success bg-success" : "alert-danger bg-danger");
 
   const messageRef = useRef(null);
@@ -23,7 +23,11 @@ const Message = ({ type, message, onClose }) => {
   }, []);
 
   return (
-    <div className={className} ref={messageRef}>
+    <div
+      className={className}
+      ref={messageRef}
+      style={{ justifyContent: "space-between" }}
+    >
       <div className="d-flex align-items-center">
         <div className="font-35 text-white">
           {type == "success" ? (

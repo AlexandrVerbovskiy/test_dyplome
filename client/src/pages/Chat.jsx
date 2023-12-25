@@ -7,12 +7,17 @@ import {
   useMainChat,
   useChatWindowsChanger,
 } from "../chat_hooks";
-import { ChatList, ChatBody } from "../chat_components";
+import {
+  ChatList,
+  ChatBody,
+  ChatListHeader,
+  AdminChatListHeader,
+} from "../chat_components";
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
 
-const Chat = () => {
+const Chat = ({ isAdmin = false }) => {
   const { accountId, type } = useParams();
   const {
     selectChat,
@@ -136,7 +141,9 @@ const Chat = () => {
           stopSendMedia,
         }}
       >
-        <ChatList chatList={chatList} listRef={listRef} />
+        <ChatList chatList={chatList} listRef={listRef}>
+          {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
+        </ChatList>
         <ChatBody chatRef={chatRef} />
       </ChatContext.Provider>
     </div>

@@ -74,7 +74,13 @@ const ChatMessage = ({
           style={displayImage}
         />
         <div className="flex-grow-1 ms-2">
-          <p className="mb-0 chat-time" style={{ textAlign: timeAlign }}>
+          <p
+            className="mb-0 chat-time"
+            style={{
+              textAlign: timeAlign,
+              justifyContent: `flex-${timeAlign}`,
+            }}
+          >
             {fullTimeFormat(time_sended)}
           </p>
           <div

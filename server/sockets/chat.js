@@ -41,7 +41,6 @@ class Chat {
                         user
                     });
                 } catch (e) {
-                    console.log(e)
                     sendError(e.message);
                 }
             });
@@ -194,7 +193,6 @@ class Chat {
                 });
             }
         } catch (error) {
-            console.log("File error: " + error)
             this.socketController.sendSocketMessageToUsers([userId], "file-part-uploaded-error", {
                 temp_key: tempKey,
                 error
@@ -224,7 +222,6 @@ class Chat {
                 userId
             })
         });
-        console.log("disconnected success");
     }
 }
 

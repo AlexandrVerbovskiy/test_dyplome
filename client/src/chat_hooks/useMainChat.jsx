@@ -96,11 +96,7 @@ const useMainChat = ({ accountId, type = "personal" }) => {
         url: getChatMessages.url(),
         type: getChatMessages.type,
         convertRes: getChatMessages.convertRes,
-        data: {
-          chatId: activeChatId,
-          count: needCountMessages,
-          lastId: lastMessageId,
-        },
+        data: getChatMessages.convertData(activeChatId, lastMessageId, needCountMessages),
       });
 
       setMessages((prev) => {

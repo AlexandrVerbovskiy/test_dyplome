@@ -119,35 +119,30 @@ function route(app, db) {
 
   app.post(
     "/get-admin-disputes/:status?",
-    isAuth,
     isAdmin,
     disputeController.getAllByStatus
   );
 
   app.post(
     "/assign-dispute",
-    isAuth,
     isAdmin,
     disputeController.assignAdminToDispute
   );
 
   app.get(
     "/get-job-dispute/:disputeId",
-    isAuth,
     isAdmin,
     disputeController.getById
   );
 
   app.get(
     "/get-chat-user-infos/:chatId",
-    isAuth,
     isAdmin,
     chatController.getChatUserInfos
   );
 
   app.post(
     "/get-full-chat-messages",
-    isAuth,
     isAdmin,
     chatController.getChatMessagesFullContents
   );

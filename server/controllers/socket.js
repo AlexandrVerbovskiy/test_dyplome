@@ -21,7 +21,6 @@ class Socket extends Controller {
 
     sendError = async (userId, error) => {
         await this.sendSocketMessageToUser(userId, "error", error);
-        console.log("sendError: ", error);
     }
 
     clearAll = () => this.socketModel.clearAll();

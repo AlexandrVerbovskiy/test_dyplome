@@ -52,7 +52,10 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
   const hide = () => setActive(false);
 
   return (
-    <div className="mb-0 chat-time" style={{ textAlign }}>
+    <div
+      className="mb-0 chat-time"
+      style={{ textAlign, justifyContent: `flex-${textAlign}` }}
+    >
       {shortTimeFormat(timeSended)}
       <div className="edited-message-label">
         <span onClick={show}>{text}</span>

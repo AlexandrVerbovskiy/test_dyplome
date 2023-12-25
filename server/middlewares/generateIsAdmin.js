@@ -1,6 +1,7 @@
 const { User: UserModel } = require("../models");
+const generateIsAuth = require("./generateIsAuth");
 
-function generateIsAdmin(db) {
+function __generateIsAdmin(db) {
   return async function isAdmin(request, response, next) {
     try {
       const userModel = new UserModel(db);
@@ -9,12 +10,20 @@ function generateIsAdmin(db) {
 
       if (!isAdmin)
         return response.status(403).json({ message: "Access denied" });
-      next();
+      return next();
     } catch (error) {
-      console.error("admin middleware", error);
-      response.status(500).json({ message: "Internal server error" });
+      return response.status(500).json({ message: "Internal server error" });
     }
   };
 }
 
-module.exports = generateIsAdmin;
+function generateIsAuthAndAdmin(db) {
+  const isAuth = generateIsAuth();
+  const isAdmin = __generateIsAdmin(db);
+
+  return function isAuthAndAdmin(request, response, next) {
+    isAuth(request, response, () => isAdmin(request, response, next));
+  };
+}
+
+module.exports = generateIsAuthAndAdmin;

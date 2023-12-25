@@ -29,12 +29,18 @@ export const validateToken = {
 
 export const getUsersToChatting = {
   url: () => "users-to-chatting",
+  convertData: (lastChatId, limit, searchString) => ({
+    lastChatId,
+    limit,
+    searchString,
+  }),
   type: "post",
   convertRes: (res) => res.data.users,
 };
 
 export const getChatMessages = {
   url: () => "get-chat-messages",
+  convertData: (chatId, lastId, count) => ({ chatId, lastId, count }),
   type: "post",
   convertRes: (res) => res.data.messages,
 };

@@ -3,6 +3,7 @@ const { validateToken } = require("../utils");
 function generateIsNotAuth() {
   return function (request, response, next) {
     const authorization = request.headers.authorization;
+
     if (!authorization) return next();
 
     const token = authorization.split(" ")[1];
@@ -13,7 +14,7 @@ function generateIsNotAuth() {
         message: "Forbidden",
       });
 
-    next();
+    return next();
   };
 }
 

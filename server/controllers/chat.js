@@ -159,8 +159,6 @@ class Chat extends Controller {
       const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
       if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
 
-      console.log(chatId);
-
       const messages = await this.chatModel.selectChat(userId, chatId);
       this.setResponseBaseSuccess("Found success", {
         messages,

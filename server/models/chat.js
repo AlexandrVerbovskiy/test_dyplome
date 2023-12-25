@@ -278,7 +278,7 @@ class Chat extends Model {
   getChatMessages = async (chatId, lastId, count, showAllContent = false) =>
     await this.errorWrapper(async () => {
       let where = `messages.chat_id = ?`;
-      if (!showAllContent) where += `AND messages.hidden=false`;
+      if (!showAllContent) where += ` AND messages.hidden=false`;
 
       let query = `SELECT`;
       if (showAllContent) query += " messages.hidden, ";
