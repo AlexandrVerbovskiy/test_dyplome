@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import { getUsersToGroup } from "../requests";
-import { Input, PopupWrapper } from "../components";
-import { MainContext } from "../contexts";
+import React from "react";
+import { ImageInput, Input, PopupWrapper, UploadTrigger } from "../components";
 import { generateFullUserImgPath } from "../utils";
+import { useCreateGroupChat } from "../hooks";
 
 const UserElem = ({ email, nick, avatar, id, selected, onChange }) => {
   return (
@@ -30,75 +29,28 @@ const UserElem = ({ email, nick, avatar, id, selected, onChange }) => {
 };
 
 const GroupChatEditModal = () => {
-  const [activeCreateChat, setActiveCreateChat] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [usersToSelect, setUsersToSelect] = useState([]);
-  const [groupName, setGroupName] = useState("");
-  const [filter, setFilter] = useState("");
-  const [canShowMoreUsers, setShowMoreUsers] = useState(true);
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const { request } = useContext(MainContext);
-  const requestUsersCount = 25;
-
-  const getMoreUsers = async (
-    lastUserId = null,
-    ignoreIds = null,
-    filterValue = null
-  ) => {
-    if (ignoreIds === null) ignoreIds = selectedUsers.map((user) => user.id);
-
-    if (filterValue === null) filterValue = filter;
-    if (lastUserId === null) {
-      const lastUserIndex = usersToSelect.length - 1;
-      const lastUser = usersToSelect[lastUserIndex];
-      const lastUserId = lastUser ? lastUser.id : null;
-    }
-
-    const users = await request({
-      url: getUsersToGroup.url(),
-      type: getUsersToGroup.type,
-      data: getUsersToGroup.convertData(lastUserId, ignoreIds, filterValue),
-      convertRes: getUsersToGroup.convertRes,
-    });
-
-    if (users.length < requestUsersCount) {
-      setShowMoreUsers(false);
-    }
-
-    setUsersToSelect((prev) => [...prev, ...users]);
-  };
-
-  const changeFilter = (value = "") => {
-    setFilter(value);
-    setShowMoreUsers(true);
-    setUsersToSelect([]);
-    getMoreUsers(0, [], value);
-  };
-
-  const selectUser = (userId) => {
-    const selectedUser = usersToSelect.find((user) => user.id == userId);
-    setSelectedUsers((users) => [selectedUser, ...users]);
-  };
-
-  const unselectUser = (userId) => {
-    setSelectedUsers((users) => users.filter((user) => user.id != userId));
-  };
-
-  useEffect(() => {
-    getMoreUsers();
-  }, []);
-
-  useEffect(() => {
-    const userIds = selectedUsers.map((user) => user.id);
-    setSelectedUserIds(userIds);
-  }, [selectedUsers]);
+  const {
+    usersToSelect,
+    activateChat,
+    deactivateChat,
+    getMoreUsers,
+    createGroup,
+    selectUser,
+    unselectUser,
+    selectedUserIds,
+    activeCreateChat,
+    filter,
+    groupName,
+    groupAvatar,
+    selectedUsers,
+  } = useCreateGroupChat();
 
   return (
     <>
       <button
         className="btn btn-primary w-100"
         type="button"
-        onClick={() => setActiveCreateChat(true)}
+        onClick={activateChat}
       >
         <i className="bx bx-plus" />
         Create Group
@@ -106,27 +58,40 @@ const GroupChatEditModal = () => {
       <PopupWrapper
         id="create-group-chat"
         activeTrigger={activeCreateChat}
-        onClose={() => setActiveCreateChat(false)}
+        onClose={deactivateChat}
         title="Create Group"
       >
         <div className="modal-body row g-3 popup-body">
-          <div className="group-name">
-            <Input
-              type="text"
-              placeholder="Group Name"
-              label="Group Name"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-            />
+          <div className="edit-group-name-avatar">
+            <div className="edit-group-avatar">
+              <ImageInput
+                btnText=""
+                url={groupAvatar.value}
+                onChange={(img) => groupAvatar.change(img)}
+                error={groupAvatar.error}
+              />
+            </div>
+            <div className="group-name">
+              <Input
+                type="text"
+                placeholder="Group Name"
+                label="Group Name"
+                value={groupName.value}
+                onChange={(e) => groupName.change(e.target.value)}
+                error={groupName.error}
+              />
+            </div>
           </div>
+
+          <hr style={{ marginTop: 0 }} />
 
           <div className="edit-group-filter-users">
             <Input
               type="text"
               label="Search User"
               placeholder="Email"
-              value={filter}
-              onChange={(e) => changeFilter(e.target.value)}
+              value={filter.value}
+              onChange={(e) => filter.change(e.target.value)}
             />
           </div>
 
@@ -156,13 +121,18 @@ const GroupChatEditModal = () => {
                 />
               );
             })}
+            <UploadTrigger onTriggerShown={getMoreUsers} />
           </div>
 
           <div className="modal-footer">
             <button className="btn btn-danger" type="button">
               Close
             </button>
-            <button className="btn btn-primary" type="button">
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={createGroup}
+            >
               Create
             </button>
           </div>

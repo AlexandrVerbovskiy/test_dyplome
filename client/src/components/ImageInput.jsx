@@ -3,21 +3,18 @@ import { getFileData } from "../utils";
 import ErrorSpan from "./ErrorSpan";
 import config from "../config";
 
-const ImageInput = ({ btnText, onChange, error, url = null }) => {
+const ImageInput = ({ btnText, onChange, error, url = null, id = null }) => {
   const [file, setFile] = useState(null);
   const [img, setImg] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    console.log("Test", typeof url);
     if (typeof url == "string") {
       setImg({ src: config.API_URL + "/" + url, name: "profile-avatar" });
     } else {
       setImg(url);
     }
   }, [url]);
-
-  useEffect(() => console.log(img), [img]);
 
   useEffect(() => {
     if (file)
@@ -42,7 +39,7 @@ const ImageInput = ({ btnText, onChange, error, url = null }) => {
   const handleDragLeave = (e) => e.preventDefault();
 
   return (
-    <div className="form-group" id="avatarInput">
+    <div className="form-group" id={id}>
       <div className="d-flex">
         <input
           ref={inputRef}

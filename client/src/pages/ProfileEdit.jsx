@@ -103,6 +103,7 @@ const ProfileEdit = () => {
                 />
 
                 <ImageInput
+                  id="avatarInput"
                   btnText="Change avatar"
                   url={profileImg.value}
                   onChange={(img) => profileImg.change(img)}

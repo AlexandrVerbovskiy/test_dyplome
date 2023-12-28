@@ -3484,3 +3484,33 @@ body:has(.alert) .page-wrapper {
 .user-to-group-list {
   margin-top: 0 !important;
 }
+
+.edit-group-avatar input {
+  display: none;
+}
+
+.edit-group-avatar .image-input-btn-block button {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+}
+
+.edit-group-name-avatar {
+  display: flex;
+}
+
+.group-name {
+  margin-left: 10px;
+  width: 100%;
+}
+
+.edit-group-avatar .image-input-btn-block button:not(:has(img)) {
+  background-color: transparent;
+  background-image: url("../images/default-picture.jpg");
+  background-size: 70px 70px;
+}
+
+.edit-group-avatar .image-input-btn-block button img {
+  max-width: 100%;
+  max-height: 100%;
+}
