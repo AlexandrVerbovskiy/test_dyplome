@@ -1,9 +1,12 @@
 const Controller = require("./controller");
 const { randomString } = require("../utils");
 const fs = require("fs");
+const SocketController = require("./socket");
 
 class Chat extends Controller {
   __folder = "files/messages";
+
+  __socketController = null;
 
   __checkIsBodyHasKeys(req, keys) {
     for (let i = 0; i < keys.length; i++) {
@@ -257,6 +260,42 @@ class Chat extends Controller {
       const { chatId } = req.params;
       const users = await this.chatModel.getChatUsers(chatId);
       this.setResponseBaseSuccess("Chat info was got success", { users });
+    });
+
+  setIo(io) {
+    this.__socketController = new SocketController(this.__db, io);
+  }
+
+  createGroupChat = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+
+      const users = JSON.parse(req.body.users ?? "[]");
+      const name = req.body.name ?? "";
+
+      const userInfos = [{ id: userId, role: "admin" }];
+      const userIds = [];
+
+      users.forEach((user) => {
+        userInfos.push({ id: user.id, role: user.role });
+        userIds.push(user.id);
+      });
+
+      if (userInfos.length < 1)
+        return this.setResponseError("Cannot create chat without members");
+
+      if (name.length < 1)
+        return this.setResponseError("Cannot create chat without name");
+
+      const chatId = await this.chatModel.createGroup(name, userInfos);
+
+      this.__socketController.sendSocketMessageToUsers(
+        userIds,
+        "created-group-chat",
+        { name, chatId }
+      );
+
+      this.setResponseBaseSuccess("Chat created success", { chatId });
     });
 }
 

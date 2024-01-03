@@ -294,8 +294,6 @@ class User extends Controller {
       const ignoreIds = req.body.ignoreIds ?? [];
       const filter = req.body.filter ?? "";
 
-      console.log(userId, lastId, ignoreIds, filter);
-
       const admins = await this.userModel.getAdminsToGroup(
         lastId,
         [...ignoreIds, userId],

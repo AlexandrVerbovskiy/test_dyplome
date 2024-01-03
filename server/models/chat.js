@@ -69,11 +69,11 @@ class Chat extends Model {
       );
     });
 
-  addManyUsers = async (chatId, usersIds) =>
+  addManyUsers = async (chatId, users) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "INSERT INTO chats_users (chat_id, user_id) VALUES ?",
-        [usersIds.map((id) => [chatId, id])]
+        "INSERT INTO chats_users (chat_id, user_id, role) VALUES ?",
+        [users.map((user) => [chatId, user.id, user.role])]
       );
       const relations = await this.getChatRelations(chatId);
       const insertedIds = relations.map((relation) => relation.id);
@@ -164,7 +164,10 @@ class Chat extends Model {
   createPersonal = async (userId, typeMessage, contentMessage, createId) =>
     await this.errorWrapper(async () => {
       const chatId = await this.create("personal");
-      await this.addManyUsers(chatId, [userId, createId]);
+      await this.addManyUsers(chatId, [
+        { id: userId, role: null },
+        { id: createId, role: null },
+      ]);
       const messageId = await this.createMessage(
         chatId,
         userId,
@@ -174,10 +177,10 @@ class Chat extends Model {
       return messageId;
     });
 
-  createGroup = async (chatName, userIds, createId) =>
+  createGroup = async (chatName, users) =>
     await this.errorWrapper(async () => {
       const chatId = await this.create("group", chatName);
-      await this.addManyUsers(chatId, [...userIds, createId]);
+      await this.addManyUsers(chatId, users);
       return chatId;
     });
 

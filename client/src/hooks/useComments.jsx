@@ -14,31 +14,33 @@ const useComments = ({ type, entityId }) => {
     const needCount = isNew;
     const sendData = { parentId: entityId, needCount };
 
-    const data = await main.request({
-      url: getComments.url(type),
-      type: getComments.type,
-      data: sendData,
-      convertRes: getComments.convertRes,
-    });
-
-    if (needCount) setTotalCount(data.totalCount);
-
-    const newComments = data.comments ?? [];
-    const newConvertedComments = [];
-
-    newComments.forEach((comment) => {
-      newConvertedComments.push({
-        ...comment,
-        replies: [],
-        countReplyShown: 0,
+    try {
+      const data = await main.request({
+        url: getComments.url(type),
+        type: getComments.type,
+        data: sendData,
+        convertRes: getComments.convertRes,
       });
-    });
 
-    if (isNew) {
-      setComments([...newConvertedComments]);
-    } else {
-      setComments((prev) => [...prev, ...newConvertedComments]);
-    }
+      if (needCount) setTotalCount(data.totalCount);
+
+      const newComments = data.comments ?? [];
+      const newConvertedComments = [];
+
+      newComments.forEach((comment) => {
+        newConvertedComments.push({
+          ...comment,
+          replies: [],
+          countReplyShown: 0,
+        });
+      });
+
+      if (isNew) {
+        setComments([...newConvertedComments]);
+      } else {
+        setComments((prev) => [...prev, ...newConvertedComments]);
+      }
+    } catch (e) {};
   };
 
   useEffect(() => {

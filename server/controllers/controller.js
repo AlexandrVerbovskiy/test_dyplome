@@ -12,13 +12,16 @@ const {
   WorkerComment: WorkerCommentModel,
   EmployeeComment: EmployeeCommentModel,
   ReplyComment: ReplyCommentModel,
-  Notification: NotificationModel
+  Notification: NotificationModel,
 } = require("../models");
 
 class Controller {
+  __db = null;
+
   __actualResponseBody = {
     error: "Internal server error",
   };
+
   __actualResponseCode = 500;
 
   setResponseCode(code) {
@@ -59,6 +62,7 @@ class Controller {
   setResponseNoFoundError = (message) => this.setResponseError(message, 404);
 
   constructor(db) {
+    this.__db = db;
     this.userModel = new UserModel(db);
     this.passwordResetLinkModel = new PasswordResetLinkModel(db);
     this.socketModel = new SocketModel(db);

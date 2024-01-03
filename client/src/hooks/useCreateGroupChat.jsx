@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { getUsersToGroup } from "../requests";
 import { MainContext } from "../contexts";
+import { createGroupChat } from "../requests";
 
 const useCreateGroupChat = () => {
   const [activeCreateChat, setActiveCreateChat] = useState(false);
@@ -13,7 +14,9 @@ const useCreateGroupChat = () => {
   const [groupName, setGroupName] = useState({ value: "", error: null });
   const [groupAvatar, setGroupAvatar] = useState({ value: null, error: null });
   const { request } = useContext(MainContext);
+  const [error, setError] = useState(null);
   const requestUsersCount = 25;
+  const main = useContext(MainContext);
 
   const getMoreUsers = async (
     lastUserId = null,
@@ -60,14 +63,21 @@ const useCreateGroupChat = () => {
     const selectedUser = usersToSelectRef.current.find(
       (user) => user.id == userId
     );
-    setSelectedUsers((users) => [selectedUser, ...users]);
+    setSelectedUsers((users) => [
+      { role: "member", ...selectedUser },
+      ...users,
+    ]);
+    setError(null);
   };
 
   const unselectUser = (userId) => {
     setSelectedUsers((users) => users.filter((user) => user.id != userId));
   };
 
-  const changeGroupName = (name) => setGroupName({ value: name, error: null });
+  const changeGroupName = (name) => {
+    setGroupName({ value: name, error: null });
+    setError(null);
+  };
 
   const changeGroupAvatar = (img) =>
     setGroupAvatar({ value: img, error: null });
@@ -86,16 +96,48 @@ const useCreateGroupChat = () => {
 
   const deactivateChat = () => setActiveCreateChat(false);
 
-  const createGroup = () => {
+  const createGroup = async () => {
+    if (selectedUsers.length < 1)
+      return setError("You cannot create a group without members");
+
+    if (groupName.value.length < 1)
+      return setError("You cannot create a group without name");
+
     const formData = new FormData();
-    formData.append("users", selectedUsers);
+    formData.append("users", JSON.stringify(selectedUsers));
     formData.append("name", groupName.value);
     formData.append("avatar", groupAvatar.value);
-    console.log({
-        "users": selectedUsers,
-        "name": groupName.value,
-        "avatar": groupAvatar.value
-    })
+
+    try {
+      const data = await main.request({
+        url: createGroupChat.url(),
+        type: createGroupChat.type,
+        data: formData,
+        convertRes: createGroupChat.convertRes,
+      });
+
+      console.log(data);
+
+      setSelectedUsers([]);
+      setGroupName({ value: "" });
+      setGroupAvatar({ value: null });
+
+      deactivateChat();
+    } catch (e) {}
+  };
+
+  const setSelectedUserRole = (id, role) => {
+    setSelectedUsers((prev) => {
+      const res = [];
+
+      prev.forEach((user) => {
+        const newUser = { ...user };
+        if (user.id === id) newUser.role = role;
+        res.push(newUser);
+      });
+
+      return res;
+    });
   };
 
   return {
@@ -110,6 +152,7 @@ const useCreateGroupChat = () => {
     unselectUser,
     selectedUserIds,
     activeCreateChat,
+    error,
     filter: {
       value: filter,
       change: changeFilter,
@@ -124,6 +167,7 @@ const useCreateGroupChat = () => {
       error: groupAvatar.error,
       change: changeGroupAvatar,
     },
+    setSelectedUserRole,
   };
 };
 

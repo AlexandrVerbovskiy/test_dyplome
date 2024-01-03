@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
-import { useNotifications } from "../hooks";
-import { MainContext } from "../contexts";
+import React from "react";
+import { useNotifications, useSocketInit } from "../hooks";
 import { NewNotificationList } from "../notification_components";
 import { Navbar } from "../components";
 
 const DefaultPageLayout = ({ children, pageClassName = "" }) => {
-  const { io } = useContext(MainContext);
+  const { socketIo: io } = useSocketInit();
   const {
     notifications,
     resetCountNewNotifications,

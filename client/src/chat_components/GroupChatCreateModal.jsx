@@ -1,12 +1,27 @@
 import React from "react";
-import { ImageInput, Input, PopupWrapper, UploadTrigger } from "../components";
+import {
+  ErrorSpan,
+  ImageInput,
+  Input,
+  PopupWrapper,
+  UploadTrigger,
+} from "../components";
 import { generateFullUserImgPath } from "../utils";
 import { useCreateGroupChat } from "../hooks";
 
-const UserElem = ({ email, nick, avatar, id, selected, onChange }) => {
+const UserElem = ({
+  role = null,
+  email,
+  nick,
+  avatar,
+  id,
+  selected,
+  onChange,
+  onChangeRole = null,
+}) => {
   return (
     <div className="user-to-group-row">
-      <div className="user-info-section d-flex" onClick={onChange}>
+      <div className="user-info-section d-flex">
         <img
           src={generateFullUserImgPath(avatar)}
           width="48"
@@ -14,11 +29,26 @@ const UserElem = ({ email, nick, avatar, id, selected, onChange }) => {
           className="rounded-circle"
           alt={id}
           title={id}
+          onClick={onChange}
         />
 
         <div className="user-to-group-row-info">
-          <div className="user-to-group-row-email">{email}</div>
-          {nick && <div className="user-to-group-row-nick">{nick}</div>}
+          <div className="user-to-group-row-email" onClick={onChange}>
+            {nick ?? email}
+          </div>
+          {role && (
+            <div className="user-to-group-role">
+              <select
+                className="form-select form-select mb-3"
+                value={role}
+                onChange={(e) => onChangeRole(e.target.value)}
+              >
+                <option value="member">Member</option>
+                <option value="mentor">Mentor</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          )}
         </div>
       </div>
       <div className="user-to-group-row-checkbox" onClick={onChange}>
@@ -28,8 +58,9 @@ const UserElem = ({ email, nick, avatar, id, selected, onChange }) => {
   );
 };
 
-const GroupChatEditModal = () => {
+const GroupChatCreateModal = () => {
   const {
+    error,
     usersToSelect,
     activateChat,
     deactivateChat,
@@ -43,6 +74,7 @@ const GroupChatEditModal = () => {
     groupName,
     groupAvatar,
     selectedUsers,
+    setSelectedUserRole,
   } = useCreateGroupChat();
 
   return (
@@ -102,6 +134,7 @@ const GroupChatEditModal = () => {
                   key={user.id}
                   {...user}
                   selected={true}
+                  onChangeRole={(role) => setSelectedUserRole(user.id, role)}
                   onChange={() => unselectUser(user.id)}
                 />
               );
@@ -124,17 +157,20 @@ const GroupChatEditModal = () => {
             <UploadTrigger onTriggerShown={getMoreUsers} />
           </div>
 
-          <div className="modal-footer">
-            <button className="btn btn-danger" type="button">
-              Close
-            </button>
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={createGroup}
-            >
-              Create
-            </button>
+          <div className="modal-footer create-chat-modal">
+            <ErrorSpan error={error} />
+            <div className="create-chat-actions">
+              <button className="btn btn-danger" type="button">
+                Close
+              </button>
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={createGroup}
+              >
+                Create
+              </button>
+            </div>
           </div>
         </div>
       </PopupWrapper>
@@ -142,4 +178,4 @@ const GroupChatEditModal = () => {
   );
 };
 
-export default GroupChatEditModal;
+export default GroupChatCreateModal;

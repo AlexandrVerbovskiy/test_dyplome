@@ -3449,6 +3449,7 @@ body:has(.alert) .page-wrapper {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
+  width: 100%;
 }
 
 .user-to-group-row-email {
@@ -3513,4 +3514,47 @@ body:has(.alert) .page-wrapper {
 .edit-group-avatar .image-input-btn-block button img {
   max-width: 100%;
   max-height: 100%;
+}
+
+.user-info-section {
+  width: 100%;
+  margin-right: 10px;
+}
+
+.user-to-group-role select:focus,
+.user-to-group-role select {
+  border: 0 !important;
+  cursor: pointer;
+  padding: 0;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.user-to-group-role select {
+  width: 90px;
+}
+
+.create-chat-modal {
+  flex-direction: column;
+}
+
+.create-chat-modal > * {
+  margin: 0;
+}
+
+.create-chat-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-chat-actions button {
+  margin: 0.25rem;
+}
+
+.create-chat-modal #error-message:not(.empty) {
+  width: 100%;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  text-align: start;
 }

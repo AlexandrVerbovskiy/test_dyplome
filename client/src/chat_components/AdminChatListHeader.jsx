@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { ChatContext } from "../contexts";
-import GroupChatEditModal from "./GroupChatEditModal";
+import GroupChatCreateModal from "./GroupChatCreateModal";
 
 const AdminChatListHeader = () => {
   const { setChatListSearch } = useContext(ChatContext);
@@ -33,7 +33,7 @@ const AdminChatListHeader = () => {
           <i className="bx bx-search" />
         </span>
       </div>
-      <GroupChatEditModal />
+      <GroupChatCreateModal />
     </div>
   );
 };

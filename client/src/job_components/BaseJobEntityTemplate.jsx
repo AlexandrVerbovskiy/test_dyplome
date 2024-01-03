@@ -20,6 +20,7 @@ const BaseJobEntityTemplate = ({
   children = null,
   needShowAllStatus = false,
 }) => {
+
   return (
     <DefaultPageLayout pageClassName="job-view-page">
       <div className="page-content">

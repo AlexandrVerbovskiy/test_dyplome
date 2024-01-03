@@ -38,13 +38,15 @@ const upload = multer({
   storage: storage,
 });
 
-function route(app, db) {
+function route(app, db, io) {
   const userController = new User(db);
   const chatController = new Chat(db);
   const jobController = new Job(db);
   const jobProposalController = new JobProposal(db);
   const disputeController = new Dispute(db);
   const commentController = new Comment(db);
+
+  chatController.setIo(io);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();
@@ -123,17 +125,9 @@ function route(app, db) {
     disputeController.getAllByStatus
   );
 
-  app.post(
-    "/assign-dispute",
-    isAdmin,
-    disputeController.assignAdminToDispute
-  );
+  app.post("/assign-dispute", isAdmin, disputeController.assignAdminToDispute);
 
-  app.get(
-    "/get-job-dispute/:disputeId",
-    isAdmin,
-    disputeController.getById
-  );
+  app.get("/get-job-dispute/:disputeId", isAdmin, disputeController.getById);
 
   app.get(
     "/get-chat-user-infos/:chatId",
@@ -174,7 +168,14 @@ function route(app, db) {
     commentController.getAllByEntityId
   );
 
-  app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup)
+  app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup);
+
+  app.post(
+    "/create-group-chat",
+    isAdmin,
+    upload.single(),
+    chatController.createGroupChat
+  );
 }
 
 module.exports = route;
