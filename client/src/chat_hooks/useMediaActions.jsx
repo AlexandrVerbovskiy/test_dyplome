@@ -33,8 +33,6 @@ const useMediaActions = () => {
   }
 
   async function onSuccessSendBlobPart(key) {
-    console.log("key: ", key, mediaActionsRef.current[key]["inQueue"].length);
-
     const action = mediaActionsRef.current[key];
     if (!action) return null;
 

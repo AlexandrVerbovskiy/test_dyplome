@@ -36,7 +36,9 @@ class User extends Controller {
         },
         process.env.SECRET_KEY
       );
+
       res.set("Authorization", `Bearer ${token}`);
+
       this.setResponse(
         {
           userId,
@@ -88,18 +90,22 @@ class User extends Controller {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!nick || !address || !lat || !lng || !email)
         return this.setResponseValidationError("All fields are required");
+
       if (nick.length < 3)
         return this.setResponseValidationError(
           "Nick must be at least 3 characters long"
         );
+
       if (lat === null || lng === null || isNaN(lat) || isNaN(lng))
         return this.setResponseValidationError(
           "Invalid latitude or longitude values"
         );
+
       if (address.length > 255)
         return this.setResponseValidationError(
           "Address length must not exceed 255 characters"
         );
+
       if (!emailRegex.test(email))
         return this.setResponseValidationError(
           "Invalid email format. Please enter an email in the format 'example@example.com'."
@@ -114,10 +120,10 @@ class User extends Controller {
         const randomName = randomString();
         const fileExtension = avatarFile.filename.split(".").pop();
         avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
-        const filePath = path.join("files/temp", avatarFile.filename);
+        const filePath = path.join(this.__temp_folder, avatarFile.filename);
 
-        if (!fs.existsSync("files/avatars")) {
-          fs.mkdirSync("files/avatars", {
+        if (!fs.existsSync(this.__folder)) {
+          fs.mkdirSync(this.__folder, {
             recursive: true,
           });
         }

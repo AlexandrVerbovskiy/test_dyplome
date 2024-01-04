@@ -2,10 +2,11 @@ const Controller = require("./controller");
 const { randomString } = require("../utils");
 const fs = require("fs");
 const SocketController = require("./socket");
+const path = require("path");
 
 class Chat extends Controller {
-  __folder = "files/messages";
-
+  __message_folder = "files/messages";
+  __chat_folder = "files/chat-avatars";
   __socketController = null;
 
   __checkIsBodyHasKeys(req, keys) {
@@ -15,7 +16,7 @@ class Chat extends Controller {
     return true;
   }
 
-  getUsersToChatting = async (req, res) =>
+  __baseGetChats = async (req, res, chatsSelect) =>
     this.errorWrapper(res, async () => {
       if (
         !this.__checkIsBodyHasKeys(req, ["lastChatId", "searchString", "limit"])
@@ -26,16 +27,22 @@ class Chat extends Controller {
 
       const { lastChatId, limit, searchString } = req.body;
       const searcherId = req.userData.userId;
-      const users = await this.chatModel.getUsersToChatting(
+      const chats = await chatsSelect(
         searcherId,
         lastChatId,
         limit,
         searchString
       );
-      this.setResponseBaseSuccess("Finded success", {
-        users,
+      this.setResponseBaseSuccess("Found success", {
+        chats,
       });
     });
+
+  getUsersToChatting = (req, res) =>
+    this.__baseGetChats(req, res, this.chatModel.getUsersToChatting);
+
+  getAdminChats = (req, res) =>
+    this.__baseGetChats(req, res, this.chatModel.getAllChats);
 
   __createChat = async (data, userId) => {
     const messageId = await this.chatModel.createPersonal(
@@ -56,6 +63,7 @@ class Chat extends Controller {
         data.typeMessage,
         data.content
       );
+
       return await this.chatModel.getMessageById(messageId);
     };
 
@@ -72,7 +80,7 @@ class Chat extends Controller {
         return await localSend(chatId);
       }
     } else {
-      localSend(data["chat_id"]);
+      return await localSend(data["chatId"]);
     }
   };
 
@@ -212,7 +220,7 @@ class Chat extends Controller {
     let filename = randomString() + "." + type;
 
     if (!info || !info.data) {
-      fs.writeFileSync(this.__folder + "/" + filename, data);
+      fs.writeFileSync(this.__message_folder + "/" + filename, data);
       const actionInfo = JSON.stringify({
         filename,
       });
@@ -220,16 +228,14 @@ class Chat extends Controller {
     } else {
       const resParsed = JSON.parse(info.data);
       filename = resParsed.filename;
-      fs.appendFileSync(this.__folder + "/" + filename, data);
+      fs.appendFileSync(this.__message_folder + "/" + filename, data);
     }
 
     return filename;
   };
 
-  onUpdatedFile = async (data, key, userId) => {
+  __deleteFileAction = async (userId, key) =>
     await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
-    await this.createMessage(data, userId);
-  };
 
   __onStopFile = async (key, userId) => {
     const info = await this.actionModel.getByKeyAndType(
@@ -237,9 +243,11 @@ class Chat extends Controller {
       key,
       "sending_file"
     );
-    await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
+
+    await this.__deleteFileAction(userId, key);
+
     const { filename } = JSON.parse(info.data);
-    fs.unlinkSync(this.__folder + "/" + filename);
+    fs.unlinkSync(this.__message_folder + "/" + filename);
   };
 
   __stopAllUserActions = async (socket, userId) => {
@@ -248,9 +256,11 @@ class Chat extends Controller {
       if (action.type == "sending_file") {
         const key = action.key;
         const info = action.data;
-        await this.actionModel.deleteByKeyAndType(userId, key, "sending_file");
+        
+        await this.__deleteFileAction(userId, key);
+
         const { filename } = JSON.parse(info);
-        fs.unlinkSync(this.__folder + "/" + filename);
+        fs.unlinkSync(this.__message_folder + "/" + filename);
       }
     });
   };
@@ -272,6 +282,7 @@ class Chat extends Controller {
 
       const users = JSON.parse(req.body.users ?? "[]");
       const name = req.body.name ?? "";
+      const avatarFile = req.file ?? null;
 
       const userInfos = [{ id: userId, role: "admin" }];
       const userIds = [];
@@ -282,20 +293,65 @@ class Chat extends Controller {
       });
 
       if (userInfos.length < 1)
-        return this.setResponseError("Cannot create chat without members");
+        return this.setResponseValidationError(
+          "Cannot create chat without members"
+        );
 
       if (name.length < 1)
-        return this.setResponseError("Cannot create chat without name");
+        return this.setResponseValidationError(
+          "Cannot create chat without name"
+        );
 
-      const chatId = await this.chatModel.createGroup(name, userInfos);
+      //avatar saving
+      let avatar = null;
+
+      if (avatarFile) {
+        const randomName = randomString();
+        const fileExtension = avatarFile.filename.split(".").pop();
+        avatar = path.join(
+          this.__chat_folder,
+          `${randomName}.${fileExtension}`
+        );
+        const filePath = path.join(this.__temp_folder, avatarFile.filename);
+
+        if (!fs.existsSync(this.__chat_folder)) {
+          fs.mkdirSync(this.__chat_folder, {
+            recursive: true,
+          });
+        }
+
+        fs.renameSync(filePath, avatar);
+      }
+
+      const chatId = await this.chatModel.createGroup(userInfos, name, avatar);
+
+      const currentUser = await this.userModel.getUserInfo(userId);
+      const currentUserName = currentUser["nick"] ?? currentUser["email"];
+      const systemMessage = `The user '${currentUserName}' has created a chat '${name}'`;
+      const messageId = await this.chatModel.createMessage(
+        chatId,
+        null,
+        "text",
+        systemMessage
+      );
+      const message = await this.chatModel.getMessageById(messageId);
 
       this.__socketController.sendSocketMessageToUsers(
         userIds,
         "created-group-chat",
-        { name, chatId }
+        {
+          chatId,
+          name,
+          avatar,
+          message,
+        }
       );
 
-      this.setResponseBaseSuccess("Chat created success", { chatId });
+      this.setResponseBaseSuccess("Chat created success", {
+        chatId,
+        name,
+        avatar,
+      });
     });
 }
 

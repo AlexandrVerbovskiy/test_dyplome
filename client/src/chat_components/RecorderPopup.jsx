@@ -20,7 +20,6 @@ const RecorderPopup = () => {
 
   const onStopClick = () => {
     stop();
-    console.log("stopped");
     close();
   };
 

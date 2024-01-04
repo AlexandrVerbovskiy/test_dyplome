@@ -36,8 +36,6 @@ const options = {
 const LineChart = ({ info, title, keys }) => {
   const datasets = [];
 
-  console.log(keys);
-
   Object.keys(info).forEach((name) => {
     const color =
       info[name]["color"]["r"] +
@@ -49,13 +47,10 @@ const LineChart = ({ info, title, keys }) => {
     const whiteColor = `rgba(${color},0.4)`;
     const fullCOlor = `rgba(${color},1)`;
 
-    console.log(whiteColor, fullCOlor);
-
     let total = 0;
     const values = [];
 
     keys.forEach((key) => {
-      console.log(info);
       total += info[name]["data"][key] ?? 0;
       values.push(total);
     });

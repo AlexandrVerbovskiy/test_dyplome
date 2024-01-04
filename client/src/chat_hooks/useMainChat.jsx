@@ -3,7 +3,7 @@ import useChatList from "./useChatList";
 import { getChatMessages, selectChat, getUsersChat } from "../requests";
 import { MainContext } from "../contexts";
 
-const useMainChat = ({ accountId, type = "personal" }) => {
+const useMainChat = ({ accountId, isAdmin = false, type = "personal" }) => {
   const needCountMessages = 10;
   const activeChat = useRef({});
   const [messages, setMessages] = useState([]);
@@ -96,7 +96,11 @@ const useMainChat = ({ accountId, type = "personal" }) => {
         url: getChatMessages.url(),
         type: getChatMessages.type,
         convertRes: getChatMessages.convertRes,
-        data: getChatMessages.convertData(activeChatId, lastMessageId, needCountMessages),
+        data: getChatMessages.convertData(
+          activeChatId,
+          lastMessageId,
+          needCountMessages
+        ),
       });
 
       setMessages((prev) => {
@@ -220,14 +224,6 @@ const useMainChat = ({ accountId, type = "personal" }) => {
 
   const onGetNewChat = (data) => {
     onGetChat(data);
-
-    if (
-      data.chat_type == "personal" &&
-      activeChat.current.chat_type == "personal" &&
-      data.user_id == activeChat.current.user_id
-    ) {
-      console.log("work");
-    }
   };
 
   return {

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import {PopupWrapper} from "../components";
+import { PopupWrapper } from "../components";
 import CustomAudio from "./CustomAudio";
 import { ChatBodyContext, ChatContext } from "../contexts";
 import config from "../config";
@@ -12,15 +12,21 @@ const MediaFileAcceptPopup = () => {
 
   const handleSendFile = async () => {
     if (!file.src) return;
-    const { data, dataType } = await autoConvert(file.src);
 
     const dop = {};
+    const { data, dataType } = await autoConvert(file.src);
+
     if (activeChat.chat_type == "personal") {
       dop["chatId"] = activeChatId;
       dop["chat_type"] = activeChat.chat_type;
       dop["getter_id"] = activeChat.user_id;
     }
-    console.log("sended");
+
+    if (activeChat.chat_type == "group") {
+      dop["chatId"] = activeChatId;
+      dop["chat_type"] = activeChat.chat_type;
+    }
+
     handleSendMedia(data, dataType, file.type, dop, file.name);
     close();
   };
@@ -43,22 +49,18 @@ const MediaFileAcceptPopup = () => {
   };
 
   const FileToSend = () => {
-    return (
-      <div>
-        Name: {file.name}
-      </div>
-    );
+    return <div>Name: {file.name}</div>;
   };
 
-  const checkFileExtension = extension => {
+  const checkFileExtension = (extension) => {
     if (!file || !file.type || !file.name) return false;
     if (file.type.toLowerCase() != extension.toLowerCase()) return false;
     return true;
   };
 
-  const checkIsFileHasExtension = extensions => {
+  const checkIsFileHasExtension = (extensions) => {
     let has = false;
-    extensions.forEach(extension => {
+    extensions.forEach((extension) => {
       if (checkFileExtension(extension)) has = extension;
     });
     return has;
@@ -92,9 +94,7 @@ const MediaFileAcceptPopup = () => {
       id="chatMediaFileAccept"
       title="Are you sure you want to send this file?"
     >
-      <div className="modal-body">
-        {file && <FileCard />}
-      </div>
+      <div className="modal-body">{file && <FileCard />}</div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" onClick={close}>
           Close

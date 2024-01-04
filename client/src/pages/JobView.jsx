@@ -29,7 +29,6 @@ const JobView = () => {
           type: getJobInfo.type,
           convertRes: getJobInfo.convertRes,
         });
-        console.log(res);
 
         if (!res) return;
 

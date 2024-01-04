@@ -1,2 +1,3 @@
 ALTER TABLE chats
-DROP `name`;
+DROP COLUMN `name`,
+DROP COLUMN `avatar`;

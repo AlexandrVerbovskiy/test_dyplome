@@ -1,21 +1,23 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import io from "socket.io-client";
 import config from "../config";
 
-const useSocketInit = () => {
-  const ioRef = useRef(null);
+let socketIo = null;
 
+const useSocketInit = () => {
   useEffect(() => {
+    if (socketIo) return;
+
     const token = localStorage.getItem("token");
 
-    ioRef.current = io(config.API_URL, {
+    socketIo = io(config.API_URL, {
       query: {
         token,
       },
     });
   }, []);
 
-  return { socketIo: ioRef.current };
+  return { socketIo };
 };
 
 export default useSocketInit;

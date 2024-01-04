@@ -4,6 +4,7 @@ const Model = require("./model");
 class Chat extends Model {
   __usersFields =
     "users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+
   __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
     ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type
     FROM messages
@@ -16,8 +17,9 @@ class Chat extends Model {
         ) tmc 
         ON mc.message_id = tmc.message_id AND mc.time_edited = tmc.max_time
     ) contents ON contents.message_id = messages.id
-    JOIN users ON users.id=messages.sender_id
+    LEFT JOIN users ON users.id=messages.sender_id
     JOIN chats ON messages.chat_id = chats.id`;
+
   __getUserChats = `
     SELECT chats.id as chat_id FROM 
     (
@@ -26,6 +28,16 @@ class Chat extends Model {
     ) as c1 
     JOIN chats on c1.chat_id = chats.id and type=?
     `;
+
+  __groupChatFields =
+    "chats.avatar as chat_avatar, chats.name as chat_name, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+
+  __getUserChatsGroups = `SELECT chats.id as chat_id FROM 
+  (
+      SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
+          JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
+  ) as c1 
+  JOIN chats on c1.chat_id = chats.id`;
 
   hasUserAccess = async (chatId, userId) =>
     await this.errorWrapper(async () => {
@@ -36,14 +48,15 @@ class Chat extends Model {
       return relations.length;
     });
 
-  create = async (type, chatName = null) =>
+  create = async (type, chatName = null, chatAvatar = null) =>
     await this.errorWrapper(async () => {
       let query = "";
       const params = [type];
 
       if (chatName) {
-        query = "INSERT INTO chats (type, name) VALUES (?, ?)";
+        query = "INSERT INTO chats (type, name, avatar) VALUES (?, ?, ?)";
         params.push(chatName);
+        params.push(chatAvatar);
       } else {
         query = "INSERT INTO chats (type) VALUES (?)";
       }
@@ -177,9 +190,9 @@ class Chat extends Model {
       return messageId;
     });
 
-  createGroup = async (chatName, users) =>
+  createGroup = async (users, chatName, chatAvatar = null) =>
     await this.errorWrapper(async () => {
-      const chatId = await this.create("group", chatName);
+      const chatId = await this.create("group", chatName, chatAvatar);
       await this.addManyUsers(chatId, users);
       return chatId;
     });
@@ -204,16 +217,18 @@ class Chat extends Model {
       return null;
     });
 
-  getUsersToChatting = async (
-    searcherId,
+  __baseGetChats = async ({
+    baseSelect,
+    selectFields,
+    params,
     lastChatId = 0,
     limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
-    searchString = ""
-  ) =>
+    searchString = "",
+  }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT c1.chat_id, chats.type as chat_type, ${this.__usersFields}, 
+      let query = `SELECT c1.chat_id, chats.type as chat_type, ${selectFields}, 
         messages.type, messages.time_created as time_sended, messages_contents.content
-        FROM (${this.__getUserChats}) AS c1 
+        FROM (${baseSelect}) AS c1 
         JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.delete_time is NULL AND chats_users.user_id != ? 
         JOIN users ON chats_users.user_id = users.id
         JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
@@ -228,8 +243,6 @@ class Chat extends Model {
             WHERE messages_contents.message_id = messages.id
         )
         JOIN chats ON c1.chat_id=chats.id`;
-
-      const params = [searcherId, searcherId, "personal", searcherId];
 
       if (lastChatId) {
         query += " WHERE c1.chat_id < ?";
@@ -248,11 +261,40 @@ class Chat extends Model {
         }
       }
 
-      query += " LIMIT 0, ?;";
+      query += " ORDER BY messages.time_created DESC LIMIT 0, ?;";
       params.push(Number(limit));
 
-      const users = await this.dbQueryAsync(query, params);
-      return users;
+      return await this.dbQueryAsync(query, params);
+    });
+
+  getUsersToChatting = (
+    searcherId,
+    lastChatId = 0,
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    searchString = ""
+  ) =>
+    this.__baseGetChats({
+      params: [searcherId, searcherId, "personal", searcherId],
+      baseSelect: this.__getUserChats,
+      selectFields: this.__usersFields,
+      lastChatId,
+      limit,
+      searchString,
+    });
+
+  getAllChats = (
+    searcherId,
+    lastChatId = 0,
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    searchString = ""
+  ) =>
+    this.__baseGetChats({
+      params: [searcherId, searcherId, searcherId],
+      baseSelect: this.__getUserChatsGroups,
+      selectFields: this.__groupChatFields,
+      lastChatId,
+      limit,
+      searchString,
     });
 
   getUsersSocketToSend = async (userId) =>
@@ -295,7 +337,6 @@ class Chat extends Model {
 
       query += ` ORDER BY time_sended DESC LIMIT 0, ?;`;
       params.push(Number(count));
-
       const messages = await this.dbQueryAsync(query, params);
       return messages.reverse();
     });

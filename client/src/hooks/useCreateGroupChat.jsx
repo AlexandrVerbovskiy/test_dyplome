@@ -84,7 +84,6 @@ const useCreateGroupChat = () => {
 
   useEffect(() => {
     getMoreUsers();
-    setTimeout(() => console.log(usersToSelectRef.current.length), 5000);
   }, []);
 
   useEffect(() => {
@@ -103,10 +102,20 @@ const useCreateGroupChat = () => {
     if (groupName.value.length < 1)
       return setError("You cannot create a group without name");
 
+    let avatar = null;
+
+    if (groupAvatar.value && typeof groupAvatar.value == "object") {
+      if (groupAvatar.value && groupAvatar.value.file) {
+        avatar = groupAvatar.value.file;
+      } else {
+        avatar = groupAvatar.value;
+      }
+    }
+
     const formData = new FormData();
     formData.append("users", JSON.stringify(selectedUsers));
     formData.append("name", groupName.value);
-    formData.append("avatar", groupAvatar.value);
+    formData.append("avatar", avatar);
 
     try {
       const data = await main.request({
@@ -115,8 +124,6 @@ const useCreateGroupChat = () => {
         data: formData,
         convertRes: createGroupChat.convertRes,
       });
-
-      console.log(data);
 
       setSelectedUsers([]);
       setGroupName({ value: "" });

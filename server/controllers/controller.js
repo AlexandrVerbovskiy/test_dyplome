@@ -17,6 +17,7 @@ const {
 
 class Controller {
   __db = null;
+  __temp_folder = "files/temp";
 
   __actualResponseBody = {
     error: "Internal server error",

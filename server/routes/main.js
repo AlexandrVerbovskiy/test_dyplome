@@ -76,6 +76,8 @@ function route(app, db, io) {
   app.post("/reset-password", isAuth, userController.resetPassword);
 
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
+  app.post("/admin-chats", isAdmin, chatController.getAdminChats);
+
   app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
   app.post("/select-chat", isAuth, chatController.selectChat);
   app.post("/get-users-chat", isAuth, chatController.getUsersChat);
@@ -173,7 +175,7 @@ function route(app, db, io) {
   app.post(
     "/create-group-chat",
     isAdmin,
-    upload.single(),
+    upload.single("avatar"),
     chatController.createGroupChat
   );
 }

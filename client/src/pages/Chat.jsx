@@ -7,6 +7,7 @@ import {
   useMainChat,
   useChatWindowsChanger,
 } from "../chat_hooks";
+import { useSocketInit } from "../hooks";
 import {
   ChatList,
   ChatBody,
@@ -17,8 +18,9 @@ import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
 
-const Chat = ({ isAdmin = false }) => {
+const Chat = () => {
   const { accountId, type } = useParams();
+  const { socketIo } = useSocketInit();
   const {
     selectChat,
     activeChat,
@@ -44,9 +46,8 @@ const Chat = ({ isAdmin = false }) => {
     selectedChatId,
   } = useMainChat({ accountId, type });
 
-  const { sessionUser, io } = useContext(MainContext);
+  const { sessionUser, isAdmin } = useContext(MainContext);
   const onEditMessage = (id, content) => {
-    console.log("edit start: ", id, content);
     setEditMessage(id, content);
   };
 
@@ -71,7 +72,7 @@ const Chat = ({ isAdmin = false }) => {
     onDeleteMessageForSockets,
     onUpdateMessagePercent,
     onCancelledMessage,
-    io,
+    io: socketIo,
   });
 
   const onDeleteMessage = (id) => deleteMessage(id, lastMessageId);
@@ -84,12 +85,11 @@ const Chat = ({ isAdmin = false }) => {
   const handleEndTyping = () => endTyping(activeChat.chat_id);
 
   const handleSendMedia = (data, dataType, filetype, dop, filename) => {
-    createChat(accountId);
+    //createChat(accountId);
     sendMedia(data, dataType, filetype, dop, filename);
   };
 
   const handleSendTextMessage = (message) => {
-    console.log(activeChat);
     if (editMessageId) {
       if (message != editMessageContent) {
         editMessage(editMessageId, message);
@@ -99,10 +99,12 @@ const Chat = ({ isAdmin = false }) => {
       const dop = {
         temp_key: randomString(),
       };
+
       if (activeChat.chat_type == "personal") {
         dop["chatId"] = activeChat?.chat_id;
         dop["getter_id"] = activeChat.user_id;
       }
+
       sendMessage(
         activeChat.chat_id,
         "text",
@@ -139,6 +141,7 @@ const Chat = ({ isAdmin = false }) => {
           chatOnline,
           handleSendMedia,
           stopSendMedia,
+          chatType: activeChat.chat_type,
         }}
       >
         <ChatList chatList={chatList} listRef={listRef}>

@@ -35,7 +35,18 @@ export const getUsersToChatting = {
     searchString,
   }),
   type: "post",
-  convertRes: (res) => res.data.users,
+  convertRes: (res) => res.data.chats,
+};
+
+export const getAdminChats = {
+  url: () => "admin-chats",
+  convertData: (lastChatId, limit, searchString) => ({
+    lastChatId,
+    limit,
+    searchString,
+  }),
+  type: "post",
+  convertRes: (res) => res.data.chats,
 };
 
 export const getChatMessages = {
@@ -218,5 +229,9 @@ export const getUsersToGroup = {
 export const createGroupChat = {
   url: () => `create-group-chat`,
   type: "post",
-  convertRes: (res) => res.data.chatId,
+  convertRes: (res) => ({
+    avatar: res.data.avatar,
+    chatId: res.data.chatId,
+    name: res.data.name,
+  }),
 };

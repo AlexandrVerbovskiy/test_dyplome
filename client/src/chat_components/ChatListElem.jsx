@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { ChatContext } from "../contexts";
-import { fullTimeFormat } from "../utils";
+import { fullTimeFormat, generateFullUserImgPath } from "../utils";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
   let className = "list-group-item";
-  if (!last) className += "pb-2";
-  if (!first) className += " mt-4";
+  if (!last) className += " pb-2";
 
   const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
 
@@ -16,28 +15,40 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
     setChatWindow();
   };
 
-  const content = chat.type == "text" ? chat.content : chat.type;
+  const content =
+    chat.type == "text" ? chat.content.split("<div>")[0] : chat.type;
+
+  const isGroup = chat.chat_type == "group";
+  const photo = generateFullUserImgPath(
+    isGroup ? chat.chat_avatar : chat.avatar
+  );
+  const chatName = isGroup ? chat.chat_name : chat.user_email;
+
+  const userOnlineClass = isGroup ? "" : "chat-user-online";
+
 
   return (
     <li onClick={handleElemClick} className={className}>
       <div className="d-flex">
-        <div className="chat-user-online">
+        <div className={userOnlineClass}>
           <img
-            src="/assets/images/avatars/avatar-3.png"
+            src={photo}
             width="42"
             height="42"
             className="rounded-circle"
             alt={chat.user_email}
           />
         </div>
-        <div className="flex-grow-1 ms-2">
-          <h6 className="mb-0 chat-title">{chat.user_email}</h6>
+        <div className="flex-grow-1 ms-2 chat-user-info">
+          <h6 className="mb-0 chat-title">
+            <div className="chat-name">{chatName}</div>
+            <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
+          </h6>
           <p
             className="mb-0 chat-msg"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
-        <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
       </div>
     </li>
   );

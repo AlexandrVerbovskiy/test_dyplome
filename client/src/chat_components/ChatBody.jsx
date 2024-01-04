@@ -4,13 +4,13 @@ import ChatMessagePanel from "./ChatMessagePanel";
 import ChatHeader from "./ChatHeader";
 import RecorderPopup from "./RecorderPopup";
 import MediaFileAcceptPopup from "./MediaFileAcceptPopup";
+import ChatSystemMessage from "./ChatSystemMessage";
 import { MainContext, ChatContext, ChatBodyContext } from "../contexts";
 import { useMediaFileAccept, useRecorder } from "../chat_hooks";
 
 const ChatBody = ({ chatRef }) => {
   const textRef = useRef(null);
 
-  const main = useContext(MainContext);
   const {
     messages,
     emojiPopup,
@@ -18,6 +18,7 @@ const ChatBody = ({ chatRef }) => {
     onDeleteMessage,
     stopSendMedia,
   } = useContext(ChatContext);
+
   const mediaFileAccept = useMediaFileAccept();
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
   const [activeMessageActionPopup, setActiveMessageActionPopup] =
@@ -72,6 +73,10 @@ const ChatBody = ({ chatRef }) => {
             const key = message.in_process
               ? message.temp_key
               : message.message_id;
+
+            if (!message.user_id)
+              return <ChatSystemMessage key={key} content={message.content} />;
+
             return (
               <ChatMessage
                 key={key}

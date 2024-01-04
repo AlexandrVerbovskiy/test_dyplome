@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { getUsersToChatting } from "../requests";
+import { getUsersToChatting, getAdminChats } from "../requests";
 import { MainContext } from "../contexts";
 
 const useChatList = (onInit) => {
@@ -36,11 +36,13 @@ const useChatList = (onInit) => {
     const lastChatId = getLastChatId(prevChats);
 
     try {
+      const requestInfo = main.isAdmin ? getAdminChats : getUsersToChatting;
+
       const chats = await main.request({
-        url: getUsersToChatting.url(),
-        data: getUsersToChatting.convertData(lastChatId, limit, search),
-        type: getUsersToChatting.type,
-        convertRes: getUsersToChatting.convertRes,
+        url: requestInfo.url(),
+        data: requestInfo.convertData(lastChatId, limit, search),
+        type: requestInfo.type,
+        convertRes: requestInfo.convertRes,
       });
 
       if (chats.length === limit) {
@@ -75,8 +77,14 @@ const useChatList = (onInit) => {
           content: chat.content,
           message_id: chat.message_id,
         };
-        if (chat.time_sended) partToUpdate["time_sended"] = chat.time_sended;
-        if (chat.type) partToUpdate["type"] = chat.type;
+
+        if (chat.time_sended) {
+          partToUpdate["time_sended"] = chat.time_sended;
+        }
+
+        if (chat.type) {
+          partToUpdate["type"] = chat.type;
+        }
 
         const newChat = {
           ...prevDataChat,

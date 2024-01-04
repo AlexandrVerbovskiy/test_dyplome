@@ -11,7 +11,6 @@ const StarCommentForm = ({ onSubmit }) => {
   };
 
   const handleRatingClick = (selectedRating) => {
-    console.log("click");
     setRating(selectedRating);
   };
 

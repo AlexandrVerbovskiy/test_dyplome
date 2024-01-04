@@ -1232,11 +1232,22 @@ a {
 .chat-title {
   font-size: 14px;
   color: #272b2f;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .chat-msg {
   font-size: 13px;
   color: #6c757d;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-user-info {
+  width: calc(100% - 42px - 2rem);
 }
 
 .chat-time {
@@ -1252,6 +1263,7 @@ a {
 .chat-list .list-group-item {
   border: 1px solid rgb(0 0 0 / 0%);
   background-color: transparent;
+  cursor: pointer;
 }
 
 .chat-list .list-group-item:hover {
@@ -3557,4 +3569,19 @@ body:has(.alert) .page-wrapper {
   margin-top: -5px;
   margin-bottom: 5px;
   text-align: start;
+}
+
+.chat-system-message {
+  color: white;
+  background-color: rgba(128, 128, 128, 0.5);
+  padding: 0.4rem 1.2rem;
+  border-radius: 20px;
+  text-align: center;
+  width: fit-content;
+}
+
+.chat-system-message-parent {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

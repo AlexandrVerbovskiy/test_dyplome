@@ -11,7 +11,7 @@ const CommentsSection = ({ type, createMainComment }) => {
     setComments((prev) => [res, ...prev]);
   };
 
-  const handleCreateReplyCOmment = async (data) => {
+  const handleCreateReplyComment = async (data) => {
     console.log(data);
   };
 
@@ -30,7 +30,7 @@ const CommentsSection = ({ type, createMainComment }) => {
         <div className="row">
           <CommentList
             comments={comments}
-            onCreateReplyComment={handleCreateReplyCOmment}
+            onCreateReplyComment={handleCreateReplyComment}
             totalCount={totalCount}
           />
         </div>

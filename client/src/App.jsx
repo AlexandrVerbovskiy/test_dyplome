@@ -13,9 +13,11 @@ function App() {
   const { logout, sessionUser, setSessionUser } = useAuth(request);
 
   let routeBody = <SignRouter />;
+  let isAdmin = false;
 
   if (sessionUser) {
     routeBody = sessionUser.admin ? <AdminRouter /> : <MainRouter />;
+    isAdmin = sessionUser.admin;
   }
 
   return (
@@ -27,6 +29,7 @@ function App() {
         request,
         sessionUser,
         setSessionUser,
+        isAdmin,
       }}
     >
       {systemMessage && (

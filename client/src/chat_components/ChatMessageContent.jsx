@@ -25,8 +25,8 @@ const ChatMessageContent = ({ type, content, inProcess }) => {
       />
     );
   if (type === "image") return <img className="" src={url} />;
-  if (type === "video") return <video className="" src={url} />;
-  if (type === "audio") return <audio className="" src={url} />;
+  if (type === "video") return <video controls className="" src={url} />;
+  if (type === "audio") return <audio controls className="" src={url} />;
   if (type === "file") return <div>{content}</div>;
   return "WHAT??????????????????";
 };

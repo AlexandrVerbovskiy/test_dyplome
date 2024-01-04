@@ -355,7 +355,6 @@ html.dark-theme .email-meeting a.list-group-item:hover {
 }
 html.dark-theme .list-group-item {
 	background-color: #171717;
-	border: 1px solid rgb(255 255 255 / 13%)
 }
 html.dark-theme .email-navigation a.list-group-item.active {
 	color: #0d6efd;

@@ -21,13 +21,13 @@ const useChatInit = ({
     if (!io) return;
 
     io.on("created-chat", (data) => onGetNewChat(data));
+    io.on("created-group-chat", (data) => onGetNewChat(data));
 
     io.on("error", (data) => {
       let message =
         "Something went wrong. Please take a screenshot of the console.log and send to the admins";
       if (data.sqlMessage) message = data.sqlMessage;
       if (data.message) message = data.message;
-      console.log(message);
     });
 
     io.on("success-sended-message", (data) =>
@@ -48,10 +48,10 @@ const useChatInit = ({
     io.on("file-part-uploaded", async ({ temp_key, message = null }) => {
       const nextPartData = await onSuccessSendBlobPart(temp_key);
 
-      if (!nextPartData) return console.log("data");
+      if (!nextPartData) return;
       if (nextPartData == "success saved" && message) {
         onGetMessageForSockets(message);
-        return console.log("success saved");
+        return;
       }
 
       onUpdateMessagePercent({ temp_key, percent: nextPartData["percent"] });

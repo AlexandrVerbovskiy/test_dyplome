@@ -1,2 +1,3 @@
 ALTER TABLE chats
-ADD COLUMN `name` varchar(255) DEFAULT NULL;
+ADD COLUMN `name` varchar(255) DEFAULT NULL,
+ADD COLUMN `avatar` varchar(255) DEFAULT NULL;
