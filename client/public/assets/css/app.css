@@ -3585,3 +3585,8 @@ body:has(.alert) .page-wrapper {
   display: flex;
   justify-content: center;
 }
+
+#chat_info .main-info {
+  display: flex;
+}
+

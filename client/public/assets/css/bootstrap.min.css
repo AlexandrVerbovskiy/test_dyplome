@@ -4035,7 +4035,6 @@ textarea.form-control-lg {
 	background-color: #fff
 }
 .list-group-item.active {
-	z-index: 2;
 	color: #fff;
 	background-color: #008cff;
 	border-color: #008cff

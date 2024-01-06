@@ -26,7 +26,6 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
 
   const userOnlineClass = isGroup ? "" : "chat-user-online";
 
-
   return (
     <li onClick={handleElemClick} className={className}>
       <div className="d-flex">
@@ -39,7 +38,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             alt={chat.user_email}
           />
         </div>
-        <div className="flex-grow-1 ms-2 chat-user-info">
+        <div className="flex-grow-1 ms-2 chat-user-info d-flex flex-column justify-content-center">
           <h6 className="mb-0 chat-title">
             <div className="chat-name">{chatName}</div>
             <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>

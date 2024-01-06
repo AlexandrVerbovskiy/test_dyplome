@@ -6,8 +6,7 @@ class Chat extends Model {
     "users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
 
   __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
-    ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type
-    FROM messages
+   ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type FROM messages
     JOIN (SELECT mc.content, mc.message_id, mc.time_edited
         FROM messages_contents mc
         INNER JOIN (
@@ -26,7 +25,7 @@ class Chat extends Model {
         SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
             JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
     ) as c1 
-    JOIN chats on c1.chat_id = chats.id and type=?
+    JOIN chats on c1.chat_id = chats.id and type = ?
     `;
 
   __groupChatFields =
@@ -217,31 +216,63 @@ class Chat extends Model {
       return null;
     });
 
+  __getChatsTimesWhere = async (chatIds, userId, name = "messages") => {
+    let res = {};
+    const wheres = {};
+
+    chatIds.forEach((chatId) => {
+      res[chatId] = "";
+      wheres[chatId] = [];
+    });
+
+    const joins = await this.dbQueryAsync(
+      `SELECT chat_id,
+          DATE_FORMAT(time_created, '%Y-%m-%d %H:%i:%s') as time_created, 
+          DATE_FORMAT(delete_time, '%Y-%m-%d %H:%i:%s') as delete_time
+          FROM chats_users WHERE chat_id IN (?) AND user_id=?`,
+      [chatIds, userId]
+    );
+
+    joins.forEach((join) => {
+      let where = `${name}.time_created > '${join.time_created}'`;
+
+      if (join["delete_time"])
+        where += ` AND ${name}.time_created < '${join.delete_time}'`;
+
+      where = `(${where})`;
+
+      wheres[join.chat_id].push(where);
+    });
+
+    Object.keys(wheres).forEach((chatId) => {
+      if (wheres[chatId].length > 0) {
+        res[chatId] = wheres[chatId].join(" OR ");
+        if (wheres[chatId].length > 1) res[chatId] = `(${res[chatId]})`;
+      }
+    });
+
+    return res;
+  };
+
+  __getChatTimesWhere = async (chatId, userId, name = "messages") => {
+    const times = await this.__getChatsTimesWhere([chatId], userId, name);
+    return times[chatId];
+  };
+
   __baseGetChats = async ({
     baseSelect,
     selectFields,
     params,
+    searcherId,
     lastChatId = 0,
     limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
     searchString = "",
   }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT c1.chat_id, chats.type as chat_type, ${selectFields}, 
-        messages.type, messages.time_created as time_sended, messages_contents.content
+      let query = `SELECT c1.chat_id, chats.type as chat_type, ${selectFields}
         FROM (${baseSelect}) AS c1 
         JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.delete_time is NULL AND chats_users.user_id != ? 
         JOIN users ON chats_users.user_id = users.id
-        JOIN messages ON messages.chat_id = messages.chat_id AND messages.time_created = (
-            SELECT MAX(time_created)
-            FROM messages 
-            WHERE messages.chat_id = c1.chat_id AND messages.hidden = 0
-            GROUP BY chat_id
-        )
-        JOIN messages_contents ON messages_contents.message_id = messages.id AND messages_contents.time_edited = (
-            SELECT MAX(time_edited) 
-            FROM messages_contents 
-            WHERE messages_contents.message_id = messages.id
-        )
         JOIN chats ON c1.chat_id=chats.id`;
 
       if (lastChatId) {
@@ -261,10 +292,43 @@ class Chat extends Model {
         }
       }
 
-      query += " ORDER BY messages.time_created DESC LIMIT 0, ?;";
+      query += " LIMIT 0, ?";
       params.push(Number(limit));
 
-      return await this.dbQueryAsync(query, params);
+      const gotChats = await this.dbQueryAsync(query, params);
+
+      const chatIds = gotChats.map((chat) => chat.chat_id);
+
+      const timesLimited = await this.__getChatsTimesWhere(chatIds, searcherId);
+
+      const chats = [];
+
+      for (let i = 0; i < gotChats.length; i++) {
+        const chat = gotChats[i];
+        const id = chat.chat_id;
+        const timeLimit = timesLimited[`${id}`];
+
+        let messageQuery = `SELECT messages.type, messages.time_created as time_sended, messages_contents.content 
+        FROM messages
+        JOIN messages_contents ON messages_contents.message_id = messages.id AND messages_contents.time_edited = (
+          SELECT MAX(time_edited) 
+          FROM messages_contents 
+          WHERE messages_contents.message_id = messages.id
+        )
+        WHERE messages.chat_id = ? AND messages.hidden = 0`;
+
+        if (timeLimit.length > 0) {
+          messageQuery += ` AND ${timeLimit}`;
+        }
+
+        messageQuery += ` ORDER BY messages.time_created DESC LIMIT 0, 1`;
+
+        const messages = await this.dbQueryAsync(messageQuery, [id]);
+        const message = messages[0] ?? {};
+        chats.push({ ...chat, ...message });
+      }
+
+      return chats;
     });
 
   getUsersToChatting = (
@@ -280,6 +344,7 @@ class Chat extends Model {
       lastChatId,
       limit,
       searchString,
+      searcherId,
     });
 
   getAllChats = (
@@ -295,6 +360,7 @@ class Chat extends Model {
       lastChatId,
       limit,
       searchString,
+      searcherId,
     });
 
   getUsersSocketToSend = async (userId) =>
@@ -320,10 +386,49 @@ class Chat extends Model {
       return null;
     });
 
+  __getChatStatistic = (where = "") => {
+    where = where.length > 0 ? ` AND ${where}` : "";
+    return `
+      SELECT COUNT(*) as total, 'text' as message_type FROM messages WHERE chat_id=? AND type = 'text'${where}
+        UNION
+      SELECT COUNT(*) as total, 'audio' as message_type FROM messages WHERE chat_id=? AND type = 'audio'${where}
+        UNION
+      SELECT COUNT(*) as total, 'image' as message_type FROM messages WHERE chat_id=? AND type = 'image'${where}
+        UNION
+      SELECT COUNT(*) as total, 'video' as message_type FROM messages WHERE chat_id=? AND type = 'video'${where}
+        UNION
+      SELECT COUNT(*) as total, 'all' as message_type FROM messages WHERE chat_id=?;
+    `;
+  };
+
+  getChatMessagesInfo = async (chatId, userId, permissionInfo = true) =>
+    await this.errorWrapper(async () => {
+      let where = "";
+
+      if (permissionInfo) {
+        where = await this.__getChatTimesWhere(chatId, userId);
+      }
+
+      const props = [];
+      const query = this.__getChatStatistic(where);
+
+      for (let i = 0; i < 5; i++) {
+        props.push(chatId, userId);
+      }
+
+      const statistic = await this.dbQueryAsync(query, props);
+      return statistic;
+    });
+
   getChatMessages = async (chatId, lastId, count, showAllContent = false) =>
     await this.errorWrapper(async () => {
       let where = `messages.chat_id = ?`;
-      if (!showAllContent) where += ` AND messages.hidden=false`;
+
+      if (!showAllContent) {
+        where += ` AND messages.hidden=false`;
+        const temp = await this.__getChatTimesWhere(chatId, userId);
+        if (temp.length > 0) where += ` AND ${temp}`;
+      }
 
       let query = `SELECT`;
       if (showAllContent) query += " messages.hidden, ";
@@ -347,12 +452,15 @@ class Chat extends Model {
         chatId,
         userId,
       ]);
+
       const messages = await this.getChatMessages(
         chatId,
         -1,
         process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES
       );
-      return messages;
+
+      const statistic = await this.getChatMessagesInfo(chatId, userId);
+      return { statistic, messages };
     });
 
   getChatUsers = async (chatId) =>

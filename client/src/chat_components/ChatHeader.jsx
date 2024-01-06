@@ -1,12 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ChatContext } from "../contexts";
 import { generateFullUserImgPath } from "../utils";
+import ChatHeaderInfoPopup from "./ChatHeaderInfoPopup";
 
 const ChatHeader = () => {
+  const [activePopup, setActivePopup] = useState(false);
   const { activeChat, setListWindow, chatTyping, chatOnline, chatType } =
     useContext(ChatContext);
 
   const handleGoBackClick = () => setListWindow();
+
+  const openPopup = () => setActivePopup(true);
+  const closePopup = () => setActivePopup(false);
 
   const isGroup = chatType == "group";
   const photo = generateFullUserImgPath(
@@ -19,24 +24,33 @@ const ChatHeader = () => {
       <div className="chat-toggle-btn" onClick={handleGoBackClick}>
         <i className="bx bx-menu-alt-left" />
       </div>
-      <img
-        src={photo}
-        width="45"
-        height="45"
-        className="rounded-circle"
-        style={{ marginRight: "10px" }}
-      />
-      <div>
-        <h4 className="mb-0 font-weight-bold">{chatName}</h4>
-        {!isGroup && (
-          <div className="list-inline d-sm-flex mb-0 d-none">
-            <span className="list-inline-item d-flex align-items-center text-secondary">
-              <small className="bx bxs-circle me-1 chart-online" />
-              Active Now
-            </span>
-          </div>
-        )}
+      <div className="d-flex cursor-pointer" onClick={openPopup}>
+        <img
+          src={photo}
+          width="45"
+          height="45"
+          className="rounded-circle"
+          style={{ marginRight: "10px" }}
+        />
+        <div className="d-flex flex-column justify-content-center">
+          <h4 className="mb-0 font-weight-bold">{chatName}</h4>
+
+          {!isGroup && (
+            <div className="list-inline d-sm-flex mb-0 d-none">
+              <span className="list-inline-item d-flex align-items-center text-secondary">
+                <small className="bx bxs-circle me-1 chart-online" />
+                Active Now
+              </span>
+            </div>
+          )}
+        </div>
       </div>
+      <ChatHeaderInfoPopup
+        chatAvatar={photo}
+        chatName={chatName}
+        active={activePopup}
+        close={closePopup}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 export const fullTimeFormat = (dateString) => {
   const date = new Date(dateString);
+  if (isNaN(date)) return "";
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const day = date.getDate();

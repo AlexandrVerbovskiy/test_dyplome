@@ -170,9 +170,10 @@ class Chat extends Controller {
       const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
       if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
 
-      const messages = await this.chatModel.selectChat(userId, chatId);
+      const resSelect = await this.chatModel.selectChat(userId, chatId);
+
       this.setResponseBaseSuccess("Found success", {
-        messages,
+        ...resSelect,
       });
     });
 
@@ -190,10 +191,10 @@ class Chat extends Controller {
 
       if (chatId) {
         companionInfo["chat_id"] = chatId;
-        companionInfo["messages"] = await this.chatModel.selectChat(
-          userId,
-          chatId
-        );
+        const resSelect = await this.chatModel.selectChat(userId, chatId);
+
+        companionInfo["messages"] = resSelect["messages"];
+        companionInfo["statistic"] = resSelect["statistic"];
 
         if (companionInfo["messages"].length) {
           companionInfo["content"] = companionInfo["messages"][0]["content"];
@@ -256,7 +257,7 @@ class Chat extends Controller {
       if (action.type == "sending_file") {
         const key = action.key;
         const info = action.data;
-        
+
         await this.__deleteFileAction(userId, key);
 
         const { filename } = JSON.parse(info);
