@@ -60,7 +60,10 @@ export const selectChat = {
   url: () => "select-chat",
   type: "post",
   convertData: (chatId) => ({ chatId }),
-  convertRes: (res) => res.data.messages,
+  convertRes: (res) => ({
+    messages: res.data.messages,
+    statistic: res.data.statistic,
+  }),
 };
 
 export const updateProfile = {

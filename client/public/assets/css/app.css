@@ -3590,3 +3590,18 @@ body:has(.alert) .page-wrapper {
   display: flex;
 }
 
+.chat-info-row {
+  display: flex;
+  font-size: 18px;
+  margin: 5px 0;
+  align-items: center;
+}
+
+.chat-info-row:first-child {
+  margin-top: 0;
+}
+
+.chat-info-row .chat-info-icon {
+  margin-right: 5px;
+  font-size: 24px;
+}

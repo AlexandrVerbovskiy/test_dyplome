@@ -127,6 +127,10 @@ class Chat {
   onUpdateMessage = async (data, sessionInfo) => {
     const userId = sessionInfo.userId;
     const message = await this.chatController.__updateMessage(data, userId);
+
+    if (typeof message === "string")
+      return this.socketController.sendError(userId, message);
+
     const sockets = await this.chatController.__getUserSocketsFromChat(
       message["chat_id"],
       userId
@@ -148,10 +152,17 @@ class Chat {
   };
 
   onDeleteMessage = async (data, sessionInfo) => {
+    console.log(data);
     const userId = sessionInfo.userId;
     const message = await this.chatController.__hideMessage(data, userId);
+
+    if (typeof message === "string")
+      return this.socketController.sendError(userId, message);
+
     const chatId = message["chat_id"];
     const messageId = message["message_id"];
+    const messageType = message["type"];
+
     const sockets = await this.chatController.__getUserSocketsFromChat(
       chatId,
       userId
@@ -159,11 +170,12 @@ class Chat {
 
     const messageToChat = await this.chatController.__getNextMessage(
       chatId,
-      messageId
+      data["lastMessageId"]
     );
+
     const messageToList = await this.chatController.__getNextMessage(
       chatId,
-      data["lastMessageId"]
+      messageId
     );
 
     const dataToSend = {
@@ -171,12 +183,15 @@ class Chat {
       messageToList,
       deletedChatId: chatId,
       deletedMessageId: messageId,
+      deletedMessageType: messageType,
     };
+
     this.socketController.sendSocketMessageToUsers(
       [userId],
       "success-deleted-message",
       dataToSend
     );
+
     sockets.forEach((socket) => {
       this.io.to(socket["socket"]).emit("deleted-message", dataToSend);
     });
@@ -199,6 +214,7 @@ class Chat {
 
   onStartTyping = (data, sessionInfo) =>
     this.__onChangeTyping(data, sessionInfo, "typing");
+
   onEndTyping = (data, sessionInfo) =>
     this.__onChangeTyping(data, sessionInfo, "stop-typing");
 

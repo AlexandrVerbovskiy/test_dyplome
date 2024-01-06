@@ -389,15 +389,17 @@ class Chat extends Model {
   __getChatStatistic = (where = "") => {
     where = where.length > 0 ? ` AND ${where}` : "";
     return `
-      SELECT COUNT(*) as total, 'text' as message_type FROM messages WHERE chat_id=? AND type = 'text'${where}
+      SELECT COUNT(*) as total, 'text' as message_type FROM messages WHERE chat_id=? AND type = 'text' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'audio' as message_type FROM messages WHERE chat_id=? AND type = 'audio'${where}
+      SELECT COUNT(*) as total, 'audio' as message_type FROM messages WHERE chat_id=? AND type = 'audio' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'image' as message_type FROM messages WHERE chat_id=? AND type = 'image'${where}
+      SELECT COUNT(*) as total, 'image' as message_type FROM messages WHERE chat_id=? AND type = 'image' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'video' as message_type FROM messages WHERE chat_id=? AND type = 'video'${where}
+      SELECT COUNT(*) as total, 'video' as message_type FROM messages WHERE chat_id=? AND type = 'video' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'all' as message_type FROM messages WHERE chat_id=?;
+      SELECT COUNT(*) as total, 'file' as message_type FROM messages WHERE chat_id=? AND type = 'file' AND hidden = 0${where}
+        UNION
+      SELECT COUNT(*) as total, 'all' as message_type FROM messages WHERE chat_id=? AND hidden = 0${where};
     `;
   };
 
@@ -417,7 +419,9 @@ class Chat extends Model {
       }
 
       const statistic = await this.dbQueryAsync(query, props);
-      return statistic;
+      const res = {};
+      statistic.forEach((elem) => (res[elem["message_type"]] = elem["total"]));
+      return res;
     });
 
   getChatMessages = async (chatId, lastId, count, showAllContent = false) =>

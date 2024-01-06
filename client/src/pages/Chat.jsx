@@ -19,9 +19,10 @@ import NoChats from "./NoChats";
 import { randomString } from "../utils";
 
 const Chat = () => {
-  const { accountId, type } = useParams();
+  const { accountId } = useParams();
   const { socketIo } = useSocketInit();
   const {
+    chatInfo,
     selectChat,
     activeChat,
     messages,
@@ -44,7 +45,7 @@ const Chat = () => {
     chatTyping,
     chatOnline,
     selectedChatId,
-  } = useMainChat({ accountId, type });
+  } = useMainChat({ accountId });
 
   const { sessionUser, isAdmin } = useContext(MainContext);
   const onEditMessage = (id, content) => {
@@ -121,6 +122,7 @@ const Chat = () => {
     <div id="chatPage" className="row">
       <ChatContext.Provider
         value={{
+          chatInfo,
           activeChatId: activeChat?.chat_id,
           selectChat,
           setChatListSearch,

@@ -5,8 +5,14 @@ import ChatHeaderInfoPopup from "./ChatHeaderInfoPopup";
 
 const ChatHeader = () => {
   const [activePopup, setActivePopup] = useState(false);
-  const { activeChat, setListWindow, chatTyping, chatOnline, chatType } =
-    useContext(ChatContext);
+  const {
+    chatInfo,
+    activeChat,
+    setListWindow,
+    chatTyping,
+    chatOnline,
+    chatType,
+  } = useContext(ChatContext);
 
   const handleGoBackClick = () => setListWindow();
 
@@ -36,9 +42,12 @@ const ChatHeader = () => {
           <h4 className="mb-0 font-weight-bold">{chatName}</h4>
 
           {!isGroup && (
-            <div className="list-inline d-sm-flex mb-0 d-none">
+            <div className="list-inline d-sm-flex mb-0">
               <span className="list-inline-item d-flex align-items-center text-secondary">
-                <small className="bx bxs-circle me-1 chart-online" />
+                <small
+                  className="bx bxs-circle me-1 chart-online"
+                  style={{ marginTop: "2px" }}
+                />
                 Active Now
               </span>
             </div>
@@ -46,6 +55,7 @@ const ChatHeader = () => {
         </div>
       </div>
       <ChatHeaderInfoPopup
+        chatInfo={chatInfo}
         chatAvatar={photo}
         chatName={chatName}
         active={activePopup}

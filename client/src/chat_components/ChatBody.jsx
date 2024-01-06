@@ -5,7 +5,7 @@ import ChatHeader from "./ChatHeader";
 import RecorderPopup from "./RecorderPopup";
 import MediaFileAcceptPopup from "./MediaFileAcceptPopup";
 import ChatSystemMessage from "./ChatSystemMessage";
-import { MainContext, ChatContext, ChatBodyContext } from "../contexts";
+import { ChatContext, ChatBodyContext } from "../contexts";
 import { useMediaFileAccept, useRecorder } from "../chat_hooks";
 
 const ChatBody = ({ chatRef }) => {

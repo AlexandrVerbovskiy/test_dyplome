@@ -97,7 +97,7 @@ class Chat extends Controller {
     if (!message) return "No message found!";
     if (message["user_id"] != userId) return "Not the author of the message!";
     await this.chatModel.hideMessage(data.messageId);
-    return null;
+    return message;
   };
 
   __getNextMessage = async (chatId, messageId) => {
