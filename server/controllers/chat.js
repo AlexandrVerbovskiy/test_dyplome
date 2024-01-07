@@ -266,6 +266,27 @@ class Chat extends Controller {
     });
   };
 
+  __sendChatMessage = async (
+    chatId,
+    messageName,
+    messageData = {},
+    ignoreIds = []
+  ) => {
+    const users = await this.chatModel.getChatUsers(chatId);
+    const userIds = [];
+
+    users.forEach((user) => {
+      if (ignoreIds.includes(user["id"])) return;
+      userIds.push(user["id"]);
+    });
+
+    this.__socketController.sendSocketMessageToUsers(
+      userIds,
+      messageName,
+      messageData
+    );
+  };
+
   getChatUserInfos = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { chatId } = req.params;
@@ -277,6 +298,16 @@ class Chat extends Controller {
     this.__socketController = new SocketController(this.__db, io);
   }
 
+  __createSystemMessage = async (chatId, message) => {
+    const messageId = await this.chatModel.createMessage(
+      chatId,
+      null,
+      "text",
+      message
+    );
+    return await this.chatModel.getMessageById(messageId);
+  };
+
   createGroupChat = async (req, res) =>
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;
@@ -285,7 +316,7 @@ class Chat extends Controller {
       const name = req.body.name ?? "";
       const avatarFile = req.file ?? null;
 
-      const userInfos = [{ id: userId, role: "admin" }];
+      const userInfos = [{ id: userId, role: "owner" }];
       const userIds = [];
 
       users.forEach((user) => {
@@ -325,17 +356,11 @@ class Chat extends Controller {
       }
 
       const chatId = await this.chatModel.createGroup(userInfos, name, avatar);
-
       const currentUser = await this.userModel.getUserInfo(userId);
-      const currentUserName = currentUser["nick"] ?? currentUser["email"];
-      const systemMessage = `The user '${currentUserName}' has created a chat '${name}'`;
-      const messageId = await this.chatModel.createMessage(
+      const message = await this.chatModel.__createSystemMessage(
         chatId,
-        null,
-        "text",
-        systemMessage
+        `The user '${currentUser["email"]}' has created a chat '${name}'`
       );
-      const message = await this.chatModel.getMessageById(messageId);
 
       this.__socketController.sendSocketMessageToUsers(
         userIds,
@@ -353,6 +378,73 @@ class Chat extends Controller {
         name,
         avatar,
       });
+    });
+
+  leftChat = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { chatId } = req.body;
+      const userId = req.userData.userId;
+
+      const role = await this.chatModel.getUserChatRole(chatId, userId);
+
+      if (role == "owner") await this.chatModel.setOwnerByFirstPriority(chatId);
+
+      const currentUser = await this.userModel.getUserInfo(userId);
+      const message = await this.chatModel.__createSystemMessage(
+        chatId,
+        `User ${currentUser["email"]} left the group`
+      );
+
+      await this.chatModel.deactivateUserChatRelation(chatId, userId);
+
+      this.setResponseBaseSuccess("Left success", {
+        chatId,
+        ...message,
+      });
+
+      this.__sendChatMessage(chatId, "user-leave", { chatId, ...message }, [
+        userId,
+      ]);
+    });
+
+  kickUser = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { chatId, userToKicked } = req.body;
+      const userId = req.userData.userId;
+
+      const currentUserRole = await this.chatModel.getUserChatRole(
+        chatId,
+        userId
+      );
+
+      if (currentUserRole != "owner" && currentUserRole != "admin")
+        throw new Error("Permission denied");
+
+      const kickedUserRole = await this.chatModel.getUserChatRole(
+        chatId,
+        userToKicked
+      );
+
+      if (kickedUserRole == "owner" || currentUserRole == kickedUserRole)
+        throw new Error("Permission denied");
+
+      const kickedUser = await this.userModel.getUserInfo(userId);
+
+      const message = await this.chatModel.__createSystemMessage(
+        chatId,
+        `User ${kickedUser["email"]} was kicked out of the group by ${currentUserRole}`
+      );
+
+      await this.chatModel.deactivateUserChatRelation(chatId, userToKicked);
+
+      this.setResponseBaseSuccess("Kicked success", {
+        chatId,
+        ...message,
+      });
+
+      this.__sendChatMessage(chatId, "user-kicked", { chatId, ...message }, [
+        userId,
+      ]);
     });
 }
 

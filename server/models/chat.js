@@ -103,7 +103,7 @@ class Chat extends Model {
   setMainAdminRole = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE chats_users SET role = 'main-admin' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
+        "UPDATE chats_users SET role = 'owner' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
         [chatId, userId]
       );
     });
@@ -111,7 +111,7 @@ class Chat extends Model {
   setAdminRole = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE chats_users SET role = 'admin' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'main-admin'",
+        "UPDATE chats_users SET role = 'admin' WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'owner'",
         [chatId, userId]
       );
     });
@@ -119,7 +119,7 @@ class Chat extends Model {
   unsetAdminRole = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE chats_users SET role = NULL WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'main-admin'",
+        "UPDATE chats_users SET role = NULL WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL AND role != 'owner'",
         [chatId, userId]
       );
     });
@@ -487,6 +487,47 @@ class Chat extends Model {
 
       const sockets = await this.dbQueryAsync(query, [userId, chatId]);
       return sockets;
+    });
+
+  getUserChatRole = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      const chatUsers = await this.dbQueryAsync(
+        "SELECT * FROM chats_users WHERE delete_time IS NULL",
+        [chatId, userId]
+      );
+
+      const chatUser = chatUsers[0];
+
+      if (!chatUser) throw new Error(`The user is not in the chat`);
+
+      return chatUser["role"];
+    });
+
+  deactivateUserChatRelation = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE chats_users SET delete_time = CURRENT_TIMESTAMP() WHERE chat_id = ? AND user_id = ?",
+        [chatId, userId]
+      );
+    });
+
+  setOwnerByFirstPriority = async (chatId) =>
+    await this.errorWrapper(async () => {
+      const query = `UPDATE chats_users
+        SET role = 'owner'
+        WHERE id IN (
+          SELECT id FROM chats_users
+          ORDER BY
+            CASE
+              WHEN role = 'owner' THEN 1
+              WHEN role = 'admin' THEN 2
+              WHEN role = 'mentor' THEN 3
+              ELSE 4
+            END
+          LIMIT 1
+        )`;
+
+      await this.dbQueryAsync(query, [chatId]);
     });
 }
 

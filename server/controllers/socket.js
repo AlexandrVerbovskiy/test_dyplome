@@ -15,10 +15,6 @@ class Socket extends Controller {
         await this.sendSocketMessageToUsers([userId], message, data);
     }
 
-    sendSocketMessageToUser = async (userId, message, data) => {
-        await this.sendSocketMessageToUsers([userId], message, data);
-    }
-
     sendError = async (userId, error) => {
         await this.sendSocketMessageToUser(userId, "error", error);
     }
