@@ -178,6 +178,9 @@ function route(app, db, io) {
     upload.single("avatar"),
     chatController.createGroupChat
   );
-}
 
+  app.post("/left-chat", isAdmin, chatController.leftChat);
+  app.post("/kick-chat-user", isAdmin, chatController.kickUser);
+  app.post("/add-chat-users", isAdmin, chatController.addUsers);
+}
 module.exports = route;

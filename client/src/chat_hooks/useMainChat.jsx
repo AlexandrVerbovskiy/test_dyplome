@@ -15,6 +15,7 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
 
   const needCountMessages = 10;
   const activeChat = useRef({});
+  const [chatUsers, setChatUsers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [statistic, setStatistic] = useState(defaultStatistic);
   const [lastMessageId, setLastMessageId] = useState(null);
@@ -56,13 +57,12 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
         }
 
         setStatistic(defaultStatistic);
+        setChatUsers([]);
       } catch (e) {}
     } else {
       handleChangeChat(chatElem);
     }
   });
-
-  useEffect(() => console.log(statistic), [statistic]);
 
   function setEditMessage(id, content) {
     setEditMessageContent(content);
@@ -91,11 +91,10 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
       });
 
       const messages = res.messages;
-      const statistic = res.statistic;
-
       activeChat.current = chat;
       setMessages(messages);
-      setStatistic(statistic);
+      setStatistic(res.statistic);
+      setChatUsers(res.users);
       const count = messages.length;
 
       if (count > 0) {
@@ -286,6 +285,7 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     onCancelledMessage,
     chatTyping: typing,
     chatOnline: online,
+    chatUsers,
   };
 };
 

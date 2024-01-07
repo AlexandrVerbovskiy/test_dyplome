@@ -397,14 +397,14 @@ class Chat extends Controller {
 
       await this.chatModel.deactivateUserChatRelation(chatId, userId);
 
+      this.__sendChatMessage(chatId, "user-leave", { chatId, ...message }, [
+        userId,
+      ]);
+
       this.setResponseBaseSuccess("Left success", {
         chatId,
         ...message,
       });
-
-      this.__sendChatMessage(chatId, "user-leave", { chatId, ...message }, [
-        userId,
-      ]);
     });
 
   kickUser = async (req, res) =>
@@ -437,14 +437,56 @@ class Chat extends Controller {
 
       await this.chatModel.deactivateUserChatRelation(chatId, userToKicked);
 
+      this.__sendChatMessage(chatId, "user-kicked", { chatId, ...message }, [
+        userId,
+      ]);
+
       this.setResponseBaseSuccess("Kicked success", {
         chatId,
         ...message,
       });
+    });
 
-      this.__sendChatMessage(chatId, "user-kicked", { chatId, ...message }, [
+  addUsers = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { chatId, users } = req.body;
+      const currentUserId = req.userData.userId;
+
+      const currentUserRole = await this.chatModel.getUserChatRole(
+        chatId,
+        currentUserId
+      );
+
+      const messages = [];
+
+      if (currentUserRole != "owner" && currentUserRole != "admin")
+        throw new Error("Permission denied");
+
+      await this.chatModel.addManyUsers(chatId, users);
+
+      for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        
+        const message = await this.chatModel.__createSystemMessage(
+          chatId,
+          `User ${user["email"]} was appended out of the group by ${currentUserRole}`
+        );
+
+        this.__socketController.sendSocketMessageToUser(
+          user["id"],
+          "created-chat",
+          { ...message }
+        );
+      }
+
+      this.__sendChatMessage(chatId, "users-appended", { chatId, messages }, [
         userId,
       ]);
+
+      this.setResponseBaseSuccess("Appended success", {
+        chatId,
+        messages,
+      });
     });
 }
 

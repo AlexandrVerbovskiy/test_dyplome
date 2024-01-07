@@ -124,6 +124,12 @@ const config = {
     worker: "worker",
     job: "job",
   },
+  CHAT_ROLES: {
+    owner: "Owner",
+    admin: "Admin",
+    mentor: "Mentor",
+    member: "Member",
+  },
 };
 
 export default config;

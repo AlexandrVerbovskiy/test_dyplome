@@ -12,6 +12,7 @@ const ChatHeader = () => {
     chatTyping,
     chatOnline,
     chatType,
+    chatUsers,
   } = useContext(ChatContext);
 
   const handleGoBackClick = () => setListWindow();
@@ -60,6 +61,8 @@ const ChatHeader = () => {
         chatName={chatName}
         active={activePopup}
         close={closePopup}
+        chatUsers={chatUsers}
+        chatType={chatType}
       />
     </div>
   );

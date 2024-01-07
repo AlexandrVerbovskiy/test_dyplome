@@ -45,6 +45,7 @@ const Chat = () => {
     chatTyping,
     chatOnline,
     selectedChatId,
+    chatUsers,
   } = useMainChat({ accountId });
 
   const { sessionUser, isAdmin } = useContext(MainContext);
@@ -122,6 +123,7 @@ const Chat = () => {
     <div id="chatPage" className="row">
       <ChatContext.Provider
         value={{
+          chatUsers,
           chatInfo,
           activeChatId: activeChat?.chat_id,
           selectChat,

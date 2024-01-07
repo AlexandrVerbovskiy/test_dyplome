@@ -63,6 +63,7 @@ export const selectChat = {
   convertRes: (res) => ({
     messages: res.data.messages,
     statistic: res.data.statistic,
+    users: res.data.users,
   }),
 };
 
@@ -236,5 +237,30 @@ export const createGroupChat = {
     avatar: res.data.avatar,
     chatId: res.data.chatId,
     name: res.data.name,
+  }),
+};
+
+export const leftChat = {
+  url: () => `left-chat`,
+  type: "post",
+  convertRes: (res) => ({
+    ...res.data,
+  }),
+};
+
+export const kickChatUser = {
+  url: () => `kick-chat-user`,
+  type: "post",
+  convertRes: (res) => ({
+    ...res.data,
+  }),
+};
+
+export const addChatUsers = {
+  url: () => `add-chat-users`,
+  type: "post",
+  convertRes: (res) => ({
+    chatId: res.data.chatId,
+    messages: res.data.messages,
   }),
 };

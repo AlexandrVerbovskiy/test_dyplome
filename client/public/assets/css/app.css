@@ -3595,6 +3595,7 @@ body:has(.alert) .page-wrapper {
   font-size: 18px;
   margin: 5px 0;
   align-items: center;
+  height: 36px;
 }
 
 .chat-info-row:first-child {
@@ -3604,4 +3605,27 @@ body:has(.alert) .page-wrapper {
 .chat-info-row .chat-info-icon {
   margin-right: 5px;
   font-size: 24px;
+}
+
+.chat-user-role {
+  color: gray;
+}
+
+.chat-user-list-row {
+  display: flex;
+  margin: 10px 0;
+  height: 40px;
+}
+
+.chat-user-list-row:first-child {
+  margin-top: 0;
+}
+
+.chat-user-list-row:last-child {
+  margin-bottom: 0;
+}
+
+.chat-user-list {
+  max-height: calc(100vh - 3.5rem - 10rem - 75px - 241px - 1.75rem);
+  overflow-y: auto;
 }

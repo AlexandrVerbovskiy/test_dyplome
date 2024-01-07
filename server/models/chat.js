@@ -87,8 +87,16 @@ class Chat extends Model {
         "INSERT INTO chats_users (chat_id, user_id, role) VALUES ?",
         [users.map((user) => [chatId, user.id, user.role])]
       );
+
+      const insertUserIds = users.map((user) => user.id);
       const relations = await this.getChatRelations(chatId);
-      const insertedIds = relations.map((relation) => relation.id);
+      const insertedIds = [];
+
+      relations.forEach((relation) => {
+        if (insertUserIds.includes(relation.user_id))
+          insertedIds.push(relation.id);
+      });
+
       return insertedIds;
     });
 
@@ -464,14 +472,22 @@ class Chat extends Model {
       );
 
       const statistic = await this.getChatMessagesInfo(chatId, userId);
-      return { statistic, messages };
+
+      const users = [];
+      const resChatUsers = await this.getChatUsers(chatId);
+
+      resChatUsers.forEach((user) => {
+        if (user["user_id"] != userId) users.push(user);
+      });
+
+      return { statistic, messages, users };
     });
 
   getChatUsers = async (chatId) =>
     await this.errorWrapper(async () => {
       const users = await this.dbQueryAsync(
-        `SELECT ${this.__usersFields} FROM chats_users 
-          JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ?`,
+        `SELECT chats_users.role, ${this.__usersFields} FROM chats_users 
+          JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ? AND chats_users.delete_time IS NULL`,
         [chatId]
       );
       return users;
