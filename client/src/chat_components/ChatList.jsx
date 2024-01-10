@@ -11,8 +11,8 @@ const ChatList = ({ chatList, listRef, children }) => {
             <ChatListElem
               key={chat.chat_id}
               chat={chat}
-              first={index == 0}
-              last={index == chatList.length - 1}
+              first={index === 0}
+              last={index === chatList.length - 1}
             />
           ))}
         </ul>

@@ -64,6 +64,7 @@ export const selectChat = {
     messages: res.data.messages,
     statistic: res.data.statistic,
     users: res.data.users,
+    userRole: res.data.userRole,
   }),
 };
 
@@ -243,6 +244,7 @@ export const createGroupChat = {
 export const leftChat = {
   url: () => `left-chat`,
   type: "post",
+  convertData: (chatId) => ({ chatId }),
   convertRes: (res) => ({
     ...res.data,
   }),
@@ -251,6 +253,7 @@ export const leftChat = {
 export const kickChatUser = {
   url: () => `kick-chat-user`,
   type: "post",
+  convertData: (chatId, userId) => ({ chatId, userId }),
   convertRes: (res) => ({
     ...res.data,
   }),

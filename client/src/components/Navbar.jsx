@@ -13,13 +13,13 @@ const Navbar = ({
     let notificationClassName =
       "nav-link dropdown-toggle dropdown-toggle-nocaret position-relative";
 
-    if (notifications.length == 0) notificationClassName += ` no-cursor-event`;
+    if (notifications.length === 0) notificationClassName += ` no-cursor-event`;
 
     setNotificationClassName(notificationClassName);
   }, [countNewNotifications]);
 
   const handleActivateNotificationsPopup = () => {
-    if (countNewNotifications == 0) return;
+    if (countNewNotifications === 0) return;
     setNotificationPopupActive(true);
     resetCountNewNotifications();
   };

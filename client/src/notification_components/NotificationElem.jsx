@@ -13,7 +13,7 @@ const NotificationElem = ({ type, body, createdAt }) => {
   const mainNotificationColor = getNotificationMainColor(type);
 
   return (
-    <a className="dropdown-item">
+    <a className="dropdown-item" href="#">
       <div className="d-flex align-items-center">
         <div
           className={`bx bg-light-${mainNotificationColor} text-${mainNotificationColor}`}

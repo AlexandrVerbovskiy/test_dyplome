@@ -476,17 +476,23 @@ class Chat extends Model {
       const users = [];
       const resChatUsers = await this.getChatUsers(chatId);
 
+      let userRole = "member";
+
       resChatUsers.forEach((user) => {
-        if (user["user_id"] != userId) users.push(user);
+        if (user["user_id"] != userId) {
+          users.push(user);
+        } else {
+          userRole = user["role"];
+        }
       });
 
-      return { statistic, messages, users };
+      return { statistic, messages, users, userRole };
     });
 
   getChatUsers = async (chatId) =>
     await this.errorWrapper(async () => {
       const users = await this.dbQueryAsync(
-        `SELECT chats_users.role, ${this.__usersFields} FROM chats_users 
+        `SELECT chats_users.role as role, ${this.__usersFields} FROM chats_users 
           JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ? AND chats_users.delete_time IS NULL`,
         [chatId]
       );

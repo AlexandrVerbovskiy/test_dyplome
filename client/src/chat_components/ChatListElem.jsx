@@ -8,7 +8,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
 
   const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
 
-  if (activeChatId == chat.chat_id) className += " active";
+  if (activeChatId === chat.chat_id) className += " active";
 
   const handleElemClick = () => {
     selectChat(chat);
@@ -16,9 +16,9 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   };
 
   const content =
-    chat.type == "text" ? chat.content.split("<div>")[0] : chat.type;
+    chat.type === "text" ? chat.content.split("<div>")[0] : chat.type;
 
-  const isGroup = chat.chat_type == "group";
+  const isGroup = chat.chat_type === "group";
   const photo = generateFullUserImgPath(
     isGroup ? chat.chat_avatar : chat.avatar
   );

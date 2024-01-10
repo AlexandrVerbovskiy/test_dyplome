@@ -46,6 +46,8 @@ const Chat = () => {
     chatOnline,
     selectedChatId,
     chatUsers,
+    leftChat,
+    kickUser,
   } = useMainChat({ accountId });
 
   const { sessionUser, isAdmin } = useContext(MainContext);
@@ -146,6 +148,8 @@ const Chat = () => {
           handleSendMedia,
           stopSendMedia,
           chatType: activeChat.chat_type,
+          leftChat,
+          kickUser,
         }}
       >
         <ChatList chatList={chatList} listRef={listRef}>

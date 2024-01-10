@@ -159,6 +159,7 @@ class Chat extends Controller {
     });
 
   getChatMessages = (req, res) => this.__getChatMessages(req, res);
+
   getChatMessagesFullContents = (req, res) =>
     this.__getChatMessages(req, res, true);
 
@@ -266,13 +267,15 @@ class Chat extends Controller {
     });
   };
 
+  __getChatUsers = chatId =>this.chatModel.getChatUsers(chatId);
+
   __sendChatMessage = async (
     chatId,
     messageName,
     messageData = {},
     ignoreIds = []
   ) => {
-    const users = await this.chatModel.getChatUsers(chatId);
+    const users = await this.__getChatUsers(chatId);
     const userIds = [];
 
     users.forEach((user) => {
@@ -290,7 +293,7 @@ class Chat extends Controller {
   getChatUserInfos = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { chatId } = req.params;
-      const users = await this.chatModel.getChatUsers(chatId);
+      const users = await this.__getChatUsers(chatId);
       this.setResponseBaseSuccess("Chat info was got success", { users });
     });
 

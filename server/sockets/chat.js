@@ -85,14 +85,31 @@ class Chat {
     const hasChat = data.chatId;
     const message = await this.chatController.__createMessage(data, userId);
 
-    this.socketController.sendSocketMessageToUsers(
-      [data.getter_id],
-      "get-message",
-      {
-        message,
-        sender,
-      }
-    );
+    if (data.chat_type == "personal") {
+      this.socketController.sendSocketMessageToUsers(
+        [data.getter_id],
+        "get-message",
+        {
+          message,
+          sender,
+        }
+      );
+    }
+
+    if (data.chat_type == "group") {
+      const chatUsers = await this.chatController.__getChatUsers(data.chatId);
+      const chatUserIds = chatUsers.map((chat) => chat.user_id);
+      const usersToGetMessage = chatUserIds.filter((id) => id != userId);
+
+      this.socketController.sendSocketMessageToUsers(
+        usersToGetMessage,
+        "get-message",
+        {
+          message,
+          sender,
+        }
+      );
+    }
 
     message["temp_key"] = data["temp_key"];
     message["getter_id"] = data["getter_id"];
@@ -141,11 +158,13 @@ class Chat {
       message_id: message["message_id"],
       content: data.content,
     };
+
     this.socketController.sendSocketMessageToUsers(
       [userId],
       "success-updated-message",
       dataToSend
     );
+
     sockets.forEach((socket) =>
       this.io.to(socket["socket"]).emit("updated-message", dataToSend)
     );

@@ -1,6 +1,12 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import useChatList from "./useChatList";
-import { getChatMessages, selectChat, getUsersChat } from "../requests";
+import {
+  getChatMessages,
+  selectChat,
+  getUsersChat,
+  leftChat,
+  kickChatUser,
+} from "../requests";
 import { MainContext } from "../contexts";
 
 const useMainChat = ({ accountId, isAdmin = false }) => {
@@ -24,6 +30,8 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
   const [typing, setTyping] = useState(false);
   const [online, setOnline] = useState(false);
   const main = useContext(MainContext);
+  const leftChatRef = useRef(null);
+  const kickUserRef = useRef(null);
 
   const {
     chatList,
@@ -92,13 +100,43 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
 
       const messages = res.messages;
       activeChat.current = chat;
+      activeChat.current["role"] = res.userRole;
+
       setMessages(messages);
       setStatistic(res.statistic);
       setChatUsers(res.users);
+
       const count = messages.length;
 
       if (count > 0) {
         setLastMessageId(messages[0].message_id);
+      }
+
+      if (chat.chat_type == "group") {
+        leftChatRef.current = () => {
+          console.log(chat.chat_id);
+          /*return main.request({
+            url: leftChat.url(),
+            type: leftChat.type,
+            data: leftChat.convertData(chat.chat_id),
+            convertRes: leftChat.convertRes,
+          });*/
+        };
+
+        kickUserRef.current = (userId) => {
+          console.log(chat.chat_id, userId);
+
+          setChatUsers((prev) => prev.filter((user) => user.user_id != userId));
+          /*return main.request({
+            url: kickChatUser.url(),
+            type: kickChatUser.type,
+            data: kickChatUser.convertData(chat.chat_id, userId),
+            convertRes: kickChatUser.convertRes,
+          });*/
+        };
+      } else {
+        leftChatRef.current = null;
+        kickUserRef.current = null;
       }
     } catch (e) {}
   }
@@ -286,6 +324,8 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     chatTyping: typing,
     chatOnline: online,
     chatUsers,
+    leftChat: leftChatRef.current,
+    kickUser: kickUserRef.current,
   };
 };
 

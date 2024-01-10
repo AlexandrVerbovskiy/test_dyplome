@@ -13,7 +13,7 @@ const PasswordInput = ({
 
   const handleChangeEmailType = () => {
     setTypePasswordInput((prev) => {
-      if (prev == "password") return "text";
+      if (prev === "password") return "text";
       return "password";
     });
   };
@@ -27,6 +27,7 @@ const PasswordInput = ({
       onChange={onChange}
       placeholder={placeholder}
       error={error}
+      autocomplete="current-password"
     >
       <span
         className="input-group-text bg-transparent"
@@ -34,7 +35,7 @@ const PasswordInput = ({
       >
         <i
           className={
-            "bx " + (typePasswordInput == "password" ? "bx-hide" : "bx-show")
+            "bx " + (typePasswordInput === "password" ? "bx-hide" : "bx-show")
           }
         />
       </span>

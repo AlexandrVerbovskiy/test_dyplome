@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import config from "../config";
 
@@ -11,7 +11,7 @@ const Map = ({
   center = MAP_DEFAULT.center,
   width = MAP_DEFAULT.width,
 }) => {
-  const [map, setMap] = useState(null);
+  const mapRef = useRef(null);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -20,11 +20,11 @@ const Map = ({
 
   const onLoad = (map) => {
     new window.google.maps.LatLngBounds(center);
-    setMap(map);
+    mapRef.current = map;
   };
 
   const onUnmount = function callback(map) {
-    setMap(null);
+    mapRef.current = null;
   };
 
   const handleMapClick = (e) => {
