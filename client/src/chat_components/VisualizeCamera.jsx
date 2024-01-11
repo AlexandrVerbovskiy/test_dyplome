@@ -1,33 +1,40 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const VisualizeCamera = ({ active, handlePlay }) => {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const [streamError, setStreamError] = useState(null);
 
-  useEffect(
-    () => {
-      if (active) {
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(stream => {
-            const video = videoRef.current;
-            video.srcObject = stream;
-            video.play();
-            streamRef.current = stream;
-          })
-          .catch(err => {
-            console.log("Error: " + err);
-          });
-      } else {
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => {
-            track.stop();
-          });
-        }
+  useEffect(() => {
+    setStreamError(null);
+    if (active) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          const video = videoRef.current;
+          video.srcObject = stream;
+          video.play();
+          streamRef.current = stream;
+        })
+        .catch((err) => {
+          setStreamError(err.message);
+        });
+    } else {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
       }
-    },
-    [active]
-  );
+    }
+  }, [active]);
+
+  if (streamError)
+    return (
+      <div style={{ textAlign: "center" }}>
+        {streamError}.<br /> Maybe the camera is being used by another
+        application
+      </div>
+    );
 
   return (
     <video

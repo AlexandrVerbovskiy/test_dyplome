@@ -56,7 +56,11 @@ const useRecorder = (setFile) => {
 
   const close = async () => {
     setActive(false);
-    await recorder();
+    
+    if (recorder) {
+      await recorder();
+    }
+
     setRecorder(null);
   };
   const open = () => setActive(true);
