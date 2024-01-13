@@ -123,6 +123,38 @@ class User extends Model {
 
       return await this.dbQueryAsync(query, params);
     });
+
+  getAdminsToGroupToJoin = async (
+    chatId,
+    lastId = 0,
+    ignoreIds = [chatId],
+    filter = ""
+  ) =>
+    await this.errorWrapper(async () => {
+      const params = [chatId];
+
+      let query = `SELECT nick, email, id, avatar FROM users WHERE admin = true AND id IN 
+        (SELECT user_id FROM chats_users WHERE chat_id = ?)`;
+
+      if (lastId && lastId > 0) {
+        query += " AND id > ?";
+        params.push(lastId);
+      }
+
+      if (ignoreIds.length > 0) {
+        query += " AND id NOT IN (?)";
+        params.push(ignoreIds);
+      }
+
+      if (filter.length > 0) {
+        query += " AND (nick like ? OR email like ?)";
+        params.push(`%${filter}%`, `%${filter}%`);
+      }
+
+      query += " ORDER BY id";
+
+      return await this.dbQueryAsync(query, params);
+    });
 }
 
 module.exports = User;

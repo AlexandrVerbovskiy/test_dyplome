@@ -22,8 +22,6 @@ export { default as splitDataIntoChunks } from "./splitDataIntoChunks";
 
 export * from "./convertToBlob";
 
-export * from "./map";
-
 export { default as firstToLower } from "./firstToLower";
 
 export { default as generateFullUserImgPath } from "./generateFullUserImgPath";

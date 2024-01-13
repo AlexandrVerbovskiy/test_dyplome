@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 
-import {
-  fullAddressToString,
-  getAddressByCoords,
-  getCoordsByAddress
-} from "../utils";
+import useMap from "./useMap";
 
 const useAddressCoordsRelation = () => {
+  const { fullAddressToString, getAddressByCoords, getCoordsByAddress } =
+    useMap();
+
   const [coords, setCoords] = useState({ value: null, error: null });
   const [address, setAddress] = useState({ value: "", error: null });
 
-  const changeCoords = async coords => {
+  const changeCoords = async (coords) => {
     setCoords({ value: coords, error: null });
     const address = await getAddressByCoords(coords);
     const strAddress = fullAddressToString(address);
     setAddress({ value: strAddress, error: null });
   };
 
-  const changeAddress = async address => {
+  const changeAddress = async (address) => {
     setAddress({ value: address, error: null });
     const res = await getCoordsByAddress(address);
     setCoords({ value: res, error: null });
@@ -27,9 +26,9 @@ const useAddressCoordsRelation = () => {
   const addressCoordsValidate = () => {
     let validated = true;
     if (!coords.value) {
-      setAddress(prev => ({
+      setAddress((prev) => ({
         ...prev,
-        error: "Without coordinates, the program cannot find tasks nearby"
+        error: "Without coordinates, the program cannot find tasks nearby",
       }));
       validated = false;
     }
@@ -39,7 +38,7 @@ const useAddressCoordsRelation = () => {
   return {
     coords: { value: coords.value, error: coords.error, change: changeCoords },
     address: { ...address, change: changeAddress },
-    addressCoordsValidate
+    addressCoordsValidate,
   };
 };
 

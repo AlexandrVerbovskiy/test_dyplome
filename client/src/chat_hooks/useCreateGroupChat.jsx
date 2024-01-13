@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { getUsersToGroup } from "../requests";
 import { MainContext } from "../contexts";
 import { createGroupChat } from "../requests";
+import { randomString } from "../utils";
 
 const useCreateGroupChat = () => {
   const [activeCreateChat, setActiveCreateChat] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const usersToSelectRef = useRef([]);
+  const [usersToSelect, setUsersToSelect] = useState([]);
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [filter, setFilter] = useState("");
   const canShowMoreUsers = useRef(true);
   const uploaded = useRef(false);
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [groupName, setGroupName] = useState({ value: "", error: null });
   const [groupAvatar, setGroupAvatar] = useState({ value: null, error: null });
   const { request } = useContext(MainContext);
   const [error, setError] = useState(null);
   const requestUsersCount = 25;
-  const main = useContext(MainContext);
 
   const getMoreUsers = async (
     lastUserId = null,
@@ -32,8 +32,8 @@ const useCreateGroupChat = () => {
     if (filterValue === null) filterValue = filter;
 
     if (lastUserId === null) {
-      const lastUserIndex = usersToSelectRef.current.length - 1;
-      const lastUser = usersToSelectRef.current[lastUserIndex];
+      const lastUserIndex = usersToSelect.length - 1;
+      const lastUser = usersToSelect[lastUserIndex];
       lastUserId = lastUser ? lastUser.id : null;
     }
 
@@ -48,25 +48,25 @@ const useCreateGroupChat = () => {
       canShowMoreUsers.current = false;
     }
 
-    usersToSelectRef.current = [...usersToSelectRef.current, ...users];
+    setUsersToSelect((prev) => [...prev, ...users]);
     uploaded.current = false;
   };
 
   const changeFilter = (value = "") => {
     setFilter(value);
     canShowMoreUsers.current = true;
-    usersToSelectRef.current = [];
+    setUsersToSelect([]);
     getMoreUsers(0, [], value);
   };
 
   const selectUser = (userId) => {
-    const selectedUser = usersToSelectRef.current.find(
-      (user) => user.id == userId
-    );
+    const selectedUser = usersToSelect.find((user) => user.id == userId);
+
     setSelectedUsers((users) => [
       { role: "member", ...selectedUser },
       ...users,
     ]);
+
     setError(null);
   };
 
@@ -118,7 +118,7 @@ const useCreateGroupChat = () => {
     formData.append("avatar", avatar);
 
     try {
-      const data = await main.request({
+      const data = await request({
         url: createGroupChat.url(),
         type: createGroupChat.type,
         data: formData,
@@ -148,7 +148,9 @@ const useCreateGroupChat = () => {
   };
 
   return {
-    usersToSelect: usersToSelectRef.current,
+    usersToSelect: usersToSelect.filter(
+      (user) => !selectedUserIds.includes(user.id)
+    ),
     activateChat,
     deactivateChat,
     canShowMoreUsers,

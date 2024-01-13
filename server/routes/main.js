@@ -171,6 +171,7 @@ function route(app, db, io) {
   );
 
   app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup);
+  app.post("/get-users-to-group-to-join", isAdmin, userController.getAdminsToGroupToJoin);
 
   app.post(
     "/create-group-chat",

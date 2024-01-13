@@ -470,6 +470,7 @@ html.dark-theme #chat_body .message-action .card-body:hover {
 .user-to-group-row {
   display: flex !important;
   justify-content: space-between !important;
+  margin: 10px 0;
 }
 
 .user-to-group-row img {
@@ -498,10 +499,9 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   align-items: center;
 }
 
-.user-to-group-row-checkbox,
-.user-to-group-row-checkbox input,
-.user-to-group-row .user-info-section {
-  cursor: pointer;
+.user-to-group-row-checkbox input {
+  width: 20px;
+  height: 20px;
 }
 
 .group-name input,

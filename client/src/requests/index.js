@@ -231,6 +231,18 @@ export const getUsersToGroup = {
   convertRes: (res) => res.data.users ?? [],
 };
 
+export const getUsersToGroupToJoin = {
+  url: () => `get-users-to-group-to-join`,
+  type: "post",
+  convertData: (chatId, lastId = 0, ignoreIds = [], filter = "") => ({
+    ignoreIds,
+    lastId,
+    filter,
+    chatId,
+  }),
+  convertRes: (res) => res.data.users ?? [],
+};
+
 export const createGroupChat = {
   url: () => `create-group-chat`,
   type: "post",

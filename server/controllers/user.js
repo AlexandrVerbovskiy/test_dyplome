@@ -310,6 +310,26 @@ class User extends Controller {
         users: [...admins],
       });
     });
+
+  getAdminsToGroupToJoin = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const chatId = req.body.chatId;
+      const lastId = req.body.lastId ?? 0;
+      const ignoreIds = req.body.ignoreIds ?? [];
+      const filter = req.body.filter ?? "";
+
+      const admins = await this.userModel.getAdminsToGroupToJoin(
+        chatId,
+        lastId,
+        [...ignoreIds, userId],
+        filter
+      );
+
+      this.setResponseBaseSuccess("User notifications got success", {
+        users: [...admins],
+      });
+    });
 }
 
 module.exports = User;

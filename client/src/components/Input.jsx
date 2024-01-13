@@ -12,14 +12,17 @@ const Input = ({
   required = true,
   error = null,
   style = {},
+  hideError = false,
 }) => {
   const id = useId();
   const className = "col-" + columnCounts;
   return (
     <div className={className} style={style}>
-      <label htmlFor={id} className="form-label">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="form-label">
+          {label}
+        </label>
+      )}
       <div className="input-group">
         <input
           value={value}
@@ -32,7 +35,7 @@ const Input = ({
         />
         {children != null && children}
       </div>
-      <ErrorSpan error={error} />
+      {hideError && <ErrorSpan error={error} />}
     </div>
   );
 };
