@@ -48,6 +48,8 @@ const Chat = () => {
     chatUsers,
     leftChat,
     kickUser,
+    appendUsers,
+    getUsersToJoin,
   } = useMainChat({ accountId });
 
   const { sessionUser, isAdmin } = useContext(MainContext);
@@ -125,6 +127,7 @@ const Chat = () => {
     <div id="chatPage" className="row">
       <ChatContext.Provider
         value={{
+          appendUsers,
           chatUsers,
           chatInfo,
           activeChatId: activeChat?.chat_id,
@@ -150,6 +153,7 @@ const Chat = () => {
           chatType: activeChat.chat_type,
           leftChat,
           kickUser,
+          getUsersToJoin,
         }}
       >
         <ChatList chatList={chatList} listRef={listRef}>

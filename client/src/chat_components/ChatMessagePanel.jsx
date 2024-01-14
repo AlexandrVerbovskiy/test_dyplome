@@ -8,7 +8,7 @@ import MediaButton from "./MediaButton";
 import ChatFileSend from "./ChatFileSend";
 
 const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
-  const { handleSendTextMessage, editor } = useContext(ChatContext);
+  const { handleSendTextMessage, editor, activeChat } = useContext(ChatContext);
   const [savedSelection, setSavedSelection] = useState(null);
 
   useEffect(() => {
@@ -20,12 +20,12 @@ const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
           startContainer: range.startContainer,
           startOffset: range.startOffset,
           endContainer: range.endContainer,
-          endOffset: range.endOffset
+          endOffset: range.endOffset,
         });
       }
     };
 
-    document.onselectionchange = e => {
+    document.onselectionchange = (e) => {
       const selection = window.getSelection();
       if (
         selection &&
@@ -51,16 +51,26 @@ const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
     changeActivationEmojiPopup();
   };
 
+  if (!activeChat.active_chat) {
+    return (
+      <div id="chatMessagePanel" className="card inactive">
+        The chat is no longer active
+      </div>
+    );
+  }
+
   return (
     <div id="chatMessagePanel" className="card">
-      {editor.editor.active &&
-        <ChatTextEditor {...editor.editor} remove={editor.removeTextEditor} />}
-      {activeEmojiPopup &&
+      {editor.editor.active && (
+        <ChatTextEditor {...editor.editor} remove={editor.removeTextEditor} />
+      )}
+      {activeEmojiPopup && (
         <EmojiPopup
           textRef={textRef}
           savedSelection={savedSelection}
           setSavedSelection={setSavedSelection}
-        />}
+        />
+      )}
 
       <div className="input-group card-body ">
         <ChatFileSend />

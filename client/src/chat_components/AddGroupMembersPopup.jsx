@@ -3,7 +3,7 @@ import { PopupWrapper, Input, UploadTrigger } from "../components";
 import { useAddGroupMembers } from "../chat_hooks";
 import GroupUserSearchListElem from "./GroupUserSearchListElem";
 
-const AddGroupMembersPopup = ({ chatId, close, active, appendUsers }) => {
+const AddGroupMembersPopup = ({ close, active }) => {
   const {
     getMoreUsers,
     filter: { value: filter, change: changeFilter },
@@ -12,8 +12,13 @@ const AddGroupMembersPopup = ({ chatId, close, active, appendUsers }) => {
     joinUser,
     usersToSelect,
     selectedUsersToJoin,
-    selectedUserIds,
-  } = useAddGroupMembers({ chatId });
+    appendUsers,
+  } = useAddGroupMembers();
+
+  const handleAppendUsers = async (users) => {
+    await appendUsers(users);
+    close();
+  };
 
   return (
     <PopupWrapper
@@ -73,7 +78,7 @@ const AddGroupMembersPopup = ({ chatId, close, active, appendUsers }) => {
       <div className="modal-body">
         <button
           className="btn btn-primary w-100"
-          onClick={() => appendUsers(selectedUsersToJoin)}
+          onClick={() => handleAppendUsers(selectedUsersToJoin)}
         >
           Save Appended
         </button>

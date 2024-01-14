@@ -267,7 +267,7 @@ class Chat extends Controller {
     });
   };
 
-  __getChatUsers = chatId =>this.chatModel.getChatUsers(chatId);
+  __getChatUsers = (chatId) => this.chatModel.getChatUsers(chatId);
 
   __sendChatMessage = async (
     chatId,
@@ -469,7 +469,7 @@ class Chat extends Controller {
 
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
-        
+
         const message = await this.chatModel.__createSystemMessage(
           chatId,
           `User ${user["email"]} was appended out of the group by ${currentUserRole}`
@@ -480,6 +480,8 @@ class Chat extends Controller {
           "created-chat",
           { ...message }
         );
+
+        messages.push(message);
       }
 
       this.__sendChatMessage(chatId, "users-appended", { chatId, messages }, [

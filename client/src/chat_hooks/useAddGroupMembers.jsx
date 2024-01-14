@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { MainContext } from "../contexts";
-import { getUsersToGroupToJoin } from "../requests";
+import { ChatContext } from "../contexts";
 
-const useAddGroupMembers = ({ chatId }) => {
+const useAddGroupMembers = () => {
   const requestUsersCount = 25;
-  const { request } = useContext(MainContext);
+  const { getUsersToJoin, appendUsers } = useContext(ChatContext);
   const uploaded = useRef(false);
   const canShowMoreUsers = useRef(true);
 
@@ -71,17 +70,7 @@ const useAddGroupMembers = ({ chatId }) => {
       lastUserId = lastUser ? lastUser.id : null;
     }
 
-    const users = await request({
-      url: getUsersToGroupToJoin.url(),
-      type: getUsersToGroupToJoin.type,
-      data: getUsersToGroupToJoin.convertData(
-        chatId,
-        lastUserId,
-        ignoreIds,
-        filterValue
-      ),
-      convertRes: getUsersToGroupToJoin.convertRes,
-    });
+    const users = await getUsersToJoin(lastUserId, ignoreIds, filterValue);
 
     if (users.length < requestUsersCount) {
       canShowMoreUsers.current = false;
@@ -105,6 +94,7 @@ const useAddGroupMembers = ({ chatId }) => {
     ),
     selectedUsersToJoin,
     selectedUserIds,
+    appendUsers,
   };
 };
 

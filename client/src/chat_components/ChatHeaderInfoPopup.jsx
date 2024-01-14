@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { PopupWrapper } from "../components";
 import GroupHeaderPart from "./GroupHeaderPart";
+import { ChatContext } from "../contexts";
 
 const InfoRow = ({ text, iconClass }) => (
   <div className="chat-info-row">
@@ -11,19 +12,57 @@ const InfoRow = ({ text, iconClass }) => (
   </div>
 );
 
+const InfoSection = ({ chatInfo, activeForUse }) => {
+  if (!activeForUse) {
+    return (
+      <div className="chat-statistic inactive">
+        The chat is no longer active
+      </div>
+    );
+  }
+
+  return (
+    <div className="chat-statistic">
+      <InfoRow
+        text={`${chatInfo["all"] ?? "0"} messages`}
+        iconClass="bx bx-message-alt-detail"
+      />
+      <InfoRow
+        text={`${chatInfo["text"] ?? "0"} texts`}
+        iconClass="bx bx-text"
+      />
+      <InfoRow
+        text={`${chatInfo["video"] ?? "0"} videos`}
+        iconClass="bx bx-video"
+      />
+      <InfoRow
+        text={`${chatInfo["audio"] ?? "0"} audios`}
+        iconClass="bx bx-music"
+      />
+      <InfoRow
+        text={`${chatInfo["image"] ?? "0"} images`}
+        iconClass="bx bx-image"
+      />
+      <InfoRow
+        text={`${chatInfo["file"] ?? "0"} files`}
+        iconClass="bx bx-file"
+      />
+    </div>
+  );
+};
+
 const ChatHeaderInfoPopup = ({
   chatInfo,
   chatAvatar,
   chatName,
   close,
   active,
-  chatUsers,
   chatType,
-  currentUserRole,
-  leftChat,
-  kickUser,
-  chatId,
 }) => {
+  const { activeChat } = useContext(ChatContext);
+
+  const activeForUse = activeChat.active_chat == 1;
+
   return (
     <PopupWrapper
       onClose={close}
@@ -46,43 +85,10 @@ const ChatHeaderInfoPopup = ({
       </div>
       <hr style={{ margin: "0" }} />
       <div className="modal-body">
-        <div className="chat-statistic">
-          <InfoRow
-            text={`${chatInfo["all"] ?? "0"} messages`}
-            iconClass="bx bx-message-alt-detail"
-          />
-          <InfoRow
-            text={`${chatInfo["text"] ?? "0"} texts`}
-            iconClass="bx bx-text"
-          />
-          <InfoRow
-            text={`${chatInfo["video"] ?? "0"} videos`}
-            iconClass="bx bx-video"
-          />
-          <InfoRow
-            text={`${chatInfo["audio"] ?? "0"} audios`}
-            iconClass="bx bx-music"
-          />
-          <InfoRow
-            text={`${chatInfo["image"] ?? "0"} images`}
-            iconClass="bx bx-image"
-          />
-          <InfoRow
-            text={`${chatInfo["file"] ?? "0"} files`}
-            iconClass="bx bx-file"
-          />
-        </div>
+        <InfoSection chatInfo={chatInfo} activeForUse={activeForUse} />
       </div>
 
-      {chatType == "group" && (
-        <GroupHeaderPart
-          chatId={chatId}
-          chatUsers={chatUsers}
-          currentUserRole={currentUserRole}
-          kickUser={kickUser}
-          leftChat={leftChat}
-        />
-      )}
+      {activeForUse && chatType == "group" && <GroupHeaderPart />}
     </PopupWrapper>
   );
 };

@@ -6,6 +6,8 @@ import {
   getUsersChat,
   leftChat,
   kickChatUser,
+  addChatUsers,
+  getUsersToGroupToJoin,
 } from "../requests";
 import { MainContext } from "../contexts";
 
@@ -114,7 +116,6 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
 
       if (chat.chat_type == "group") {
         leftChatRef.current = () => {
-          console.log(chat.chat_id);
           /*return main.request({
             url: leftChat.url(),
             type: leftChat.type,
@@ -124,8 +125,6 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
         };
 
         kickUserRef.current = (userId) => {
-          console.log(chat.chat_id, userId);
-
           setChatUsers((prev) => prev.filter((user) => user.user_id != userId));
           /*return main.request({
             url: kickChatUser.url(),
@@ -298,6 +297,46 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     onGetChat(data);
   };
 
+  const appendUsers = async (users) => {
+    /*const res = main.request({
+      url: addChatUsers.url(),
+      type: addChatUsers.type,
+      data: addChatUsers.convertData(activeChat.current.chat_id, users),
+      convertRes: addChatUsers.convertRes,
+    });*/
+
+    setChatUsers((prev) => {
+      const res = [...prev];
+      users.forEach((user) =>
+        res.push({
+          role: user.role,
+          user_avatar: user.avatar,
+          user_email: user.email,
+          user_id: user.id,
+          user_nick: user.nick,
+        })
+      );
+      return res;
+    });
+
+    /*const { messages } = res;
+    setMessages((prev) => [...prev, ...messages]);*/
+  };
+
+  const getUsersToJoin = async (lastUserId, ignoreIds, filterValue) => {
+    return await main.request({
+      url: getUsersToGroupToJoin.url(),
+      type: getUsersToGroupToJoin.type,
+      data: getUsersToGroupToJoin.convertData(
+        activeChat.current.chat_id,
+        lastUserId,
+        ignoreIds,
+        filterValue
+      ),
+      convertRes: getUsersToGroupToJoin.convertRes,
+    });
+  };
+
   return {
     chatInfo: statistic,
     selectChat: handleChangeChat,
@@ -321,11 +360,13 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     onChangeOnline,
     onUpdateMessagePercent,
     onCancelledMessage,
+    appendUsers,
     chatTyping: typing,
     chatOnline: online,
     chatUsers,
     leftChat: leftChatRef.current,
     kickUser: kickUserRef.current,
+    getUsersToJoin,
   };
 };
 

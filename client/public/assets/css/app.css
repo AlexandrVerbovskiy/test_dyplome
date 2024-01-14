@@ -3447,10 +3447,3 @@ body:has(.alert) .page-wrapper {
     display: none;
   }
 }
-
-.add-group-members-label {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-top: -1rem;
-}

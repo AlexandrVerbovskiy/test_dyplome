@@ -274,6 +274,7 @@ export const kickChatUser = {
 export const addChatUsers = {
   url: () => `add-chat-users`,
   type: "post",
+  convertData: (chatId, users) => ({ chatId, users }),
   convertRes: (res) => ({
     chatId: res.data.chatId,
     messages: res.data.messages,

@@ -133,8 +133,8 @@ class User extends Model {
     await this.errorWrapper(async () => {
       const params = [chatId];
 
-      let query = `SELECT nick, email, id, avatar FROM users WHERE admin = true AND id IN 
-        (SELECT user_id FROM chats_users WHERE chat_id = ?)`;
+      let query = `SELECT nick, email, id, avatar FROM users WHERE admin = true AND id NOT IN 
+        (SELECT user_id FROM chats_users WHERE chat_id = ? AND delete_time IS NOT NULL)`;
 
       if (lastId && lastId > 0) {
         query += " AND id > ?";

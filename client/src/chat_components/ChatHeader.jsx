@@ -55,8 +55,6 @@ const ChatHeader = () => {
         </div>
       </div>
       <ChatHeaderInfoPopup
-        chatId={activeChat.chat_id ?? null}
-        currentUserRole={activeChat.currentUserRole}
         chatInfo={chatInfo}
         chatAvatar={photo}
         chatName={chatName}

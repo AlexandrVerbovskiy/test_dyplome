@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import GroupUserList from "./GroupUserList";
+import { ChatContext } from "../contexts";
 import { Plus } from "react-bootstrap-icons";
 import AddGroupMembersPopup from "./AddGroupMembersPopup";
 
-const GroupHeaderPart = ({
-  chatUsers,
-  currentUserRole,
-  kickUser,
-  leftChat,
-  chatId,
-}) => {
+const GroupHeaderPart = () => {
+  const { activeChat, chatUsers, leftChat, kickUser } = useContext(ChatContext);
   const [activeAddPopup, setActiveAddPopup] = useState(false);
   const closeAddPopup = () => setActiveAddPopup(false);
   const openAddPopup = () => setActiveAddPopup(true);
@@ -33,7 +29,7 @@ const GroupHeaderPart = ({
 
           <GroupUserList
             users={chatUsers}
-            currentUserRole={currentUserRole}
+            currentUserRole={activeChat.currentUserRole}
             kickUser={kickUser}
           />
         </>
@@ -46,11 +42,7 @@ const GroupHeaderPart = ({
         </button>
       </div>
 
-      <AddGroupMembersPopup
-        chatId={chatId}
-        active={activeAddPopup}
-        close={closeAddPopup}
-      />
+      <AddGroupMembersPopup active={activeAddPopup} close={closeAddPopup} />
     </>
   );
 };

@@ -277,9 +277,9 @@ class Chat extends Model {
     searchString = "",
   }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT c1.chat_id, chats.type as chat_type, ${selectFields}
+      let query = `SELECT DISTINCT c1.chat_id, chats.type as chat_type, ${selectFields}
         FROM (${baseSelect}) AS c1 
-        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.delete_time is NULL AND chats_users.user_id != ? 
+        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ?
         JOIN users ON chats_users.user_id = users.id
         JOIN chats ON c1.chat_id=chats.id`;
 
@@ -331,9 +331,15 @@ class Chat extends Model {
 
         messageQuery += ` ORDER BY messages.time_created DESC LIMIT 0, 1`;
 
+        const checkActiveRelationQuery = `SELECT count(*) as active_chat FROM chats_users WHERE chats_users.delete_time IS NULL AND chats_users.chat_id = ? AND chats_users.user_id = ?`;
+        const checkedActiveRes = await this.dbQueryAsync(
+          checkActiveRelationQuery,
+          [id, searcherId]
+        );
+        const active = checkedActiveRes[0]["active_chat"];
         const messages = await this.dbQueryAsync(messageQuery, [id]);
         const message = messages[0] ?? {};
-        chats.push({ ...chat, ...message });
+        chats.push({ ...chat, ...message, active_chat: active });
       }
 
       return chats;

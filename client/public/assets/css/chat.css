@@ -662,3 +662,18 @@ html.dark-theme #chat_body .message-action .card-body:hover {
 .remove-chat-user:hover {
   color: rgb(100, 100, 100);
 }
+
+.add-group-members-label {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: -1rem;
+}
+
+#chatMessagePanel.inactive {
+  padding: 17.5px 0;
+  display: flex;
+  align-items: center;
+  color: rgb(150, 149, 149);
+  font-size: 1rem;
+}

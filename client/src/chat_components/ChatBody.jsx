@@ -16,7 +16,7 @@ const ChatBody = ({ chatRef }) => {
     emojiPopup,
     onEditMessage,
     onDeleteMessage,
-    stopSendMedia,
+    stopSendMedia
   } = useContext(ChatContext);
 
   const mediaFileAccept = useMediaFileAccept();
