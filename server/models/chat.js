@@ -226,11 +226,11 @@ class Chat extends Model {
 
   __getChatsTimesWhere = async (chatIds, userId, name = "messages") => {
     let res = {};
-    const wheres = {};
+    const chatInfos = {};
 
     chatIds.forEach((chatId) => {
       res[chatId] = "";
-      wheres[chatId] = [];
+      chatInfos[chatId] = { where: [], active: false };
     });
 
     const joins = await this.dbQueryAsync(
@@ -244,18 +244,24 @@ class Chat extends Model {
     joins.forEach((join) => {
       let where = `${name}.time_created > '${join.time_created}'`;
 
-      if (join["delete_time"])
+      if (join["delete_time"]) {
         where += ` AND ${name}.time_created < '${join.delete_time}'`;
+      } else {
+        chatInfos[join.chat_id]["active"] = true;
+      }
 
       where = `(${where})`;
 
-      wheres[join.chat_id].push(where);
+      chatInfos[join.chat_id]["where"].push(where);
     });
 
-    Object.keys(wheres).forEach((chatId) => {
-      if (wheres[chatId].length > 0) {
-        res[chatId] = wheres[chatId].join(" OR ");
-        if (wheres[chatId].length > 1) res[chatId] = `(${res[chatId]})`;
+    Object.keys(chatInfos).forEach((chatId) => {
+      if (chatInfos[chatId].where.length > 0) {
+        let where = chatInfos[chatId].where.join(" OR ");
+
+        if (chatInfos[chatId].where.length > 1) where = `(${where})`;
+
+        res[chatId] = { where, active: chatInfos[chatId]["active"] };
       }
     });
 
@@ -264,7 +270,7 @@ class Chat extends Model {
 
   __getChatTimesWhere = async (chatId, userId, name = "messages") => {
     const times = await this.__getChatsTimesWhere([chatId], userId, name);
-    return times[chatId];
+    return times[chatId]["where"];
   };
 
   __baseGetChats = async ({
@@ -277,72 +283,60 @@ class Chat extends Model {
     searchString = "",
   }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT DISTINCT c1.chat_id, chats.type as chat_type, ${selectFields}
-        FROM (${baseSelect}) AS c1 
-        JOIN chats_users ON chats_users.chat_id = c1.chat_id AND chats_users.user_id != ?
-        JOIN users ON chats_users.user_id = users.id
-        JOIN chats ON c1.chat_id=chats.id`;
+      let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
+            messages.type, messages.time_created as time_sended, messages_contents.content,
+            chat_info.last_message_id, chat_info.time_created, chat_info.delete_time, ${selectFields}
+            FROM chats
+            JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ?
+            JOIN users ON chats_users.user_id = users.id
+            JOIN (
+              SELECT chats.id,
+                      MAX(m1.id) AS last_message_id, 
+                      DATE_FORMAT(MAX(cu2.time_created), '%Y-%m-%d %H:%i:%s') AS time_created,
+                      DATE_FORMAT(MAX(cu2.delete_time), '%Y-%m-%d %H:%i:%s') AS delete_time
+              FROM messages as m1
+              JOIN chats ON m1.chat_id = chats.id
+              JOIN (
+                  SELECT cu.chat_id, MAX(cu.id) AS chat_user_id
+                  FROM chats_users cu
+                  WHERE cu.user_id = ?
+                  GROUP BY cu.chat_id
+              ) AS cu1 ON cu1.chat_id = chats.id
+              JOIN (
+                  SELECT cu.id as chat_user_id, cu.time_created as time_created, cu.delete_time as delete_time
+                  FROM chats_users cu
+              ) AS cu2 ON cu2.chat_user_id = cu1.chat_user_id
+              GROUP BY chats.id
+              HAVING (MAX(cu2.delete_time) IS NULL OR (MAX(m1.time_created) <= MAX(cu2.delete_time))) AND MAX(m1.time_created) >= MAX(cu2.time_created)
+            ) AS chat_info ON chat_info.id = chats.id
+            JOIN messages ON messages.id = chat_info.last_message_id
+            JOIN messages_contents ON messages_contents.message_id = messages.id`;
+
+      const props = [searcherId, searcherId];
 
       if (lastChatId) {
-        query += " WHERE c1.chat_id < ?";
-        params.push(lastChatId);
+        query += " WHERE chats.id < ?";
+        props.push(lastChatId);
 
         if (searchString) {
           query += " AND (users.email like ? or users.nick like ?)";
-          params.push(`%${searchString}%`);
-          params.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
         }
       } else {
         if (searchString) {
           query += " WHERE (users.email like ? or users.nick like ?)";
-          params.push(`%${searchString}%`);
-          params.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
         }
       }
 
-      query += " LIMIT 0, ?";
-      params.push(Number(limit));
+      query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
+      props.push(Number(limit));
 
-      const gotChats = await this.dbQueryAsync(query, params);
+      console.log(query);
 
-      const chatIds = gotChats.map((chat) => chat.chat_id);
-
-      const timesLimited = await this.__getChatsTimesWhere(chatIds, searcherId);
-
-      const chats = [];
-
-      for (let i = 0; i < gotChats.length; i++) {
-        const chat = gotChats[i];
-        const id = chat.chat_id;
-        const timeLimit = timesLimited[`${id}`];
-
-        let messageQuery = `SELECT messages.type, messages.time_created as time_sended, messages_contents.content 
-        FROM messages
-        JOIN messages_contents ON messages_contents.message_id = messages.id AND messages_contents.time_edited = (
-          SELECT MAX(time_edited) 
-          FROM messages_contents 
-          WHERE messages_contents.message_id = messages.id
-        )
-        WHERE messages.chat_id = ? AND messages.hidden = 0`;
-
-        if (timeLimit.length > 0) {
-          messageQuery += ` AND ${timeLimit}`;
-        }
-
-        messageQuery += ` ORDER BY messages.time_created DESC LIMIT 0, 1`;
-
-        const checkActiveRelationQuery = `SELECT count(*) as active_chat FROM chats_users WHERE chats_users.delete_time IS NULL AND chats_users.chat_id = ? AND chats_users.user_id = ?`;
-        const checkedActiveRes = await this.dbQueryAsync(
-          checkActiveRelationQuery,
-          [id, searcherId]
-        );
-        const active = checkedActiveRes[0]["active_chat"];
-        const messages = await this.dbQueryAsync(messageQuery, [id]);
-        const message = messages[0] ?? {};
-        chats.push({ ...chat, ...message, active_chat: active });
-      }
-
-      return chats;
+      return await this.dbQueryAsync(query, props);
     });
 
   getUsersToChatting = (

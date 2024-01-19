@@ -49,7 +49,11 @@ const useChatList = (onInit) => {
         setCanSearch(true);
       }
 
-      setChatList((prev) => [...prev, ...chats]);
+      setChatList((prev) => {
+        const res = [...prev, ...chats];
+        console.log(res);
+        return res;
+      });
 
       if (isFirstAction) {
         setIsFirstAction(false);
