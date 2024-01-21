@@ -454,6 +454,15 @@ html.dark-theme #sendButton:hover {
   position: absolute;
 }
 
+#chat_body .chat-content-rightside:nth-last-child(1) .message-action,
+#chat_body .chat-content-rightside:nth-last-child(2) .message-action,
+#chat_body .chat-content-rightside:nth-last-child(3) .message-action,
+#chat_body .chat-content-leftside:nth-last-child(1) .message-action,
+#chat_body .chat-content-leftside:nth-last-child(2) .message-action,
+#chat_body .chat-content-leftside:nth-last-child(3) .message-action {
+  transform: translateY(1rem);
+}
+
 #chat_body .message-action .card-body {
   padding: 1rem 1rem;
   transition: all 0.3s ease-in-out;
