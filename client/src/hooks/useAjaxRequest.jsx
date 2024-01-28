@@ -10,7 +10,6 @@ const useAjaxRequest = ({ onError }) => {
     onSuccess = () => {},
     convertRes = () => {},
   }) {
-
     try {
       let res = null;
 
@@ -27,10 +26,12 @@ const useAjaxRequest = ({ onError }) => {
     } catch (err) {
       const res = err.response;
 
-      if (res && res.status && res.data && res.data.error)
-        return onError(res.data.error);
+      if (res && res.status && res.data && res.data.error) {
+        onError(res.data.error);
+      } else {
+        onError(err.message);
+      }
 
-      onError(err.message);
       throw new Error(err.message);
     }
   };

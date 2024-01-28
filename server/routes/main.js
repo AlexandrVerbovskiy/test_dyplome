@@ -1,6 +1,7 @@
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const express = require("express");
 
 const {
   User,
@@ -143,12 +144,8 @@ function route(app, db, io) {
     chatController.getChatMessagesFullContents
   );
 
-  app.get("/files/:folder/:filename", (req, res) => {
-    const filename = req.params.filename;
-    const folder = req.params.folder;
-    const fileUrl = path.join(__dirname, `../files/`, folder, filename);
-    res.sendFile(fileUrl);
-  });
+  const filesDirectory = path.join(__dirname, "..", "files");
+  app.use("/files", express.static(filesDirectory));
 
   app.get(
     "/get-user-statistic/:userId",
@@ -171,7 +168,11 @@ function route(app, db, io) {
   );
 
   app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup);
-  app.post("/get-users-to-group-to-join", isAdmin, userController.getAdminsToGroupToJoin);
+  app.post(
+    "/get-users-to-group-to-join",
+    isAdmin,
+    userController.getAdminsToGroupToJoin
+  );
 
   app.post(
     "/create-group-chat",

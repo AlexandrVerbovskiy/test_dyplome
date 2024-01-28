@@ -72,11 +72,16 @@ class Chat extends Controller {
         data["getter_id"],
         userId
       );
+
       if (hasPersonalChat) {
         return await localSend(hasPersonalChat);
       } else {
         const chatId = await this.chatModel.create("personal");
-        await this.chatModel.addManyUsers(chatId, [data["getter_id"], userId]);
+        const users = [
+          { id: data["getter_id"], role: "member" },
+          { id: userId, role: "member" },
+        ];
+        await this.chatModel.addManyUsers(chatId, users);
         return await localSend(chatId);
       }
     } else {
@@ -262,7 +267,8 @@ class Chat extends Controller {
         await this.__deleteFileAction(userId, key);
 
         const { filename } = JSON.parse(info);
-        fs.unlinkSync(this.__message_folder + "/" + filename);
+        if (fs.existsSync(this.__message_folder + "/" + filename))
+          fs.unlinkSync(this.__message_folder + "/" + filename);
       }
     });
   };

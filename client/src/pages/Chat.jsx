@@ -91,7 +91,6 @@ const Chat = () => {
   const handleEndTyping = () => endTyping(activeChat.chat_id);
 
   const handleSendMedia = (data, dataType, filetype, dop, filename) => {
-    //createChat(accountId);
     sendMedia(data, dataType, filetype, dop, filename);
   };
 

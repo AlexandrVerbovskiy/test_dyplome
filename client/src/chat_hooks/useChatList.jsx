@@ -51,7 +51,6 @@ const useChatList = (onInit) => {
 
       setChatList((prev) => {
         const res = [...prev, ...chats];
-        console.log(res);
         return res;
       });
 
@@ -99,7 +98,7 @@ const useChatList = (onInit) => {
         chats = [newChat, ...chats];
 
         chats = chats.sort(
-          (a, b) => new Date(a.time_sended) - new Date(b.time_sended)
+          (a, b) => new Date(b.time_sended) - new Date(a.time_sended)
         );
 
         return chats;
@@ -110,7 +109,7 @@ const useChatList = (onInit) => {
   };
 
   const onGetChat = (chat) => {
-    setChatList((prev) => [chat, ...prev]);
+    setChatList((prev) => [...prev, chat]);
   };
 
   const onChatMessageDelete = (chatId, deletedMessageId, message) => {
@@ -129,7 +128,7 @@ const useChatList = (onInit) => {
         };
         chats = [newChat, ...chats];
         chats = chats.sort(
-          (a, b) => new Date(a.time_sended) - new Date(b.time_sended)
+          (a, b) => new Date(b.time_sended) - new Date(a.time_sended)
         );
         return chats;
       }

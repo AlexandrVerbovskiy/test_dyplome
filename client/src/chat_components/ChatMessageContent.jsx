@@ -3,8 +3,6 @@ import config from "../config";
 
 const ChatMessageContent = ({ type, content, inProcess }) => {
   const { API_URL } = config;
-  const style = {};
-  if (inProcess) style["backgroundColor"] = "red";
 
   let url = "";
   if (type === "image" || type === "video" || type === "audio") {
@@ -20,7 +18,6 @@ const ChatMessageContent = ({ type, content, inProcess }) => {
     return (
       <div
         className="mb-0"
-        style={style}
         dangerouslySetInnerHTML={{ __html: content }}
       />
     );

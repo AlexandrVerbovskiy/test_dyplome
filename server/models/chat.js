@@ -242,10 +242,10 @@ class Chat extends Model {
     );
 
     joins.forEach((join) => {
-      let where = `${name}.time_created > '${join.time_created}'`;
+      let where = `${name}.time_created >= '${join.time_created}'`;
 
       if (join["delete_time"]) {
-        where += ` AND ${name}.time_created < '${join.delete_time}'`;
+        where += ` AND ${name}.time_created <= '${join.delete_time}'`;
       } else {
         chatInfos[join.chat_id]["active"] = true;
       }
@@ -333,8 +333,6 @@ class Chat extends Model {
 
       query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
       props.push(Number(limit));
-
-      console.log(query);
 
       return await this.dbQueryAsync(query, props);
     });

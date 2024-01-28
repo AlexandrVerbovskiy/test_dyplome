@@ -14,6 +14,7 @@ class User extends Model {
       const user = {
         email,
         password: hashedPassword,
+        admin: 0,
       };
 
       const countUserRes = await this.dbQueryAsync(
@@ -33,6 +34,7 @@ class User extends Model {
         `SELECT * FROM users WHERE email = ?`,
         [email]
       );
+
       if (!findUserRes.length) authError();
 
       const user = findUserRes[0];

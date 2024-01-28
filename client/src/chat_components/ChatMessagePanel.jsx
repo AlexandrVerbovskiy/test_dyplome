@@ -51,7 +51,7 @@ const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
     changeActivationEmojiPopup();
   };
 
-  if (!activeChat.active_chat) {
+  if (activeChat.chat_type != "personal" && !activeChat.active_chat) {
     return (
       <div id="chatMessagePanel" className="card inactive">
         The chat is no longer active

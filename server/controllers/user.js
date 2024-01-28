@@ -26,10 +26,9 @@ class User extends Controller {
     this.errorWrapper(res, async () => {
       const { email, password } = req.body;
 
-      const userId = await this.userModel.findByPasswordAndEmail(
-        email,
-        password
-      );
+      const user = await this.userModel.findByPasswordAndEmail(email, password);
+      const userId = user.id;
+
       const token = jwt.sign(
         {
           userId,

@@ -66,6 +66,7 @@ class Chat {
     const userId = sessionInfo.userId;
     const sender = sessionInfo.sender;
     const message = await this.chatController.__createChat(data, userId);
+
     this.socketController.sendSocketMessageToUsers(
       [data.userId, userId],
       "created-chat",
@@ -76,16 +77,34 @@ class Chat {
     );
   };
 
+  __onCreateNewPersonalChat = async (message, data, userId) => {
+    this.socketController.sendSocketMessageToUsers(
+      [data.getter_id],
+      "created-chat",
+      { ...message }
+    );
+
+    const getter = await this.userController.__getUserById(data.getter_id);
+
+    this.socketController.sendSocketMessageToUsers([userId], "created-chat", {
+      ...message,
+      user_email: getter["email"],
+      user_id: getter["id"],
+    });
+  };
+
   onSendMessage = async (data, sessionInfo) => {
     const userId = sessionInfo.userId;
     const sender = sessionInfo.user;
 
     if (data.chat_id) data.chatId = data.chat_id;
 
-    const hasChat = data.chatId;
     const message = await this.chatController.__createMessage(data, userId);
 
     if (data.chat_type == "personal") {
+      if (!data.chatId)
+        await this.__onCreateNewPersonalChat(message, data, userId);
+
       this.socketController.sendSocketMessageToUsers(
         [data.getter_id],
         "get-message",
@@ -121,24 +140,6 @@ class Chat {
         message,
       }
     );
-
-    if (!hasChat) {
-      this.socketController.sendSocketMessageToUsers(
-        [data.getter_id],
-        "created-chat",
-        {
-          ...message,
-        }
-      );
-
-      const getter = await this.userController.__getUserById(data.getter_id);
-
-      this.socketController.sendSocketMessageToUsers([userId], "created-chat", {
-        ...message,
-        user_email: getter["email"],
-        user_id: getter["id"],
-      });
-    }
   };
 
   onUpdateMessage = async (data, sessionInfo) => {
@@ -250,41 +251,7 @@ class Chat {
         type
       );
 
-      if (last) {
-        const dataToSend = {
-          content: filename,
-          typeMessage: indicateMediaTypeByExtension(type),
-          getter_id: data.getter_id,
-          chat_type: data.chat_type,
-          userId: data.getter_id,
-          chatId: data.chatId,
-        };
-
-        const message = await this.chatController.__createMessage(
-          dataToSend,
-          userId
-        );
-
-        await this.chatController.__deleteFileAction(userId, tempKey);
-
-        this.socketController.sendSocketMessageToUsers(
-          [dataToSend.getter_id],
-          "get-message",
-          {
-            message,
-            sender,
-          }
-        );
-        message["temp_key"] = tempKey;
-        this.socketController.sendSocketMessageToUsers(
-          [userId],
-          "file-part-uploaded",
-          {
-            temp_key: tempKey,
-            message,
-          }
-        );
-      } else {
+      if (!last) {
         this.socketController.sendSocketMessageToUsers(
           [userId],
           "file-part-uploaded",
@@ -292,7 +259,49 @@ class Chat {
             temp_key: tempKey,
           }
         );
+
+        return;
       }
+
+      const dataToSend = {
+        content: filename,
+        typeMessage: indicateMediaTypeByExtension(type),
+        getter_id: data.getter_id,
+        chat_type: data.chat_type,
+        userId: data.getter_id,
+        chatId: data.chatId,
+      };
+
+      const message = await this.chatController.__createMessage(
+        dataToSend,
+        userId
+      );
+
+      if (!data.chatId && data.chat_type == "personal")
+        await this.__onCreateNewPersonalChat(message, dataToSend, userId);
+
+      await this.chatController.__deleteFileAction(userId, tempKey);
+
+      this.socketController.sendSocketMessageToUsers(
+        [dataToSend.getter_id],
+        "get-message",
+        {
+          message,
+          sender,
+        }
+      );
+
+      message["temp_key"] = tempKey;
+      message["getter_id"] = data.getter_id;
+
+      this.socketController.sendSocketMessageToUsers(
+        [userId],
+        "file-part-uploaded",
+        {
+          temp_key: tempKey,
+          message,
+        }
+      );
     } catch (error) {
       this.socketController.sendSocketMessageToUsers(
         [userId],

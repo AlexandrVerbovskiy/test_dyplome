@@ -47,7 +47,6 @@ const useChatInit = ({
 
     io.on("file-part-uploaded", async ({ temp_key, message = null }) => {
       const nextPartData = await onSuccessSendBlobPart(temp_key);
-
       if (!nextPartData) return;
       if (nextPartData == "success saved" && message) {
         onGetMessageForSockets(message);
@@ -136,8 +135,8 @@ const useChatInit = ({
       temp_key: dataToSend["temp_key"],
     };
 
-    io.emit("file-part-upload", { ...dataToSend });
     onGetMessageForSockets(dataToInsert);
+    io.emit("file-part-upload", { ...dataToSend });
   };
 
   const stopSendMedia = (temp_key) => io.emit("stop-file-upload", { temp_key });

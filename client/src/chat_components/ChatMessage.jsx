@@ -79,9 +79,19 @@ const ChatMessage = ({
             style={{
               textAlign: timeAlign,
               justifyContent: `flex-${timeAlign}`,
+              alignItems: "center",
             }}
           >
-            {fullTimeFormat(time_sended)}
+            {!inProcess && fullTimeFormat(time_sended)}
+            {inProcess && (
+              <>
+                <i
+                  class="lni lni-alarm-clock"
+                  style={{ marginRight: "2px" }}
+                ></i>
+                {Number(percent).toFixed(2)}%
+              </>
+            )}
           </p>
           <div
             className={contentClassName[myOrNormal]}

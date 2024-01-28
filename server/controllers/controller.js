@@ -30,9 +30,7 @@ class Controller {
   }
 
   setResponseData(data) {
-    const jsonData = JSON.stringify(data);
-    const jsonDataParsed = JSON.parse(jsonData);
-    this.__actualResponseBody = jsonDataParsed;
+    this.__actualResponseBody = data;
   }
 
   setResponse(data, code) {
