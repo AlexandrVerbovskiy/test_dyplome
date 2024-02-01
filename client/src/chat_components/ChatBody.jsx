@@ -33,7 +33,7 @@ const ChatBody = () => {
       const lastChild = block.lastElementChild;
 
       if (lastChild) {
-        lastChild.scrollIntoView({ behavior: "smooth" });
+        lastChild.scrollIntoView({ behavior: "smooth", inline: "start" });
       }
     }
   };

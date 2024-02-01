@@ -5,14 +5,12 @@ const useChatWindowsChanger = () => {
   const bodyRef = useRef(null);
 
   useEffect(() => {
-    console.log("test");
-
     if (bodyRef.current && activeWindow == "list") {
-      bodyRef.current.scrollLeft = 0;
+      bodyRef.current.firstElementChild.scrollIntoView({ behavior: "smooth" });
     }
 
     if (bodyRef.current && activeWindow == "chat") {
-      bodyRef.current.scrollLeft = 0;
+      bodyRef.current.lastElementChild.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeWindow]);
 

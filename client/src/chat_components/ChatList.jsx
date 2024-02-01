@@ -1,9 +1,9 @@
 import React from "react";
 import ChatListElem from "./ChatListElem";
 
-const ChatList = ({ chatList, listRef, children }) => {
+const ChatList = ({ chatList, children }) => {
   return (
-    <div id="chat_list" className="chat-list card col-lg-4" ref={listRef}>
+    <div id="chat_list" className="chat-list card col-lg-4">
       <div className="card-body">
         {children}
         <ul className="list-unstyled">
