@@ -8,44 +8,59 @@ import ChatSystemMessage from "./ChatSystemMessage";
 import { ChatContext, ChatBodyContext } from "../contexts";
 import { useMediaFileAccept, useRecorder } from "../chat_hooks";
 
-const ChatBody = ({ chatRef }) => {
+const ChatBody = () => {
   const textRef = useRef(null);
+  const bodyRef = useRef(null);
 
   const {
     messages,
     emojiPopup,
     onEditMessage,
     onDeleteMessage,
-    stopSendMedia
+    stopSendMedia,
+    activeChatId,
   } = useContext(ChatContext);
 
   const mediaFileAccept = useMediaFileAccept();
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
   const [activeMessageActionPopup, setActiveMessageActionPopup] =
     useState(null);
-  const [countChanges, setCountChanges] = useState(0);
 
   const scrollBottom = () => {
-    setTimeout(() => {
-      const messagesBlock = document.querySelectorAll(
-        ".chat-content-rightside"
-      );
-      if (messagesBlock.length) {
-        const last = messagesBlock[messagesBlock.length - 1];
-        last.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-          inline: "end",
-        });
+    const block = bodyRef.current;
+
+    if (block) {
+      const lastChild = block.lastElementChild;
+
+      if (lastChild) {
+        lastChild.scrollIntoView({ behavior: "smooth" });
       }
-    }, 100);
+    }
+  };
+
+  const scrollBottomOnNewMessage = () => {
+    const block = bodyRef.current;
+
+    if (block) {
+      const scrollTop = block.scrollTop;
+      const scrollHeight = block.scrollHeight;
+      const clientHeight = block.clientHeight;
+      const isAtBottom = scrollTop + clientHeight + 200 >= scrollHeight;
+
+      if (isAtBottom) {
+        scrollBottom();
+      }
+    }
   };
 
   useEffect(() => {
-    if (messages.length < 0 || countChanges) return;
-    setCountChanges(1);
-    scrollBottom();
+    if (messages.length < 0) return;
+    setTimeout(() => scrollBottomOnNewMessage(), 0);
   }, [messages]);
+
+  useEffect(() => {
+    setTimeout(() => scrollBottom(), 100);
+  }, [activeChatId]);
 
   const closeActiveMessagePopup = () => setActiveMessageActionPopup(null);
   const openActiveMessagePopup = (id) => setActiveMessageActionPopup(id);
@@ -66,9 +81,9 @@ const ChatBody = ({ chatRef }) => {
 
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>
-      <div id="chat_body" className="card col-lg-8" ref={chatRef}>
+      <div id="chat_body" className="card col-lg-8">
         <ChatHeader />
-        <div className="card-body">
+        <div className="card-body" ref={bodyRef}>
           {messages.map((message) => {
             const key = message.in_process
               ? message.temp_key

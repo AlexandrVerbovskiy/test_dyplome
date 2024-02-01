@@ -144,8 +144,7 @@ function route(app, db, io) {
     chatController.getChatMessagesFullContents
   );
 
-  const filesDirectory = path.join(__dirname, "..", "files");
-  app.use("/files", express.static(filesDirectory));
+  app.use("/files", express.static(path.join(__dirname, "..", "files")));
 
   app.get(
     "/get-user-statistic/:userId",

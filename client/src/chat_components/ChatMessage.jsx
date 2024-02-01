@@ -37,13 +37,17 @@ const ChatMessage = ({
     my: "chat-right-msg card",
   };
 
-  const myOrNormal = sessionUser.id == user_id ? "my" : "normal";
-  const timeAlign = sessionUser.id == user_id ? "end" : "start";
-  const displayImage = sessionUser.id == user_id ? { display: "none" } : {};
+  const isSessionUserSender = sessionUser.id == user_id;
+  const myOrNormal = isSessionUserSender ? "my" : "normal";
+  const timeAlign = isSessionUserSender ? "end" : "start";
+  const displayImage = isSessionUserSender ? { display: "none" } : {};
 
   const handleMenuClick = (e) => {
     e.preventDefault();
-    onRightBtnClick();
+
+    if (isSessionUserSender) {
+      onRightBtnClick();
+    }
   };
 
   const handleMessageEditClick = () => {
@@ -86,7 +90,7 @@ const ChatMessage = ({
             {inProcess && (
               <>
                 <i
-                  class="lni lni-alarm-clock"
+                  className="lni lni-alarm-clock"
                   style={{ marginRight: "2px" }}
                 ></i>
                 {Number(percent).toFixed(2)}%

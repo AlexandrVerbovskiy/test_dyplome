@@ -57,7 +57,7 @@ const Chat = () => {
     setEditMessage(id, content);
   };
 
-  const { chatRef, listRef, setListWindow, setChatWindow, activeWindow } =
+  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
     useChatWindowsChanger();
   const {
     createChat,
@@ -123,7 +123,7 @@ const Chat = () => {
   if (chatList.length < 1 && !activeChat) return <NoChats />;
 
   return (
-    <div id="chatPage" className="row">
+    <div id="chatPage" className="row" ref={bodyRef}>
       <ChatContext.Provider
         value={{
           appendUsers,
@@ -155,10 +155,10 @@ const Chat = () => {
           getUsersToJoin,
         }}
       >
-        <ChatList chatList={chatList} listRef={listRef}>
+        <ChatList chatList={chatList}>
           {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
         </ChatList>
-        <ChatBody chatRef={chatRef} />
+        <ChatBody />
       </ChatContext.Provider>
     </div>
   );

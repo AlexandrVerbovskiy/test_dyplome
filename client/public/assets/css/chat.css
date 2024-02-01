@@ -367,6 +367,7 @@ html.dark-theme #sendButton:hover {
   flex-direction: row;
   flex-wrap: nowrap;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #chatPage #chat_list .chat-sidebar-header + ul {
