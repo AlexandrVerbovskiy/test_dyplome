@@ -139,16 +139,19 @@ const useChatList = (onInit) => {
   const onChangeTyping = (data, typing) => {
     setChatList((prev) =>
       prev.map((elem) => {
-        if (elem.chat_id == data.chatId) return { ...elem, typing };
+        if (elem.chat_id == data.chatId)
+          return { ...elem, chat_typing: typing };
         return { ...elem };
       })
     );
   };
 
-  const onChangeOnline = (data, online) => {
+  const onChangeOnline = (userId, online) => {
     setChatList((prev) =>
       prev.map((elem) => {
-        if (elem.chat_id == data.chatId) return { ...elem, online };
+        if (elem.user_id == userId) {
+          return { ...elem, user_online: online };
+        }
         return { ...elem };
       })
     );

@@ -29,8 +29,6 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
   const [lastMessageId, setLastMessageId] = useState(null);
   const [editMessageId, setEditMessageId] = useState(null);
   const [editMessageContent, setEditMessageContent] = useState(null);
-  const [typing, setTyping] = useState(false);
-  const [online, setOnline] = useState(false);
   const main = useContext(MainContext);
   const leftChatRef = useRef(null);
   const kickUserRef = useRef(null);
@@ -282,15 +280,21 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
       activeChat.current !== null ? activeChat.current.chat_id : null;
     onChangeListTyping(data, typing);
     if (activeChatId != data.chatId) return;
-    setTyping(typing);
+    activeChat.current.chat_typing = typing;
   };
 
   const onChangeOnline = (data, online) => {
-    const activeChatId =
-      activeChat.current !== null ? activeChat.current.chat_id : null;
-    onChangeListOnline(data, online);
-    if (activeChatId != data.chatId) return;
-    setOnline(online);
+    const { userId } = data;
+
+    const activeUserId =
+      activeChat.current !== null && activeChat.current.chat_type == "personal"
+        ? activeChat.current.user_id
+        : null;
+
+    onChangeListOnline(userId, online);
+
+    if (activeUserId != userId) return;
+    activeChat.current.user_online = online;
   };
 
   const onGetNewChat = (data) => {
@@ -361,8 +365,6 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     onUpdateMessagePercent,
     onCancelledMessage,
     appendUsers,
-    chatTyping: typing,
-    chatOnline: online,
     chatUsers,
     leftChat: leftChatRef.current,
     kickUser: kickUserRef.current,

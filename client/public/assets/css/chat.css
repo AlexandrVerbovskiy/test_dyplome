@@ -699,3 +699,8 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   color: rgb(150, 149, 149);
   font-size: 1rem;
 }
+
+.chat-msg-typing {
+  font-style: italic;
+  font-weight: 500;
+}

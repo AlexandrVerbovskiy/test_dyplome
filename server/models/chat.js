@@ -3,7 +3,7 @@ const Model = require("./model");
 
 class Chat extends Model {
   __usersFields =
-    "users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+    "users.online as user_online, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
 
   __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
    ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type FROM messages
@@ -29,7 +29,7 @@ class Chat extends Model {
     `;
 
   __groupChatFields =
-    "chats.avatar as chat_avatar, chats.name as chat_name, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+    "chats.avatar as chat_avatar, chats.name as chat_name, users.online as user_online, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
 
   __getUserChatsGroups = `SELECT chats.id as chat_id FROM 
   (
@@ -345,7 +345,7 @@ class Chat extends Model {
   ) =>
     this.__baseGetChats({
       params: [searcherId, searcherId, "personal", searcherId],
-      baseSelect: this.__getUserChats,
+      baseSelect: this.__getUserChats + ", chats_users.typing as chat_typing",
       selectFields: this.__usersFields,
       lastChatId,
       limit,
@@ -528,6 +528,14 @@ class Chat extends Model {
       await this.dbQueryAsync(
         "UPDATE chats_users SET delete_time = CURRENT_TIMESTAMP() WHERE chat_id = ? AND user_id = ?",
         [chatId, userId]
+      );
+    });
+
+  setTyping = async (chatId, userId, typing) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        `UPDATE chats_users SET typing = ? WHERE user_id= ? AND chat_id = ?`,
+        [typing, userId, chatId]
       );
     });
 

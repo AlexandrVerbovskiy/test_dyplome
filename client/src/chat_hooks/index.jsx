@@ -10,3 +10,4 @@ export { default as useChatWindowsChanger } from "./useChatWindowsChanger";
 export { default as useMediaActions } from "./useMediaActions";
 export { default as useCreateGroupChat } from "./useCreateGroupChat";
 export { default as useAddGroupMembers } from "./useAddGroupMembers";
+export { default as useTyping } from "./useTyping";

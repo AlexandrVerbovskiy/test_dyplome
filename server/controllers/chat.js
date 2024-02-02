@@ -120,8 +120,7 @@ class Chat extends Controller {
   };
 
   __getUserSocketsFromChat = async (chatId, userId) => {
-    const sockets = await this.chatModel.getUserSocketsFromChat(chatId, userId);
-    return sockets;
+    return await this.chatModel.getUserSocketsFromChat(chatId, userId);
   };
 
   __getChatMessages = (req, res, showAllContent = false) =>
@@ -214,8 +213,7 @@ class Chat extends Controller {
     });
 
   __getUsersSocketToSend = async (userId) => {
-    const users = await this.chatModel.getUsersSocketToSend(userId);
-    return users;
+    return await this.chatModel.getUsersSocketToSend(userId);
   };
 
   __uploadToFile = async (userId, key, data, type) => {

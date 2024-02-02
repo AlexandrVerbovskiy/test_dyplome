@@ -44,6 +44,8 @@ class Chat {
     };
 
     await this.socketController.connect(socket, userId);
+    await this.chatController.userModel.updateOnline(userId, true);
+
     const users = await this.chatController.__getUsersSocketToSend(userId);
     users.forEach((user) => {
       this.io.to(user["socket"]).emit("online", {
@@ -217,13 +219,17 @@ class Chat {
     });
   };
 
-  __onChangeTyping = async (data, sessionInfo, typeAction) => {
+  __onChangeTyping = async (data, sessionInfo, typing) => {
     const userId = sessionInfo.userId;
     const chatId = data.chatId;
+
+    await this.userController.chatModel.setTyping(chatId, userId, typing);
     const sockets = await this.chatController.__getUserSocketsFromChat(
       chatId,
       userId
     );
+
+    const typeAction = typing ? "typing" : "stop-typing";
     sockets.forEach((socket) =>
       this.io.to(socket["socket"]).emit(typeAction, {
         chatId,
@@ -233,10 +239,10 @@ class Chat {
   };
 
   onStartTyping = (data, sessionInfo) =>
-    this.__onChangeTyping(data, sessionInfo, "typing");
+    this.__onChangeTyping(data, sessionInfo, true);
 
   onEndTyping = (data, sessionInfo) =>
-    this.__onChangeTyping(data, sessionInfo, "stop-typing");
+    this.__onChangeTyping(data, sessionInfo, false);
 
   onFilePartUpload = async (data, sessionInfo) => {
     const userId = sessionInfo.userId;
@@ -328,14 +334,17 @@ class Chat {
   };
 
   onDisconnect = async (data, sessionInfo) => {
+    console.log("disconnected, ", sessionInfo.userId);
     const userId = sessionInfo.userId;
     const socket = sessionInfo.socket;
 
+    await this.chatController.userModel.updateOnline(userId, false);
     await this.chatController.__stopAllUserActions(socket, userId);
     await this.socketController.disconnect(socket);
 
     const users = await this.chatController.__getUsersSocketToSend(userId);
     users.forEach((user) => {
+      console.log(user);
       this.io.to(user["socket"]).emit("offline", {
         userId,
       });

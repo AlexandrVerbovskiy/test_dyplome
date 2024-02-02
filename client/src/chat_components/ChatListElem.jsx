@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { ChatContext } from "../contexts";
 import { fullTimeFormat, generateFullUserImgPath } from "../utils";
+import { useTyping } from "../chat_hooks";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
   let className = "list-group-item";
+  const typingText = useTyping({ chatTyping: chat.chat_typing });
+
   if (!last) className += " pb-2";
 
   const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
@@ -19,12 +22,14 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
     chat.type === "text" ? chat.content.split("<div>")[0] : chat.type;
 
   const isGroup = chat.chat_type === "group";
+  const isPersonal = chat.chat_type === "personal";
   const photo = generateFullUserImgPath(
     isGroup ? chat.chat_avatar : chat.avatar
   );
   const chatName = isGroup ? chat.chat_name : chat.user_email;
 
-  const userOnlineClass = isGroup ? "" : "chat-user-online";
+  const userOnlineClass =
+    isPersonal && chat.user_online ? "chat-user-online" : "";
 
   return (
     <li onClick={handleElemClick} className={className}>
@@ -43,10 +48,16 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             <div className="chat-name">{chatName}</div>
             <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
           </h6>
-          <p
-            className="mb-0 chat-msg"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+
+          {chat?.chat_typing ? (
+            <p
+            className="mb-0 chat-msg chat-msg-typing">{typingText}</p>
+          ) : (
+            <p
+              className="mb-0 chat-msg"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          )}
         </div>
       </div>
     </li>

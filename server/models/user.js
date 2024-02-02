@@ -157,6 +157,13 @@ class User extends Model {
 
       return await this.dbQueryAsync(query, params);
     });
+
+  updateOnline = async (userId, typing) => {
+    await this.dbQueryAsync("UPDATE users SET online = ? WHERE id = ?", [
+      typing,
+      userId,
+    ]);
+  };
 }
 
 module.exports = User;

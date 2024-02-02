@@ -10,8 +10,6 @@ const ChatHeader = () => {
     chatInfo,
     activeChat,
     setListWindow,
-    chatTyping,
-    chatOnline,
     chatType,
     chatUsers,
     leftChat,
@@ -49,8 +47,8 @@ const ChatHeader = () => {
 
           <ChatHeaderMainInfo
             isGroup={isGroup}
-            chatOnline={chatOnline}
-            chatTyping={chatTyping}
+            chatOnline={activeChat?.user_online}
+            chatTyping={activeChat?.chat_typing}
           />
         </div>
       </div>

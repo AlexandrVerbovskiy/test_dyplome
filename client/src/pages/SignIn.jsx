@@ -20,8 +20,6 @@ const SignIn = () => {
         convertRes: login.convertRes,
       });
 
-      console.log(token, user);
-
       localStorage.setItem("token", token);
       setSuccess("Logged in successfully");
       setSessionUser(user);
