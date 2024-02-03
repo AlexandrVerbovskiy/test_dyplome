@@ -21,7 +21,17 @@ const useChatInit = ({
     if (!io) return;
 
     io.on("created-chat", (data) => onGetNewChat(data));
-    io.on("created-group-chat", (data) => onGetNewChat(data));
+    io.on("created-group-chat", (data) => {
+      onGetNewChat({
+        chat_id: data.chatId,
+        type: data.message.type,
+        chat_type: data.message.chat_type,
+        content: data.message.content,
+        chat_avatar: data.avatar,
+        chat_name: data.name,
+        time_sended: data.message.time_sended,
+      });
+    });
 
     io.on("error", (data) => {
       let message =

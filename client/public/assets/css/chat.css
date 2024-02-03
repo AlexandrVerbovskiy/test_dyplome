@@ -704,3 +704,11 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   font-style: italic;
   font-weight: 500;
 }
+
+.chat-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  height: 1.2em;
+  white-space: nowrap;
+}

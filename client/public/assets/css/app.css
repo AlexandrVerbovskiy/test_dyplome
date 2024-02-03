@@ -267,7 +267,7 @@ a {
   transition: all 0.3s ease-out;
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 960px) {
   .wrapper.toggled:not(.sidebar-hovered)
     .sidebar-wrapper
     .sidebar-header
@@ -1253,6 +1253,11 @@ a {
 .chat-time {
   font-size: 13px;
   color: #6c757d;
+}
+
+#chat_list .chat-time {
+  justify-content: flex-end;
+  width: 60px;
 }
 
 .chat-list {
@@ -3435,6 +3440,24 @@ body:has(.alert) .page-wrapper {
 
 .new-notifications-list > .card.hidden {
   opacity: 0;
+}
+
+.file-message {
+  display: flex;
+  align-items: center;
+}
+
+.file-message-icon {
+  margin-right: 5px;
+  color: white;
+  background-color: #008cff;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: 576px) {

@@ -280,7 +280,16 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
       activeChat.current !== null ? activeChat.current.chat_id : null;
     onChangeListTyping(data, typing);
     if (activeChatId != data.chatId) return;
-    activeChat.current.chat_typing = typing;
+
+    setChatUsers((prev) =>
+      prev.map((user) => {
+        if (user.user_id == data.userId) {
+          return { ...user, typing };
+        } else {
+          return { ...user };
+        }
+      })
+    );
   };
 
   const onChangeOnline = (data, online) => {

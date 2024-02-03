@@ -48,7 +48,7 @@ const ChatHeader = () => {
           <ChatHeaderMainInfo
             isGroup={isGroup}
             chatOnline={activeChat?.user_online}
-            chatTyping={activeChat?.chat_typing}
+            typingUsers={chatUsers.filter((user) => user.typing)}
           />
         </div>
       </div>

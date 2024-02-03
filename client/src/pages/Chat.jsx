@@ -124,6 +124,7 @@ const Chat = () => {
     <div id="chatPage" className="row" ref={bodyRef}>
       <ChatContext.Provider
         value={{
+          onGetNewChat,
           appendUsers,
           chatUsers,
           chatInfo,

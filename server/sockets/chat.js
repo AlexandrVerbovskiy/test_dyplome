@@ -174,7 +174,6 @@ class Chat {
   };
 
   onDeleteMessage = async (data, sessionInfo) => {
-    console.log(data);
     const userId = sessionInfo.userId;
     const message = await this.chatController.__hideMessage(data, userId);
 
@@ -234,6 +233,8 @@ class Chat {
       this.io.to(socket["socket"]).emit(typeAction, {
         chatId,
         userId,
+        userEmail: sessionInfo.email,
+        userNick: sessionInfo.nick,
       })
     );
   };
@@ -288,17 +289,33 @@ class Chat {
 
       await this.chatController.__deleteFileAction(userId, tempKey);
 
-      this.socketController.sendSocketMessageToUsers(
-        [dataToSend.getter_id],
-        "get-message",
-        {
-          message,
-          sender,
-        }
-      );
-
       message["temp_key"] = tempKey;
-      message["getter_id"] = data.getter_id;
+
+      if (data.chat_type == "group") {
+        const chatUsers = await this.chatController.__getChatUsers(data.chatId);
+        const chatUserIds = chatUsers.map((chat) => chat.user_id);
+        const usersToGetMessage = chatUserIds.filter((id) => id != userId);
+
+        this.socketController.sendSocketMessageToUsers(
+          usersToGetMessage,
+          "get-message",
+          {
+            message,
+            sender,
+          }
+        );
+      } else {
+        this.socketController.sendSocketMessageToUsers(
+          [dataToSend.getter_id],
+          "get-message",
+          {
+            message,
+            sender,
+          }
+        );
+
+        message["getter_id"] = data.getter_id;
+      }
 
       this.socketController.sendSocketMessageToUsers(
         [userId],
@@ -334,7 +351,6 @@ class Chat {
   };
 
   onDisconnect = async (data, sessionInfo) => {
-    console.log("disconnected, ", sessionInfo.userId);
     const userId = sessionInfo.userId;
     const socket = sessionInfo.socket;
 
@@ -344,7 +360,6 @@ class Chat {
 
     const users = await this.chatController.__getUsersSocketToSend(userId);
     users.forEach((user) => {
-      console.log(user);
       this.io.to(user["socket"]).emit("offline", {
         userId,
       });

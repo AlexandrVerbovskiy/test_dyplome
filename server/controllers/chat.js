@@ -364,7 +364,7 @@ class Chat extends Controller {
 
       const chatId = await this.chatModel.createGroup(userInfos, name, avatar);
       const currentUser = await this.userModel.getUserInfo(userId);
-      const message = await this.chatModel.__createSystemMessage(
+      const message = await this.__createSystemMessage(
         chatId,
         `The user '${currentUser["email"]}' has created a chat '${name}'`
       );
@@ -384,6 +384,7 @@ class Chat extends Controller {
         chatId,
         name,
         avatar,
+        chatMessage: message,
       });
     });
 
@@ -397,7 +398,7 @@ class Chat extends Controller {
       if (role == "owner") await this.chatModel.setOwnerByFirstPriority(chatId);
 
       const currentUser = await this.userModel.getUserInfo(userId);
-      const message = await this.chatModel.__createSystemMessage(
+      const message = await this.__createSystemMessage(
         chatId,
         `User ${currentUser["email"]} left the group`
       );
@@ -437,7 +438,7 @@ class Chat extends Controller {
 
       const kickedUser = await this.userModel.getUserInfo(userId);
 
-      const message = await this.chatModel.__createSystemMessage(
+      const message = await this.__createSystemMessage(
         chatId,
         `User ${kickedUser["email"]} was kicked out of the group by ${currentUserRole}`
       );
@@ -474,7 +475,7 @@ class Chat extends Controller {
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
 
-        const message = await this.chatModel.__createSystemMessage(
+        const message = await this.__createSystemMessage(
           chatId,
           `User ${user["email"]} was appended out of the group by ${currentUserRole}`
         );

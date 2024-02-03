@@ -25,7 +25,7 @@ class Chat extends Model {
         SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
             JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
     ) as c1 
-    JOIN chats on c1.chat_id = chats.id and type = ?
+    JOIN chats on c1.chat_id = chats.id and chats.type = ?
     `;
 
   __groupChatFields =
@@ -274,13 +274,12 @@ class Chat extends Model {
   };
 
   __baseGetChats = async ({
-    baseSelect,
     selectFields,
-    params,
     searcherId,
     lastChatId = 0,
     limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
     searchString = "",
+    dopFilter = [],
   }) =>
     await this.errorWrapper(async () => {
       let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
@@ -331,6 +330,8 @@ class Chat extends Model {
         }
       }
 
+      query += dopFilter.length ? " AND " + dopFilter.join(" AND ") : "";
+      console.log("test");
       query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
       props.push(Number(limit));
 
@@ -344,13 +345,12 @@ class Chat extends Model {
     searchString = ""
   ) =>
     this.__baseGetChats({
-      params: [searcherId, searcherId, "personal", searcherId],
-      baseSelect: this.__getUserChats + ", chats_users.typing as chat_typing",
       selectFields: this.__usersFields,
       lastChatId,
       limit,
       searchString,
       searcherId,
+      dopFilter: ['chats.type = "personal"'],
     });
 
   getAllChats = (
@@ -360,8 +360,6 @@ class Chat extends Model {
     searchString = ""
   ) =>
     this.__baseGetChats({
-      params: [searcherId, searcherId, searcherId],
-      baseSelect: this.__getUserChatsGroups,
       selectFields: this.__groupChatFields,
       lastChatId,
       limit,
@@ -490,7 +488,7 @@ class Chat extends Model {
   getChatUsers = async (chatId) =>
     await this.errorWrapper(async () => {
       const users = await this.dbQueryAsync(
-        `SELECT chats_users.role as role, ${this.__usersFields} FROM chats_users 
+        `SELECT chats_users.typing as typing, chats_users.role as role, ${this.__usersFields} FROM chats_users 
           JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ? AND chats_users.delete_time IS NULL`,
         [chatId]
       );

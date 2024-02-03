@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { getUsersToGroup } from "../requests";
-import { MainContext } from "../contexts";
+import { ChatContext, MainContext } from "../contexts";
 import { createGroupChat } from "../requests";
 import { randomString } from "../utils";
 
@@ -15,6 +15,7 @@ const useCreateGroupChat = () => {
   const [groupName, setGroupName] = useState({ value: "", error: null });
   const [groupAvatar, setGroupAvatar] = useState({ value: null, error: null });
   const { request } = useContext(MainContext);
+  const { onGetNewChat, selectChat } = useContext(ChatContext);
   const [error, setError] = useState(null);
   const requestUsersCount = 25;
 
@@ -130,6 +131,19 @@ const useCreateGroupChat = () => {
       setGroupAvatar({ value: null });
 
       deactivateChat();
+
+      const convertedChat = {
+        chat_id: data.chatId,
+        type: data.message.type,
+        chat_type: data.message.chat_type,
+        content: data.message.content,
+        chat_avatar: data.avatar,
+        chat_name: data.name,
+        time_sended: data.message.time_sended,
+      };
+
+      onGetNewChat(convertedChat);
+      selectChat(convertedChat);
     } catch (e) {}
   };
 

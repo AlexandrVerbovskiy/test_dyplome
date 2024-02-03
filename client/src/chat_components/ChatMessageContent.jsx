@@ -16,15 +16,20 @@ const ChatMessageContent = ({ type, content, inProcess }) => {
 
   if (type === "text")
     return (
-      <div
-        className="mb-0"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      <div className="mb-0" dangerouslySetInnerHTML={{ __html: content }} />
     );
   if (type === "image") return <img className="" src={url} />;
   if (type === "video") return <video controls className="" src={url} />;
   if (type === "audio") return <audio controls className="" src={url} />;
-  if (type === "file") return <div>{content}</div>;
+  if (type === "file")
+    return (
+      <a className="file-message" href={API_URL + "/files/messages/" + content} download>
+        <div className="file-message-icon">
+          <i className="bx bxs-file"></i>
+        </div>
+        {content}
+      </a>
+    );
   return "WHAT??????????????????";
 };
 

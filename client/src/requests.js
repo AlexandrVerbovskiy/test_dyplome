@@ -250,6 +250,7 @@ export const createGroupChat = {
     avatar: res.data.avatar,
     chatId: res.data.chatId,
     name: res.data.name,
+    message: res.data.chatMessage,
   }),
 };
 

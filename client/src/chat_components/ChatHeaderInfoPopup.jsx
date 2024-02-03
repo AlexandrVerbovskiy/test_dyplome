@@ -60,8 +60,7 @@ const ChatHeaderInfoPopup = ({
   chatType,
 }) => {
   const { activeChat } = useContext(ChatContext);
-
-  const activeForUse = activeChat.active_chat == 1;
+  const activeForUse = !activeChat.delete_time;
 
   return (
     <PopupWrapper

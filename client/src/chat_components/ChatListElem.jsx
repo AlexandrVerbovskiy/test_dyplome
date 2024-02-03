@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import { ChatContext } from "../contexts";
 import { fullTimeFormat, generateFullUserImgPath } from "../utils";
-import { useTyping } from "../chat_hooks";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
   let className = "list-group-item";
-  const typingText = useTyping({ chatTyping: chat.chat_typing });
 
   if (!last) className += " pb-2";
 
@@ -49,15 +47,10 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
           </h6>
 
-          {chat?.chat_typing ? (
-            <p
-            className="mb-0 chat-msg chat-msg-typing">{typingText}</p>
-          ) : (
-            <p
-              className="mb-0 chat-msg"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
-          )}
+          <p
+            className="mb-0 chat-msg"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
         </div>
       </div>
     </li>
