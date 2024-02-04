@@ -57,6 +57,7 @@ const useChatInit = ({
 
     io.on("file-part-uploaded", async ({ temp_key, message = null }) => {
       const nextPartData = await onSuccessSendBlobPart(temp_key);
+
       if (!nextPartData) return;
       if (nextPartData == "success saved" && message) {
         onGetMessageForSockets(message);
@@ -64,7 +65,7 @@ const useChatInit = ({
       }
 
       onUpdateMessagePercent({ temp_key, percent: nextPartData["percent"] });
-      io.emit("file-part-upload", { ...nextPartData });
+      setTimeout(() => io.emit("file-part-upload", { ...nextPartData }), 1000);
     });
 
     io.on("message-cancelled", async ({ temp_key }) =>
@@ -149,7 +150,10 @@ const useChatInit = ({
     io.emit("file-part-upload", { ...dataToSend });
   };
 
-  const stopSendMedia = (temp_key) => io.emit("stop-file-upload", { temp_key });
+  const stopSendMedia = (temp_key) => {
+    onStopSendMedia(temp_key);
+    io.emit("stop-file-upload", { temp_key });
+  };
 
   return {
     createChat,

@@ -22,12 +22,18 @@ const ChatHeader = () => {
   const closePopup = () => setActivePopup(false);
 
   const isGroup = chatType === "group";
+  const isPersonal = chatType === "personal";
+  const isSystem = chatType === "system";
 
   const photo = generateFullUserImgPath(
     isGroup ? activeChat.chat_avatar : activeChat.avatar
   );
 
-  const chatName = isGroup ? activeChat.chat_name : activeChat.user_email;
+  const chatName = isGroup
+    ? activeChat.chat_name
+    : isPersonal
+    ? activeChat.user_email
+    : "System chat";
 
   return (
     <div id="chat_header" className="card d-flex align-items-center">
@@ -45,11 +51,13 @@ const ChatHeader = () => {
         <div className="d-flex flex-column justify-content-center">
           <h4 className="mb-0 font-weight-bold">{chatName}</h4>
 
-          <ChatHeaderMainInfo
-            isGroup={isGroup}
-            chatOnline={activeChat?.user_online}
-            typingUsers={chatUsers.filter((user) => user.typing)}
-          />
+          {!isSystem && (
+            <ChatHeaderMainInfo
+              isGroup={isGroup}
+              chatOnline={activeChat?.user_online}
+              typingUsers={chatUsers.filter((user) => user.typing)}
+            />
+          )}
         </div>
       </div>
       <ChatHeaderInfoPopup

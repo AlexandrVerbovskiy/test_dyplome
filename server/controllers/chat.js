@@ -225,6 +225,7 @@ class Chat extends Controller {
     let filename = randomString() + "." + type;
 
     if (!info || !info.data) {
+      this.__createFolderIfNotExists(this.__message_folder);
       fs.writeFileSync(this.__message_folder + "/" + filename, data);
       const actionInfo = JSON.stringify({
         filename,
@@ -352,13 +353,7 @@ class Chat extends Controller {
           `${randomName}.${fileExtension}`
         );
         const filePath = path.join(this.__temp_folder, avatarFile.filename);
-
-        if (!fs.existsSync(this.__chat_folder)) {
-          fs.mkdirSync(this.__chat_folder, {
-            recursive: true,
-          });
-        }
-
+        this.__createFolderIfNotExists(this.__chat_folder);
         fs.renameSync(filePath, avatar);
       }
 

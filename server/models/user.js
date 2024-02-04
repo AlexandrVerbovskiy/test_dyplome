@@ -23,7 +23,11 @@ class User extends Model {
       );
       const count = countUserRes[0]["count"];
       if (count) this.setError("Email was registered earlier", 409);
-      await this.dbQueryAsync("INSERT INTO users SET ?", user);
+      const createUserRes = await this.dbQueryAsync(
+        "INSERT INTO users SET ?",
+        user
+      );
+      return createUserRes.insertId;
     });
 
   findByPasswordAndEmail = async (email, password) =>

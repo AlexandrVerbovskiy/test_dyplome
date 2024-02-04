@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require("fs");
+
 const {
   User: UserModel,
   PasswordResetLink: PasswordResetLinkModel,
@@ -94,6 +96,12 @@ class Controller {
       );
     } finally {
       this.sendResponse(res);
+    }
+  }
+
+  __createFolderIfNotExists(folderPath) {
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
     }
   }
 }

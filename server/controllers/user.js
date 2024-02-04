@@ -13,7 +13,8 @@ class User extends Controller {
     this.errorWrapper(res, async () => {
       const { email, password } = req.body;
 
-      await this.userModel.create(email, password);
+      const userId = await this.userModel.create(email, password);
+      await this.chatModel.createSystemChat({ id: userId });
       this.setResponse(
         {
           message: "User registered successfully",

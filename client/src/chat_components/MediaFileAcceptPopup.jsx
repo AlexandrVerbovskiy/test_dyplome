@@ -49,7 +49,7 @@ const MediaFileAcceptPopup = () => {
   };
 
   const FileToSend = () => {
-    return <div>Name: {file.name}</div>;
+    return <div className="w-100">Name: {file.name}</div>;
   };
 
   const checkFileExtension = (extension) => {

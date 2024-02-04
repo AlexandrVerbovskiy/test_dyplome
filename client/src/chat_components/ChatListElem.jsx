@@ -24,7 +24,11 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   const photo = generateFullUserImgPath(
     isGroup ? chat.chat_avatar : chat.avatar
   );
-  const chatName = isGroup ? chat.chat_name : chat.user_email;
+  const chatName = isGroup
+    ? chat.chat_name
+    : isPersonal
+    ? chat.user_email
+    : "System chat";
 
   const userOnlineClass =
     isPersonal && chat.user_online ? "chat-user-online" : "";

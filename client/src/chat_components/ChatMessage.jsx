@@ -94,6 +94,11 @@ const ChatMessage = ({
                   style={{ marginRight: "2px" }}
                 ></i>
                 {Number(percent).toFixed(2)}%
+                <i
+                  className="bx bx-x cursor-pointer"
+                  style={{ fontSize: "18px" }}
+                  onClick={stopSendMedia}
+                ></i>
               </>
             )}
           </p>
@@ -101,7 +106,7 @@ const ChatMessage = ({
             className={contentClassName[myOrNormal]}
             onContextMenu={handleMenuClick}
           >
-            {percent && (
+            {(type == "image" || type == "video") && inProcess && percent && (
               <div className="cancel-sending-message">
                 <div className="circle">
                   <div />

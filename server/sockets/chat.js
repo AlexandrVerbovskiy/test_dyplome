@@ -326,6 +326,7 @@ class Chat {
         }
       );
     } catch (error) {
+      console.log(error)
       this.socketController.sendSocketMessageToUsers(
         [userId],
         "file-part-uploaded-error",

@@ -204,6 +204,14 @@ class Chat extends Model {
       return chatId;
     });
 
+  createSystemChat = async (user) =>
+    await this.errorWrapper(async () => {
+      const chatId = await this.create("system");
+      await this.addManyUsers(chatId, [{ id: user.id, role: "member" }]);
+      await this.createMessage(chatId, null, "text", "Welcome to the system!");
+      return chatId;
+    });
+
   getAllMessageContents = async (messageId) =>
     await this.errorWrapper(async () => {
       const contents = await this.dbQueryAsync(
@@ -286,8 +294,8 @@ class Chat extends Model {
             messages.type, messages.time_created as time_sended, messages_contents.content,
             chat_info.last_message_id, chat_info.time_created, chat_info.delete_time, ${selectFields}
             FROM chats
-            JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ?
-            JOIN users ON chats_users.user_id = users.id
+            LEFT JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ?
+            LEFT JOIN users ON chats_users.user_id = users.id
             JOIN (
               SELECT chats.id,
                       MAX(m1.id) AS last_message_id, 
@@ -350,7 +358,7 @@ class Chat extends Model {
       limit,
       searchString,
       searcherId,
-      dopFilter: ['chats.type = "personal"'],
+      dopFilter: ['(chats.type = "personal" OR chats.type = "system")'],
     });
 
   getAllChats = (
