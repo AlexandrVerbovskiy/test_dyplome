@@ -78,6 +78,7 @@ function route(app, db, io) {
 
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
   app.post("/admin-chats", isAdmin, chatController.getAdminChats);
+  app.post("/admin-user-system-chats", isAdmin, chatController.getUserSystemChats);
 
   app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
   app.post("/select-chat", isAuth, chatController.selectChat);

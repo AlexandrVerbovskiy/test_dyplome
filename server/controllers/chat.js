@@ -44,6 +44,9 @@ class Chat extends Controller {
   getAdminChats = (req, res) =>
     this.__baseGetChats(req, res, this.chatModel.getAllChats);
 
+  getUserSystemChats = async (req, res) =>
+    this.__baseGetChats(req, res, this.chatModel.getAllUserSystemChats);
+
   __createChat = async (data, userId) => {
     const messageId = await this.chatModel.createPersonal(
       data.userId,

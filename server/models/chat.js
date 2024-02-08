@@ -339,7 +339,6 @@ class Chat extends Model {
       }
 
       query += dopFilter.length ? " AND " + dopFilter.join(" AND ") : "";
-      console.log("test");
       query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
       props.push(Number(limit));
 
@@ -373,6 +372,56 @@ class Chat extends Model {
       limit,
       searchString,
       searcherId,
+    });
+
+  getAllUserSystemChats = async (
+    searcherId,
+    lastChatId = 0,
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    searchString = ""
+  ) =>
+    await this.errorWrapper(async () => {
+      console.log(searchString)
+
+      let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
+          messages.type, messages.time_created as time_sended, messages_contents.content,
+          chat_info.last_message_id, chats_users.time_created, chats_users.delete_time, ${this.__usersFields}
+          FROM chats
+          LEFT JOIN chats_users ON chats_users.chat_id = chats.id
+          LEFT JOIN users ON chats_users.user_id = users.id
+          JOIN (
+            SELECT chats.id, MAX(m1.id) AS last_message_id
+            FROM messages as m1
+            JOIN chats ON m1.chat_id = chats.id AND chats.type='system'
+            GROUP BY chats.id
+          ) AS chat_info ON chat_info.id = chats.id
+          JOIN messages ON messages.id = chat_info.last_message_id
+          JOIN messages_contents ON messages_contents.message_id = messages.id`;
+
+      const props = [];
+
+      if (lastChatId) {
+        query += " WHERE chats.id < ?";
+        props.push(lastChatId);
+
+        if (searchString) {
+          query += " AND (users.email like ? or users.nick like ?)";
+          props.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
+        }
+      } else {
+        if (searchString) {
+          query += " WHERE (users.email like ? or users.nick like ?)";
+          props.push(`%${searchString}%`);
+          props.push(`%${searchString}%`);
+        }
+      }
+
+      query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
+      props.push(Number(limit));
+      console.log("TEST: ", query, props);
+
+      return await this.dbQueryAsync(query, props);
     });
 
   getUsersSocketToSend = async (userId) =>
