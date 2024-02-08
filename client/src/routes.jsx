@@ -15,6 +15,7 @@ import {
   AdminDispute,
   AdminClientChatView,
   UserProfile,
+  SystemChat,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -91,7 +92,11 @@ const adminRouter = createBrowserRouter([
   },
   {
     path: "/chat/:type?/:accountId?",
-    element: <Chat isAdmin={true} />,
+    element: <Chat />,
+  },
+  {
+    path: "/system-chat/:accountId?",
+    element: <SystemChat />,
   },
 ]);
 

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { getUsersToChatting, getAdminChats } from "../requests";
 import { MainContext } from "../contexts";
 
-const useChatList = (onInit) => {
+const useChatList = ({onInit, getRequest}) => {
   const limit = 20;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [chatList, setChatList] = useState([]);
@@ -36,13 +35,11 @@ const useChatList = (onInit) => {
     const lastChatId = getLastChatId(prevChats);
 
     try {
-      const requestInfo = main.isAdmin ? getAdminChats : getUsersToChatting;
-
       const chats = await main.request({
-        url: requestInfo.url(),
-        data: requestInfo.convertData(lastChatId, limit, search),
-        type: requestInfo.type,
-        convertRes: requestInfo.convertRes,
+        url: getRequest.url(),
+        data: getRequest.convertData(lastChatId, limit, search),
+        type: getRequest.type,
+        convertRes: getRequest.convertRes,
       });
 
       if (chats.length === limit) {

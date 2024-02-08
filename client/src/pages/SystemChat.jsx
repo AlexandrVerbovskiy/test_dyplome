@@ -8,24 +8,15 @@ import {
   useChatWindowsChanger,
 } from "../chat_hooks";
 import { useSocketInit } from "../hooks";
-import {
-  ChatList,
-  ChatBody,
-  ChatListHeader,
-  AdminChatListHeader,
-} from "../chat_components";
+import { ChatList, ChatBody, ChatListHeader } from "../chat_components";
+import { getAdminUserSystemChats } from "../requests";
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
-import { getUsersToChatting, getAdminChats } from "../requests";
 
-const Chat = () => {
+const SystemChat = () => {
   const { accountId } = useParams();
   const { socketIo } = useSocketInit();
-  const { sessionUser, isAdmin } = useContext(MainContext);
-
-  const getRequest = isAdmin ? getAdminChats : getUsersToChatting;
-
   const {
     chatInfo,
     selectChat,
@@ -53,8 +44,9 @@ const Chat = () => {
     kickUser,
     appendUsers,
     getUsersToJoin,
-  } = useMainChat({ accountId, getRequest });
+  } = useMainChat({ accountId, getRequest: getAdminUserSystemChats });
 
+  const { sessionUser } = useContext(MainContext);
   const onEditMessage = (id, content) => {
     setEditMessage(id, content);
   };
@@ -156,13 +148,11 @@ const Chat = () => {
           getUsersToJoin,
         }}
       >
-        <ChatList chatList={chatList}>
-          {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
-        </ChatList>
+        <ChatList chatList={chatList}>{<ChatListHeader />}</ChatList>
         <ChatBody />
       </ChatContext.Provider>
     </div>
   );
 };
 
-export default Chat;
+export default SystemChat;

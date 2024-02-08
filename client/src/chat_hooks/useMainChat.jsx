@@ -11,7 +11,7 @@ import {
 } from "../requests";
 import { MainContext } from "../contexts";
 
-const useMainChat = ({ accountId, isAdmin = false }) => {
+const useMainChat = ({ accountId, getRequest }) => {
   const defaultStatistic = {
     all: 0,
     text: 0,
@@ -33,16 +33,7 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
   const leftChatRef = useRef(null);
   const kickUserRef = useRef(null);
 
-  const {
-    chatList,
-    setChatListSearch,
-    getMoreChats,
-    onChatUpdate,
-    onGetChat,
-    onChatMessageDelete,
-    onChangeTyping: onChangeListTyping,
-    onChangeOnline: onChangeListOnline,
-  } = useChatList(async (chatList) => {
+  const onChatListInit = async (chatList) => {
     const chatElem = chatList.length > 0 ? chatList[0] : null;
 
     if (accountId) {
@@ -70,7 +61,18 @@ const useMainChat = ({ accountId, isAdmin = false }) => {
     } else {
       handleChangeChat(chatElem);
     }
-  });
+  };
+
+  const {
+    chatList,
+    setChatListSearch,
+    getMoreChats,
+    onChatUpdate,
+    onGetChat,
+    onChatMessageDelete,
+    onChangeTyping: onChangeListTyping,
+    onChangeOnline: onChangeListOnline,
+  } = useChatList({ onInit: onChatListInit, getRequest });
 
   function setEditMessage(id, content) {
     setEditMessageContent(content);

@@ -49,6 +49,17 @@ export const getAdminChats = {
   convertRes: (res) => res.data.chats,
 };
 
+export const getAdminUserSystemChats = {
+  url: () => "admin-user-system-chats",
+  convertData: (lastChatId, limit, searchString) => ({
+    lastChatId,
+    limit,
+    searchString,
+  }),
+  type: "post",
+  convertRes: (res) => res.data.chats,
+};
+
 export const getChatMessages = {
   url: () => "get-chat-messages",
   convertData: (chatId, lastId, count) => ({ chatId, lastId, count }),
