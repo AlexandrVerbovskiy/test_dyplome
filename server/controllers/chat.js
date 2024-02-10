@@ -59,7 +59,7 @@ class Chat extends Controller {
   };
 
   __createMessage = async (data, userId) => {
-    const localSend = async (chatId) => {
+    const localSend = async (chatId, userId) => {
       const messageId = await this.chatModel.createMessage(
         chatId,
         userId,
@@ -77,7 +77,7 @@ class Chat extends Controller {
       );
 
       if (hasPersonalChat) {
-        return await localSend(hasPersonalChat);
+        return await localSend(hasPersonalChat, userId);
       } else {
         const chatId = await this.chatModel.create("personal");
         const users = [
@@ -85,10 +85,24 @@ class Chat extends Controller {
           { id: userId, role: "member" },
         ];
         await this.chatModel.addManyUsers(chatId, users);
-        return await localSend(chatId);
+        return await localSend(chatId, userId);
+      }
+    } else if (data["chat_type"] == "system") {
+      const chatId = data["chatId"];
+      const userInfo = await this.userModel.getUserInfo(userId);
+      const hasUserAccess = await this.chatModel.hasUserAccess(chatId, userId);
+
+      if (hasUserAccess) {
+        return await localSend(chatId, userId);
+      } else {
+        if (userInfo["admin"]) {
+          return await localSend(chatId, userId);
+        }
+
+        return null;
       }
     } else {
-      return await localSend(data["chatId"]);
+      return await localSend(data["chatId"], userId);
     }
   };
 
@@ -126,7 +140,12 @@ class Chat extends Controller {
     return await this.chatModel.getUserSocketsFromChat(chatId, userId);
   };
 
-  __getChatMessages = (req, res, showAllContent = false) =>
+  __getChatMessages = (
+    req,
+    res,
+    showAllContent = false,
+    needCheckAccess = true
+  ) =>
     this.errorWrapper(res, async () => {
       if (!this.__checkIsBodyHasKeys(req, ["chatId", "lastId", "count"]))
         return this.setResponseValidationError(
@@ -134,9 +153,12 @@ class Chat extends Controller {
         );
       const { chatId, lastId, count } = req.body;
 
-      const userId = req.userData.userId;
-      const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
-      if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
+      if (needCheckAccess) {
+        const userId = req.userData.userId;
+        const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
+        if (!hasAccess)
+          return this.setResponseNoFoundError("Chat wasn't found");
+      }
 
       const messages = await this.chatModel.getChatMessages(
         chatId,
@@ -166,6 +188,8 @@ class Chat extends Controller {
     });
 
   getChatMessages = (req, res) => this.__getChatMessages(req, res);
+  getSystemChatMessages = (req, res) =>
+    this.__getChatMessages(req, res, true, false);
 
   getChatMessagesFullContents = (req, res) =>
     this.__getChatMessages(req, res, true);
@@ -180,6 +204,15 @@ class Chat extends Controller {
 
       const resSelect = await this.chatModel.selectChat(userId, chatId);
 
+      this.setResponseBaseSuccess("Found success", {
+        ...resSelect,
+      });
+    });
+
+  selectSystemChatByAdmin = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { chatId } = req.body;
+      const resSelect = await this.chatModel.selectSystemChat(chatId);
       this.setResponseBaseSuccess("Found success", {
         ...resSelect,
       });

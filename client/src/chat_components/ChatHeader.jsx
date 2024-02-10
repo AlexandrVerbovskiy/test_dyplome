@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { ChatContext } from "../contexts";
+import { ChatContext, MainContext } from "../contexts";
 import { generateFullUserImgPath } from "../utils";
 import ChatHeaderInfoPopup from "./ChatHeaderInfoPopup";
 import ChatHeaderMainInfo from "./ChatHeaderMainInfo";
@@ -15,6 +15,7 @@ const ChatHeader = () => {
     leftChat,
     kickUser,
   } = useContext(ChatContext);
+  const { sessionUser } = useContext(MainContext);
 
   const handleGoBackClick = () => setListWindow();
 
@@ -26,14 +27,19 @@ const ChatHeader = () => {
   const isSystem = chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? activeChat.chat_avatar : activeChat.avatar
+    isGroup ? activeChat.chat_avatar : activeChat.avatar,
+    isSystem && activeChat.user_id == null
   );
 
-  const chatName = isGroup
-    ? activeChat.chat_name
-    : isPersonal
-    ? activeChat.user_email
-    : "System chat";
+  let chatName = "System chat";
+
+  if (isGroup) {
+    chatName = activeChat.chat_name;
+  }
+
+  if (isPersonal || (isSystem && activeChat.user_id != null)) {
+    chatName = activeChat.user_email;
+  }
 
   return (
     <div id="chat_header" className="card d-flex align-items-center">

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ChatContext } from "../contexts";
+import { ChatContext, MainContext } from "../contexts";
 import { fullTimeFormat, generateFullUserImgPath } from "../utils";
 
 const ChatListElem = ({ chat, first = false, last = false }) => {
@@ -21,14 +21,22 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
 
   const isGroup = chat.chat_type === "group";
   const isPersonal = chat.chat_type === "personal";
+  const isSystem = chat.chat_type === "system";
+
   const photo = generateFullUserImgPath(
-    isGroup ? chat.chat_avatar : chat.avatar
+    isGroup ? chat.chat_avatar : chat.avatar,
+    isSystem && chat.user_id == null
   );
-  const chatName = isGroup
-    ? chat.chat_name
-    : isPersonal
-    ? chat.user_email
-    : "System chat";
+
+  let chatName = "System chat";
+
+  if (isGroup) {
+    chatName = chat.chat_name;
+  }
+
+  if (isPersonal || (isSystem && chat.user_id != null)) {
+    chatName = chat.user_email;
+  }
 
   const userOnlineClass =
     isPersonal && chat.user_online ? "chat-user-online" : "";

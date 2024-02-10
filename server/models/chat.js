@@ -381,7 +381,7 @@ class Chat extends Model {
     searchString = ""
   ) =>
     await this.errorWrapper(async () => {
-      console.log(searchString)
+      console.log(searchString);
 
       let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
           messages.type, messages.time_created as time_sended, messages_contents.content,
@@ -419,8 +419,6 @@ class Chat extends Model {
 
       query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
       props.push(Number(limit));
-      console.log("TEST: ", query, props);
-
       return await this.dbQueryAsync(query, props);
     });
 
@@ -537,6 +535,29 @@ class Chat extends Model {
         } else {
           userRole = user["role"];
         }
+      });
+
+      return { statistic, messages, users, userRole };
+    });
+
+  selectSystemChat = async (chatId) =>
+    await this.errorWrapper(async () => {
+      const messages = await this.getChatMessages(
+        chatId,
+        -1,
+        process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES,
+        true
+      );
+
+      const statistic = await this.getChatMessagesInfo(chatId, null, false);
+
+      const users = [];
+      const resChatUsers = await this.getChatUsers(chatId);
+
+      let userRole = "member";
+
+      resChatUsers.forEach((user) => {
+        users.push(user);
       });
 
       return { statistic, messages, users, userRole };

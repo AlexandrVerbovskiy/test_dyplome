@@ -130,6 +130,11 @@ class User extends Model {
       return await this.dbQueryAsync(query, params);
     });
 
+  async getAdminsIds() {
+    const res = await this.dbQueryAsync("SELECT id FROM users WHERE admin = 1");
+    return res.map((row) => row.id);
+  }
+
   getAdminsToGroupToJoin = async (
     chatId,
     lastId = 0,

@@ -1,8 +1,6 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import useChatList from "./useChatList";
 import {
-  getChatMessages,
-  selectChat,
   getUsersChat,
   leftChat,
   kickChatUser,
@@ -11,7 +9,12 @@ import {
 } from "../requests";
 import { MainContext } from "../contexts";
 
-const useMainChat = ({ accountId, getRequest }) => {
+const useMainChat = ({
+  accountId,
+  getRequest,
+  selectChatRequest,
+  getChatMessages,
+}) => {
   const defaultStatistic = {
     all: 0,
     text: 0,
@@ -94,10 +97,10 @@ const useMainChat = ({ accountId, getRequest }) => {
 
     try {
       const res = await main.request({
-        url: selectChat.url(),
-        type: selectChat.type,
-        data: selectChat.convertData(chatId),
-        convertRes: selectChat.convertRes,
+        url: selectChatRequest.url(),
+        type: selectChatRequest.type,
+        data: selectChatRequest.convertData(chatId),
+        convertRes: selectChatRequest.convertRes,
       });
 
       const messages = res.messages;
@@ -137,7 +140,9 @@ const useMainChat = ({ accountId, getRequest }) => {
         leftChatRef.current = null;
         kickUserRef.current = null;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const showMoreMessages = async () => {
@@ -155,9 +160,12 @@ const useMainChat = ({ accountId, getRequest }) => {
         ),
       });
 
-      setMessages((prev) => {
-        return { ...gotMessages, ...prev };
-      });
+      setMessages((prev) => [...gotMessages, ...prev]);
+
+      if (gotMessages[0]) {
+        setLastMessageId(gotMessages[0]["message_id"]);
+      }
+      
     } catch (e) {}
   };
 

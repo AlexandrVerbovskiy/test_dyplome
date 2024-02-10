@@ -17,7 +17,12 @@ import {
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
-import { getUsersToChatting, getAdminChats } from "../requests";
+import {
+  getUsersToChatting,
+  getAdminChats,
+  selectChat as selectChatRequest,
+  getChatMessages
+} from "../requests";
 
 const Chat = () => {
   const { accountId } = useParams();
@@ -25,7 +30,6 @@ const Chat = () => {
   const { sessionUser, isAdmin } = useContext(MainContext);
 
   const getRequest = isAdmin ? getAdminChats : getUsersToChatting;
-
   const {
     chatInfo,
     selectChat,
@@ -53,7 +57,8 @@ const Chat = () => {
     kickUser,
     appendUsers,
     getUsersToJoin,
-  } = useMainChat({ accountId, getRequest });
+    showMoreMessages,
+  } = useMainChat({ accountId, getRequest, selectChatRequest, getChatMessages });
 
   const onEditMessage = (id, content) => {
     setEditMessage(id, content);
@@ -140,6 +145,7 @@ const Chat = () => {
           handleStartTyping,
           handleEndTyping,
           editor,
+          showMoreMessages,
           emojiPopup,
           messages,
           activeChat,

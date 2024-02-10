@@ -67,8 +67,27 @@ export const getChatMessages = {
   convertRes: (res) => res.data.messages,
 };
 
+export const getAdminChatMessages = {
+  url: () => "admin-get-system-chat-messages",
+  convertData: (chatId, lastId, count) => ({ chatId, lastId, count }),
+  type: "post",
+  convertRes: (res) => res.data.messages,
+};
+
 export const selectChat = {
   url: () => "select-chat",
+  type: "post",
+  convertData: (chatId) => ({ chatId }),
+  convertRes: (res) => ({
+    messages: res.data.messages,
+    statistic: res.data.statistic,
+    users: res.data.users,
+    userRole: res.data.userRole,
+  }),
+};
+
+export const selectSystemChatByAdmin = {
+  url: () => "admin-select-system-chat",
   type: "post",
   convertData: (chatId) => ({ chatId }),
   convertRes: (res) => ({

@@ -117,19 +117,26 @@ class Chat {
       );
     }
 
-    if (data.chat_type == "group") {
+    if (data.chat_type == "group" || data.chat_type == "system") {
       const chatUsers = await this.chatController.__getChatUsers(data.chatId);
       const chatUserIds = chatUsers.map((chat) => chat.user_id);
       const usersToGetMessage = chatUserIds.filter((id) => id != userId);
 
-      this.socketController.sendSocketMessageToUsers(
-        usersToGetMessage,
-        "get-message",
-        {
+      if (usersToGetMessage.length) {
+        this.socketController.sendSocketMessageToUsers(
+          usersToGetMessage,
+          "get-message",
+          {
+            message,
+            sender,
+          }
+        );
+      } else if (data.chat_type == "system") {
+        this.socketController.sendSocketMessageToAdmins("get-message", userId, {
           message,
           sender,
-        }
-      );
+        });
+      }
     }
 
     message["temp_key"] = data["temp_key"];
@@ -326,7 +333,7 @@ class Chat {
         }
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
       this.socketController.sendSocketMessageToUsers(
         [userId],
         "file-part-uploaded-error",

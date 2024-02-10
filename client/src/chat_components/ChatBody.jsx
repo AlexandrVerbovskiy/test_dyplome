@@ -7,6 +7,7 @@ import MediaFileAcceptPopup from "./MediaFileAcceptPopup";
 import ChatSystemMessage from "./ChatSystemMessage";
 import { ChatContext, ChatBodyContext } from "../contexts";
 import { useMediaFileAccept, useRecorder } from "../chat_hooks";
+import { UploadTrigger } from "../components";
 
 const ChatBody = () => {
   const textRef = useRef(null);
@@ -19,6 +20,7 @@ const ChatBody = () => {
     onDeleteMessage,
     stopSendMedia,
     activeChatId,
+    showMoreMessages,
   } = useContext(ChatContext);
 
   const mediaFileAccept = useMediaFileAccept();
@@ -79,11 +81,17 @@ const ChatBody = () => {
     return () => stopSendMedia(temp_key);
   };
 
+  const handleScrollBody = (e) => {
+    if (e.target.scrollTop === 0) {
+      showMoreMessages();
+    }
+  };
+
   return (
     <ChatBodyContext.Provider value={{ mediaFileAccept, recorder }}>
       <div id="chat_body" className="card col-lg-8">
         <ChatHeader />
-        <div className="card-body" ref={bodyRef}>
+        <div className="card-body" ref={bodyRef} onScroll={handleScrollBody}>
           {messages.map((message) => {
             const key = message.in_process
               ? message.temp_key

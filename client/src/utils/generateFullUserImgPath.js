@@ -1,9 +1,17 @@
 import config from "../config";
 
-const generateFullUserImgPath = (url) => {
-  return url
-    ? config.API_URL + "/" + url
-    : "/assets/images/icons/no-profile.jpg";
+const generateFullUserImgPath = (url, system) => {
+  let res = "/assets/images/icons/no-profile.jpg";
+
+  if (system) {
+    res = "/assets/images/logo-icon.png";
+  }
+
+  if (url) {
+    res = config.API_URL + "/" + url;
+  }
+
+  return res;
 };
 
 export default generateFullUserImgPath;

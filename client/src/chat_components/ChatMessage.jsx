@@ -3,7 +3,7 @@ import ChatMessageContent from "./ChatMessageContent";
 import ChatMessageActions from "./ChatMessageActions";
 import AcceptDeleteMessageModal from "./AcceptDeleteMessageModal";
 import { generateFullUserImgPath, fullTimeFormat } from "../utils";
-import { MainContext } from "../contexts";
+import { ChatContext, MainContext } from "../contexts";
 
 const ChatMessage = ({
   onRightBtnClick,
@@ -23,6 +23,7 @@ const ChatMessage = ({
 }) => {
   const main = useContext(MainContext);
   const { sessionUser } = main;
+  const { activeChat } = useContext(ChatContext);
 
   const deleteMessageRef = useRef(null);
   const deleteMessageWrapperRef = useRef(null);
@@ -69,7 +70,10 @@ const ChatMessage = ({
     <div className={mainClassName[myOrNormal]}>
       <div className="d-flex">
         <img
-          src={generateFullUserImgPath(sender_avatar)}
+          src={generateFullUserImgPath(
+            sender_avatar,
+            activeChat.chat_type === "system" && activeChat.user_id == null
+          )}
           width="48"
           height="48"
           className="rounded-circle"

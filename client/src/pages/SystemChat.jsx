@@ -9,7 +9,11 @@ import {
 } from "../chat_hooks";
 import { useSocketInit } from "../hooks";
 import { ChatList, ChatBody, ChatListHeader } from "../chat_components";
-import { getAdminUserSystemChats } from "../requests";
+import {
+  getAdminUserSystemChats,
+  selectSystemChatByAdmin,
+  getAdminChatMessages,
+} from "../requests";
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
@@ -44,7 +48,13 @@ const SystemChat = () => {
     kickUser,
     appendUsers,
     getUsersToJoin,
-  } = useMainChat({ accountId, getRequest: getAdminUserSystemChats });
+    showMoreMessages,
+  } = useMainChat({
+    accountId,
+    getRequest: getAdminUserSystemChats,
+    selectChatRequest: selectSystemChatByAdmin,
+    getChatMessages: getAdminChatMessages,
+  });
 
   const { sessionUser } = useContext(MainContext);
   const onEditMessage = (id, content) => {
@@ -146,6 +156,7 @@ const SystemChat = () => {
           leftChat,
           kickUser,
           getUsersToJoin,
+          showMoreMessages,
         }}
       >
         <ChatList chatList={chatList}>{<ChatListHeader />}</ChatList>
