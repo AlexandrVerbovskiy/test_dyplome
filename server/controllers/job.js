@@ -1,21 +1,25 @@
 const Controller = require("./controller");
 
 class Job extends Controller {
-  __validateEdit = (title, price, description, lat, lng) => {
+  __validateEdit = (res, title, price, description, lat, lng) => {
     if (!title || title.length <= 2)
-      return this.setResponseValidationError(
+      return this.sendResponseValidationError(
+        res,
         "Title should be at least 3 characters long"
       );
     if (!price || price <= 0)
-      return this.setResponseValidationError(
+      return this.sendResponseValidationError(
+        res,
         "Price should be greater than zero"
       );
     if (description.length < 80)
-      return this.setResponseValidationError(
+      return this.sendResponseValidationError(
+        res,
         "Description should be at least 80 characters long"
       );
     if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng)))
-      return this.setResponseValidationError(
+      return this.sendResponseValidationError(
+        res,
         "Latitude and longitude should be valid numbers"
       );
     return false;
@@ -27,6 +31,7 @@ class Job extends Controller {
 
       const userId = req.userData.userId;
       const resValidation = this.__validateEdit(
+        res,
         title,
         price,
         description,
@@ -44,7 +49,7 @@ class Job extends Controller {
         lng,
         userId
       );
-      this.setResponseBaseSuccess("The job was created successfully", {
+      return this.sendResponseSuccess(res, "The job was created successfully", {
         newId: jobId,
       });
     });
@@ -54,6 +59,7 @@ class Job extends Controller {
       const { jobId, title, price, address, description, lat, lng } = req.body;
 
       const resValidation = this.__validateEdit(
+        res,
         title,
         price,
         description,
@@ -71,7 +77,7 @@ class Job extends Controller {
         lat,
         lng
       );
-      this.setResponseBaseSuccess("The job was get successfully");
+      return this.sendResponseSuccess(res, "The job was get successfully");
     });
 
   edit = async (req, res) => {
@@ -88,7 +94,7 @@ class Job extends Controller {
     this.errorWrapper(res, async () => {
       const jobId = req.params.id;
       const job = await this.jobModel.getById(jobId);
-      this.setResponseBaseSuccess("The jobs were get successfully", {
+      return this.sendResponseSuccess(res, "The jobs were get successfully", {
         job,
       });
     });
@@ -110,7 +116,7 @@ class Job extends Controller {
         filter,
         needCountJobs
       );
-      this.setResponseBaseSuccess("The job was get successfully", {
+      return this.sendResponseSuccess(res, "The job was get successfully", {
         jobs,
       });
     });

@@ -4,28 +4,9 @@ const { CustomError } = require("../utils");
 
 class Model {
   passwordCashSaltOrRounds = 10;
-  __error = null;
-
-  resetError() {
-    this.__error = null;
-  }
 
   setError(message, status = 500) {
-    if (this.__error) return;
-    this.__error = new CustomError(message, status);
-    throw new Error(message);
-  }
-
-  throwMainError() {
-    if (!this.__error) return;
-
-    try {
-      throw this.__error;
-    } catch (error) {
-      throw error;
-    } finally {
-      this.resetError();
-    }
+    throw new CustomError(message, status);
   }
 
   constructor(db) {
@@ -36,10 +17,12 @@ class Model {
     try {
       return await func();
     } catch (err) {
-      console.log(err);
-      this.setError("Internal server error", 500);
-    } finally {
-      this.throwMainError();
+      if (err instanceof CustomError) {
+        throw err;
+      } else {
+        console.log(err)
+        throw new CustomError("Internal server error", 500);
+      }
     }
   }
 

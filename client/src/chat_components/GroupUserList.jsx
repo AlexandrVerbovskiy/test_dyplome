@@ -19,10 +19,16 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
         {users.map((user) => {
           let canKick = false;
 
+          console.log(user["role"], currentUserRole)
+
           if (
-            (currentUserRole != user["role"] && user["role"] == "member") ||
-            (currentUserRole != user["role"] && currentUserRole == "admin")
+            user["role"] == "member" &&
+            (currentUserRole == "admin" || currentUserRole == "owner")
           ) {
+            canKick = true;
+          }
+
+          if (user["role"] == "admin" && currentUserRole == "owner") {
             canKick = true;
           }
 
@@ -45,22 +51,24 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex">
-                <button
-                  className="remove-chat-user"
-                  onClick={() => setIdToDelete(user["user_id"])}
-                >
-                  Remove
-                </button>
-                <YesNoPopup
-                  shortTitle="Remove Member"
-                  title="Are you sure to remove the user from the chat?"
-                  trigger={idToDelete}
-                  onAccept={onAcceptDelete}
-                  onClose={resetIdToDelete}
-                  acceptText="Remove"
-                />
-              </div>
+              {canKick && (
+                <div className="d-flex">
+                  <button
+                    className="remove-chat-user"
+                    onClick={() => setIdToDelete(user["user_id"])}
+                  >
+                    Remove
+                  </button>
+                  <YesNoPopup
+                    shortTitle="Remove Member"
+                    title="Are you sure to remove the user from the chat?"
+                    trigger={idToDelete}
+                    onAccept={onAcceptDelete}
+                    onClose={resetIdToDelete}
+                    acceptText="Remove"
+                  />
+                </div>
+              )}
             </div>
           );
         })}

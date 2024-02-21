@@ -21,7 +21,8 @@ class Chat extends Controller {
       if (
         !this.__checkIsBodyHasKeys(req, ["lastChatId", "searchString", "limit"])
       )
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Not all data was transferred successfully"
         );
 
@@ -33,7 +34,7 @@ class Chat extends Controller {
         limit,
         searchString
       );
-      this.setResponseBaseSuccess("Found success", {
+      return this.sendResponseSuccess(res, "Found success", {
         chats,
       });
     });
@@ -148,7 +149,8 @@ class Chat extends Controller {
   ) =>
     this.errorWrapper(res, async () => {
       if (!this.__checkIsBodyHasKeys(req, ["chatId", "lastId", "count"]))
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Not all data was transferred successfully"
         );
       const { chatId, lastId, count } = req.body;
@@ -157,7 +159,7 @@ class Chat extends Controller {
         const userId = req.userData.userId;
         const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
         if (!hasAccess)
-          return this.setResponseNoFoundError("Chat wasn't found");
+          return this.sendResponseNoFoundError(res, "Chat wasn't found");
       }
 
       const messages = await this.chatModel.getChatMessages(
@@ -168,7 +170,7 @@ class Chat extends Controller {
       );
 
       if (!showAllContent)
-        return this.setResponseBaseSuccess("Found success", {
+        return this.sendResponseSuccess(res, "Found success", {
           messages,
         });
 
@@ -182,7 +184,7 @@ class Chat extends Controller {
         resMessages.push(resFullMessageInfo);
       }
 
-      return this.setResponseBaseSuccess("Found success", {
+      return this.sendResponseSuccess(res, "Found success", {
         messages: resMessages,
       });
     });
@@ -200,11 +202,12 @@ class Chat extends Controller {
 
       const userId = req.userData.userId;
       const hasAccess = await this.chatModel.hasUserAccess(chatId, userId);
-      if (!hasAccess) return this.setResponseNoFoundError("Chat wasn't found");
+      if (!hasAccess)
+        return this.sendResponseNoFoundError(res, "Chat wasn't found");
 
       const resSelect = await this.chatModel.selectChat(userId, chatId);
 
-      this.setResponseBaseSuccess("Found success", {
+      return this.sendResponseSuccess(res, "Found success", {
         ...resSelect,
       });
     });
@@ -213,7 +216,7 @@ class Chat extends Controller {
     this.errorWrapper(res, async () => {
       const { chatId } = req.body;
       const resSelect = await this.chatModel.selectSystemChat(chatId);
-      this.setResponseBaseSuccess("Found success", {
+      return this.sendResponseSuccess(res, "Found success", {
         ...resSelect,
       });
     });
@@ -245,7 +248,11 @@ class Chat extends Controller {
         }
       }
 
-      this.setResponseBaseSuccess("Chat was successfully found", companionInfo);
+      return this.sendResponseSuccess(
+        res,
+        "Chat was successfully found",
+        companionInfo
+      );
     });
 
   __getUsersSocketToSend = async (userId) => {
@@ -324,7 +331,7 @@ class Chat extends Controller {
       userIds.push(user["id"]);
     });
 
-    this.__socketController.sendSocketMessageToUsers(
+    return this.__socketController.sendSocketMessageToUsers(
       userIds,
       messageName,
       messageData
@@ -335,7 +342,9 @@ class Chat extends Controller {
     this.errorWrapper(res, async () => {
       const { chatId } = req.params;
       const users = await this.__getChatUsers(chatId);
-      this.setResponseBaseSuccess("Chat info was got success", { users });
+      return this.sendResponseSuccess(res, "Chat info was got success", {
+        users,
+      });
     });
 
   setIo(io) {
@@ -369,12 +378,14 @@ class Chat extends Controller {
       });
 
       if (userInfos.length < 1)
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Cannot create chat without members"
         );
 
       if (name.length < 1)
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Cannot create chat without name"
         );
 
@@ -411,7 +422,7 @@ class Chat extends Controller {
         }
       );
 
-      this.setResponseBaseSuccess("Chat created success", {
+      return this.sendResponseSuccess(res, "Chat created success", {
         chatId,
         name,
         avatar,
@@ -440,7 +451,7 @@ class Chat extends Controller {
         userId,
       ]);
 
-      this.setResponseBaseSuccess("Left success", {
+      return this.sendResponseSuccess(res, "Left success", {
         chatId,
         ...message,
       });
@@ -448,7 +459,7 @@ class Chat extends Controller {
 
   kickUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { chatId, userToKicked } = req.body;
+      const { chatId, userId: userToKicked } = req.body;
       const userId = req.userData.userId;
 
       const currentUserRole = await this.chatModel.getUserChatRole(
@@ -480,7 +491,7 @@ class Chat extends Controller {
         userId,
       ]);
 
-      this.setResponseBaseSuccess("Kicked success", {
+      return this.sendResponseSuccess(res, "Kicked success", {
         chatId,
         ...message,
       });
@@ -524,7 +535,7 @@ class Chat extends Controller {
         userId,
       ]);
 
-      this.setResponseBaseSuccess("Appended success", {
+      return this.sendResponseSuccess(res, "Appended success", {
         chatId,
         messages,
       });

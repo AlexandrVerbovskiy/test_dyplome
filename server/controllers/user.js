@@ -15,10 +15,10 @@ class User extends Controller {
 
       const userId = await this.userModel.create(email, password);
       await this.chatModel.createSystemChat({ id: userId });
-      this.setResponse(
-        {
-          message: "User registered successfully",
-        },
+      return this.sendResponseSuccess(
+        res,
+        "User registered successfully",
+        {},
         201
       );
     });
@@ -39,7 +39,9 @@ class User extends Controller {
 
       res.set("Authorization", `Bearer ${token}`);
 
-      this.setResponse(
+      return this.sendResponseSuccess(
+        res,
+        "User authoried successfully",
         {
           userId,
         },
@@ -54,14 +56,16 @@ class User extends Controller {
       const userId = await validateTokenUtil(token);
       const user = await this.userModel.getUserInfo(userId);
 
-      this.setResponse(
-        {
-          validated: false,
-        },
-        200
-      );
-
-      if (!userId || !user) return;
+      if (!userId || !user) {
+        return this.sendResponseSuccess(
+          res,
+          "Token error",
+          {
+            validated: false,
+          },
+          200
+        );
+      }
 
       const updatedToken = jwt.sign(
         {
@@ -71,7 +75,9 @@ class User extends Controller {
       );
 
       res.set("Authorization", `Bearer ${updatedToken}`);
-      this.setResponse(
+      return this.sendResponseSuccess(
+        res,
+        "Token updated successfully",
         {
           validated: true,
           user,
@@ -89,25 +95,29 @@ class User extends Controller {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!nick || !address || !lat || !lng || !email)
-        return this.setResponseValidationError("All fields are required");
+        return this.sendResponseValidationError(res, "All fields are required");
 
       if (nick.length < 3)
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Nick must be at least 3 characters long"
         );
 
       if (lat === null || lng === null || isNaN(lat) || isNaN(lng))
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Invalid latitude or longitude values"
         );
 
       if (address.length > 255)
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Address length must not exceed 255 characters"
         );
 
       if (!emailRegex.test(email))
-        return this.setResponseValidationError(
+        return this.sendResponseValidationError(
+          res,
           "Invalid email format. Please enter an email in the format 'example@example.com'."
         );
 
@@ -138,7 +148,7 @@ class User extends Controller {
         lat,
         lng,
       });
-      this.setResponseBaseSuccess("User profile updated successfully");
+      return this.sendResponseSuccess(res, "User profile updated successfully");
     });
 
   resetPasswordRequest = (req, res) =>
@@ -147,7 +157,8 @@ class User extends Controller {
 
       const user = await this.userModel.findByEmail(email);
       if (!user)
-        return this.setResponseNoFoundError(
+        return this.sendResponseNoFoundError(
+          res,
           "No user with this email was found"
         );
 
@@ -162,7 +173,8 @@ class User extends Controller {
         );
       }
 
-      this.setResponseBaseSuccess(
+      return this.sendResponseSuccess(
+        res,
         "A password reset link has been sent to your email",
         {
           resetLink,
@@ -179,13 +191,16 @@ class User extends Controller {
         resetToken
       );
       if (!resetLink)
-        return this.setResponseNoFoundError("Invalid password reset token");
+        return this.sendResponseNoFoundError(
+          res,
+          "Invalid password reset token"
+        );
 
       const accountId = resetLink.account_id;
       await this.userModel.updatePassword(accountId, password);
       await this.passwordResetLinkModel.deleteLink(resetLink.id);
 
-      this.setResponseBaseSuccess("Password successfully updated");
+      return this.sendResponseSuccess(res, "Password successfully updated");
     });
 
   resetPassword = (req, res) =>
@@ -200,15 +215,14 @@ class User extends Controller {
       );
 
       if (!isCurrentPasswordValid)
-        return this.setResponse(
-          {
-            message: "The current password is incorrect",
-          },
+        return this.sendResponseError(
+          res,
+          "The current password is incorrect",
           401
         );
 
       await this.userModel.updatePassword(userId, newPassword);
-      this.setResponseBaseSuccess("Password successfully reset");
+      return this.sendResponseSuccess(res, "Password successfully reset");
     });
 
   __getUserById = async (userId) => await this.userModel.getUserInfo(userId);
@@ -217,14 +231,19 @@ class User extends Controller {
     this.errorWrapper(res, async () => {
       const { userId } = req.body;
       const user = await this.__getUserById(userId);
-      this.setResponseBaseSuccess("User profile was getted successfully", user);
+      return this.sendResponseSuccess(
+        res,
+        "User profile was getted successfully",
+        user
+      );
     });
 
   getPersonalProfile = (req, res) =>
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;
       const user = await this.userModel.getUserInfo(userId);
-      this.setResponseBaseSuccess(
+      return this.sendResponseSuccess(
+        res,
         "Personal profile userId getted successfully",
         user
       );
@@ -273,7 +292,7 @@ class User extends Controller {
       user["allCancelledFromUser"] =
         await this.jobProposalModel.getCountAllCancelledFromUser(userId);
 
-      return this.setResponseBaseSuccess("User getted success", user);
+      return this.sendResponseSuccess(res, "User getted success", user);
     });
 
   getPersonalNotifications = (req, res) =>
@@ -288,7 +307,7 @@ class User extends Controller {
         count
       );
 
-      this.setResponseBaseSuccess("User notifications got success", {
+      return this.sendResponseSuccess(res, "User notifications got success", {
         notifications,
       });
     });
@@ -306,7 +325,7 @@ class User extends Controller {
         filter
       );
 
-      this.setResponseBaseSuccess("User notifications got success", {
+      return this.sendResponseSuccess(res, "User notifications got success", {
         users: [...admins],
       });
     });
@@ -326,7 +345,7 @@ class User extends Controller {
         filter
       );
 
-      this.setResponseBaseSuccess("User notifications got success", {
+      return this.sendResponseSuccess(res, "User notifications got success", {
         users: [...admins],
       });
     });

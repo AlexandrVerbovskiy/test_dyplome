@@ -6,16 +6,16 @@ class Comment extends Controller {
       const commentType = req.params.type ?? "reply";
       let comment = null;
       const body = req.body.body;
-      if (!body) return this.setResponseError("No comment body", 400);
+      if (!body) return this.sendResponseError(res, "No comment body", 400);
       const userId = req.userData.userId;
 
       if (commentType == "employee") {
         const employeeId = req.body.entityId;
         const rating = req.body.rating;
 
-        if (!rating) return this.setResponseError("No comment rating", 400);
+        if (!rating) return this.sendResponseError(res, "No comment rating", 400);
         if (!employeeId)
-          return this.setResponseError("No comment employee", 400);
+          return this.sendResponseError(res, "No comment employee", 400);
 
         comment = await this.employeeCommentModel.create({
           senderId: userId,
@@ -27,8 +27,8 @@ class Comment extends Controller {
         const workerId = req.body.entityId;
         const rating = req.body.rating;
 
-        if (!rating) return this.setResponseError("No comment rating", 400);
-        if (!workerId) return this.setResponseError("No comment worker", 400);
+        if (!rating) return this.sendResponseError(res, "No comment rating", 400);
+        if (!workerId) return this.sendResponseError(res, "No comment worker", 400);
 
         comment = await this.workerCommentModel.create({
           senderId: userId,
@@ -38,7 +38,7 @@ class Comment extends Controller {
         });
       } else if (commentType == "job") {
         const jobId = req.body.entityId;
-        if (!jobId) return this.setResponseError("No comment job", 400);
+        if (!jobId) return this.sendResponseError(res, "No comment job", 400);
 
         comment = await this.jobCommentModel.create({
           senderId: userId,
@@ -59,7 +59,7 @@ class Comment extends Controller {
         });
       }
 
-      this.setResponseBaseSuccess("Comment sended success", comment);
+      return this.sendResponseSuccess(res,"Comment sended success", comment);
     });
 
   getById = async (req, res) =>
@@ -78,7 +78,7 @@ class Comment extends Controller {
       }
 
       const comment = await getById(commentId);
-      this.setResponseBaseSuccess("Comment got success", {
+      return this.sendResponseSuccess(res,"Comment got success", {
         comment,
       });
     });
@@ -100,7 +100,7 @@ class Comment extends Controller {
       }
 
       const comments = await getComments(lastId, limit);
-      this.setResponseBaseSuccess("Comment got success", {
+      return this.sendResponseSuccess(res,"Comment got success", {
         comments,
       });
     });
@@ -137,7 +137,7 @@ class Comment extends Controller {
         res["totalCount"] = await getCountComments();
       }
 
-      this.setResponseBaseSuccess("Comments got success", res);
+      return this.sendResponseSuccess(res,"Comments got success", res);
     });
 }
 

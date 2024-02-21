@@ -119,22 +119,22 @@ const useMainChat = ({
 
       if (chat.chat_type == "group") {
         leftChatRef.current = () => {
-          /*return main.request({
+          return main.request({
             url: leftChat.url(),
             type: leftChat.type,
             data: leftChat.convertData(chat.chat_id),
             convertRes: leftChat.convertRes,
-          });*/
+          });
         };
 
         kickUserRef.current = (userId) => {
           setChatUsers((prev) => prev.filter((user) => user.user_id != userId));
-          /*return main.request({
+          return main.request({
             url: kickChatUser.url(),
             type: kickChatUser.type,
             data: kickChatUser.convertData(chat.chat_id, userId),
             convertRes: kickChatUser.convertRes,
-          });*/
+          });
         };
       } else {
         leftChatRef.current = null;
@@ -165,7 +165,6 @@ const useMainChat = ({
       if (gotMessages[0]) {
         setLastMessageId(gotMessages[0]["message_id"]);
       }
-      
     } catch (e) {}
   };
 

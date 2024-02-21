@@ -15,15 +15,15 @@ class JobProposal extends Controller {
 
       const userId = req.userData.userId;
       let jobExists = await this.jobModel.exists(jobId);
-      if (!jobExists) return this.setResponseNoFoundError("Job not found");
+      if (!jobExists)
+        return this.sendResponseNoFoundError(res, "Job not found");
 
       jobExists = await this.jobModel.checkAuthor(jobId, userId);
-      //if (jobExists) return this.setResponseNoFoundError('You cannot begin to do your own work');
 
       if (!this.validatePrice(price))
-        return this.setResponseValidationError("Invalid price");
+        return this.sendResponseValidationError(res, "Invalid price");
       if (!this.validateTime(time))
-        return this.setResponseValidationError("Invalid time");
+        return this.sendResponseValidationError(res, "Invalid time");
 
       const createdRequest = await this.jobProposalModel.create(
         jobId,
@@ -31,34 +31,35 @@ class JobProposal extends Controller {
         price,
         time
       );
-      this.setResponseBaseSuccess("Request created successfully", {
+      return this.sendResponseSuccess(res, "Request created successfully", {
         requestId: createdRequest.id,
       });
     });
 
-  __jobOwnerCheck = async (proposalId, jobId, userId) => {
+  __jobOwnerCheck = async (res, proposalId, jobId, userId) => {
     const jobExists = await this.jobModel.checkAuthor(jobId, userId);
     if (!jobExists)
-      return this.setResponseNoFoundError(
+      return this.sendResponseNoFoundError(
+        res,
         "Job not found or you are not the owner"
       );
 
     const proposalExists = await this.jobProposalModel.exists(proposalId);
     if (!proposalExists)
-      return this.setResponseNoFoundError("Proposal not found");
+      return this.sendResponseNoFoundError(res, "Proposal not found");
     return false;
   };
 
-  __proposalOwnerCheck = async (proposalId, jobId, userId) => {
+  __proposalOwnerCheck = async (res, proposalId, jobId, userId) => {
     const jobExists = await this.jobModel.exists(jobId);
-    if (!jobExists) return this.setResponseNoFoundError("Job not found");
+    if (!jobExists) return this.sendResponseNoFoundError(res, "Job not found");
 
     const proposalExists = await this.jobProposalModel.checkOwner(
       proposalId,
       userId
     );
     if (!proposalExists)
-      return this.setResponseNoFoundError(
+      return this.sendResponseNoFoundError(res, 
         "Proposal not found or you are not the owner"
       );
     return false;
@@ -76,7 +77,7 @@ class JobProposal extends Controller {
         validationType == "job-owner"
           ? this.__jobOwnerCheck
           : this.__proposalOwnerCheck;
-      const resValidation = await validation(proposalId, jobId, userId);
+      const resValidation = await validation(res, proposalId, jobId, userId);
 
       if (resValidation) return resValidation;
       return await validationCallback(proposalId);
@@ -85,19 +86,20 @@ class JobProposal extends Controller {
   accept = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.accept(proposalId);
-      this.setResponseBaseSuccess("Proposal accepted success", { proposal });
+      return this.sendResponseSuccess(res, "Proposal accepted success", { proposal });
     });
 
   reject = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.reject(proposalId);
-      this.setResponseBaseSuccess("Proposal rejected success", { proposal });
+      return this.sendResponseSuccess(res, "Proposal rejected success", { proposal });
     });
 
   requestToCancel = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.requestToCancel(proposalId);
-      this.setResponseBaseSuccess(
+      return this.sendResponseSuccess(
+        res,
         "Request to cancel contract was sended success",
         { proposal }
       );
@@ -106,7 +108,7 @@ class JobProposal extends Controller {
   acceptCancelled = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCancelled(proposalId);
-      this.setResponseBaseSuccess("Job cancelled success", { proposal });
+      return this.sendResponseSuccess(res, "Job cancelled success", { proposal });
     });
 
   requestToComplete = async (req, res) =>
@@ -114,7 +116,8 @@ class JobProposal extends Controller {
       const proposal = await this.jobProposalModel.requestToComplete(
         proposalId
       );
-      this.setResponseBaseSuccess(
+      return this.sendResponseSuccess(
+        res,
         "Request to close contract was sended success",
         { proposal }
       );
@@ -123,14 +126,14 @@ class JobProposal extends Controller {
   acceptCompleted = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
-      this.setResponseBaseSuccess("Contract closed success", { proposal });
+      return this.sendResponseSuccess(res, "Contract closed success", { proposal });
     });
 
   getById = async (req, res) => {
     this.errorWrapper(res, async () => {
       const proposalId = req.params.id;
       const proposal = await this.jobProposalModel.getById(proposalId);
-      this.setResponseBaseSuccess("Proposal was get successfully", {
+      return this.sendResponseSuccess(res, "Proposal was get successfully", {
         proposal,
       });
     });
@@ -148,7 +151,7 @@ class JobProposal extends Controller {
         filter,
         needCountJobs
       );
-      this.setResponseBaseSuccess("Proposals was get successfully", {
+      return this.sendResponseSuccess(res, "Proposals was get successfully", {
         proposals,
       });
     });
@@ -166,7 +169,7 @@ class JobProposal extends Controller {
         filter,
         needCountJobs
       );
-      this.setResponseBaseSuccess("Proposals was get successfully", {
+      return this.sendResponseSuccess(res, "Proposals was get successfully", {
         proposals,
       });
     });

@@ -13,13 +13,14 @@ class Dispute extends Controller {
       );
 
       if (!proposalExists)
-        return this.setResponseNoFoundError("Proposal not found");
+        return this.this.sendResponseNoFoundError(res, "Proposal not found");
 
       const proposalHasDispute =
         await this.disputeModel.checkProposalHasDispute(jobRequestId);
 
       if (proposalHasDispute)
-        return this.setResponseError(
+        return this.sendResponseError(
+          res,
           "Dispute for this job was created before",
           409
         );
@@ -30,7 +31,7 @@ class Dispute extends Controller {
         description
       );
 
-      this.setResponseBaseSuccess("Dispute sended success", {
+      return this.sendResponseSuccess(res, "Dispute sended success", {
         disputeId: dispute.id,
         disputeStatus: dispute.status,
       });
@@ -40,8 +41,8 @@ class Dispute extends Controller {
     this.errorWrapper(res, async () => {
       const { disputeId } = req.params;
       const dispute = await this.disputeModel.getById(disputeId);
-      if (!dispute) return this.setResponseNoFoundError("Dispute not found");
-      this.setResponseBaseSuccess("Find success", {dispute});
+      if (!dispute) return this.this.sendResponseNoFoundError(res, "Dispute not found");
+      return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
   getByJobId = async (req, res) =>
@@ -49,15 +50,15 @@ class Dispute extends Controller {
       const { jobId } = req.params;
 
       const dispute = await this.disputeModel.getByJobId(jobId);
-      if (!dispute) return this.setResponseNoFoundError("Dispute not found");
-      this.setResponseBaseSuccess("Find success", {dispute});
+      if (!dispute) return this.this.sendResponseNoFoundError(res, "Dispute not found");
+      return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
   updateDisputeStatus = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { disputeId, status } = req.body;
       await this.disputeModel.setStatus(disputeId, status);
-      this.setResponseBaseSuccess("Status changes success");
+      return this.sendResponseSuccess(res, "Status changes success");
     });
 
   assignAdminToDispute = async (req, res) =>
@@ -65,7 +66,7 @@ class Dispute extends Controller {
       const { disputeId } = req.body;
       const adminId = req.userData.userId;
       await this.disputeModel.assignAdmin(disputeId, adminId);
-      this.setResponseBaseSuccess("Dispute accepted success");
+      return this.sendResponseSuccess(res, "Dispute accepted success");
     });
 
   getAllByStatus = async (req, res) =>
@@ -81,10 +82,10 @@ class Dispute extends Controller {
       if (status == "resolved") getFunc = this.disputeModel.getAllResolved;
 
       if (!getFunc)
-        return this.setResponseNoFoundError("Dispute status not found");
+        return this.this.sendResponseNoFoundError(res, "Dispute status not found");
 
       const disputes = await getFunc(skippedIds, filter, needCountJobs);
-      this.setResponseBaseSuccess("Disputes was get successfully", {
+      return this.sendResponseSuccess(res, "Disputes was get successfully", {
         disputes,
       });
     });

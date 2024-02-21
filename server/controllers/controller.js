@@ -21,46 +21,23 @@ class Controller {
   __db = null;
   __temp_folder = "files/temp";
 
-  __actualResponseBody = {
-    error: "Internal server error",
-  };
-
-  __actualResponseCode = 500;
-
-  setResponseCode(code) {
-    this.__actualResponseCode = code;
-  }
-
-  setResponseData(data) {
-    this.__actualResponseBody = data;
-  }
-
-  setResponse(data, code) {
-    this.setResponseData(data);
-    this.setResponseCode(code);
-  }
-
-  sendResponse(res) {
-    res.status(this.__actualResponseCode).json(this.__actualResponseBody);
-  }
-
-  setResponseBaseSuccess(message, data = {}) {
-    this.setResponseData({
+  sendResponseSuccess(res, message, data = {}, status = 200) {
+    return res.status(status).json({
       ...data,
       message,
     });
-    this.setResponseCode(200);
   }
 
-  setResponseError(message, status) {
-    this.setResponseData({
+  sendResponseError(res, message, status) {
+    return res.status(status).json({
       error: message,
     });
-    this.setResponseCode(status);
   }
 
-  setResponseValidationError = (message) => this.setResponseError(message, 400);
-  setResponseNoFoundError = (message) => this.setResponseError(message, 404);
+  sendResponseValidationError = (res, message) =>
+    this.sendResponseError(res, message, 400);
+  sendResponseNoFoundError = (res, message) =>
+    this.sendResponseError(res, message, 404);
 
   constructor(db) {
     this.__db = db;
@@ -88,14 +65,7 @@ class Controller {
       console.log(e);
       const status = e.status ? e.status : 500;
       const error = e.message;
-      this.setResponse(
-        {
-          error,
-        },
-        status
-      );
-    } finally {
-      this.sendResponse(res);
+      this.sendResponseError(res, error, status);
     }
   }
 

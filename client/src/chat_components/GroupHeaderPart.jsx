@@ -10,6 +10,8 @@ const GroupHeaderPart = () => {
   const closeAddPopup = () => setActiveAddPopup(false);
   const openAddPopup = () => setActiveAddPopup(true);
 
+  console.log(activeChat);
+
   return (
     <>
       {chatUsers.length > 0 && (
@@ -29,7 +31,7 @@ const GroupHeaderPart = () => {
 
           <GroupUserList
             users={chatUsers}
-            currentUserRole={activeChat.currentUserRole}
+            currentUserRole={activeChat.role}
             kickUser={kickUser}
           />
         </>
