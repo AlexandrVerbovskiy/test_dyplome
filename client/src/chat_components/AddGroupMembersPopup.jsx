@@ -3,7 +3,7 @@ import { PopupWrapper, Input, UploadTrigger } from "../components";
 import { useAddGroupMembers } from "../chat_hooks";
 import GroupUserSearchListElem from "./GroupUserSearchListElem";
 
-const AddGroupMembersPopup = ({ close, active }) => {
+const AddGroupMembersPopup = ({ close, active, currentUserRole }) => {
   const {
     getMoreUsers,
     filter: { value: filter, change: changeFilter },
@@ -51,6 +51,7 @@ const AddGroupMembersPopup = ({ close, active }) => {
                 selected={true}
                 onChangeRole={(role) => setUserRole(user.id, role)}
                 onChange={() => removeUser(user.id)}
+                currentUserRole={currentUserRole}
               />
             ))}
           </div>
@@ -67,6 +68,7 @@ const AddGroupMembersPopup = ({ close, active }) => {
                 {...user}
                 selected={false}
                 onChange={() => joinUser(user.id)}
+                currentUserRole={currentUserRole}
               />
             ))}
             <UploadTrigger onTriggerShown={getMoreUsers} />

@@ -19,8 +19,6 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
         {users.map((user) => {
           let canKick = false;
 
-          console.log(user["role"], currentUserRole)
-
           if (
             user["role"] == "member" &&
             (currentUserRole == "admin" || currentUserRole == "owner")

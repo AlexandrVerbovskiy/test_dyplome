@@ -127,18 +127,14 @@ const config = {
   CHAT_ROLES: {
     owner: "Owner",
     admin: "Admin",
-    mentor: "Mentor",
     member: "Member",
   },
   CHAT_OWNER_ROLES_SELECT: [
     { value: "member", title: "Member" },
-    { value: "mentor", title: "Mentor" },
     { value: "admin", title: "Admin" },
-    { value: "owner", title: "Owner" },
   ],
   CHAT_ADMIN_ROLES_SELECT: [
     { value: "member", title: "Member" },
-    { value: "mentor", title: "Mentor" },
   ],
 };
 

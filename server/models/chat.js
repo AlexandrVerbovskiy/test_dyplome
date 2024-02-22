@@ -294,7 +294,7 @@ class Chat extends Model {
             messages.type, messages.time_created as time_sended, messages_contents.content,
             chat_info.last_message_id, chat_info.time_created, chat_info.delete_time, ${selectFields}
             FROM chats
-            LEFT JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ?
+            LEFT JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ? AND chats.type = "personal"
             LEFT JOIN users ON chats_users.user_id = users.id
             JOIN (
               SELECT chats.id,
@@ -587,7 +587,7 @@ class Chat extends Model {
 
   getUserChatRole = async (chatId, userId) =>
     await this.errorWrapper(async () => {
-      console.log(chatId, userId)
+      console.log(chatId, userId);
       const chatUsers = await this.dbQueryAsync(
         "SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
         [chatId, userId]
@@ -624,10 +624,8 @@ class Chat extends Model {
           SELECT id FROM chats_users
           ORDER BY
             CASE
-              WHEN role = 'owner' THEN 1
-              WHEN role = 'admin' THEN 2
-              WHEN role = 'mentor' THEN 3
-              ELSE 4
+              WHEN role = 'admin' THEN 1
+              ELSE 2
             END
           LIMIT 1
         )`;

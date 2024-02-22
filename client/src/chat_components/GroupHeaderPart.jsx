@@ -9,29 +9,30 @@ const GroupHeaderPart = () => {
   const [activeAddPopup, setActiveAddPopup] = useState(false);
   const closeAddPopup = () => setActiveAddPopup(false);
   const openAddPopup = () => setActiveAddPopup(true);
-
-  console.log(activeChat);
+  const currentUserRole = activeChat.role;
 
   return (
     <>
+      {(currentUserRole == "admin" || currentUserRole == "owner") && (
+        <div className="modal-body pt-0 add-group-members-label">
+          <div style={{ fontSize: "18px" }}>Members</div>
+          <button
+            onClick={openAddPopup}
+            className="btn btn-primary d-flex gap-1 align-items-center"
+          >
+            <Plus fontSize="18px" />
+            Add Member
+          </button>
+        </div>
+      )}
+
       {chatUsers.length > 0 && (
         <>
-          <div className="modal-body pt-0 add-group-members-label">
-            <div style={{ fontSize: "18px" }}>Members</div>
-            <button
-              onClick={openAddPopup}
-              className="btn btn-primary d-flex gap-1 align-items-center"
-            >
-              <Plus fontSize="18px" />
-              Add Member
-            </button>
-          </div>
-
           <hr style={{ margin: "0" }} />
 
           <GroupUserList
             users={chatUsers}
-            currentUserRole={activeChat.role}
+            currentUserRole={currentUserRole}
             kickUser={kickUser}
           />
         </>
@@ -44,7 +45,11 @@ const GroupHeaderPart = () => {
         </button>
       </div>
 
-      <AddGroupMembersPopup active={activeAddPopup} close={closeAddPopup} />
+      <AddGroupMembersPopup
+        currentUserRole={activeChat.role}
+        active={activeAddPopup}
+        close={closeAddPopup}
+      />
     </>
   );
 };

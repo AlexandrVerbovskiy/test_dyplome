@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { generateFullUserImgPath } from "../utils";
 import config from "../config";
-
-const roles = config.CHAT_ADMIN_ROLES_SELECT;
 
 const GroupUserSearchListElem = ({
   role = null,
@@ -12,8 +10,21 @@ const GroupUserSearchListElem = ({
   id,
   selected,
   onChange,
+  currentUserRole = null,
   onChangeRole = null,
 }) => {
+  const [roles, setRoles] = useState(config.CHAT_OWNER_ROLES_SELECT);
+
+  useEffect(() => {
+    console.log(currentUserRole, selected);
+
+    if (currentUserRole == "admin") {
+      setRoles(config.CHAT_ADMIN_ROLES_SELECT);
+    } else {
+      setRoles(config.CHAT_OWNER_ROLES_SELECT);
+    }
+  }, [currentUserRole]);
+
   return (
     <div className="user-to-group-row">
       <div className="user-info-section d-flex">

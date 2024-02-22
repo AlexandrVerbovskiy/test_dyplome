@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext } from "react";
 import { useTyping } from "../chat_hooks";
+import { ChatContext } from "../contexts";
 
 const ChatSubText = ({ isGroup, chatOnline, typingUsers }) => {
   const typingText = useTyping({ isGroup, typingUsers });
@@ -14,6 +15,8 @@ const ChatSubText = ({ isGroup, chatOnline, typingUsers }) => {
 };
 
 const ChatHeaderMainInfo = ({ isGroup, chatOnline, typingUsers }) => {
+  const { activeChat } = useContext(ChatContext);
+
   return (
     <div className="list-inline d-sm-flex mb-0">
       <span className="list-inline-item d-flex align-items-center text-secondary">
@@ -25,11 +28,13 @@ const ChatHeaderMainInfo = ({ isGroup, chatOnline, typingUsers }) => {
         ) : (
           <></>
         )}
-        <ChatSubText
-          isGroup={isGroup}
-          chatOnline={chatOnline}
-          typingUsers={typingUsers}
-        />
+        {(activeChat.chat_type == "personal" || activeChat.delete_time) && (
+          <ChatSubText
+            isGroup={isGroup}
+            chatOnline={chatOnline}
+            typingUsers={typingUsers}
+          />
+        )}
       </span>
     </div>
   );
