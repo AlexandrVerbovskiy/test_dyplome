@@ -250,8 +250,8 @@ export const test = {
   type: "post",
 };
 
-export const getUsersToGroup = {
-  url: () => `get-users-to-group`,
+export const getUsersToNewGroup = {
+  url: () => `get-users-to-new-group`,
   type: "post",
   convertData: (lastId = 0, ignoreIds = [], filter = "") => ({
     ignoreIds,

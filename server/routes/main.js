@@ -169,7 +169,7 @@ function route(app, db, io) {
     commentController.getAllByEntityId
   );
 
-  app.post("/get-users-to-group", isAdmin, userController.getAdminsToGroup);
+  app.post("/get-users-to-new-group", isAdmin, userController.getAdminsToGroup);
   app.post(
     "/get-users-to-group-to-join",
     isAdmin,

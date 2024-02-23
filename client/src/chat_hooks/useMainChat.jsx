@@ -127,14 +127,17 @@ const useMainChat = ({
           });
         };
 
-        kickUserRef.current = (userId) => {
+        kickUserRef.current = async (userId) => {
           setChatUsers((prev) => prev.filter((user) => user.user_id != userId));
-          return main.request({
+
+          const { messages } = await main.request({
             url: kickChatUser.url(),
             type: kickChatUser.type,
             data: kickChatUser.convertData(chat.chat_id, userId),
             convertRes: kickChatUser.convertRes,
           });
+
+          setMessages((prev) => [...prev, ...messages]);
         };
       } else {
         leftChatRef.current = null;
@@ -320,12 +323,12 @@ const useMainChat = ({
   };
 
   const appendUsers = async (users) => {
-    /*const res = main.request({
+    const res = await main.request({
       url: addChatUsers.url(),
       type: addChatUsers.type,
       data: addChatUsers.convertData(activeChat.current.chat_id, users),
       convertRes: addChatUsers.convertRes,
-    });*/
+    });
 
     setChatUsers((prev) => {
       const res = [...prev];
@@ -341,8 +344,8 @@ const useMainChat = ({
       return res;
     });
 
-    /*const { messages } = res;
-    setMessages((prev) => [...prev, ...messages]);*/
+    const { messages } = res;
+    setMessages((prev) => [...prev, ...messages]);
   };
 
   const getUsersToJoin = async (lastUserId, ignoreIds, filterValue) => {

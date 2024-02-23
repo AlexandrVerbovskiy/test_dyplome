@@ -459,7 +459,7 @@ class Chat extends Controller {
 
   kickUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { chatId, userId: userToKicked } = req.body;
+      const { chatId, userId: userToKickedId } = req.body;
       const userId = req.userData.userId;
 
       const currentUserRole = await this.chatModel.getUserChatRole(
@@ -472,20 +472,20 @@ class Chat extends Controller {
 
       const kickedUserRole = await this.chatModel.getUserChatRole(
         chatId,
-        userToKicked
+        userToKickedId
       );
 
       if (kickedUserRole == "owner" || currentUserRole == kickedUserRole)
         throw new Error("Permission denied");
 
-      const kickedUser = await this.userModel.getUserInfo(userId);
+      const kickedUser = await this.userModel.getUserInfo(userToKickedId);
 
       const message = await this.__createSystemMessage(
         chatId,
         `User ${kickedUser["email"]} was kicked out of the group by ${currentUserRole}`
       );
 
-      await this.chatModel.deactivateUserChatRelation(chatId, userToKicked);
+      await this.chatModel.deactivateUserChatRelation(chatId, userToKickedId);
 
       this.__sendChatMessage(chatId, "user-kicked", { chatId, ...message }, [
         userId,
@@ -493,7 +493,7 @@ class Chat extends Controller {
 
       return this.sendResponseSuccess(res, "Kicked success", {
         chatId,
-        ...message,
+        messages: [message],
       });
     });
 

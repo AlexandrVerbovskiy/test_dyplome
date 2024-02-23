@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { getUsersToGroup } from "../requests";
+import { getUsersToNewGroup, createGroupChat } from "../requests";
 import { ChatContext, MainContext } from "../contexts";
-import { createGroupChat } from "../requests";
 import { randomString } from "../utils";
 
 const useCreateGroupChat = () => {
@@ -39,10 +38,10 @@ const useCreateGroupChat = () => {
     }
 
     const users = await request({
-      url: getUsersToGroup.url(),
-      type: getUsersToGroup.type,
-      data: getUsersToGroup.convertData(lastUserId, ignoreIds, filterValue),
-      convertRes: getUsersToGroup.convertRes,
+      url: getUsersToNewGroup.url(),
+      type: getUsersToNewGroup.type,
+      data: getUsersToNewGroup.convertData(lastUserId, ignoreIds, filterValue),
+      convertRes: getUsersToNewGroup.convertRes,
     });
 
     if (users.length < requestUsersCount) {

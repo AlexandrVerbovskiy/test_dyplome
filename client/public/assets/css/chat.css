@@ -619,6 +619,7 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   border-radius: 20px;
   text-align: center;
   width: fit-content;
+  margin-bottom: 10px;
 }
 
 .chat-system-message-parent {
