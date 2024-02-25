@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { ChatContext } from "../contexts";
 
-const useAddGroupMembers = () => {
+const useAddGroupMembers = ({ resetTrigger }) => {
   const requestUsersCount = 25;
-  const { getUsersToJoin, appendUsers, activeChat } = useContext(ChatContext);
+  const { getUsersToJoin, appendUsers } = useContext(ChatContext);
   const uploaded = useRef(false);
   const canShowMoreUsers = useRef(true);
 
@@ -16,8 +16,9 @@ const useAddGroupMembers = () => {
     canShowMoreUsers.current = true;
     uploaded.current = false;
     setUsersToSelect([]);
+    setSelectedUsersToJoin([]);
     getMoreUsers(0, []);
-  }, [activeChat.chat_id]);
+  }, [resetTrigger]);
 
   useEffect(() => {
     const userIds = selectedUsersToJoin.map((user) => user.id);

@@ -381,7 +381,6 @@ class Chat extends Model {
     searchString = ""
   ) =>
     await this.errorWrapper(async () => {
-
       let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
           messages.type, messages.time_created as time_sended, messages_contents.content,
           chat_info.last_message_id, chats_users.time_created, chats_users.delete_time, ${this.__usersFields}
@@ -460,6 +459,16 @@ class Chat extends Model {
       SELECT COUNT(*) as total, 'all' as message_type FROM messages WHERE chat_id=? AND hidden = 0${where};
     `;
   };
+
+  getChatInfo = async (chatId) =>
+    await this.errorWrapper(async () => {
+      const chats = await this.dbQueryAsync(
+        "SELECT * FROM chats WHERE id = ?",
+        [chatId]
+      );
+      if (chats.length > 0) return chats[0];
+      return {};
+    });
 
   getChatMessagesInfo = async (chatId, userId, permissionInfo = true) =>
     await this.errorWrapper(async () => {

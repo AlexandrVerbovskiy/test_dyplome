@@ -13,7 +13,7 @@ const AddGroupMembersPopup = ({ close, active, currentUserRole }) => {
     usersToSelect,
     selectedUsersToJoin,
     appendUsers,
-  } = useAddGroupMembers();
+  } = useAddGroupMembers({ resetTrigger: active });
 
   const handleAppendUsers = async (users) => {
     await appendUsers(users);

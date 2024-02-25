@@ -16,8 +16,6 @@ const GroupUserSearchListElem = ({
   const [roles, setRoles] = useState(config.CHAT_OWNER_ROLES_SELECT);
 
   useEffect(() => {
-    console.log(currentUserRole, selected);
-
     if (currentUserRole == "admin") {
       setRoles(config.CHAT_ADMIN_ROLES_SELECT);
     } else {

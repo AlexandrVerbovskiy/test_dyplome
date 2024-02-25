@@ -106,7 +106,10 @@ const useChatList = ({ onInit, getRequest }) => {
   };
 
   const onGetChat = (chat) => {
-    setChatList((prev) => [chat, ...prev]);
+    setChatList((prev) => {
+      prev = prev.filter((elem) => elem.chat_id != chat.chat_id);
+      return [chat, ...prev];
+    });
   };
 
   const onChatMessageDelete = (chatId, deletedMessageId, message) => {

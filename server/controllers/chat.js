@@ -331,8 +331,6 @@ class Chat extends Controller {
       userIds.push(user["user_id"]);
     });
 
-    console.log(userIds, messageName, messageData);
-
     return this.__socketController.sendSocketMessageToUsers(
       userIds,
       messageName,
@@ -493,10 +491,10 @@ class Chat extends Controller {
       this.__socketController.sendSocketMessageToUser(
         userToKickedId,
         "chat-kicked",
-        { time: time.toLocaleDateString(), chatId, ...message }
+        { time: time.toLocaleDateString(), chatId, message }
       );
 
-      this.__sendChatMessage(chatId, "get-message", { chatId, ...message }, [
+      this.__sendChatMessage(chatId, "get-message", { chatId, message }, [
         userId,
         userToKickedId,
       ]);
@@ -523,6 +521,7 @@ class Chat extends Controller {
         throw new Error("Permission denied");
 
       await this.chatModel.addManyUsers(chatId, users);
+      const chatInfo = await this.chatModel.getChatInfo(chatId);
 
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
@@ -534,8 +533,13 @@ class Chat extends Controller {
 
         this.__socketController.sendSocketMessageToUser(
           user["id"],
-          "created-chat",
-          { ...message }
+          "created-group-chat",
+          {
+            message,
+            avatar: chatInfo.avatar,
+            name: chatInfo.name,
+            chatId,
+          }
         );
 
         messages.push(message);

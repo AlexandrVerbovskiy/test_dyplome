@@ -23,6 +23,8 @@ const useChatInit = ({
 
     io.on("created-chat", (data) => onGetNewChat(data));
     io.on("created-group-chat", (data) => {
+      console.log(data);
+
       onGetNewChat({
         chat_id: data.chatId,
         type: data.message.type,
@@ -31,6 +33,7 @@ const useChatInit = ({
         chat_avatar: data.avatar,
         chat_name: data.name,
         time_sended: data.message.time_sended,
+        delete_time: null,
       });
     });
 
@@ -45,10 +48,7 @@ const useChatInit = ({
       onGetMessageForSockets(data.message)
     );
 
-    io.on("get-message", (data) => {
-      console.log(data);
-      onGetMessageForSockets(data.message);
-    });
+    io.on("get-message", (data) => onGetMessageForSockets(data.message));
     io.on("get-message-list", (data) =>
       data.messages.forEach((message) => onGetMessageForSockets(message))
     );
@@ -63,8 +63,8 @@ const useChatInit = ({
     io.on("offline", (data) => changeOnlineForSockets(data, false));
 
     io.on("chat-kicked", (data) => {
+      onGetMessageForSockets({ chatId: data.chatId, ...data.message });
       deactivateChat(data.chatId, data.time);
-      onGetMessageForSockets(data.message);
     });
 
     io.on("file-part-uploaded", async ({ temp_key, message = null }) => {

@@ -328,7 +328,12 @@ const useMainChat = ({
   };
 
   const onGetNewChat = (data) => {
+    console.log(data);
     onGetChat(data);
+
+    if (data.chat_id === activeChat.current.chat_id) {
+      activeChat.current = { ...data };
+    }
   };
 
   const appendUsers = async (users) => {
@@ -358,8 +363,6 @@ const useMainChat = ({
   };
 
   const getUsersToJoin = async (lastUserId, ignoreIds, filterValue) => {
-    console.log();
-
     return await main.request({
       url: getUsersToGroupToJoin.url(),
       type: getUsersToGroupToJoin.type,
