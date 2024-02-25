@@ -21,7 +21,7 @@ import {
   getUsersToChatting,
   getAdminChats,
   selectChat as selectChatRequest,
-  getChatMessages
+  getChatMessages,
 } from "../requests";
 
 const Chat = () => {
@@ -58,7 +58,13 @@ const Chat = () => {
     appendUsers,
     getUsersToJoin,
     showMoreMessages,
-  } = useMainChat({ accountId, getRequest, selectChatRequest, getChatMessages });
+    deactivateChat
+  } = useMainChat({
+    accountId,
+    getRequest,
+    selectChatRequest,
+    getChatMessages,
+  });
 
   const onEditMessage = (id, content) => {
     setEditMessage(id, content);
@@ -76,6 +82,7 @@ const Chat = () => {
     sendMedia,
     stopSendMedia,
   } = useChatInit({
+    deactivateChat,
     sessionUser,
     onGetNewChat,
     changeTypingForSockets,

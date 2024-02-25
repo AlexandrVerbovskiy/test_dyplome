@@ -381,7 +381,6 @@ class Chat extends Model {
     searchString = ""
   ) =>
     await this.errorWrapper(async () => {
-      console.log(searchString);
 
       let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
           messages.type, messages.time_created as time_sended, messages_contents.content,
@@ -587,7 +586,6 @@ class Chat extends Model {
 
   getUserChatRole = async (chatId, userId) =>
     await this.errorWrapper(async () => {
-      console.log(chatId, userId);
       const chatUsers = await this.dbQueryAsync(
         "SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ? AND delete_time IS NULL",
         [chatId, userId]

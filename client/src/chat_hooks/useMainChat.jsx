@@ -72,6 +72,7 @@ const useMainChat = ({
     getMoreChats,
     onChatUpdate,
     onGetChat,
+    deactivateChatInList,
     onChatMessageDelete,
     onChangeTyping: onChangeListTyping,
     onChangeOnline: onChangeListOnline,
@@ -147,6 +148,14 @@ const useMainChat = ({
       console.log(e);
     }
   }
+
+  const deactivateChat = (chatId, time) => {
+    if (activeChat.current.chat_id === chatId) {
+      activeChat.current.delete_time = time;
+    }
+
+    deactivateChatInList(chatId, time);
+  };
 
   const showMoreMessages = async () => {
     const activeChatId = activeChat.current ? activeChat.current.chat_id : null;
@@ -349,6 +358,8 @@ const useMainChat = ({
   };
 
   const getUsersToJoin = async (lastUserId, ignoreIds, filterValue) => {
+    console.log();
+
     return await main.request({
       url: getUsersToGroupToJoin.url(),
       type: getUsersToGroupToJoin.type,
@@ -390,6 +401,7 @@ const useMainChat = ({
     leftChat: leftChatRef.current,
     kickUser: kickUserRef.current,
     getUsersToJoin,
+    deactivateChat,
   };
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { MainContext } from "../contexts";
 
-const useChatList = ({onInit, getRequest}) => {
+const useChatList = ({ onInit, getRequest }) => {
   const limit = 20;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [chatList, setChatList] = useState([]);
@@ -154,8 +154,20 @@ const useChatList = ({onInit, getRequest}) => {
     );
   };
 
+  const deactivateChatInList = (chatId, deleteTime) => {
+    setChatList((prev) =>
+      prev.map((elem) => {
+        if (elem.chat_id == chatId) {
+          return { ...elem, delete_time: deleteTime };
+        }
+        return { ...elem };
+      })
+    );
+  };
+
   return {
     chatList,
+    deactivateChatInList,
     setChatListSearch: handleChatListSearch,
     getMoreChats,
     onChatUpdate,

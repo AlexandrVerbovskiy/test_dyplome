@@ -327,9 +327,11 @@ class Chat extends Controller {
     const userIds = [];
 
     users.forEach((user) => {
-      if (ignoreIds.includes(user["id"])) return;
-      userIds.push(user["id"]);
+      if (ignoreIds.includes(user["user_id"])) return;
+      userIds.push(user["user_id"]);
     });
+
+    console.log(userIds, messageName, messageData);
 
     return this.__socketController.sendSocketMessageToUsers(
       userIds,
@@ -487,8 +489,16 @@ class Chat extends Controller {
 
       await this.chatModel.deactivateUserChatRelation(chatId, userToKickedId);
 
-      this.__sendChatMessage(chatId, "user-kicked", { chatId, ...message }, [
+      const time = new Date(Date.now());
+      this.__socketController.sendSocketMessageToUser(
+        userToKickedId,
+        "chat-kicked",
+        { time: time.toLocaleDateString(), chatId, ...message }
+      );
+
+      this.__sendChatMessage(chatId, "get-message", { chatId, ...message }, [
         userId,
+        userToKickedId,
       ]);
 
       return this.sendResponseSuccess(res, "Kicked success", {
@@ -531,8 +541,8 @@ class Chat extends Controller {
         messages.push(message);
       }
 
-      this.__sendChatMessage(chatId, "users-appended", { chatId, messages }, [
-        userId,
+      this.__sendChatMessage(chatId, "get-message-list", { chatId, messages }, [
+        currentUserId,
       ]);
 
       return this.sendResponseSuccess(res, "Appended success", {

@@ -138,14 +138,14 @@ class User extends Model {
   getAdminsToGroupToJoin = async (
     chatId,
     lastId = 0,
-    ignoreIds = [chatId],
+    ignoreIds = [],
     filter = ""
   ) =>
     await this.errorWrapper(async () => {
       const params = [chatId];
 
       let query = `SELECT nick, email, id, avatar FROM users WHERE admin = true AND id NOT IN 
-        (SELECT user_id FROM chats_users WHERE chat_id = ? AND delete_time IS NOT NULL)`;
+        (SELECT user_id FROM chats_users WHERE chat_id = ? AND delete_time IS NULL)`;
 
       if (lastId && lastId > 0) {
         query += " AND id > ?";

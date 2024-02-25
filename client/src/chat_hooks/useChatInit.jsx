@@ -12,6 +12,7 @@ const useChatInit = ({
   onUpdateMessagePercent,
   onCancelledMessage,
   onGetNewChat,
+  deactivateChat,
   io,
 }) => {
   const { createMediaActions, onSuccessSendBlobPart, onStopSendMedia } =
@@ -44,7 +45,13 @@ const useChatInit = ({
       onGetMessageForSockets(data.message)
     );
 
-    io.on("get-message", (data) => onGetMessageForSockets(data.message));
+    io.on("get-message", (data) => {
+      console.log(data);
+      onGetMessageForSockets(data.message);
+    });
+    io.on("get-message-list", (data) =>
+      data.messages.forEach((message) => onGetMessageForSockets(message))
+    );
 
     io.on("success-deleted-message", (data) => onDeleteMessageForSockets(data));
     io.on("deleted-message", (data) => onDeleteMessageForSockets(data));
@@ -54,6 +61,11 @@ const useChatInit = ({
     io.on("stop-typing", (data) => changeTypingForSockets(data, false));
     io.on("online", (data) => changeOnlineForSockets(data, true));
     io.on("offline", (data) => changeOnlineForSockets(data, false));
+
+    io.on("chat-kicked", (data) => {
+      deactivateChat(data.chatId, data.time);
+      onGetMessageForSockets(data.message);
+    });
 
     io.on("file-part-uploaded", async ({ temp_key, message = null }) => {
       const nextPartData = await onSuccessSendBlobPart(temp_key);

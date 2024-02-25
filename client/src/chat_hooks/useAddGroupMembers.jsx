@@ -3,7 +3,7 @@ import { ChatContext } from "../contexts";
 
 const useAddGroupMembers = () => {
   const requestUsersCount = 25;
-  const { getUsersToJoin, appendUsers } = useContext(ChatContext);
+  const { getUsersToJoin, appendUsers, activeChat } = useContext(ChatContext);
   const uploaded = useRef(false);
   const canShowMoreUsers = useRef(true);
 
@@ -13,8 +13,11 @@ const useAddGroupMembers = () => {
   const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   useEffect(() => {
-    getMoreUsers();
-  }, []);
+    canShowMoreUsers.current = true;
+    uploaded.current = false;
+    setUsersToSelect([]);
+    getMoreUsers(0, []);
+  }, [activeChat.chat_id]);
 
   useEffect(() => {
     const userIds = selectedUsersToJoin.map((user) => user.id);
