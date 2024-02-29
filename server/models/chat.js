@@ -290,7 +290,7 @@ class Chat extends Model {
     dopFilter = [],
   }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
+      let query = `SELECT chats.id as chat_id, chats.type as chat_type, chats.name as chat_name, 
             messages.type, messages.time_created as time_sended, messages_contents.content,
             chat_info.last_message_id, chat_info.time_created, chat_info.delete_time, ${selectFields}
             FROM chats
@@ -324,18 +324,14 @@ class Chat extends Model {
       if (lastChatId) {
         query += " WHERE chats.id < ?";
         props.push(lastChatId);
+      }
 
-        if (searchString) {
-          query += " AND (users.email like ? or users.nick like ?)";
-          props.push(`%${searchString}%`);
-          props.push(`%${searchString}%`);
-        }
-      } else {
-        if (searchString) {
-          query += " WHERE (users.email like ? or users.nick like ?)";
-          props.push(`%${searchString}%`);
-          props.push(`%${searchString}%`);
-        }
+      if (searchString) {
+        query +=
+          " WHERE (users.email like ? or users.nick like ? or chats.name like ?)";
+        props.push(`%${searchString}%`);
+        props.push(`%${searchString}%`);
+        props.push(`%${searchString}%`);
       }
 
       query += dopFilter.length ? " AND " + dopFilter.join(" AND ") : "";
@@ -372,6 +368,7 @@ class Chat extends Model {
       limit,
       searchString,
       searcherId,
+      dopFilter: ["NOT(user_id IS NULL AND chats.type = 'system')"],
     });
 
   getAllUserSystemChats = async (
@@ -418,6 +415,67 @@ class Chat extends Model {
       query += " ORDER BY chat_info.last_message_id DESC LIMIT 0, ?";
       props.push(Number(limit));
       return await this.dbQueryAsync(query, props);
+    });
+
+  __getUsersToNewChat = async ({
+    currentUserId,
+    lastUserId = null,
+    searchString = "",
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    mainWhere = null,
+  }) =>
+    await this.errorWrapper(async () => {
+      const props = [currentUserId, currentUserId];
+
+      let query = `SELECT ${this.__usersFields}, "personal" as chat_type FROM users WHERE id != ? AND id NOT IN(
+          SELECT chats_users.user_id FROM chats_users
+        JOIN chats ON chats_users.chat_id = chats.id AND chats.type = "personal"
+        JOIN chats_users cu2 ON cu2.chat_id = chats.id AND cu2.user_id = ?)`;
+
+      if (mainWhere) query += ` AND ${mainWhere}`;
+
+      if (lastUserId) {
+        query += " AND id < ?";
+        props.push(lastUserId);
+      }
+
+      if (searchString) {
+        query += " AND (email like ? or nick like ?)";
+        props.push(`%${searchString}%`);
+        props.push(`%${searchString}%`);
+      }
+
+      query += " ORDER BY id DESC LIMIT 0, ?";
+      props.push(Number(limit));
+
+      return await this.dbQueryAsync(query, props);
+    });
+
+  getUsersToNewAdminChat = (
+    currentUserId,
+    lastUserId = null,
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    searchString = ""
+  ) =>
+    this.__getUsersToNewChat({
+      limit,
+      currentUserId,
+      lastUserId,
+      searchString,
+    });
+
+  getUsersToNewNormalChat = (
+    currentUserId,
+    lastUserId = null,
+    limit = process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING,
+    searchString = ""
+  ) =>
+    this.__getUsersToNewChat({
+      currentUserId,
+      lastUserId,
+      searchString,
+      limit,
+      mainWhere: "admin=0",
     });
 
   getUsersSocketToSend = async (userId) =>
@@ -587,7 +645,7 @@ class Chat extends Model {
         JOIN chats_users ON chats_users.chat_id = c1.id
         JOIN users ON chats_users.user_id = users.id AND NOT(users.id = ?)
         join sockets as s ON s.user_id = users.id
-        where c1.id=?`;
+        where c1.id=? AND delete_time IS NULL`;
 
       const sockets = await this.dbQueryAsync(query, [userId, chatId]);
       return sockets;

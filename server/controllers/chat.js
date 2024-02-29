@@ -16,34 +16,74 @@ class Chat extends Controller {
     return true;
   }
 
-  __baseGetChats = async (req, res, chatsSelect) =>
+  __baseGetChats = async (req, res, chatsSelect, usersSelect = null) =>
     this.errorWrapper(res, async () => {
       if (
-        !this.__checkIsBodyHasKeys(req, ["lastChatId", "searchString", "limit"])
+        !this.__checkIsBodyHasKeys(req, [
+          "lastChatId",
+          "lastUserId",
+          "searchString",
+          "limit",
+        ])
       )
         return this.sendResponseValidationError(
           res,
           "Not all data was transferred successfully"
         );
 
-      const { lastChatId, limit, searchString } = req.body;
+      const { lastChatId, lastUserId, limit, searchString } = req.body;
       const searcherId = req.userData.userId;
-      const chats = await chatsSelect(
-        searcherId,
-        lastChatId,
-        limit,
-        searchString
-      );
+
+      const chats = [];
+
+      if (!lastUserId) {
+        const foundChats = await chatsSelect(
+          searcherId,
+          lastChatId,
+          limit,
+          searchString
+        );
+
+        foundChats.forEach((chat) => chats.push(chat));
+      }
+
+      if (usersSelect) {
+        const usersLimit =
+          (limit ?? process.env.DEFAULT_AJAX_COUNT_USERS_TO_CHATTING) -
+          chats.length;
+
+        if (usersLimit && searchString) {
+          const foundUsers = await usersSelect(
+            searcherId,
+            lastUserId,
+            limit,
+            searchString
+          );
+
+          foundUsers.forEach((chat) => chats.push(chat));
+        }
+      }
+
       return this.sendResponseSuccess(res, "Found success", {
         chats,
       });
     });
 
   getUsersToChatting = (req, res) =>
-    this.__baseGetChats(req, res, this.chatModel.getUsersToChatting);
+    this.__baseGetChats(
+      req,
+      res,
+      this.chatModel.getUsersToChatting,
+      this.chatModel.getUsersToNewNormalChat
+    );
 
   getAdminChats = (req, res) =>
-    this.__baseGetChats(req, res, this.chatModel.getAllChats);
+    this.__baseGetChats(
+      req,
+      res,
+      this.chatModel.getAllChats,
+      this.chatModel.getUsersToNewAdminChat
+    );
 
   getUserSystemChats = async (req, res) =>
     this.__baseGetChats(req, res, this.chatModel.getAllUserSystemChats);

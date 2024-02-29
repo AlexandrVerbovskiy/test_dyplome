@@ -19,6 +19,12 @@ const AdminChatListHeader = () => {
   return (
     <div className="chat-sidebar-header">
       <div className="input-group input-group-sm mb-2">
+        <span
+          className="input-group-text bg-transparent"
+          onClick={handleSearchClick}
+        >
+          <i className="bx bx-search" />
+        </span>
         <input
           value={searchValue}
           type="text"
@@ -26,12 +32,6 @@ const AdminChatListHeader = () => {
           placeholder="People"
           onInput={handleChangeInput}
         />
-        <span
-          className="input-group-text bg-transparent"
-          onClick={handleSearchClick}
-        >
-          <i className="bx bx-search" />
-        </span>
       </div>
       <GroupChatCreateModal />
     </div>

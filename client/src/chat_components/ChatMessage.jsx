@@ -13,6 +13,7 @@ const ChatMessage = ({
   type,
   content,
   user_id,
+  user_email,
   in_process: inProcess,
   time_sended,
   onDelete,
@@ -38,6 +39,7 @@ const ChatMessage = ({
     my: "chat-right-msg card",
   };
 
+  const isGroupChat = activeChat.chat_type == "group";
   const isSessionUserSender = sessionUser.id == user_id;
   const myOrNormal = isSessionUserSender ? "my" : "normal";
   const timeAlign = isSessionUserSender ? "end" : "start";
@@ -90,6 +92,7 @@ const ChatMessage = ({
               alignItems: "center",
             }}
           >
+            {isGroupChat && !isSessionUserSender && <>{user_email} </>}
             {!inProcess && fullTimeFormat(time_sended)}
             {inProcess && (
               <>

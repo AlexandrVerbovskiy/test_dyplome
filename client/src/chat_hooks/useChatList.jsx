@@ -30,14 +30,32 @@ const useChatList = ({ onInit, getRequest }) => {
     return minId;
   };
 
+  const getLastUserChatId = (chats, chatId = null) => {
+    if (!chatId) return null;
+
+    const userIds = [];
+
+    chats.forEach((elem) => {
+      if (elem.chat_id) userIds.push(elem.user_id);
+    });
+
+    return Math.max(userIds);
+  };
+
   const getChats = async (prevChats = null) => {
     setCanSearch(false);
     const lastChatId = getLastChatId(prevChats);
+    const lastUserId = getLastUserChatId(prevChats, lastChatId);
 
     try {
       const chats = await main.request({
         url: getRequest.url(),
-        data: getRequest.convertData(lastChatId, limit, search),
+        data: getRequest.convertData({
+          lastChatId,
+          lastUserId,
+          limit,
+          searchString: search,
+        }),
         type: getRequest.type,
         convertRes: getRequest.convertRes,
       });

@@ -94,7 +94,20 @@ const useMainChat = ({
     const chatId = chat.chat_id;
     const activeChatId =
       activeChat.current !== null ? activeChat.current.chat_id : null;
-    if (activeChatId == chatId) return;
+    if (
+      (chatId && activeChatId == chatId) ||
+      (chat.user_id && chat.user_id == activeChat.current.user_id)
+    )
+      return;
+
+    if (!chatId) {
+      activeChat.current = chat;
+      setMessages([]);
+      setStatistic(defaultStatistic);
+      setChatUsers([chat]);
+      setLastMessageId(null);
+      return;
+    }
 
     try {
       const res = await main.request({

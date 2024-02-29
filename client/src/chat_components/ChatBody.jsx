@@ -82,7 +82,7 @@ const ChatBody = () => {
   };
 
   const handleScrollBody = (e) => {
-    if (e.target.scrollTop === 0) {
+    if (activeChatId && e.target.scrollTop === 0) {
       showMoreMessages();
     }
   };

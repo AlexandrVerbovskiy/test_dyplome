@@ -7,9 +7,16 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
 
   if (!last) className += " pb-2";
 
-  const { activeChatId, selectChat, setChatWindow } = useContext(ChatContext);
+  const { activeChatId, activeChat, selectChat, setChatWindow } =
+    useContext(ChatContext);
 
-  if (activeChatId === chat.chat_id) className += " active";
+  if (
+    (activeChatId && activeChatId === chat.chat_id) ||
+    (!activeChatId &&
+      activeChat.chat_type == "personal" &&
+      chat.user_id == activeChat.user_id)
+  )
+    className += " active";
 
   const handleElemClick = () => {
     selectChat(chat);

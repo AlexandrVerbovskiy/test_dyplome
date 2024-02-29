@@ -40,8 +40,9 @@ export const getUsersToChatting = {
 
 export const getAdminChats = {
   url: () => "admin-chats",
-  convertData: (lastChatId, limit, searchString) => ({
+  convertData: ({ lastChatId, lastUserId, limit, searchString }) => ({
     lastChatId,
+    lastUserId,
     limit,
     searchString,
   }),

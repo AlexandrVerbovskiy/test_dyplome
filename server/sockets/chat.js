@@ -152,32 +152,42 @@ class Chat {
   };
 
   onUpdateMessage = async (data, sessionInfo) => {
-    const userId = sessionInfo.userId;
-    const message = await this.chatController.__updateMessage(data, userId);
+    try {
+      const userId = sessionInfo.userId;
+      const resUpdate = await this.chatController.__updateMessage(data, userId);
+      const messageId = data["messageId"];
+      const message = await this.chatController.chatModel.getMessageById(
+        messageId
+      );
 
-    if (typeof message === "string")
-      return this.socketController.sendError(userId, message);
+      if (typeof resUpdate === "string")
+        return this.socketController.sendError(userId, resUpdate);
 
-    const sockets = await this.chatController.__getUserSocketsFromChat(
-      message["chat_id"],
-      userId
-    );
+      const sockets = await this.chatController.__getUserSocketsFromChat(
+        message["chat_id"],
+        userId
+      );
 
-    const dataToSend = {
-      chat_id: message["chat_id"],
-      message_id: message["message_id"],
-      content: data.content,
-    };
+      const dataToSend = {
+        chat_id: message["chat_id"],
+        message_id: message["message_id"],
+        content: data.content,
+      };
 
-    this.socketController.sendSocketMessageToUsers(
-      [userId],
-      "success-updated-message",
-      dataToSend
-    );
+      this.socketController.sendSocketMessageToUsers(
+        [userId],
+        "success-updated-message",
+        dataToSend
+      );
 
-    sockets.forEach((socket) =>
-      this.io.to(socket["socket"]).emit("updated-message", dataToSend)
-    );
+      console.log(sockets);
+
+      sockets.forEach((socket) =>
+        this.io.to(socket["socket"]).emit("updated-message", dataToSend)
+      );
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   onDeleteMessage = async (data, sessionInfo) => {
