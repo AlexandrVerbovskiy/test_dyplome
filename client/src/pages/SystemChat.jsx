@@ -72,6 +72,7 @@ const SystemChat = () => {
     endTyping,
     sendMedia,
     stopSendMedia,
+    messageViewed
   } = useChatInit({
     sessionUser,
     onGetNewChat,
@@ -157,6 +158,7 @@ const SystemChat = () => {
           kickUser,
           getUsersToJoin,
           showMoreMessages,
+          messageViewed
         }}
       >
         <ChatList chatList={chatList}>{<ChatListHeader />}</ChatList>

@@ -29,6 +29,13 @@ const Chat = () => {
   const { socketIo } = useSocketInit();
   const { sessionUser, isAdmin } = useContext(MainContext);
 
+  const messageViewed = (chatId, messageId) => {
+    socketIo.emit("viewed-message", {
+      chatId,
+      messageId,
+    });
+  };
+
   const getRequest = isAdmin ? getAdminChats : getUsersToChatting;
   const {
     chatInfo,
@@ -58,12 +65,13 @@ const Chat = () => {
     appendUsers,
     getUsersToJoin,
     showMoreMessages,
-    deactivateChat
+    deactivateChat,
   } = useMainChat({
     accountId,
     getRequest,
     selectChatRequest,
     getChatMessages,
+    onMessageViewed: messageViewed,
   });
 
   const onEditMessage = (id, content) => {

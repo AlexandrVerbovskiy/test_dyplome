@@ -1233,7 +1233,7 @@ a {
   font-size: 14px;
   color: #272b2f;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
 }
 

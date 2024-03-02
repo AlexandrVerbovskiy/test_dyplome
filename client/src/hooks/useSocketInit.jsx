@@ -5,9 +5,7 @@ import config from "../config";
 let socketIo = null;
 
 const useSocketInit = () => {
-  useEffect(() => {
-    if (socketIo) return;
-
+  if (!socketIo) {
     const token = localStorage.getItem("token");
 
     socketIo = io(config.API_URL, {
@@ -15,7 +13,7 @@ const useSocketInit = () => {
         token,
       },
     });
-  }, []);
+  }
 
   return { socketIo };
 };

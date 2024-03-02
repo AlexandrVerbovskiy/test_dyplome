@@ -24,7 +24,7 @@ const ChatMessage = ({
 }) => {
   const main = useContext(MainContext);
   const { sessionUser } = main;
-  const { activeChat } = useContext(ChatContext);
+  const { activeChat, chatUsers } = useContext(ChatContext);
 
   const deleteMessageRef = useRef(null);
   const deleteMessageWrapperRef = useRef(null);
@@ -67,6 +67,14 @@ const ChatMessage = ({
     onDelete(message_id);
     deleteMessageWrapperRef.current.click();
   };
+
+  const usersViewed = isSessionUserSender
+    ? chatUsers.filter(
+        (user) =>
+          user.last_viewed_message_id >= message_id &&
+          user.user_id != sessionUser.id
+      )
+    : [];
 
   return (
     <div className={mainClassName[myOrNormal]}>
@@ -133,6 +141,7 @@ const ChatMessage = ({
                 onDeleteClick={handleMessageDeleteClick}
                 onEditClick={handleMessageEditClick}
                 canEdit={type == "text"}
+                usersViewed={usersViewed}
               />
             )}
 

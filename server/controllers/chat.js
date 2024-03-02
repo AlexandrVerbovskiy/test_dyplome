@@ -44,7 +44,18 @@ class Chat extends Controller {
           searchString
         );
 
-        foundChats.forEach((chat) => chats.push(chat));
+        for (let i = 0; i < foundChats.length; i++) {
+          const chat = foundChats[i];
+
+          chat["count_unread_messages"] =
+            await this.chatModel.getUnreadChatMessagesCount(
+              chat["chat_id"],
+              chat["current_last_viewed_message_id"],
+              searcherId
+            );
+
+          chats.push(chat);
+        }
       }
 
       if (usersSelect) {
@@ -163,18 +174,9 @@ class Chat extends Controller {
     return message;
   };
 
-  __getNextMessage = async (chatId, messageId) => {
-    const messages = await this.chatModel.getChatMessages(chatId, messageId, 1);
+  __getNextMessage = async (chatId, messageId, userId=null) => {
+    const messages = await this.chatModel.getChatMessages(chatId, messageId, 1, userId);
     return messages[0];
-  };
-
-  getNextMessages = async (chatId, messageId) => {
-    const messages = await this.chatModel.getChatMessages(
-      chatId,
-      messageId,
-      20
-    );
-    return messages;
   };
 
   __getUserSocketsFromChat = async (chatId, userId) => {
@@ -184,6 +186,7 @@ class Chat extends Controller {
   __getChatMessages = (
     req,
     res,
+    needFilterForUser = true,
     showAllContent = false,
     needCheckAccess = true
   ) =>
@@ -206,6 +209,7 @@ class Chat extends Controller {
         chatId,
         lastId,
         count,
+        needFilterForUser ? userId : null,
         showAllContent
       );
 
@@ -231,10 +235,10 @@ class Chat extends Controller {
 
   getChatMessages = (req, res) => this.__getChatMessages(req, res);
   getSystemChatMessages = (req, res) =>
-    this.__getChatMessages(req, res, true, false);
+    this.__getChatMessages(req, res, false, true, false);
 
   getChatMessagesFullContents = (req, res) =>
-    this.__getChatMessages(req, res, true);
+    this.__getChatMessages(req, res, false, true);
 
   selectChat = (req, res) =>
     this.errorWrapper(res, async () => {

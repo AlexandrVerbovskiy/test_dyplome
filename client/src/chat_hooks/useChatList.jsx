@@ -104,9 +104,18 @@ const useChatList = ({ onInit, getRequest }) => {
           partToUpdate["type"] = chat.type;
         }
 
+        let count_unread_messages = prevDataChat.count_unread_messages;
+
+        if (
+          prevDataChat.current_last_viewed_message_id < partToUpdate.message_id
+        ) {
+          count_unread_messages++;
+        }
+
         const newChat = {
           ...prevDataChat,
           ...partToUpdate,
+          count_unread_messages,
         };
 
         let chats = prev.filter((elem) => elem.chat_id != chat.chat_id);
@@ -120,6 +129,40 @@ const useChatList = ({ onInit, getRequest }) => {
       }
 
       return prev;
+    });
+  };
+
+  const setChatLastMessageCurrentViewed = (chatId) => {
+    setChatList((prev) => {
+      const res = [];
+      prev.forEach((chat) => {
+        if (chat.chat_id == chatId) {
+          res.push({
+            ...chat,
+            current_last_viewed_message_id: chat.last_message_id,
+          });
+        } else {
+          res.push({ ...chat });
+        }
+      });
+      return res;
+    });
+  };
+
+  const chatCountUnreadMessageReset = (chatId) => {
+    setChatList((prev) => {
+      const res = [];
+      prev.forEach((chat) => {
+        if (chat.chat_id == chatId) {
+          res.push({
+            ...chat,
+            count_unread_messages: 0,
+          });
+        } else {
+          res.push({ ...chat });
+        }
+      });
+      return res;
     });
   };
 
@@ -137,12 +180,19 @@ const useChatList = ({ onInit, getRequest }) => {
         let chats = prev.filter((elem) => elem.chat_id != chatId);
         if (!message) return chats;
 
+        let count_unread_messages = prevDataChat.count_unread_messages;
+
+        if (prevDataChat.current_last_viewed_message_id < deletedMessageId) {
+          count_unread_messages--;
+        }
+
         const newChat = {
           ...prevDataChat,
           content: message.content,
           message_id: message.message_id,
           time_sended: message.time_sended,
           type: message.type,
+          count_unread_messages,
         };
         chats = [newChat, ...chats];
         chats = chats.sort(
@@ -196,6 +246,8 @@ const useChatList = ({ onInit, getRequest }) => {
     onChangeTyping,
     onChangeOnline,
     onGetChat,
+    chatCountUnreadMessageReset,
+    setChatLastMessageCurrentViewed,
   };
 };
 

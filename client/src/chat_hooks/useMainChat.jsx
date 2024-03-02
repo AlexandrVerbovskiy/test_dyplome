@@ -14,6 +14,7 @@ const useMainChat = ({
   getRequest,
   selectChatRequest,
   getChatMessages,
+  onMessageViewed,
 }) => {
   const defaultStatistic = {
     all: 0,
@@ -76,6 +77,8 @@ const useMainChat = ({
     onChatMessageDelete,
     onChangeTyping: onChangeListTyping,
     onChangeOnline: onChangeListOnline,
+    chatCountUnreadMessageReset,
+    setChatLastMessageCurrentViewed,
   } = useChatList({ onInit: onChatListInit, getRequest });
 
   function setEditMessage(id, content) {
@@ -116,6 +119,13 @@ const useMainChat = ({
         data: selectChatRequest.convertData(chatId),
         convertRes: selectChatRequest.convertRes,
       });
+
+      chatCountUnreadMessageReset(chatId);
+
+      if (chat.last_message_id != chat.current_last_viewed_message_id) {
+        setChatLastMessageCurrentViewed(chatId);
+        onMessageViewed(chat.chat_id, chat.last_message_id);
+      }
 
       const messages = res.messages;
       activeChat.current = chat;
@@ -196,6 +206,14 @@ const useMainChat = ({
   const onGetMessage = (message) => {
     if (!message) return;
     onChatUpdate(message);
+
+    if (
+      activeChat.current.chat_id &&
+      activeChat.current.chat_id === message.chat_id
+    ) {
+      setChatLastMessageCurrentViewed(activeChat.current.chat_id);
+      onMessageViewed(activeChat.current.chat_id, message.message_id);
+    }
 
     if (
       (activeChat.current.chat_id &&
@@ -341,7 +359,6 @@ const useMainChat = ({
   };
 
   const onGetNewChat = (data) => {
-    console.log(data);
     onGetChat(data);
 
     if (data.chat_id === activeChat.current.chat_id) {

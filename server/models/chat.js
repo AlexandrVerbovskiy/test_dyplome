@@ -7,7 +7,7 @@ class Chat extends Model {
 
   __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
    ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type FROM messages
-    JOIN (SELECT mc.content, mc.message_id, mc.time_edited
+    JOIN (SELECT mc.id as content_id, mc.content, mc.message_id, mc.time_edited
         FROM messages_contents mc
         INNER JOIN (
             SELECT messages_contents.message_id, MAX(messages_contents.time_edited) AS max_time 
@@ -45,6 +45,15 @@ class Chat extends Model {
         [chatId, userId]
       );
       return relations.length;
+    });
+
+  lastReadMessageIdByUser = async (chatId, userId) =>
+    await this.errorWrapper(async () => {
+      const relations = await this.dbQueryAsync(
+        "SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?",
+        [chatId, userId]
+      );
+      return relations[0]["last_viewed_message_id"];
     });
 
   create = async (type, chatName = null, chatAvatar = null) =>
@@ -157,6 +166,12 @@ class Chat extends Model {
       );
       const messageId = insertMessageRes.insertId;
       await this.addContentToMessage(messageId, contentMessage);
+
+      await this.dbQueryAsync(
+        `UPDATE chats_users SET last_viewed_message_id = ? WHERE user_id = ? AND chat_id = ?`,
+        [messageId, senderId, chatId]
+      );
+
       return messageId;
     });
 
@@ -292,28 +307,33 @@ class Chat extends Model {
     await this.errorWrapper(async () => {
       let query = `SELECT chats.id as chat_id, chats.type as chat_type, chats.name as chat_name, 
             messages.type, messages.time_created as time_sended, messages_contents.content,
-            chat_info.last_message_id, chat_info.time_created, chat_info.delete_time, ${selectFields}
+            chat_info.last_viewed_message_id, chat_info.current_last_viewed_message_id,
+             chat_info.last_message_id, 
+            chat_info.time_created, chat_info.delete_time, ${selectFields}
             FROM chats
             LEFT JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ? AND chats.type = "personal"
             LEFT JOIN users ON chats_users.user_id = users.id
             JOIN (
               SELECT chats.id,
                       MAX(m1.id) AS last_message_id, 
+                      cu2.last_viewed_message_id as last_viewed_message_id,
+                      cu1.last_viewed_message_id as current_last_viewed_message_id,
                       DATE_FORMAT(MAX(cu2.time_created), '%Y-%m-%d %H:%i:%s') AS time_created,
                       DATE_FORMAT(MAX(cu2.delete_time), '%Y-%m-%d %H:%i:%s') AS delete_time
               FROM messages as m1
               JOIN chats ON m1.chat_id = chats.id
               JOIN (
-                  SELECT cu.chat_id, MAX(cu.id) AS chat_user_id
+                  SELECT cu.chat_id, MAX(cu.id) AS chat_user_id, cu.last_viewed_message_id
                   FROM chats_users cu
                   WHERE cu.user_id = ?
-                  GROUP BY cu.chat_id
+                  GROUP BY cu.chat_id, cu.last_viewed_message_id
               ) AS cu1 ON cu1.chat_id = chats.id
               JOIN (
-                  SELECT cu.id as chat_user_id, cu.time_created as time_created, cu.delete_time as delete_time
+                  SELECT cu.id as chat_user_id, cu.time_created as time_created, 
+                  cu.delete_time as delete_time, cu.last_viewed_message_id
                   FROM chats_users cu
               ) AS cu2 ON cu2.chat_user_id = cu1.chat_user_id
-              GROUP BY chats.id
+              GROUP BY chats.id, cu1.last_viewed_message_id, cu2.last_viewed_message_id
               HAVING (MAX(cu2.delete_time) IS NULL OR (MAX(m1.time_created) <= MAX(cu2.delete_time))) AND MAX(m1.time_created) >= MAX(cu2.time_created)
             ) AS chat_info ON chat_info.id = chats.id
             JOIN messages ON messages.id = chat_info.last_message_id
@@ -549,7 +569,13 @@ class Chat extends Model {
       return res;
     });
 
-  getChatMessages = async (chatId, lastId, count, showAllContent = false) =>
+  getChatMessages = async (
+    chatId,
+    lastId,
+    count,
+    userId = null,
+    showAllContent = false
+  ) =>
     await this.errorWrapper(async () => {
       let where = `messages.chat_id = ?`;
 
@@ -569,10 +595,31 @@ class Chat extends Model {
         params.push(Number(lastId));
       }
 
-      query += ` ORDER BY time_sended DESC LIMIT 0, ?;`;
+      query += ` ORDER BY time_sended DESC, messages.id DESC LIMIT 0, ?;`;
       params.push(Number(count));
       const messages = await this.dbQueryAsync(query, params);
       return messages.reverse();
+    });
+
+  getUnreadChatMessagesCount = async (chatId, lastId, userId) =>
+    await this.errorWrapper(async () => {
+      let where = `messages.chat_id = ?  AND  (users.id IS NULL OR users.id != 4) AND messages.hidden=false`;
+      const temp = await this.__getChatTimesWhere(chatId, userId);
+      if (temp.length > 0) where += ` AND ${temp}`;
+
+      let query = `SELECT ${this.__messageSelect} WHERE ${where}`;
+      const params = [chatId];
+
+      if (lastId && lastId > 0) {
+        query += ` AND messages.id > ?`;
+        params.push(Number(lastId));
+      }
+
+      params.push(Number(userId));
+
+      query += ` ORDER BY time_sended DESC, messages.id DESC`;
+      const messages = await this.dbQueryAsync(query, params);
+      return messages.length;
     });
 
   selectChat = async (userId, chatId) =>
@@ -585,7 +632,8 @@ class Chat extends Model {
       const messages = await this.getChatMessages(
         chatId,
         -1,
-        process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES
+        process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES,
+        userId
       );
 
       const statistic = await this.getChatMessagesInfo(chatId, userId);
@@ -612,6 +660,7 @@ class Chat extends Model {
         chatId,
         -1,
         process.env.DEFAULT_AJAX_COUNT_CHAT_MESSAGES,
+        null,
         true
       );
 
@@ -632,7 +681,9 @@ class Chat extends Model {
   getChatUsers = async (chatId) =>
     await this.errorWrapper(async () => {
       const users = await this.dbQueryAsync(
-        `SELECT chats_users.typing as typing, chats_users.role as role, ${this.__usersFields} FROM chats_users 
+        `SELECT chats_users.typing as typing, 
+          chats_users.last_viewed_message_id as last_viewed_message_id, 
+          chats_users.role as role, ${this.__usersFields} FROM chats_users 
           JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ? AND chats_users.delete_time IS NULL`,
         [chatId]
       );
@@ -679,6 +730,25 @@ class Chat extends Model {
         `UPDATE chats_users SET typing = ? WHERE user_id= ? AND chat_id = ?`,
         [typing, userId, chatId]
       );
+    });
+
+  setLastIdMessage = async (chatId, userId, messageId) =>
+    await this.errorWrapper(async () => {
+      const lastViewedMessageId = await this.lastReadMessageIdByUser(
+        chatId,
+        userId
+      );
+
+      if (lastViewedMessageId && lastViewedMessageId > messageId) {
+        return false;
+      }
+
+      await this.dbQueryAsync(
+        `UPDATE chats_users SET last_viewed_message_id = ? WHERE user_id = ? AND chat_id = ?`,
+        [messageId, userId, chatId]
+      );
+
+      return true;
     });
 
   setOwnerByFirstPriority = async (chatId) =>

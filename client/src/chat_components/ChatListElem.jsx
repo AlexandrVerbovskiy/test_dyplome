@@ -66,10 +66,21 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
           </h6>
 
-          <p
-            className="mb-0 chat-msg"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+          <div className="chat-msg-parent">
+            <p
+              className="mb-0 chat-msg"
+              style={chat.count_unread_messages ? { fontWeight: "700" } : {}}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+
+            {chat.count_unread_messages > 0 && (
+              <div className="chat-count-unread-parent">
+                <div className="chat-count-unread">
+                  {chat.count_unread_messages}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </li>

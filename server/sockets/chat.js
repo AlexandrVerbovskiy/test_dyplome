@@ -54,6 +54,7 @@ class Chat {
     });
 
     bindFuncToEvent("create-personal-chat", this.onCreateChat);
+    bindFuncToEvent("viewed-message", this.onViewedMessage);
     bindFuncToEvent("send-message", this.onSendMessage);
     bindFuncToEvent("update-message", this.onUpdateMessage);
     bindFuncToEvent("delete-message", this.onDeleteMessage);
@@ -151,6 +152,35 @@ class Chat {
     );
   };
 
+  onViewedMessage = async (data, sessionInfo) => {
+    const userId = sessionInfo.userId;
+    const chatId = data.chatId;
+    const messageId = data.messageId;
+
+    const res = await this.userController.chatModel.setLastIdMessage(
+      chatId,
+      userId,
+      messageId
+    );
+
+    if (!res) {
+      return;
+    }
+
+    const sockets = await this.chatController.__getUserSocketsFromChat(
+      chatId,
+      userId
+    );
+
+    sockets.forEach((socket) =>
+      this.io.to(socket["socket"]).emit("viewed-chat-message", {
+        chatId,
+        userId,
+        messageId,
+      })
+    );
+  };
+
   onUpdateMessage = async (data, sessionInfo) => {
     try {
       const userId = sessionInfo.userId;
@@ -208,12 +238,14 @@ class Chat {
 
     const messageToChat = await this.chatController.__getNextMessage(
       chatId,
-      data["lastMessageId"]
+      data["lastMessageId"],
+      userId
     );
 
     const messageToList = await this.chatController.__getNextMessage(
       chatId,
-      messageId
+      messageId,
+      userId
     );
 
     const dataToSend = {

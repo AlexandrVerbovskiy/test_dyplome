@@ -477,7 +477,8 @@ html.dark-theme #sendButton:hover {
 }
 
 #chat_body .message-action .card-body {
-  padding: 1rem 1rem;
+  padding: 10px;
+  font-size: 12px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -712,4 +713,43 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   width: 100%;
   height: 1.2em;
   white-space: nowrap;
+}
+
+.chat-count-unread-parent {
+  display: flex;
+  align-items: center;
+}
+
+.chat-count-unread {
+  color: white;
+  font-weight: 700;
+  font-size: 10px;
+  background-color: #008cff;
+  width: 25px;
+  height: 20px;
+  margin-top: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-msg-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.message-viewer {
+  display: flex;
+  align-items: center;
+  grid-column-gap: 5px;
+  padding: 10px;
+}
+
+.message-viewer span {
+  font-size: 12px;
+}
+
+.card .message-action .card-body {
+  cursor: pointer;
 }

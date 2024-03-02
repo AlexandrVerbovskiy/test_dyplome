@@ -98,7 +98,12 @@ const ChatBody = () => {
               : message.message_id;
 
             if (!message.user_id)
-              return <ChatSystemMessage key={key} content={message.content} />;
+              return (
+                <ChatSystemMessage
+                  key={key}
+                  content={message.content + `, ${key}`}
+                />
+              );
 
             return (
               <ChatMessage
