@@ -16,6 +16,7 @@ import {
   AdminClientChatView,
   UserProfile,
   SystemChat,
+  AdminIndex,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -88,7 +89,7 @@ const mainRouter = createBrowserRouter([
 const adminRouter = createBrowserRouter([
   {
     path: "*",
-    element: <div>Test </div>,
+    element: <AdminIndex>Test </AdminIndex>,
   },
   {
     path: "/chat/:type?/:accountId?",

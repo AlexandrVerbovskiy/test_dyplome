@@ -3460,6 +3460,25 @@ body:has(.alert) .page-wrapper {
   align-items: center;
 }
 
+.admin-page-wrapper.active .sidebar-wrapper {
+  left: 0 !important;
+}
+
+@media screen and (min-width: 1025px) {
+  .admin-page-wrapper:not(.sidebar-hovered) .sidebar-wrapper {
+    width: 70px;
+  }
+
+  .admin-page-wrapper:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
+    overflow: hidden;
+    width: 70px;
+  }
+
+  .admin-page-wrapper .topbar {
+    left: 70px !important;
+  }
+}
+
 @media (max-width: 576px) {
   .new-notifications-list:has(> .card:nth-child(3)) > .card:nth-child(1),
   .new-notifications-list:not(:has(> .card:nth-child(3))):has(
