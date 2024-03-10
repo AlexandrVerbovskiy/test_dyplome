@@ -8,6 +8,7 @@ const Navbar = ({
 }) => {
   const [notificationClassName, setNotificationClassName] = useState("");
   const [notificationPopupActive, setNotificationPopupActive] = useState(false);
+  const [burgerActive, setBurgerActive] = useState(false);
 
   useEffect(() => {
     let notificationClassName =
@@ -37,15 +38,22 @@ const Navbar = ({
         >
           <h6>Test site</h6>
         </a>
-        <button className="navbar-toggler" type="button">
+        <button
+          className="navbar-toggler"
+          onClick={() => setBurgerActive(!burgerActive)}
+          type="button"
+        >
           <span className="navbar-toggler-icon" />
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent1">
-          <ul className="navbar-nav ms-auto align-items-center icons-menu">
+        <div
+          className={`collapse navbar-collapse ${burgerActive ? "show" : ""}`}
+          id="navbarSupportedContent1"
+        >
+          <ul className="navbar-nav ms-auto align-items-center icons-menu notification-level">
             <li className="nav-item dropdown dropdown-large">
               <a
-                className={notificationClassName}
+                className={`${notificationClassName} normal-notification`}
                 href="#"
                 role="button"
                 onClick={handleActivateNotificationsPopup}
@@ -54,6 +62,19 @@ const Navbar = ({
                   <span className="alert-count">{countNewNotifications}</span>
                 )}
                 <i className="bx bx-bell"></i>
+                <span className="notification-level-layout">Notification</span>
+              </a>
+              <a
+                className={`${notificationClassName} small-notification`}
+                href="/notifications"
+                role="button"
+                onClick={handleActivateNotificationsPopup}
+              >
+                {true && (
+                  <span className="alert-count">{countNewNotifications}</span>
+                )}
+                <i className="bx bx-bell"></i>
+                <span className="notification-level-layout">Notification</span>
               </a>
               <SmallNotificationList
                 notifications={notifications}

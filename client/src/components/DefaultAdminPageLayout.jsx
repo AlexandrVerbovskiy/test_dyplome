@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNotifications, useSocketInit } from "../hooks";
 import { NewNotificationList } from "../notification_components";
 import { AdminNavbar } from "../components";
@@ -16,6 +16,13 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
   const currentYear = new Date().getFullYear();
   const [hovered, setHovered] = useState(false);
   const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setHovered(false);
+      setActive(false);
+    });
+  }, []);
 
   return (
     <div

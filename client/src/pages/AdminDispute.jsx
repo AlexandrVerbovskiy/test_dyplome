@@ -40,6 +40,7 @@ const AdminDispute = () => {
       jobDescription={dispute.job_description}
       proposalPrice={dispute.price}
       needShowAllStatus={true}
+      adminLayout={true}
     >
       <hr />
       <div className="d-flex justify-content-end">

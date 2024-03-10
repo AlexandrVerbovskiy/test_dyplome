@@ -68,6 +68,15 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                   </li>
 
                   <li style={{ height: "43px" }}>
+                    <a href="/disputes">
+                      <div className="parent-icon">
+                        <i className="lni lni-pencil"></i>
+                      </div>
+                      <div className="menu-title">Disputes</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
                     <a
                       href="/"
                       onClick={(e) => {

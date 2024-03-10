@@ -7,6 +7,7 @@ import { UploadTrigger } from "../components";
 import { fullTimeFormat } from "../utils";
 import { adminAssignDispute } from "../requests";
 import { MainContext } from "../contexts";
+import DefaultAdminPageLayout from "../components/DefaultAdminPageLayout";
 
 const AdminDisputes = ({ status = "pending" }) => {
   const {
@@ -33,23 +34,23 @@ const AdminDisputes = ({ status = "pending" }) => {
         convertRes: adminAssignDispute.convertRes,
       });
 
-      navigate(`/admin-dispute/${id}`);
+      navigate(`/dispute/${id}`);
     } catch (e) {}
   };
 
   return (
-    <DefaultPageLayout pageClassName="default-edit-page">
+    <DefaultAdminPageLayout pageClassName="default-edit-page">
       <CardWrapper>
         <MainFilter value={disputesFilter} onClick={disputesFilterChange} />
         <div className="submenu-under-filter">
           <div>
-            <Link to="/admin-disputes/pending">Need Acceptance</Link>
+            <Link to="/disputes/pending">Need Acceptance</Link>
           </div>
           <div>
-            <Link to="/admin-disputes/in-progress">In progress</Link>
+            <Link to="/disputes/in-progress">In progress</Link>
           </div>
           <div>
-            <Link to="/admin-disputes/resolved">Done</Link>
+            <Link to="/disputes/resolved">Done</Link>
           </div>
         </div>
       </CardWrapper>
@@ -142,7 +143,7 @@ const AdminDisputes = ({ status = "pending" }) => {
         })}
         <UploadTrigger onTriggerShown={getMoreDisputes} />
       </CardWrapper>
-    </DefaultPageLayout>
+    </DefaultAdminPageLayout>
   );
 };
 

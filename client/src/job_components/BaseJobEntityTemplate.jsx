@@ -6,6 +6,7 @@ import {
   ViewInput,
   JobStatus,
 } from "../components";
+import DefaultAdminPageLayout from "../components/DefaultAdminPageLayout";
 
 const BaseJobEntityTemplate = ({
   pageTitle,
@@ -19,10 +20,24 @@ const BaseJobEntityTemplate = ({
   disputeStatus = null,
   children = null,
   needShowAllStatus = false,
+  adminLayout = false,
 }) => {
+  let Layout = ({ children }) => {
+    <DefaultPageLayout pageClassName="job-view-page">
+      {children}
+    </DefaultPageLayout>;
+  };
+
+  if (adminLayout) {
+    Layout = ({ children }) => {
+      <DefaultAdminPageLayout pageClassName="job-view-page">
+        {children}
+      </DefaultAdminPageLayout>;
+    };
+  }
 
   return (
-    <DefaultPageLayout pageClassName="job-view-page">
+    <Layout>
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -57,7 +72,7 @@ const BaseJobEntityTemplate = ({
           </div>
         </div>
       </div>
-    </DefaultPageLayout>
+    </Layout>
   );
 };
 

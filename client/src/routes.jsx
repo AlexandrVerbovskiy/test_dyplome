@@ -49,30 +49,6 @@ const mainRouter = createBrowserRouter([
     element: <JobProposalView />,
   },
   {
-    path: "/admin-disputes",
-    element: <AdminDisputes status="pending" />,
-  },
-  {
-    path: "/admin-disputes/pending",
-    element: <AdminDisputes status="pending" />,
-  },
-  {
-    path: "/admin-disputes/in-progress",
-    element: <AdminDisputes status="in-progress" />,
-  },
-  {
-    path: "/admin-disputes/resolved",
-    element: <AdminDisputes status="resolved" />,
-  },
-  {
-    path: "/admin-dispute/:disputeId",
-    element: <AdminDispute />,
-  },
-  {
-    path: "/admin-client-chat-view/:chatId",
-    element: <AdminClientChatView />,
-  },
-  {
     path: "/profile/:userId",
     element: <UserProfile />,
   },
@@ -98,6 +74,30 @@ const adminRouter = createBrowserRouter([
   {
     path: "/system-chat/:accountId?",
     element: <SystemChat />,
+  },
+  {
+    path: "/disputes",
+    element: <AdminDisputes status="pending" />,
+  },
+  {
+    path: "/disputes/pending",
+    element: <AdminDisputes status="pending" />,
+  },
+  {
+    path: "/disputes/in-progress",
+    element: <AdminDisputes status="in-progress" />,
+  },
+  {
+    path: "/disputes/resolved",
+    element: <AdminDisputes status="resolved" />,
+  },
+  {
+    path: "/dispute/:disputeId",
+    element: <AdminDispute />,
+  },
+  {
+    path: "/admin-client-chat-view/:chatId",
+    element: <AdminClientChatView />,
   },
 ]);
 
