@@ -2,11 +2,10 @@ import React from "react";
 import {
   MapMarker,
   Map,
-  DefaultPageLayout,
   ViewInput,
   JobStatus,
+  Layout
 } from "../components";
-import DefaultAdminPageLayout from "../components/DefaultAdminPageLayout";
 
 const BaseJobEntityTemplate = ({
   pageTitle,
@@ -20,24 +19,10 @@ const BaseJobEntityTemplate = ({
   disputeStatus = null,
   children = null,
   needShowAllStatus = false,
-  adminLayout = false,
 }) => {
-  let Layout = ({ children }) => {
-    <DefaultPageLayout pageClassName="job-view-page">
-      {children}
-    </DefaultPageLayout>;
-  };
-
-  if (adminLayout) {
-    Layout = ({ children }) => {
-      <DefaultAdminPageLayout pageClassName="job-view-page">
-        {children}
-      </DefaultAdminPageLayout>;
-    };
-  }
 
   return (
-    <Layout>
+    <Layout pageClassName="job-view-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">

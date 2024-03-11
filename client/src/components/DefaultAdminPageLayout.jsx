@@ -27,8 +27,7 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
   return (
     <div
       className={
-        "admin-page-wrapper page-wrapper " +
-        pageClassName +
+        `wrapper ` +
         `${hovered ? " sidebar-hovered" : ""}` +
         `${active ? " active" : ""}`
       }
@@ -54,16 +53,17 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
         resetCountNewNotifications={resetCountNewNotifications}
         setActive={setActive}
       />
+      <div className={"admin-page-wrapper page-wrapper " + pageClassName}>
+        {children}
 
-      {children}
-
-      <NewNotificationList
-        notifications={newNotifications}
-        setNotifications={setNewNotifications}
-      />
-      <footer className="page-footer">
-        <p className="mb-0">Copyright © {currentYear}. All right reserved.</p>
-      </footer>
+        <NewNotificationList
+          notifications={newNotifications}
+          setNotifications={setNewNotifications}
+        />
+        <footer className="page-footer">
+          <p className="mb-0">Copyright © {currentYear}. All right reserved.</p>
+        </footer>
+      </div>
     </div>
   );
 };

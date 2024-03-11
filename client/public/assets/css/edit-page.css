@@ -1,6 +1,25 @@
-.profile-edit-page,
-.default-edit-page {
+.profile-edit-page:not(.admin-page-wrapper),
+.default-edit-page:not(.admin-page-wrapper) {
   margin-left: 0;
+}
+
+.profile-edit-page.admin-page-wrapper,
+.default-edit-page.admin-page-wrapper {
+  margin-left: 250px;
+}
+
+@media screen and (max-width: 799px) {
+  .profile-edit-page.admin-page-wrapper,
+  .default-edit-page.admin-page-wrapper {
+    margin-left: 0;
+  }
+}
+
+@media screen and (min-width: 800px)and (max-width: 1025px) {
+  .profile-edit-page.admin-page-wrapper,
+  .default-edit-page.admin-page-wrapper {
+    margin-left: 80px;
+  }
 }
 
 .profile-edit-page input[type="file"] {
@@ -86,6 +105,6 @@
   min-height: auto;
 }
 
-#avatarInput img{
+#avatarInput img {
   width: 100%;
 }

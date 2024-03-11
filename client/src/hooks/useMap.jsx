@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { setApiKey, fromLatLng, fromAddress } from "react-geocode";
+import { setKey, fromLatLng, fromAddress } from "react-geocode";
 
 const useMap = () => {
   useEffect(() => {
     //setApiKey("AIzaSyDzzi_VBcf2Oef6LTViLU767UPNHlnIze4");
     //setApiKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
     //setApiKey("AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w");
-    setApiKey("AIzaSyCuprhlOtAFpOfhaYMs5fYdjdnnla57BLg");
+    setKey("AIzaSyCuprhlOtAFpOfhaYMs5fYdjdnnla57BLg");
   }, []);
 
   const getAddressInfo = (elem) => {

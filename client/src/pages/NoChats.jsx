@@ -1,9 +1,9 @@
 import React from "react";
-import { DefaultPageLayout } from "../components";
+import { Layout } from "../components";
 
 const NoChats = () => {
   return (
-    <DefaultPageLayout pageClassName="default-view-page">
+    <Layout pageClassName="default-view-page">
       <div className="no-chats-page d-flex align-items-center justify-content-center">
         <div className="card p-5">
           <div className="card-body p-4">
@@ -33,7 +33,7 @@ const NoChats = () => {
           </div>
         </div>
       </div>
-    </DefaultPageLayout>
+    </Layout>
   );
 };
 

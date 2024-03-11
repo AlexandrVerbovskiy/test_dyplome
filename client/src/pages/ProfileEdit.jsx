@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import {
   ImageInput,
   Input,
-  DefaultPageLayout,
+  Layout,
   PasswordInput,
   SingleMarkMap,
 } from "../components";
@@ -60,7 +60,7 @@ const ProfileEdit = () => {
   };
 
   return (
-    <DefaultPageLayout pageClassName="profile-edit-page">
+    <Layout pageClassName="profile-edit-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -161,7 +161,7 @@ const ProfileEdit = () => {
           </div>
         </div>
       </div>
-    </DefaultPageLayout>
+    </Layout>
   );
 };
 

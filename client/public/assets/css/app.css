@@ -235,6 +235,7 @@ a {
   padding: 8px 15px 8px 45px;
 }
 
+.simplebar-wrapper .metismenu a.active,
 .sidebar-wrapper .metismenu .mm-active > a,
 .sidebar-wrapper .metismenu a:active,
 .sidebar-wrapper .metismenu a:focus,
@@ -3460,27 +3461,27 @@ body:has(.alert) .page-wrapper {
   align-items: center;
 }
 
-.admin-page-wrapper.active .sidebar-wrapper {
+.wrapper.active .sidebar-wrapper {
   left: 0 !important;
 }
 
 @media screen and (min-width: 800px) and (max-width: 1025px) {
-  .admin-page-wrapper:not(.sidebar-hovered) .sidebar-wrapper {
+  .wrapper:not(.sidebar-hovered) .sidebar-wrapper {
     width: 70px;
   }
 
-  .admin-page-wrapper:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
+  .wrapper:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
     overflow: hidden;
     width: 70px;
   }
 
-  .admin-page-wrapper .topbar {
+  .wrapper .topbar {
     left: 70px !important;
   }
 }
 
 @media screen and (min-width: 799px){
-  .admin-page-wrapper .sidebar-header .toggle-icon{
+  .wrapper .sidebar-header .toggle-icon{
     display: none;
   }
 }

@@ -7,7 +7,7 @@ import { UploadTrigger } from "../components";
 import { fullTimeFormat } from "../utils";
 import { adminAssignDispute } from "../requests";
 import { MainContext } from "../contexts";
-import DefaultAdminPageLayout from "../components/DefaultAdminPageLayout";
+import Layout from "../components/Layout";
 
 const AdminDisputes = ({ status = "pending" }) => {
   const {
@@ -39,7 +39,7 @@ const AdminDisputes = ({ status = "pending" }) => {
   };
 
   return (
-    <DefaultAdminPageLayout pageClassName="default-edit-page">
+    <Layout pageClassName="default-edit-page">
       <CardWrapper>
         <MainFilter value={disputesFilter} onClick={disputesFilterChange} />
         <div className="submenu-under-filter">
@@ -143,7 +143,7 @@ const AdminDisputes = ({ status = "pending" }) => {
         })}
         <UploadTrigger onTriggerShown={getMoreDisputes} />
       </CardWrapper>
-    </DefaultAdminPageLayout>
+    </Layout>
   );
 };
 

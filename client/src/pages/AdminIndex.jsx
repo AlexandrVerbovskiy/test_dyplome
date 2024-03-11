@@ -1,8 +1,8 @@
 import React from "react";
-import DefaultAdminPageLayout from "../components/DefaultAdminPageLayout";
+import {Layout} from "../components";
 
 const AdminIndex = () => {
-  return <DefaultAdminPageLayout>Test</DefaultAdminPageLayout>;
+  return <Layout>Test</Layout>;
 };
 
 export default AdminIndex;

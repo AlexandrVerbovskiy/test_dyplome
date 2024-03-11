@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   Textarea,
   Input,
-  DefaultPageLayout,
+  Layout,
   SingleMarkMap,
 } from "../components";
 import { useJobEdit } from "../hooks";
@@ -50,7 +50,7 @@ const JobEdit = () => {
   };
 
   return (
-    <DefaultPageLayout pageClassName="default-edit-page">
+    <Layout pageClassName="default-edit-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -116,7 +116,7 @@ const JobEdit = () => {
           </div>
         </div>
       </div>
-    </DefaultPageLayout>
+    </Layout>
   );
 };
 

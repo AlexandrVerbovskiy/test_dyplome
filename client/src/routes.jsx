@@ -68,6 +68,22 @@ const adminRouter = createBrowserRouter([
     element: <AdminIndex>Test </AdminIndex>,
   },
   {
+    path: "/profile-edit",
+    element: <ProfileEdit />,
+  },
+  {
+    path: "/job-edit/:id?",
+    element: <JobEdit />,
+  },
+  {
+    path: "/job-proposal/:proposalId?",
+    element: <JobProposalView />,
+  },
+  {
+    path: "/profile/:userId",
+    element: <UserProfile />,
+  },
+  {
     path: "/chat/:type?/:accountId?",
     element: <Chat />,
   },

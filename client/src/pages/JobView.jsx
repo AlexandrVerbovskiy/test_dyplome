@@ -5,7 +5,7 @@ import {
   MapMarker,
   Map,
   JobProposalForm,
-  DefaultPageLayout,
+  Layout,
   ViewInput,
   PopupWrapper,
   CommentCard,
@@ -60,7 +60,7 @@ const JobView = () => {
   };
 
   return (
-    <DefaultPageLayout pageClassName="job-view-page">
+    <Layout pageClassName="job-view-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
@@ -137,7 +137,7 @@ const JobView = () => {
           setPrice={jobProposalFormState.setPrice}
         />
       </PopupWrapper>
-    </DefaultPageLayout>
+    </Layout>
   );
 };
 

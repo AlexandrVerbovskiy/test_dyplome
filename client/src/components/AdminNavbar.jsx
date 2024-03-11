@@ -40,37 +40,45 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                   </div>
                 </div>
                 <ul className="metismenu" id="menu">
-                  <li className="mm-active" style={{ height: "63px" }}>
-                    <a href="/" aria-expanded="true">
-                      <div className="parent-icon">
-                        <i className="bx bx-archive"></i>
-                      </div>
-                      <div className="menu-title">
-                        My merchants service parameters
-                      </div>
-                    </a>
-                  </li>
                   <li style={{ height: "43px" }}>
-                    <a href="/">
+                    <a
+                      href="/"
+                      className={`${
+                        window.location.pathname == "/" ? "active" : ""
+                      }`}
+                    >
                       <div className="parent-icon">
-                        <i className="bx bx-id-card"></i>
+                        <i className="bx bx-home-alt"></i>
                       </div>
-                      <div className="menu-title">View profile</div>
-                    </a>
-                  </li>
-                  <li style={{ height: "43px" }}>
-                    <a href="/">
-                      <div className="parent-icon">
-                        <i className="lni lni-pencil"></i>
-                      </div>
-                      <div className="menu-title">Edit profile</div>
+                      <div className="menu-title">Home</div>
                     </a>
                   </li>
 
                   <li style={{ height: "43px" }}>
-                    <a href="/disputes">
+                    <a
+                      href="/profile-edit"
+                      className={`${
+                        window.location.pathname == "/profile-edit"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
                       <div className="parent-icon">
-                        <i className="lni lni-pencil"></i>
+                        <i className="bx bx-edit"></i>
+                      </div>
+                      <div className="menu-title">Profile edit</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/disputes"
+                      className={`${
+                        window.location.pathname == "/disputes" ? "active" : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bxs-book-open"></i>
                       </div>
                       <div className="menu-title">Disputes</div>
                     </a>

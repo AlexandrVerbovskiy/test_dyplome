@@ -86,27 +86,49 @@ const Navbar = ({
 
           <ul className="navbar-nav mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/" ? "active" : ""
+                }`}
+                href="/"
+              >
                 <i className="bx bx-home-alt me-1" />
                 Home
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                <i className="bx bx-user me-1" />
-                About
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/profile-edit" ? "active" : ""
+                }`}
+                href="/profile-edit"
+              >
+                <i className="bx bx-edit" />
+                Profile
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                <i className="bx bx-category-alt me-1" />
-                Features
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/my-job-proposals"
+                    ? "active"
+                    : ""
+                }`}
+                href="/my-job-proposals"
+              >
+                <i className="bx bx-briefcase me-1" />
+                My Proposals
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                <i className="bx bx-microphone me-1" />
-                Contact
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/balance" ? "active" : ""
+                }`}
+                href="/balance"
+              >
+                <i className="bx bx-money me-1" />
+                Balance
               </a>
             </li>
           </ul>
