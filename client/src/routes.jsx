@@ -17,7 +17,9 @@ import {
   UserProfile,
   SystemChat,
   AdminIndex,
+  Transactions,
 } from "./pages";
+import Balance from "./pages/Balance";
 
 const mainRouter = createBrowserRouter([
   {
@@ -51,6 +53,14 @@ const mainRouter = createBrowserRouter([
   {
     path: "/profile/:userId",
     element: <UserProfile />,
+  },
+  {
+    path: "/transactions",
+    element: <Transactions />,
+  },
+  {
+    path: "/balance",
+    element: <Balance />,
   },
   {
     path: "/",
