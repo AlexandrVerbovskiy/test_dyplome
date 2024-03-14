@@ -5,6 +5,10 @@ const Model = require("./model");
 class User extends Model {
   __visibleFields = "id, email, address, lat, lng, nick, avatar, admin";
 
+  strFilterFields = ["email", "address", "nick"];
+
+  orderFields = ["id", "email", "address", "nick"];
+
   create = async (email, password) =>
     await this.errorWrapper(async () => {
       const hashedPassword = await bcrypt.hash(
@@ -173,6 +177,34 @@ class User extends Model {
       userId,
     ]);
   };
+
+  baseGetMany = async (props) => {
+    const { filter } = props;
+
+    const filterRes = this.baseStrFilter(filter);
+    const baseQuery = `WHERE ${filterRes.conditions}`;
+    const baseProps = filterRes.props;
+    return { query: baseQuery, params: baseProps };
+  };
+
+  count = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      query = "SELECT COUNT(*) as count FROM users " + query;
+      const res = await this.dbQueryAsync(query, params);
+      return res[0]["count"];
+    });
+
+  list = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      const { orderType, order } = this.getOrderInfo(props);
+      const { start, limit } = props;
+
+      query = `SELECT * FROM server_transactions ${query} ORDER BY ? ? LIMIT ?, ?`;
+      params.push(order, orderType, start, limit);
+      return await this.dbQueryAsync(query, params);
+    });
 }
 
 module.exports = User;

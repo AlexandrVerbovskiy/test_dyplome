@@ -3,9 +3,9 @@ CREATE TABLE payment_transactions (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER NOT NULL,
     money DECIMAL NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
-    data JSON,
+    operation_type VARCHAR(255) NOT NULL,
+    balance_change_type VARCHAR(255) NOT NULL,
+    transaction_data JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

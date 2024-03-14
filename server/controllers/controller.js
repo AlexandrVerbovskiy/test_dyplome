@@ -16,23 +16,24 @@ const {
   ReplyComment: ReplyCommentModel,
   Notification: NotificationModel,
 } = require("../models");
+const { getDateByCurrentAdd, timeConverter, adaptClientTimeToServer, clientServerHoursDifference } = require("../utils");
 
 class Controller {
   __db = null;
   __temp_folder = "files/temp";
 
-  sendResponseSuccess(res, message, data = {}, status = 200) {
+  sendResponseSuccess = (res, message, data = {}, status = 200) => {
     return res.status(status).json({
       ...data,
       message,
     });
-  }
+  };
 
-  sendResponseError(res, message, status) {
+  sendResponseError = (res, message, status) => {
     return res.status(status).json({
       error: message,
     });
-  }
+  };
 
   sendResponseValidationError = (res, message) =>
     this.sendResponseError(res, message, 400);
@@ -58,7 +59,7 @@ class Controller {
     return Controller.instance;
   }
 
-  async errorWrapper(res, func) {
+  errorWrapper = async (res, func) => {
     try {
       await func();
     } catch (e) {
@@ -67,13 +68,76 @@ class Controller {
       const error = e.message;
       this.sendResponseError(res, error, status);
     }
-  }
+  };
 
-  __createFolderIfNotExists(folderPath) {
+  __createFolderIfNotExists = (folderPath) => {
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath, { recursive: true });
     }
-  }
+  };
+
+  baseList = async (req, countByFilter) => {
+    const {
+      filter = "",
+      itemsPerPage = 20,
+      order = null,
+      orderType = null,
+    } = req.body;
+
+    let { page = 1 } = req.body;
+
+    let countItems = await countByFilter(req.body);
+    countItems = Number(countItems);
+    const totalPages =
+      countItems > 0 ? Math.ceil(countItems / itemsPerPage) : 1;
+
+    if (page > totalPages) page = totalPages;
+
+    const start = (page - 1) * itemsPerPage;
+
+    return {
+      options: {
+        filter,
+        order,
+        orderType: orderType ?? "desc",
+        start,
+        count: itemsPerPage,
+        page,
+        totalPages,
+      },
+      countItems,
+    };
+  };
+
+  listTimeOption = async (
+    req,
+    startFromCurrentDaysAdd = 1,
+    endToCurrentDaysReject = 0
+  ) => {
+    const { clientTime } = req.body;
+    let { fromTime, toTime } = req.body;
+    const clientServerHoursDiff = clientServerHoursDifference(clientTime);
+
+    if (!fromTime) {
+      fromTime = timeConverter(
+        getDateByCurrentReject(clientTime, startFromCurrentDaysAdd)
+      );
+    }
+
+    if (!toTime) {
+      toTime = timeConverter(
+        getDateByCurrentAdd(clientTime, endToCurrentDaysReject)
+      );
+    }
+
+    const serverFromTime = adaptClientTimeToServer(
+      fromTime,
+      clientServerHoursDiff
+    );
+    const serverToTime = adaptClientTimeToServer(toTime, clientServerHoursDiff);
+
+    return { fromTime, serverFromTime, toTime, serverToTime };
+  };
 }
 
 module.exports = Controller;

@@ -3,10 +3,9 @@ import { setKey, fromLatLng, fromAddress } from "react-geocode";
 
 const useMap = () => {
   useEffect(() => {
-    //setApiKey("AIzaSyDzzi_VBcf2Oef6LTViLU767UPNHlnIze4");
-    //setApiKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
-    //setApiKey("AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w");
-    setKey("AIzaSyCuprhlOtAFpOfhaYMs5fYdjdnnla57BLg");
+    //setKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
+    //setKey("AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w");
+    //setKey("AIzaSyALYcsPh3unwjOuZ1aRDtQAHcz3DXMQVm4");
   }, []);
 
   const getAddressInfo = (elem) => {

@@ -19,8 +19,12 @@ const useAddressCoordsRelation = () => {
   const changeAddress = async (address) => {
     setAddress({ value: address, error: null });
     const res = await getCoordsByAddress(address);
-    setCoords({ value: res, error: null });
-    setCoords({ value: { lat: 0, lng: 0 }, error: null });
+    
+    if (res) {
+      setCoords({ value: res, error: null });
+    } else {
+      setCoords({ value: { lat: 0, lng: 0 }, error: null });
+    }
   };
 
   const addressCoordsValidate = () => {

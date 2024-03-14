@@ -20,6 +20,7 @@ import {
   Transactions,
 } from "./pages";
 import Balance from "./pages/Balance";
+import Test from "./pages/Test";
 
 const mainRouter = createBrowserRouter([
   {
@@ -131,6 +132,10 @@ const signRouter = createBrowserRouter([
   {
     path: "/registration",
     element: <SignUp />,
+  },
+  {
+    path: "/test",
+    element: <Test />,
   },
   {
     path: "*",
