@@ -21,6 +21,7 @@ import {
 } from "./pages";
 import Balance from "./pages/Balance";
 import Test from "./pages/Test";
+import AdminUsers from "./pages/AdminUsers";
 
 const mainRouter = createBrowserRouter([
   {
@@ -105,6 +106,10 @@ const adminRouter = createBrowserRouter([
   {
     path: "/disputes",
     element: <AdminDisputes status="pending" />,
+  },
+  {
+    path: "/users",
+    element: <AdminUsers />,
   },
   {
     path: "/disputes/pending",

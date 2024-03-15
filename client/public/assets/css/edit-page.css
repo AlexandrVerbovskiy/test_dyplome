@@ -3,12 +3,14 @@
   margin-left: 0;
 }
 
+.default-table-page.admin-page-wrapper,
 .profile-edit-page.admin-page-wrapper,
 .default-edit-page.admin-page-wrapper {
   margin-left: 250px;
 }
 
 @media screen and (max-width: 799px) {
+  .default-table-page.admin-page-wrapper,
   .profile-edit-page.admin-page-wrapper,
   .default-edit-page.admin-page-wrapper {
     margin-left: 0;
@@ -16,6 +18,7 @@
 }
 
 @media screen and (min-width: 800px)and (max-width: 1025px) {
+  .default-table-page.admin-page-wrapper,
   .profile-edit-page.admin-page-wrapper,
   .default-edit-page.admin-page-wrapper {
     margin-left: 80px;

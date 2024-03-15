@@ -34,3 +34,5 @@ export { default as CommentList } from "./CommentList";
 export { default as YesNoPopup } from "./YesNoPopup";
 export { default as DefaultPageLayout } from "./DefaultPageLayout";
 export { default as Layout } from "./Layout";
+
+export { default as BaseAdminTableLayoutPage } from "./BaseAdminTableLayoutPage.jsx";

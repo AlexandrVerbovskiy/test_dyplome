@@ -72,6 +72,20 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/users"
+                      className={`${
+                        window.location.pathname == "/users" ? "active" : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="lni lni-users"></i>
+                      </div>
+                      <div className="menu-title">Users</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/disputes"
                       className={`${
                         window.location.pathname == "/disputes" ? "active" : ""

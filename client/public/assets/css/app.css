@@ -77,6 +77,10 @@ a {
   color: #008cff;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .toggle-icon {
   font-size: 22px;
   cursor: pointer;
@@ -3547,7 +3551,7 @@ body:has(.alert) .page-wrapper {
   transition: transform 0.3s ease;
 }
 
-.platform-option{
+.platform-option {
   transition: all 0.2s ease-in-out;
 }
 

@@ -14,7 +14,7 @@ File: icons.css
 	src: url(../fonts/boxicons.eot) format('embedded-opentype'), url(../fonts/boxicons.woff2) format('woff2'), url(../fonts/boxicons.woff) format('woff'), url(../fonts/boxicons.ttf) format('truetype'), url(../fonts/boxicons.svg?#boxicons) format('svg')
 }
 
-.bx {
+.bx:not(th), th.bx:before, th.bx:after {
 	font-family: boxicons!important;
 	font-weight: 400;
 	font-style: normal;
@@ -25,6 +25,10 @@ File: icons.css
 	speak: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale
+}
+
+th.bx:before, th.bx:after{
+	font-weight: 700!important;
 }
 
 .bx-ul {
@@ -1551,7 +1555,11 @@ File: icons.css
 	content: "\ea18"
 }
 
-.bx-down-arrow-alt:before {
+th.bx-down-arrow-alt:after {
+	content: "\ea19"
+}
+
+.bx-down-arrow-alt:not(th):before {
 	content: "\ea19"
 }
 
@@ -3215,7 +3223,11 @@ File: icons.css
 	content: "\ebb8"
 }
 
-.bx-up-arrow-alt:before {
+th.bx-up-arrow-alt:after {
+	content: "\ebb9"
+}
+
+.bx-up-arrow-alt:not(th):before {
 	content: "\ebb9"
 }
 

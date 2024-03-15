@@ -1598,6 +1598,7 @@ progress {
 .table-responsive {
 	overflow-x: auto;
 	white-space: nowrap;
+	table-layout: fixed;
 	-webkit-overflow-scrolling: touch
 }
 @media (max-width:575.98px) {
