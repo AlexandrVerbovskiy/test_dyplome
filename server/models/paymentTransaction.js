@@ -5,7 +5,7 @@ class PaymentTransaction extends Model {
   strFilterFields = ["users.email", "users.nick"];
 
   orderFields = [
-    "server_transactions.id",
+    "payment_transactions.id",
     "money",
     "platform",
     "created_at",
@@ -25,7 +25,7 @@ class PaymentTransaction extends Model {
   }) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        `INSERT INTO server_transactions 
+        `INSERT INTO payment_transactions 
         (balance_change_type, money, platform, operation_type, transaction_data, sender_id)
          VALUES (?, ?, ?, ?, ?)`,
         [
@@ -39,11 +39,11 @@ class PaymentTransaction extends Model {
       );
     });
 
-  baseGetMany = async (props) => {
+  baseGetMany = (props) => {
     const { filter } = props;
 
     const filterRes = this.baseStrFilter(filter);
-    const baseQuery = `WHERE ${filterRes.conditions}`;
+    const baseQuery = `JOIN users ON users.id = payment_transactions.user_id WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
 
     const resTimeQueryBuild = this.baseListTimeFilter(
@@ -59,7 +59,7 @@ class PaymentTransaction extends Model {
   count = async (props) =>
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
-      query = "SELECT COUNT(*) as count FROM server_transactions " + query;
+      query = "SELECT COUNT(*) as count FROM payment_transactions " + query;
       const res = await this.dbQueryAsync(query, params);
       return res[0]["count"];
     });
@@ -68,7 +68,7 @@ class PaymentTransaction extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       query =
-        "SELECT COUNT(*) as count FROM server_transactions " +
+        "SELECT COUNT(*) as count FROM payment_transactions " +
         query +
         " AND sender_id = ?";
 
@@ -82,16 +82,16 @@ class PaymentTransaction extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
-      const { start, limit } = props;
+      const { start, count } = props;
 
-      query = `SELECT server_transactions.id as id, money, operation_type as operationType, 
+      query = `SELECT payment_transactions.id as id, money, operation_type as operationType, 
         balance_change_type as balanceChangeType, transaction_data as transactionData, 
         users.email as userEmail, users.nick as userNick, 
         users.id as userId, users.avatar as userAvatar,
-        created_at as createdAt FROM server_transactions
+        created_at as createdAt FROM payment_transactions
         ${query} ORDER BY ? ? LIMIT ?, ?`;
 
-      params.push(order, orderType, start, limit);
+      params.push(order, orderType, start, count);
 
       return await this.dbQueryAsync(query, params);
     });
@@ -100,14 +100,14 @@ class PaymentTransaction extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
-      const { start, limit, senderId } = props;
+      const { start, count, senderId } = props;
 
-      query = `SELECT server_transactions.id as id, money, operation_type as operationType, 
+      query = `SELECT payment_transactions.id as id, money, operation_type as operationType, 
         balance_change_type as balanceChangeType, transaction_data as transactionData, 
-        created_at as createdAt FROM server_transactions
+        created_at as createdAt FROM payment_transactions
         ${query} AND sender_id = ? ORDER BY ? ? LIMIT ?, ?`;
 
-      params.push(senderId, order, orderType, start, limit);
+      params.push(senderId, order, orderType, start, count);
 
       return await this.dbQueryAsync(query, params);
     });

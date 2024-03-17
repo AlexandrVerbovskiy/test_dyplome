@@ -96,16 +96,51 @@ class User extends Model {
       );
     });
 
+  changeAuthorized = async (userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE users SET profile_authorized = !profile_authorized WHERE id = ?",
+        [userId]
+      );
+
+      const newRoleInfo = await this.dbQueryAsync(
+        "SELECT profile_authorized FROM users WHERE id = ?",
+        [userId]
+      );
+
+      return newRoleInfo[0]["profile_authorized"];
+    });
+
+  changeRole = async (userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync("UPDATE users SET admin = !admin WHERE id = ?", [
+        userId,
+      ]);
+
+      const newRoleInfo = await this.dbQueryAsync(
+        "SELECT admin FROM users WHERE id = ?",
+        [userId]
+      );
+
+      return newRoleInfo[0]["admin"];
+    });
+
+  delete = async (userId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync("DELETE FROM users WHERE id = ?", [userId]);
+    });
+
   updatePassword = async (accountId, password) =>
     await this.errorWrapper(async () => {
       const hashedPassword = await bcrypt.hash(
         password,
         this.passwordCashSaltOrRounds
       );
-      await this.dbQueryAsync("UPDATE users SET password = ? WHERE id = ?", [
-        hashedPassword,
-        accountId,
-      ]);
+      const res = await this.dbQueryAsync(
+        "UPDATE users SET password = ? WHERE id = ?",
+        [hashedPassword, accountId]
+      );
+      return res;
     });
 
   getAdminsToGroup = async (lastId = 0, ignoreIds = [], filter = "") =>

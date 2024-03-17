@@ -1,7 +1,12 @@
 import { useContext, useState } from "react";
 import { usePagination } from "../hooks";
 import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
-import { getFullUsers } from "../requests";
+import {
+  adminDeleteUser,
+  adminUpdateUserAdmin,
+  adminUpdateUserAuthorized,
+  getFullUsers,
+} from "../requests";
 import { MainContext } from "../contexts";
 import { YesNoPopup, YesNoSpan } from "../components";
 import { Eye, Pencil, Trash } from "react-bootstrap-icons";
@@ -67,6 +72,9 @@ const UserRow = ({
   adminChange,
 }) => {
   const [activeDelete, setActiveDelete] = useState(false);
+  const main = useContext(MainContext);
+  const isCurrentUser = main.sessionUser.id === id;
+
   return (
     <tr>
       <td className="fw-bolder">#{id}</td>
@@ -89,36 +97,41 @@ const UserRow = ({
       <td>
         <YesNoSpan
           active={profile_authorized}
-          onClick={() => authorizedChange(id)}
+          onClick={isCurrentUser ? null : () => authorizedChange(id)}
         />
       </td>
       <td>
-        <YesNoSpan active={admin} onClick={() => adminChange(id)} />
+        <YesNoSpan
+          active={admin}
+          onClick={isCurrentUser ? null : () => adminChange(id)}
+        />
       </td>
       <td>
-        <div className="fast-actions">
-          <div className="cursor-pointer action-icon primary-action">
-            <a href={`/user-view/${id}`}>
-              <Eye size="20px" />
-            </a>
+        {!isCurrentUser && (
+          <div className="fast-actions">
+            <div className="cursor-pointer action-icon primary-action">
+              <a href={`/user-view/${id}`}>
+                <Eye size="20px" />
+              </a>
+            </div>
+            <div className="cursor-pointer action-icon secondary-action">
+              <a href={`/user-edit/${id}`}>
+                <Pencil size="20px" />
+              </a>
+            </div>
+            <div className="cursor-pointer action-icon danger-action">
+              <Trash size="20px" onClick={() => setActiveDelete(true)} />
+            </div>
+            <YesNoPopup
+              shortTitle="Delete User"
+              title={`Are you sure you want to delete user ${email}`}
+              trigger={activeDelete}
+              onAccept={() => onDelete(id)}
+              onClose={() => setActiveDelete(false)}
+              acceptText="Delete"
+            />
           </div>
-          <div className="cursor-pointer action-icon secondary-action">
-            <a href={`/user-edit/${id}`}>
-              <Pencil size="20px" />
-            </a>
-          </div>
-          <div className="cursor-pointer action-icon danger-action">
-            <Trash size="20px" onClick={() => setActiveDelete(true)} />
-          </div>
-          <YesNoPopup
-            shortTitle="Delete User"
-            title={`Are you sure you want to delete user ${email}`}
-            trigger={activeDelete}
-            onAccept={() => onDelete(id)}
-            onClose={() => setActiveDelete(false)}
-            acceptText="Delete"
-          />
-        </div>
+        )}
       </td>
     </tr>
   );
@@ -169,9 +182,38 @@ const AdminUsers = () => {
       }),
   });
 
-  const onDelete = (id) => console.log(id);
-  const adminChange = (id) => console.log(id);
-  const authorizedChange = (id) => console.log(id);
+  const onDelete = async (id) => {
+    await main.request({
+      url: adminDeleteUser.url(),
+      data: adminDeleteUser.convertData(id),
+      type: adminDeleteUser.type,
+      convertRes: adminDeleteUser.convertRes,
+    });
+
+    rebuild();
+  };
+
+  const adminChange = async (id) => {
+    const admin = await main.request({
+      url: adminUpdateUserAdmin.url(),
+      data: adminUpdateUserAdmin.convertData(id),
+      type: adminUpdateUserAdmin.type,
+      convertRes: adminUpdateUserAdmin.convertRes,
+    });
+
+    setItemFields({ admin }, id);
+  };
+
+  const authorizedChange = async (id) => {
+    const authorized = await main.request({
+      url: adminUpdateUserAuthorized.url(),
+      data: adminUpdateUserAuthorized.convertData(id),
+      type: adminUpdateUserAuthorized.type,
+      convertRes: adminUpdateUserAuthorized.convertRes,
+    });
+
+    setItemFields({ profile_authorized: authorized }, id);
+  };
 
   return (
     <BaseAdminTableLayoutPage

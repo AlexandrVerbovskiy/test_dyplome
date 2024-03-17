@@ -323,3 +323,62 @@ export const getFullUsers = {
     countItems: res.data.countItems,
   }),
 };
+
+export const adminUpdateUserAdmin = {
+  url: () => `admin-update-user-admin`,
+  type: "post",
+  convertData: (userId) => ({
+    userId,
+  }),
+  convertRes: (res) => res.data.admin,
+};
+
+export const adminUpdateUserAuthorized = {
+  url: () => `admin-update-user-authorized`,
+  type: "post",
+  convertData: (userId) => ({
+    userId,
+  }),
+  convertRes: (res) => res.data.authorized,
+};
+
+export const adminDeleteUser = {
+  url: () => `admin-delete-user`,
+  type: "post",
+  convertData: (userId) => ({
+    userId,
+  }),
+  convertRes: (res) => true,
+};
+
+export const getPaymentTransactions = {
+  url: () => `user-payments`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.transactions,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};
+export const getServerTransactions = {
+  url: () => `admin-server-payments`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.transactions,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};
+
+export const getAllUsersPaymentTransactions = {
+  url: () => `admin-user-payments`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.transactions,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};

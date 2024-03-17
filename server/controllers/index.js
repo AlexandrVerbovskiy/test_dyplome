@@ -6,4 +6,5 @@ module.exports = {
   JobProposal: require("./jobProposal"),
   Dispute: require("./dispute"),
   Comment: require("./comment"),
+  Transactions: require("./transactions"),
 };

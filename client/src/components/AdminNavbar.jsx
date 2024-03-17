@@ -100,6 +100,38 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/server-transactions"
+                      className={`${
+                        window.location.pathname == "/server-transactions"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bxs-book-open"></i>
+                      </div>
+                      <div className="menu-title">Server Transactions</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/transactions"
+                      className={`${
+                        window.location.pathname == "/transactions"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bxs-book-open"></i>
+                      </div>
+                      <div className="menu-title">Transactions</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/"
                       onClick={(e) => {
                         e.preventDefault();

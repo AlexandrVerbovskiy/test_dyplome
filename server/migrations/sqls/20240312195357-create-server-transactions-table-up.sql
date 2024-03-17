@@ -5,5 +5,5 @@ CREATE TABLE server_transactions (
     operation_type VARCHAR(255) NOT NULL,
     balance_change_type VARCHAR(255) NOT NULL,
     transaction_data JSON,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

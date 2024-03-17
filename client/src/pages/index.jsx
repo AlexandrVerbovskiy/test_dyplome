@@ -15,4 +15,6 @@ export { default as AdminDispute } from "./AdminDispute";
 export { default as AdminClientChatView } from "./AdminClientChatView";
 export { default as UserProfile } from "./UserProfile";
 export { default as AdminIndex } from "./AdminIndex";
-export { default as Transactions } from "./Transactions";
+export { default as PaymentTransactions } from "./PaymentTransactions";
+export { default as AdminPaymentTransactions } from "./AdminPaymentTransactions";
+export { default as AdminServerTransactions } from "./AdminServerTransactions";

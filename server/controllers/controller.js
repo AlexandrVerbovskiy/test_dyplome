@@ -15,12 +15,15 @@ const {
   EmployeeComment: EmployeeCommentModel,
   ReplyComment: ReplyCommentModel,
   Notification: NotificationModel,
+  ServerTransaction: ServerTransactionModel,
+  PaymentTransaction: PaymentTransactionModel,
 } = require("../models");
 const {
   getDateByCurrentAdd,
   timeConverter,
   adaptClientTimeToServer,
   clientServerHoursDifference,
+  getDateByCurrentReject,
 } = require("../utils");
 
 class Controller {
@@ -60,6 +63,8 @@ class Controller {
     this.employeeCommentModel = new EmployeeCommentModel(db);
     this.replyCommentModel = new ReplyCommentModel(db);
     this.notificationModel = new NotificationModel(db);
+    this.serverTransactionModel = new ServerTransactionModel(db);
+    this.paymentTransactionModel = new PaymentTransactionModel(db);
 
     return Controller.instance;
   }

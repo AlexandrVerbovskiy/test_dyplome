@@ -1,6 +1,6 @@
 require("dotenv").config();
 const util = require("util");
-const { CustomError } = require("../utils");
+const { CustomError, formatDateToSQLFormat } = require("../utils");
 
 class Model {
   passwordCashSaltOrRounds = 10;
@@ -65,17 +65,25 @@ class Model {
     return { conditions: `(${conditions})`, props };
   };
 
-  baseListTimeFilter = (props, query, params, field = "created_at") => {
+  baseListTimeFilter = (
+    props,
+    query = "",
+    params = [],
+    field = "created_at"
+  ) => {
     const { serverFromTime, serverToTime } = props;
+    let hasWhere = !!query;
 
     if (serverFromTime) {
-      query += ` AND ${field} >= ?`;
+      query += `${hasWhere ? " AND" : "WHERE"} ${field} >= ?`;
       params.push(formatDateToSQLFormat(serverFromTime));
+      hasWhere = true;
     }
 
     if (serverToTime) {
-      query += ` AND ${field} <= ?`;
+      query += `${hasWhere ? " AND" : "WHERE"} ${field} <= ?`;
       params.push(formatDateToSQLFormat(serverToTime));
+      hasWhere = true;
     }
 
     return { query, params };

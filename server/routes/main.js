@@ -10,6 +10,7 @@ const {
   JobProposal,
   Dispute,
   Comment,
+  Transactions,
 } = require("../controllers");
 
 const {
@@ -46,6 +47,7 @@ function route(app, db, io) {
   const jobProposalController = new JobProposal(db);
   const disputeController = new Dispute(db);
   const commentController = new Comment(db);
+  const transactionsController = new Transactions(db);
 
   chatController.setIo(io);
 
@@ -200,5 +202,29 @@ function route(app, db, io) {
   app.post("/left-chat", isAdmin, chatController.leftChat);
   app.post("/kick-chat-user", isAdmin, chatController.kickUser);
   app.post("/add-chat-users", isAdmin, chatController.addUsers);
+
+  app.post("/admin-update-user-admin", isAdmin, userController.changeUserRole);
+  app.post(
+    "/admin-update-user-authorized",
+    isAdmin,
+    userController.changeUserAuthorized
+  );
+  app.post("/admin-delete-user", isAdmin, userController.deleteUser);
+
+  app.post(
+    "/admin-server-payments",
+    isAdmin,
+    transactionsController.getServerTransactions
+  );
+  app.post(
+    "/admin-user-payments",
+    isAdmin,
+    transactionsController.getPaymentTransactions
+  );
+  app.post(
+    "/user-payments",
+    isAuth,
+    transactionsController.getUserPaymentTransactions
+  );
 }
 module.exports = route;

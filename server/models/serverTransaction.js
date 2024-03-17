@@ -33,20 +33,8 @@ class ServerTransaction extends Model {
       );
     });
 
-  baseGetMany = async (props) => {
-    const { filter } = props;
-
-    const filterRes = this.baseStrFilter(filter);
-    const baseQuery = `WHERE ${filterRes.conditions}`;
-    const baseProps = filterRes.props;
-
-    const resTimeQueryBuild = this.baseListTimeFilter(
-      props,
-      baseQuery,
-      baseProps
-    );
-
-    let { query, params } = resTimeQueryBuild;
+  baseGetMany = (props) => {
+    let { query, params } = this.baseListTimeFilter(props);
     return { query, params };
   };
 
@@ -62,14 +50,14 @@ class ServerTransaction extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
-      const { start, limit } = props;
+      const { start, count } = props;
 
       query = `SELECT server_transactions.id as id, money, operation_type as operationType, 
         balance_change_type as balanceChangeType, transaction_data as transactionData, 
         created_at as createdAt FROM server_transactions
         ${query} ORDER BY ? ? LIMIT ?, ?`;
 
-      params.push(order, orderType, start, limit);
+      params.push(order, orderType, start, count);
 
       return await this.dbQueryAsync(query, params);
     });

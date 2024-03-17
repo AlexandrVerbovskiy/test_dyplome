@@ -17,7 +17,9 @@ import {
   UserProfile,
   SystemChat,
   AdminIndex,
-  Transactions,
+  PaymentTransactions,
+  AdminPaymentTransactions,
+  AdminServerTransactions,
 } from "./pages";
 import Balance from "./pages/Balance";
 import Test from "./pages/Test";
@@ -58,7 +60,7 @@ const mainRouter = createBrowserRouter([
   },
   {
     path: "/transactions",
-    element: <Transactions />,
+    element: <PaymentTransactions />,
   },
   {
     path: "/balance",
@@ -130,6 +132,14 @@ const adminRouter = createBrowserRouter([
   {
     path: "/admin-client-chat-view/:chatId",
     element: <AdminClientChatView />,
+  },
+  {
+    path: "/server-transactions",
+    element: <AdminServerTransactions />,
+  },
+  {
+    path: "/transactions",
+    element: <AdminPaymentTransactions />,
   },
 ]);
 

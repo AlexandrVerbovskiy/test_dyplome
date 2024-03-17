@@ -364,6 +364,31 @@ class User extends Controller {
         countItems,
       });
     });
+
+  changeUserRole = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.body.userId;
+      const admin = await this.userModel.changeRole(userId);
+      this.sendResponseSuccess(res, "Updated successfully", {
+        admin,
+      });
+    });
+
+  changeUserAuthorized = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.body.userId;
+      const authorized = await this.userModel.changeAuthorized(userId);
+      this.sendResponseSuccess(res, "Updated successfully", {
+        authorized,
+      });
+    });
+
+  deleteUser = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.body.userId;
+      const admin = await this.userModel.delete(userId);
+      this.sendResponseSuccess(res, "Deleted successfully");
+    });
 }
 
 module.exports = User;
