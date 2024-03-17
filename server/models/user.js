@@ -178,9 +178,8 @@ class User extends Model {
     ]);
   };
 
-  baseGetMany = async (props) => {
+  baseGetMany = (props) => {
     const { filter } = props;
-
     const filterRes = this.baseStrFilter(filter);
     const baseQuery = `WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
@@ -199,10 +198,11 @@ class User extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
-      const { start, limit } = props;
+      const { start, count } = props;
 
-      query = `SELECT * FROM server_transactions ${query} ORDER BY ? ? LIMIT ?, ?`;
-      params.push(order, orderType, start, limit);
+      query = `SELECT * FROM users ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      params.push(start, count);
+
       return await this.dbQueryAsync(query, params);
     });
 }

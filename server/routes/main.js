@@ -78,12 +78,26 @@ function route(app, db, io) {
 
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
   app.post("/admin-chats", isAdmin, chatController.getAdminChats);
-  app.post("/admin-user-system-chats", isAdmin, chatController.getUserSystemChats);
+  app.post(
+    "/admin-user-system-chats",
+    isAdmin,
+    chatController.getUserSystemChats
+  );
+
+  app.post("/admin-get-users", isAdmin, userController.getFullUsers);
 
   app.post("/get-chat-messages", isAuth, chatController.getChatMessages);
-  app.post("/admin-get-system-chat-messages", isAdmin, chatController.getSystemChatMessages);
+  app.post(
+    "/admin-get-system-chat-messages",
+    isAdmin,
+    chatController.getSystemChatMessages
+  );
   app.post("/select-chat", isAuth, chatController.selectChat);
-  app.post("/admin-select-system-chat", isAdmin, chatController.selectSystemChatByAdmin);
+  app.post(
+    "/admin-select-system-chat",
+    isAdmin,
+    chatController.selectSystemChatByAdmin
+  );
   app.post("/get-users-chat", isAuth, chatController.getUsersChat);
 
   app.get("/get-job/:id", isAuth, jobController.getById);

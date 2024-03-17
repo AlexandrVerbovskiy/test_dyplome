@@ -349,6 +349,21 @@ class User extends Controller {
         users: [...admins],
       });
     });
+
+  getFullUsers = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { options, countItems } = await this.baseList(req, (params) =>
+        this.userModel.count(params)
+      );
+
+      const users = await this.userModel.list(options);
+
+      this.sendResponseSuccess(res, "User list got success", {
+        users,
+        options,
+        countItems,
+      });
+    });
 }
 
 module.exports = User;

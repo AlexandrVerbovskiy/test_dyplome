@@ -12,7 +12,7 @@ const getQueryParams = () => {
 };
 
 const usePagination = ({
-  getItemsFunc = () => {},
+  getItemsFunc,
   onError = null,
   getDopProps = null,
 }) => {
@@ -113,14 +113,9 @@ const usePagination = ({
       }
 
       props = { ...props, ...dopBody };
+      console.log(props);
 
-      /*await getItemsFunc(props)*/
-
-      const res = {
-        options: {},
-        items: [],
-        countItems: 0,
-      };
+      const res = await getItemsFunc(props);
 
       const {
         options: gotOptions,
@@ -130,16 +125,19 @@ const usePagination = ({
 
       countPagesRef.current = gotOptions.totalPages;
       countItemsRef.current = gotCountItems;
-      //updateStateByOption(gotOptions, unusualKeys);
+      updateStateByOption(gotOptions, unusualKeys);
       setItems(gotItems);
     } catch (e) {
-      onError(e);
+      console.log(e);
+      if (onError) {
+        onError(e);
+      }
     }
   };
 
   useEffect(() => {
     const dopBody = {};
-    const { order, orderType, page, filter } = getQueryParams;
+    const { order, orderType, page, filter } = getQueryParams();
 
     if (order) {
       dopBody["order"] = order;

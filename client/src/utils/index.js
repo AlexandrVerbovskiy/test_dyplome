@@ -28,4 +28,6 @@ export { default as generateFullUserImgPath } from "./generateFullUserImgPath";
 
 export { default as sortCountByMonths } from "./sortCountByMonths";
 
+export { default as generatePagination } from "./generatePagination";
+
 export * from "./notification";

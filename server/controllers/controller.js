@@ -16,7 +16,12 @@ const {
   ReplyComment: ReplyCommentModel,
   Notification: NotificationModel,
 } = require("../models");
-const { getDateByCurrentAdd, timeConverter, adaptClientTimeToServer, clientServerHoursDifference } = require("../utils");
+const {
+  getDateByCurrentAdd,
+  timeConverter,
+  adaptClientTimeToServer,
+  clientServerHoursDifference,
+} = require("../utils");
 
 class Controller {
   __db = null;

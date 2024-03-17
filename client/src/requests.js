@@ -312,3 +312,14 @@ export const addChatUsers = {
     messages: res.data.messages,
   }),
 };
+
+export const getFullUsers = {
+  url: () => `admin-get-users`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.users,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};

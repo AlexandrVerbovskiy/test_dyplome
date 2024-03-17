@@ -64,6 +64,8 @@ const UserProfile = () => {
             </div>
           </div>
 
+          <UserProfileStatisticInfo userInfo={userInfo} />
+
           <CommentCard
             comments={comments}
             totalCount={totalCount}
@@ -82,9 +84,6 @@ const UserProfile = () => {
 export default UserProfile;
 
 /*
-
-        <UserProfileStatisticInfo userInfo={userInfo} />
-
         <LineChart
           info={byUserInfo}
           title="Count finished jobs by "

@@ -3581,3 +3581,118 @@ body:has(.alert) .page-wrapper {
   display: flex;
   align-items: center;
 }
+
+.yes-no-span {
+  font-size: 10px;
+}
+
+.fast-actions {
+  display: flex;
+  grid-column-gap: 8px;
+}
+
+.fast-actions .action-icon a {
+  color: inherit !important;
+}
+
+.fast-actions .action-icon svg {
+  transition: all 0.2s ease-in-out;
+}
+
+.fast-actions .primary-action {
+  color: #008cff;
+}
+
+.fast-actions .primary-action:hover {
+  color: #0a58ca;
+}
+
+.fast-actions .secondary-action {
+  color: #6c757d;
+}
+
+.fast-actions .secondary-action:hover {
+  color: #41484c;
+}
+
+.fast-actions .success-action {
+  color: #15ca20;
+}
+
+.fast-actions .success-action:hover {
+  color: #0eb018;
+}
+
+.fast-actions .danger-action {
+  color: #fd3550;
+}
+
+.fast-actions .danger-action:hover {
+  color: #d10b1e;
+}
+
+.img-td {
+  width: 50px;
+  height: 50px;
+}
+
+.pagination-area {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination-area .page-numbers {
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  display: inline-block;
+  border-radius: 5px;
+  line-height: 24px;
+  position: relative;
+  border: 1px solid #d5d5d5;
+  margin-left: 3px;
+  margin-right: 3px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.2s ease-in-out;
+}
+.pagination-area .page-numbers:hover,
+.pagination-area .page-numbers.current {
+  color: white;
+  background-color: #008cff;
+}
+
+.pagination-area .page-numbers:hover {
+  box-shadow: 0px 0px 14px #d5d5d5;
+}
+
+.pagination-area .page-numbers i {
+  position: relative;
+  top: 2px;
+}
+
+.pagination-area .page-numbers.next,
+.pagination-area .page-numbers.prev {
+  color: white;
+  background-color: #008cff;
+  line-height: 22px;
+}
+
+.pagination-area .page-numbers.next:hover,
+.pagination-area .page-numbers.prev:hover {
+  color: white;
+  background-color: #0a58ca;
+}
+
+.table-responsive table{
+  table-layout: fixed!important;
+}
+
+.table-responsive td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

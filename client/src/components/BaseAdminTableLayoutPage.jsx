@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "../components";
+import Pagination from "./Pagination";
 
 const BaseAdminTableLayoutPage = ({
   headers,
@@ -9,15 +10,19 @@ const BaseAdminTableLayoutPage = ({
   changeOrder = () => {},
   RowElem,
   items,
+  DopFilterElem = null,
+  paginationInfo
 }) => {
   return (
     <Layout pageClassName="default-table-page">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <h6 className="text-uppercase">{title}</h6>
+            <div className="d-flex justify-content-between">
+              <h6 className="text-uppercase">{title}</h6>
+              {DopFilterElem && <DopFilterElem />}
+            </div>
             <hr />
-
             <div className="row">
               <div className="table-responsive">
                 <table className="table align-middle mb-0">
@@ -53,6 +58,14 @@ const BaseAdminTableLayoutPage = ({
                 </table>
               </div>
             </div>
+
+            <Pagination
+              page={paginationInfo.page}
+              countPages={paginationInfo.countPages}
+              move={paginationInfo.moveToPage}
+              canNext={paginationInfo.canMoveNextPage}
+              canPrev={paginationInfo.canMovePrevPage}
+            />
           </div>
         </div>
       </div>
