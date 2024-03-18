@@ -2446,7 +2446,7 @@ input.search-control-2::placeholder {
   }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 799px) {
   .topbar {
     left: 0 !important;
   }
@@ -3484,7 +3484,7 @@ body:has(.alert) .page-wrapper {
   }
 }
 
-@media screen and (min-width: 799px) {
+@media screen and (min-width: 800px) {
   .wrapper .sidebar-header .toggle-icon {
     display: none;
   }
@@ -3688,11 +3688,23 @@ body:has(.alert) .page-wrapper {
   background-color: #0a58ca;
 }
 
-.table-responsive table{
-  table-layout: fixed!important;
+.table-responsive table {
+  table-layout: fixed !important;
 }
 
 .table-responsive td {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#avatarInput {
+  margin-top: 10px;
+}
+
+#avatarInput .text-danger {
+  min-height: auto;
+}
+
+#avatarInput img {
+  width: 100%;
 }

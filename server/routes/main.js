@@ -76,6 +76,7 @@ function route(app, db, io) {
   );
   app.post("/get-user-profile", userController.getUserById);
   app.get("/get-profile", isAuth, userController.getPersonalProfile);
+  app.post("/get-full-user-info", isAuth, userController.getFullUserById);
   app.post("/reset-password", isAuth, userController.resetPassword);
 
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);

@@ -238,6 +238,17 @@ class User extends Controller {
       );
     });
 
+  getFullUserById = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { userId } = req.body;
+      const user = await this.userModel.getFullUserInfo(userId);
+      return this.sendResponseSuccess(
+        res,
+        "User was getted successfully",
+        user
+      );
+    });
+
   getPersonalProfile = (req, res) =>
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;

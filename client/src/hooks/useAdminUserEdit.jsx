@@ -1,35 +1,39 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getProfileInfo } from "../requests";
+import { getFullUserInfo } from "../requests";
 import { MainContext } from "../contexts";
 
-const useProfileEdit = () => {
+const useAdminUserEdit = ({ id }) => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [email, setEmail] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
+  const [admin, setAdmin] = useState({ value: false, error: null });
+  const [authorized, setAuthorized] = useState({ value: false, error: null });
+
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
   const main = useContext(MainContext);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await main.request({
-          url: getProfileInfo.url(),
-          type: getProfileInfo.type,
-          convertRes: getProfileInfo.convertRes,
+        const user = await main.request({
+          url: getFullUserInfo.url(),
+          type: getFullUserInfo.type,
+          convertRes: getFullUserInfo.convertRes,
+          data: getFullUserInfo.convertData(id),
         });
 
-        if (!res) return;
+        if (!user) return;
 
-        coords.change({ lat: res.lat ?? 0, lng: res.lng ?? 0 });
-        address.change(res.address ?? "");
-        changeEmail(res.email ?? "");
-        changeNick(res.nick ?? "");
+        coords.change({ lat: user.lat ?? 0, lng: user.lng ?? 0 });
+        address.change(user.address ?? "");
+        changeEmail(user.email ?? "");
+        changeNick(user.nick ?? "");
 
-        if (res.avatar) changeImg(res.avatar);
+        if (user.avatar) changeImg(user.avatar);
       } catch (e) {}
     })();
-  }, []);
+  }, [id]);
 
   const changeEmail = (email) => {
     setEmail({ value: email, error: null });
@@ -37,6 +41,14 @@ const useProfileEdit = () => {
 
   const changeNick = (nick) => {
     setNick({ value: nick, error: null });
+  };
+
+  const changeAuthorized = () => {
+    setAuthorized({ value: !authorized.value, error: null });
+  };
+
+  const changeAdmin = () => {
+    setAdmin({ value: !admin.value, error: null });
   };
 
   const changeImg = (img) => {
@@ -83,7 +95,9 @@ const useProfileEdit = () => {
     nick: { ...nick, change: changeNick },
     profileImg: { ...profileImg, change: changeImg },
     validateProfileEdit,
+    admin: { ...admin, change: changeAdmin },
+    authorized: { ...authorized, change: changeAuthorized },
   };
 };
 
-export default useProfileEdit;
+export default useAdminUserEdit;

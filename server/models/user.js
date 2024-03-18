@@ -76,6 +76,8 @@ class User extends Model {
   getUserInfo = (userId) =>
     this.__baseGetUserInfo(`${this.__visibleFields} FROM users `, userId);
 
+  getFullUserInfo = (userId) => this.__baseGetUserInfo(`* FROM users `, userId);
+
   checkIsAdmin = async (userId) =>
     await this.errorWrapper(async () => {
       const findUserRes = await this.dbQueryAsync(

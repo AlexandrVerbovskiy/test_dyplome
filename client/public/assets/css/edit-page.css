@@ -9,7 +9,7 @@
   margin-left: 250px;
 }
 
-@media screen and (max-width: 799px) {
+@media screen and (max-width: 800px) {
   .default-table-page.admin-page-wrapper,
   .profile-edit-page.admin-page-wrapper,
   .default-edit-page.admin-page-wrapper {
@@ -102,12 +102,4 @@
 .text-danger {
   min-height: 1.5em;
   font-size: 14px;
-}
-
-#avatarInput .text-danger {
-  min-height: auto;
-}
-
-#avatarInput img {
-  width: 100%;
 }

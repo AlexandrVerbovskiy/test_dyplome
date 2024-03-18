@@ -117,6 +117,13 @@ export const getProfileInfo = {
   convertRes: (res) => res.data,
 };
 
+export const getFullUserInfo = {
+  url: () => "get-full-user-info",
+  type: "post",
+  convertData: (userId) => ({ userId }),
+  convertRes: (res) => res.data,
+};
+
 export const getJobInfo = {
   url: (id) => `get-job/${id}`,
   type: "get",
