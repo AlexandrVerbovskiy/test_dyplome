@@ -9,7 +9,7 @@ import {
 } from "../requests";
 import { MainContext } from "../contexts";
 import { YesNoPopup, YesNoSpan } from "../components";
-import { Eye, Pencil, Trash } from "react-bootstrap-icons";
+import { Eye, Pencil, Trash, Plus } from "react-bootstrap-icons";
 import { generateFullUserImgPath } from "../utils";
 
 const headers = [
@@ -138,7 +138,14 @@ const UserRow = ({
 };
 
 const DopFilterElem = ({ filter, changeFilter }) => (
-  <div>
+  <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
+    <a
+      className="btn btn-primary"
+      href={`/user-create`}
+      style={{ display: "flex", alignItems: "flex-end" }}
+    >
+      Create <Plus size="20px" />
+    </a>
     <div className="input-group search-filter">
       <input
         type="text"

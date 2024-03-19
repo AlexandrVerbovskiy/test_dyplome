@@ -105,6 +105,18 @@ export const updateProfile = {
   convertRes: (res) => res.data,
 };
 
+export const createUser = {
+  url: () => "admin-create-user",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
+export const updateUser = {
+  url: () => "admin-update-user",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
 export const updateJob = {
   url: () => "edit-job",
   type: "post",

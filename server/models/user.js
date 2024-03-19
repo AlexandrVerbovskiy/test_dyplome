@@ -90,12 +90,66 @@ class User extends Model {
 
   updateUserProfile = async (userId, profileData) =>
     await this.errorWrapper(async () => {
-      const { nick, address, avatar, lat, lng } = profileData;
+      const {
+        nick,
+        address,
+        avatar,
+        lat,
+        lng,
+        authorized,
+        admin = null,
+      } = profileData;
 
-      await this.dbQueryAsync(
-        "UPDATE users SET nick = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ? WHERE id = ?",
-        [nick, address, avatar, lat, lng, true, userId]
+      let query =
+        "UPDATE users SET nick = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ?";
+      const props = [nick, address, avatar, lat, lng, authorized];
+
+      if (admin !== null) {
+        query += ", admin = ?";
+        props.push(admin);
+      }
+
+      query += " WHERE id = ?";
+      props.push(userId);
+
+      await this.dbQueryAsync(query, props);
+    });
+
+  createFull = async (profileData) =>
+    await this.errorWrapper(async () => {
+      const {
+        nick,
+        address,
+        avatar,
+        lat,
+        lng,
+        authorized,
+        admin = null,
+      } = profileData;
+
+      const user = {
+        email,
+        nick,
+        address,
+        avatar,
+        lat,
+        lng,
+        profile_authorized: authorized,
+        admin,
+        password: null,
+      };
+
+      const countUserRes = await this.dbQueryAsync(
+        "SELECT COUNT(*) as count from users where email = ?",
+        user.email
       );
+      const count = countUserRes[0]["count"];
+      if (count) this.setError("Email was registered earlier", 409);
+      const createUserRes = await this.dbQueryAsync(
+        "INSERT INTO users SET ?",
+        user
+      );
+      return createUserRes.insertId;
     });
 
   changeAuthorized = async (userId) =>

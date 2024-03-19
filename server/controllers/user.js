@@ -86,69 +86,169 @@ class User extends Controller {
       );
     });
 
-  updateUserProfile = async (req, res) =>
-    this.errorWrapper(res, async () => {
-      const { email, nick, address, lat, lng } = req.body;
-      const userId = req.userData.userId;
-      const avatarFile = req.file;
-      let avatar = req.body.avatar ? req.body.avatar : null;
+  baseSaveUserProfile = async ({
+    avatar,
+    avatarFile,
+    email,
+    nick,
+    address,
+    lat,
+    lng,
+    userId = null,
+    admin = null,
+    authorized = null,
+  }) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!nick || !address || !lat || !lng || !email)
+      return this.sendResponseValidationError(res, "All fields are required");
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!nick || !address || !lat || !lng || !email)
-        return this.sendResponseValidationError(res, "All fields are required");
+    if (nick.length < 3)
+      return this.sendResponseValidationError(
+        res,
+        "Nick must be at least 3 characters long"
+      );
 
-      if (nick.length < 3)
-        return this.sendResponseValidationError(
-          res,
-          "Nick must be at least 3 characters long"
-        );
+    if (lat === null || lng === null || isNaN(lat) || isNaN(lng))
+      return this.sendResponseValidationError(
+        res,
+        "Invalid latitude or longitude values"
+      );
 
-      if (lat === null || lng === null || isNaN(lat) || isNaN(lng))
-        return this.sendResponseValidationError(
-          res,
-          "Invalid latitude or longitude values"
-        );
+    if (address.length > 255)
+      return this.sendResponseValidationError(
+        res,
+        "Address length must not exceed 255 characters"
+      );
 
-      if (address.length > 255)
-        return this.sendResponseValidationError(
-          res,
-          "Address length must not exceed 255 characters"
-        );
+    if (!emailRegex.test(email))
+      return this.sendResponseValidationError(
+        res,
+        "Invalid email format. Please enter an email in the format 'example@example.com'."
+      );
 
-      if (!emailRegex.test(email))
-        return this.sendResponseValidationError(
-          res,
-          "Invalid email format. Please enter an email in the format 'example@example.com'."
-        );
-
-      //avatar saving
-      if (avatarFile) {
+    //avatar saving
+    if (avatarFile) {
+      if (userId) {
         const user = await this.userModel.getUserInfo(userId);
         const prevAvatarFile = user["avatar"];
         if (prevAvatarFile) fs.unlinkSync(prevAvatarFile);
-
-        const randomName = randomString();
-        const fileExtension = avatarFile.filename.split(".").pop();
-        avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
-        const filePath = path.join(this.__temp_folder, avatarFile.filename);
-
-        if (!fs.existsSync(this.__folder)) {
-          fs.mkdirSync(this.__folder, {
-            recursive: true,
-          });
-        }
-
-        fs.renameSync(filePath, avatar);
       }
 
+      const randomName = randomString();
+      const fileExtension = avatarFile.filename.split(".").pop();
+      avatar = path.join(this.__folder, `${randomName}.${fileExtension}`);
+      const filePath = path.join(this.__temp_folder, avatarFile.filename);
+
+      if (!fs.existsSync(this.__folder)) {
+        fs.mkdirSync(this.__folder, {
+          recursive: true,
+        });
+      }
+
+      fs.renameSync(filePath, avatar);
+    }
+
+    if (userId) {
       await this.userModel.updateUserProfile(userId, {
         nick,
         address,
         avatar,
         lat,
         lng,
+        admin,
+        authorized,
       });
-      return this.sendResponseSuccess(res, "User profile updated successfully");
+    } else {
+      userId = await this.userModel.createFull({
+        nick,
+        address,
+        avatar,
+        lat,
+        lng,
+        admin,
+        authorized,
+      });
+    }
+
+    return { nick, address, avatar, lat, lng, userId, admin, authorized };
+  };
+
+  updateUserProfile = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { email, nick, address, lat, lng } = req.body;
+      const userId = req.userData.userId;
+      const avatarFile = req.file;
+      const avatar = req.body.avatar ? req.body.avatar : null;
+
+      const user = await this.baseSaveUserProfile({
+        avatar,
+        avatarFile,
+        userId,
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        admin: null,
+        authorized: true,
+      });
+
+      return this.sendResponseSuccess(
+        res,
+        "User profile updated successfully",
+        user
+      );
+    });
+
+  adminUpdateUser = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { userId, email, nick, address, lat, lng } = req.body;
+      const avatarFile = req.file;
+      const avatar = req.body.avatar ? req.body.avatar : null;
+
+      const user = await this.baseSaveUserProfile({
+        avatar,
+        avatarFile,
+        userId,
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        admin: null,
+        authorized: true,
+      });
+
+      return this.sendResponseSuccess(
+        res,
+        "User profile updated successfully",
+        user
+      );
+    });
+
+  adminCreateUser = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { email, nick, address, lat, lng } = req.body;
+      const avatarFile = req.file;
+      const avatar = req.body.avatar ? req.body.avatar : null;
+
+      const user = await this.baseSaveUserProfile({
+        avatar,
+        avatarFile,
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        admin: null,
+        authorized: true,
+      });
+
+      return this.sendResponseSuccess(
+        res,
+        "User profile updated successfully",
+        user
+      );
     });
 
   resetPasswordRequest = (req, res) =>

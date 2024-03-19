@@ -74,6 +74,21 @@ function route(app, db, io) {
     upload.single("avatar"),
     userController.updateUserProfile
   );
+
+  app.post(
+    "/admin-update-user",
+    isAdmin,
+    upload.single("avatar"),
+    userController.adminUpdateUser
+  );
+
+  app.post(
+    "/admin-create-user",
+    isAdmin,
+    upload.single("avatar"),
+    userController.adminCreateUser
+  );
+
   app.post("/get-user-profile", userController.getUserById);
   app.get("/get-profile", isAuth, userController.getPersonalProfile);
   app.post("/get-full-user-info", isAuth, userController.getFullUserById);

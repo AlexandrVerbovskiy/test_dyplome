@@ -3,7 +3,7 @@ import useAddressCoordsRelation from "./useAddressCoordsRelation";
 import { getFullUserInfo } from "../requests";
 import { MainContext } from "../contexts";
 
-const useAdminUserEdit = ({ id }) => {
+const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [email, setEmail] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
@@ -11,29 +11,17 @@ const useAdminUserEdit = ({ id }) => {
   const [authorized, setAuthorized] = useState({ value: false, error: null });
 
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
-  const main = useContext(MainContext);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const user = await main.request({
-          url: getFullUserInfo.url(),
-          type: getFullUserInfo.type,
-          convertRes: getFullUserInfo.convertRes,
-          data: getFullUserInfo.convertData(id),
-        });
+    if (!baseData) return;
 
-        if (!user) return;
+    coords.change({ lat: baseData.lat ?? 0, lng: baseData.lng ?? 0 });
+    address.change(baseData.address ?? "");
+    changeEmail(baseData.email ?? "");
+    changeNick(baseData.nick ?? "");
 
-        coords.change({ lat: user.lat ?? 0, lng: user.lng ?? 0 });
-        address.change(user.address ?? "");
-        changeEmail(user.email ?? "");
-        changeNick(user.nick ?? "");
-
-        if (user.avatar) changeImg(user.avatar);
-      } catch (e) {}
-    })();
-  }, [id]);
+    if (baseData.avatar) changeImg(baseData.avatar);
+  }, [baseData]);
 
   const changeEmail = (email) => {
     setEmail({ value: email, error: null });

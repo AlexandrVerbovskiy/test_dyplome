@@ -20,11 +20,12 @@ import {
   PaymentTransactions,
   AdminPaymentTransactions,
   AdminServerTransactions,
+  Balance,
+  AdminUsers,
+  AdminUserEdit,
+  AdminUserCreate,
 } from "./pages";
-import Balance from "./pages/Balance";
 import Test from "./pages/Test";
-import AdminUsers from "./pages/AdminUsers";
-import AdminUserEdit from "./pages/AdminUserEdit";
 
 const mainRouter = createBrowserRouter([
   {
@@ -113,6 +114,10 @@ const adminRouter = createBrowserRouter([
   {
     path: "/users",
     element: <AdminUsers />,
+  },
+  {
+    path: "/user-create",
+    element: <AdminUserCreate />,
   },
   {
     path: "/user-edit/:id",
