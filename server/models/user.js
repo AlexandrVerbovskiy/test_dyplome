@@ -296,6 +296,13 @@ class User extends Model {
 
       return await this.dbQueryAsync(query, params);
     });
+
+  getNameIdList = async (start, count, filter) => {
+    return await this.dbQueryAsync(
+      `SELECT id as value, email as title FROM users WHERE email like ? LIMIT ?, ?`,
+      [`%${filter}%`, start, count]
+    );
+  };
 }
 
 module.exports = User;

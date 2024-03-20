@@ -500,6 +500,18 @@ class User extends Controller {
       const admin = await this.userModel.delete(userId);
       this.sendResponseSuccess(res, "Deleted successfully");
     });
+
+  userNameIdList = (req, res) =>
+    this.baseWrapper(req, res, async () => {
+      const { page = 1, perPage = 20, filter = "" } = req.body;
+      const startIndex = (page - 1) * perPage;
+      const list = await this.userModel.getNameIdList(
+        startIndex,
+        perPage,
+        filter
+      );
+      this.sendResponseSuccess(res, "List got successfully", { list });
+    });
 }
 
 module.exports = User;

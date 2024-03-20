@@ -14,11 +14,11 @@ class Job extends Model {
       return job.insertId;
     });
 
-  edit = async (jobId, title, price, address, description, lat, lng) =>
+  edit = async (jobId, title, price, address, description, lat, lng, userId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE jobs SET title = ?, price = ?, `address` = ?, `description` = ?, lat = ?, lng = ? WHERE id = ?",
-        [title, price, address, description, lat, lng, jobId]
+        "UPDATE jobs SET title = ?, price = ?, `address` = ?, `description` = ?, lat = ?, lng = ?, author_id = ? WHERE id = ?",
+        [title, price, address, description, lat, lng, jobId, userId]
       );
     });
 

@@ -24,6 +24,9 @@ import {
   AdminUsers,
   AdminUserEdit,
   AdminUserCreate,
+  AdminJobs,
+  AdminJobCreate,
+  AdminJobEdit,
 } from "./pages";
 import Test from "./pages/Test";
 
@@ -122,6 +125,18 @@ const adminRouter = createBrowserRouter([
   {
     path: "/user-edit/:id",
     element: <AdminUserEdit />,
+  },
+  {
+    path: "/jobs",
+    element: <AdminJobs />,
+  },
+  {
+    path: "/job-create",
+    element: <AdminJobCreate />,
+  },
+  {
+    path: "/job-edit/:id",
+    element: <AdminJobEdit />,
   },
   {
     path: "/disputes/pending",

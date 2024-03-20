@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getFullUserInfo } from "../requests";
-import { MainContext } from "../contexts";
 
 const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });

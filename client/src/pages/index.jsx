@@ -22,3 +22,6 @@ export { default as Balance } from "./Balance";
 export { default as AdminUsers } from "./AdminUsers";
 export { default as AdminUserEdit } from "./AdminUserEdit";
 export { default as AdminUserCreate } from "./AdminUserCreate";
+export { default as AdminJobs } from "./AdminJobs";
+export { default as AdminJobCreate } from "./AdminJobCreate";
+export { default as AdminJobEdit } from "./AdminJobEdit";

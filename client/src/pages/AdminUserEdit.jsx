@@ -44,7 +44,7 @@ const AdminUserEdit = () => {
   return (
     <AdminUserEditForm
       baseData={baseData}
-      onSaveProfile={onSaveProfile}
+      onSave={onSaveProfile}
       hasId={true}
     />
   );

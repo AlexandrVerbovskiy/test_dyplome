@@ -25,11 +25,14 @@ class Job extends Controller {
     return false;
   };
 
-  __create = (req, res) =>
+  __create = (req, res, currentUserOwner = true) =>
     this.errorWrapper(res, async () => {
-      const { title, price, address, description, lat, lng } = req.body;
+      const { title, price, address, description, lat, lng, userId } = req.body;
 
-      const userId = req.userData.userId;
+      if (currentUserOwner) {
+        userId = req.userData.userId;
+      }
+
       const resValidation = this.__validateEdit(
         res,
         title,
@@ -54,9 +57,14 @@ class Job extends Controller {
       });
     });
 
-  __edit = (req, res) =>
+  __edit = (req, res, currentUserOwner = true) =>
     this.errorWrapper(res, async () => {
-      const { jobId, title, price, address, description, lat, lng } = req.body;
+      const { jobId, title, price, address, description, lat, lng, userId } =
+        req.body;
+
+      if (currentUserOwner) {
+        userId = req.userData.userId;
+      }
 
       const resValidation = this.__validateEdit(
         res,
@@ -75,7 +83,8 @@ class Job extends Controller {
         address,
         description,
         lat,
-        lng
+        lng,
+        userId
       );
       return this.sendResponseSuccess(res, "The job was get successfully");
     });
@@ -88,6 +97,16 @@ class Job extends Controller {
     if (!job) return this.__create(req, res);
 
     return this.__edit(req, res);
+  };
+
+  editByAdmin = async (req, res) => {
+    const jobId = req.body.jobId;
+    if (!jobId) return this.__create(req, res, false);
+
+    const job = await this.jobModel.getById(jobId);
+    if (!job) return this.__create(req, res, false);
+
+    return this.__edit(req, res, false);
   };
 
   getById = (req, res) =>

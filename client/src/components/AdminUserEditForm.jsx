@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import {
   Activator,
   ImageInput,
@@ -7,8 +8,9 @@ import {
   SingleMarkMap,
 } from ".";
 import { useChangeUserPassword, useAdminUserEdit } from "../hooks";
+import { MainContext } from "../contexts";
 
-const AdminUserEditForm = ({ baseData, onSaveProfile, hasId }) => {
+const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
   const {
     coords,
     address,
@@ -19,6 +21,8 @@ const AdminUserEditForm = ({ baseData, onSaveProfile, hasId }) => {
     profileImg,
     validateProfileEdit,
   } = useAdminUserEdit({ baseData });
+  
+  const main = useContext(MainContext);
 
   const saveProfile = async () => {
     const resValidation = validateProfileEdit();
@@ -54,9 +58,10 @@ const AdminUserEditForm = ({ baseData, onSaveProfile, hasId }) => {
     }
 
     try {
-      await onSaveProfile(formData);
+      await onSave(formData);
+      main.setSuccess("Saved successfully");
     } catch (e) {
-      console.log(e);
+      main.setError(e.message);
     }
   };
 

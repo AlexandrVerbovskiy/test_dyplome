@@ -4,6 +4,7 @@ export { default as useChangeUserPassword } from "./useChangeUserPassword";
 export { default as useProfileEdit } from "./useProfileEdit";
 export { default as useAdminUserEdit } from "./useAdminUserEdit";
 export { default as useJobEdit } from "./useJobEdit";
+export { default as useAdminJobEdit } from "./useAdminJobEdit";
 export { default as useAddressCoordsRelation } from "./useAddressCoordsRelation";
 export { default as useGetJobs } from "./useGetJobs";
 export { default as useMyProposals } from "./useMyProposals";

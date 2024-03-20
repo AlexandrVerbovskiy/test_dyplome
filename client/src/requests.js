@@ -123,6 +123,12 @@ export const updateJob = {
   convertRes: (res) => res.data,
 };
 
+export const adminUpdateJob = {
+  url: () => "admin-edit-job",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
 export const getProfileInfo = {
   url: () => "get-profile",
   type: "get",

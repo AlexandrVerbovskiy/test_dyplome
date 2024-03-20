@@ -121,6 +121,7 @@ function route(app, db, io) {
   app.get("/get-job/:id", isAuth, jobController.getById);
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
   app.post("/edit-job", isAuth, jobController.edit);
+  app.post("/admin-edit-job", isAuth, jobController.editByAdmin);
 
   app.post(
     "/get-my-proposals",
@@ -241,6 +242,12 @@ function route(app, db, io) {
     "/user-payments",
     isAuth,
     transactionsController.getUserPaymentTransactions
+  );
+
+  app.post(
+    "/user-name-id-list",
+    isAuth,
+    userController.getUserPaymentTransactions
   );
 }
 module.exports = route;
