@@ -13,6 +13,18 @@ export const registration = {
   convertRes: (res) => res.data.validated,
 };
 
+export const forgotPassword = {
+  url: () => "forgot-password",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
+export const resetPassword = {
+  url: () => "reset-password",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
 export const validateToken = {
   url: () => "check-token",
   type: "post",

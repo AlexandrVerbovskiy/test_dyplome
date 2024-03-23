@@ -512,6 +512,40 @@ class User extends Controller {
       );
       this.sendResponseSuccess(res, "List got successfully", { list });
     });
+
+  forgotPassword = (req, res) =>
+    this.baseWrapper(req, res, async () => {
+      const { email } = req.body;
+      const user = await this.userModel.findByEmail(email);
+
+      if (!user) {
+        return this.sendResponseError(res, "No user found");
+      }
+
+      const token = await this.userModel.generateResetPasswordTokenByEmail(
+        email
+      );
+      this.sendPasswordResetMail(user["email"], user["email"], token);
+
+      return this.sendResponseSuccess(res, "Letter sent successfully");
+    });
+
+  resetPassword = (req, res) =>
+    this.baseWrapper(req, res, async () => {
+      const { email, password, token } = req.body;
+
+      const success = await this.userModel.setPasswordByEmailAndToken(
+        email,
+        password,
+        token
+      );
+
+      if (success) {
+        this.sendResponseSuccess(res, "Password reset successfully");
+      } else {
+        this.sendResponseError(res, "Invalid token");
+      }
+    });
 }
 
 module.exports = User;

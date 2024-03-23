@@ -7,6 +7,7 @@ import { redirect } from "react-router-dom";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [readTerms, setReadTerms] = useState(false);
   const main = useContext(MainContext);
 
@@ -26,7 +27,9 @@ const SignUp = () => {
 
       main.setSuccess("User registered successfully");
       window.location = window.location.origin;
-    } catch {}
+    } catch {
+      main.setError(e.message);
+    }
   };
 
   return (
@@ -51,6 +54,11 @@ const SignUp = () => {
       <PasswordInput
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <PasswordInput
+        value={repeatPassword}
+        onChange={(e) => setRepeatPassword(e.target.value)}
       />
 
       <Activator

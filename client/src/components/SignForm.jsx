@@ -5,7 +5,7 @@ const SignForm = ({
   title,
   submitText,
   onSubmit,
-  relocateLinkInfo
+  relocateLinkInfo = null,
 }) => {
   return (
     <div className="wrapper sign-page">
@@ -20,15 +20,15 @@ const SignForm = ({
                 <div className="card-body">
                   <div className="border p-4 rounded">
                     <div className="text-center mb-8">
-                      <h3 className="">
-                        {title}
-                      </h3>
-                      <p>
-                        {relocateLinkInfo.question + " "}
-                        <a href={relocateLinkInfo.link}>
-                          {relocateLinkInfo.title}
-                        </a>
-                      </p>
+                      <h3 className="">{title}</h3>
+                      {relocateLinkInfo && (
+                        <p>
+                          {relocateLinkInfo.question + " "}
+                          <a href={relocateLinkInfo.link}>
+                            {relocateLinkInfo.title}
+                          </a>
+                        </p>
+                      )}
                     </div>
 
                     <div className="form-body">

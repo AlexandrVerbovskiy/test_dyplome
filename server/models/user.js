@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const Model = require("./model");
+const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
   __visibleFields = "id, email, address, lat, lng, nick, avatar, admin";
@@ -32,6 +33,16 @@ class User extends Model {
         user
       );
       return createUserRes.insertId;
+    });
+
+  findByEmail = async (email) =>
+    await this.errorWrapper(async () => {
+      const findUserRes = await this.dbQueryAsync(
+        `SELECT * FROM users WHERE email = ?`,
+        [email]
+      );
+
+      return findUserRes[0];
     });
 
   findByPasswordAndEmail = async (email, password) =>
@@ -303,6 +314,51 @@ class User extends Model {
       [`%${filter}%`, start, count]
     );
   };
+
+  generateResetPasswordTokenByEmail = async (email) =>
+    await this.errorWrapper(async () => {
+      const findUserRes = await this.dbQueryAsync(
+        `SELECT * FROM users WHERE email = ?`,
+        [email]
+      );
+
+      const user = findUserRes[0];
+
+      if (!user) {
+        return null;
+      }
+
+      if (user["reset_password_token"]) return user["reset_password_token"];
+
+      const newToken = generateRandomString();
+      await this.dbQueryAsync(
+        `UPDATE users SET reset_password_token = ? WHERE email = ?`,
+        [newToken, email]
+      );
+      return newToken;
+    });
+
+  setPasswordByEmailAndToken = async (email, token, password) =>
+    await this.errorWrapper(async () => {
+      const findUserRes = await this.dbQueryAsync(
+        `SELECT * FROM reset_password_token WHERE reset_password_token = ? AND email = ?`,
+        [email, token]
+      );
+
+      if (!findUserRes) return false;
+
+      const hashedPassword = await bcrypt.hash(
+        password,
+        this.passwordCashSaltOrRounds
+      );
+
+      await this.dbQueryAsync(
+        `UPDATE users SET reset_password_token = null, password = ? WHERE reset_password_token = ?`,
+        [hashedPassword, token]
+      );
+
+      if (!findUserRes) return true;
+    });
 }
 
 module.exports = User;

@@ -27,8 +27,9 @@ import {
   AdminJobs,
   AdminJobCreate,
   AdminJobEdit,
+  ResetPassword,
+  ForgotPassword,
 } from "./pages";
-import Test from "./pages/Test";
 
 const mainRouter = createBrowserRouter([
   {
@@ -174,8 +175,12 @@ const signRouter = createBrowserRouter([
     element: <SignUp />,
   },
   {
-    path: "/test",
-    element: <Test />,
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPassword />,
   },
   {
     path: "*",

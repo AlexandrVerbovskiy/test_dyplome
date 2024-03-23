@@ -25,3 +25,5 @@ export { default as AdminUserCreate } from "./AdminUserCreate";
 export { default as AdminJobs } from "./AdminJobs";
 export { default as AdminJobCreate } from "./AdminJobCreate";
 export { default as AdminJobEdit } from "./AdminJobEdit";
+export { default as ForgotPassword } from "./ForgotPassword";
+export { default as ResetPassword } from "./ResetPassword";

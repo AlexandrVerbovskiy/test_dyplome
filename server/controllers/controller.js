@@ -1,5 +1,9 @@
 require("dotenv").config();
 const fs = require("fs");
+const nodemailer = require("nodemailer");
+const hbs = require("nodemailer-express-handlebars");
+const path = require("path");
+const mime = require("mime-types");
 
 const {
   User: UserModel,
@@ -29,6 +33,8 @@ const {
 class Controller {
   __db = null;
   __temp_folder = "files/temp";
+
+  __mailTransporter = null;
 
   sendResponseSuccess = (res, message, data = {}, status = 200) => {
     return res.status(status).json({
@@ -66,6 +72,25 @@ class Controller {
     this.serverTransactionModel = new ServerTransactionModel(db);
     this.paymentTransactionModel = new PaymentTransactionModel(db);
 
+    this.__mailTransporter = nodemailer.createTransport({
+      service: process.env.MAIL_SERVICE,
+      auth: {
+        user: process.env.MAIL_EMAIL,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    });
+
+    this.__mailTransporter.use(
+      "compile",
+      hbs({
+        viewEngine: {
+          partialsDir: path.resolve("./mails/"),
+          defaultLayout: false,
+        },
+        viewPath: path.resolve("./mails/"),
+      })
+    );
+
     return Controller.instance;
   }
 
@@ -84,6 +109,34 @@ class Controller {
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath, { recursive: true });
     }
+  };
+
+  __sendMail = async (to, subject, template, context) => {
+    const mailOptions = {
+      from: `"${process.env.MAIL_FROM}" ${process.env.MAIL_EMAIL}`,
+      to,
+      subject,
+      template,
+      context,
+    };
+
+    try {
+      return await this.__mailTransporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
+
+  sendPasswordResetMail = async (email, name, token) => {
+    const title = "Reset Password";
+    const link =
+      CLIENT_URL + "/" + STATIC.CLIENT_LINKS.PASSWORD_RESET + "/" + token;
+
+    await this.__sendMail(email, title, "passwordReset", {
+      name,
+      link,
+      title,
+    });
   };
 
   baseList = async (req, countByFilter) => {
