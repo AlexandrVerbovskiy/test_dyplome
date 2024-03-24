@@ -2,13 +2,14 @@ import React, { useState, useContext } from "react";
 import { Input, PasswordInput, SignForm } from "../components";
 import { redirect, useParams } from "react-router-dom";
 import { resetPassword } from "../requests";
+import { MainContext } from "../contexts";
 
 const ResetPassword = () => {
   const { token } = useParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const { request, setSuccess, setError, setSessionUser } =
+  const { request, setSuccess, setError } =
     useContext(MainContext);
 
   const handleResetPasswordClick = async (e) => {

@@ -21,6 +21,19 @@ class Dispute extends Model {
      JOIN job_requests ON job_requests.id = disputes.job_request_id
      JOIN jobs ON job_requests.job_id = jobs.id`;
 
+  strFilterFields = ["admins.email", "senders.email", "jobs.title"];
+
+  orderFields = [
+    "disputes.id",
+    "disputes.status",
+    "disputes.created_at",
+    "admins.email",
+    "senders.email",
+    "job_requests.price",
+    "job_requests.execution_time",
+    "jobs.title",
+  ];
+
   getById = async (id) =>
     await this.errorWrapper(async () => {
       const disputes = await this.dbQueryAsync(
@@ -140,5 +153,45 @@ class Dispute extends Model {
 
   getCountWhereUserAccused = (userId) =>
     this.__getCountFromSelectRequest(this.getWhereUserAccused, [userId]);
+
+  baseGetMany = (props) => {
+    const { filter } = props;
+    const filterRes = this.baseStrFilter(filter);
+    const baseQuery =
+      "JOIN users ON disputes.user_id = users.id " +
+      "JOIN job_requests ON disputes.job_request_id = job_requests.id " +
+      "JOIN users as senders ON senders.id = disputes.user_id " +
+      "LEFT JOIN users as admins ON admins.id = disputes.admin_id " +
+      "JOIN jobs ON jobs.id = job_requests.job_id " +
+      `WHERE ${filterRes.conditions} `;
+    const baseProps = filterRes.props;
+    return { query: baseQuery, params: baseProps };
+  };
+
+  count = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props.params);
+      query = `SELECT COUNT(disputes.id) as count FROM disputes ${query}`;
+      const res = await this.dbQueryAsync(query, params);
+      return res[0]["count"];
+    });
+
+  list = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      const { orderType, order } = this.getOrderInfo(props);
+      const { start, count } = props;
+
+      query = `SELECT disputes.id, disputes.status,
+      disputes.created_at as createdAt, 
+      admins.email as adminEmail, admins.id as adminId,
+      senders.email as senderEmail, senders.id as senderId,
+      job_requests.price, job_requests.id as jobRequestId,
+      job_requests.execution_time as executionTime, jobs.title
+      FROM disputes ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      params.push(start, count);
+
+      return await this.dbQueryAsync(query, params);
+    });
 }
 module.exports = Dispute;

@@ -19,7 +19,7 @@ const Message = ({ type, message, onClose }) => {
       behavior: "smooth",
       block: "end",
     });
-    setTimeout(handleCloseClick, 5000);
+    ///setTimeout(handleCloseClick, 5000);
   }, []);
 
   return (

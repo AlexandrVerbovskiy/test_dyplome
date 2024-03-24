@@ -41,7 +41,8 @@ class Dispute extends Controller {
     this.errorWrapper(res, async () => {
       const { disputeId } = req.params;
       const dispute = await this.disputeModel.getById(disputeId);
-      if (!dispute) return this.this.sendResponseNoFoundError(res, "Dispute not found");
+      if (!dispute)
+        return this.this.sendResponseNoFoundError(res, "Dispute not found");
       return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
@@ -50,7 +51,8 @@ class Dispute extends Controller {
       const { jobId } = req.params;
 
       const dispute = await this.disputeModel.getByJobId(jobId);
-      if (!dispute) return this.this.sendResponseNoFoundError(res, "Dispute not found");
+      if (!dispute)
+        return this.this.sendResponseNoFoundError(res, "Dispute not found");
       return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
@@ -82,11 +84,33 @@ class Dispute extends Controller {
       if (status == "resolved") getFunc = this.disputeModel.getAllResolved;
 
       if (!getFunc)
-        return this.this.sendResponseNoFoundError(res, "Dispute status not found");
+        return this.this.sendResponseNoFoundError(
+          res,
+          "Dispute status not found"
+        );
 
       const disputes = await getFunc(skippedIds, filter, needCountJobs);
       return this.sendResponseSuccess(res, "Disputes was get successfully", {
         disputes,
+      });
+    });
+
+  getAllDisputes = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const timeInfos = await this.listTimeOption(req);
+
+      const { options, countItems } = await this.baseList(req, (params) =>
+        this.disputeModel.count({ params, ...timeInfos })
+      );
+
+      Object.keys(timeInfos).forEach((key) => (options[key] = timeInfos[key]));
+
+      const disputes = await this.disputeModel.list(options);
+
+      this.sendResponseSuccess(res, "Dispute list got success", {
+        disputes,
+        options,
+        countItems,
       });
     });
 }

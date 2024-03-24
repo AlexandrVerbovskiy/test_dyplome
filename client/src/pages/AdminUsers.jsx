@@ -119,17 +119,6 @@ const UserRow = ({
                 <Pencil size="20px" />
               </a>
             </div>
-            <div className="cursor-pointer action-icon danger-action">
-              <Trash size="20px" onClick={() => setActiveDelete(true)} />
-            </div>
-            <YesNoPopup
-              shortTitle="Delete User"
-              title={`Are you sure you want to delete user ${email}`}
-              trigger={activeDelete}
-              onAccept={() => onDelete(id)}
-              onClose={() => setActiveDelete(false)}
-              acceptText="Delete"
-            />
           </div>
         )}
       </td>

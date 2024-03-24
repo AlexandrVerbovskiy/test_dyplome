@@ -139,6 +139,21 @@ class Job extends Controller {
         jobs,
       });
     });
+
+  getAllJobs = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { options, countItems } = await this.baseList(req, (params) =>
+        this.jobModel.count(params)
+      );
+
+      const jobs = await this.jobModel.list(options);
+
+      this.sendResponseSuccess(res, "Job list got success", {
+        jobs,
+        options,
+        countItems,
+      });
+    });
 }
 
 module.exports = Job;

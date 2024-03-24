@@ -1,149 +1,185 @@
-import React, { useEffect, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { JobStatus, DefaultPageLayout } from "../components";
-import { useAdminDisputes } from "../hooks";
-import { CardWrapper, MainFilter } from "../job_components";
-import { UploadTrigger } from "../components";
-import { fullTimeFormat } from "../utils";
-import { adminAssignDispute } from "../requests";
+import { useContext } from "react";
+import { usePagination } from "../hooks";
+import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
-import Layout from "../components/Layout";
+import { getAllDisputes } from "../requests";
+import { Plus, Eye, Pencil } from "react-bootstrap-icons";
 
-const AdminDisputes = ({ status = "pending" }) => {
-  const {
-    disputes,
-    getMoreDisputes,
-    disputesFilter,
-    disputesFilterChange,
-    disputesReset,
-  } = useAdminDisputes({ disputesStatus: status });
+const headers = [
+  {
+    value: "id",
+    title: "Id",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "jobs.title",
+    title: "Job",
+    width: "20%",
+    canChange: true,
+  },
+  {
+    value: "admins.email",
+    title: "Admin",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "senders.email",
+    title: "Sender",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "job_requests.price",
+    title: "Price per hour",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "job_requests.execution_time",
+    title: "Need Hours",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "status",
+    title: "Status",
+    width: "10%",
+  },
+  {
+    value: "disputes.created_at",
+    title: "createdAt",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "actions",
+    title: "Actions",
+    width: "10%",
+  },
+];
 
-  const { request } = useContext(MainContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    disputesReset();
-  }, [status]);
-
-  const handleAcceptDispute = async (id) => {
-    try {
-      await request({
-        url: adminAssignDispute.url(),
-        type: adminAssignDispute.type,
-        data: adminAssignDispute.convertData(id),
-        convertRes: adminAssignDispute.convertRes,
-      });
-
-      navigate(`/dispute/${id}`);
-    } catch (e) {}
-  };
-
+const DisputeRow = ({
+  id,
+  adminEmail,
+  createdAt,
+  status,
+  title,
+  executionTime,
+  price,
+  jobRequestId,
+  senderId,
+  senderEmail,
+  adminId,
+}) => {
   return (
-    <Layout pageClassName="default-edit-page">
-      <CardWrapper>
-        <MainFilter value={disputesFilter} onClick={disputesFilterChange} />
-        <div className="submenu-under-filter">
-          <div>
-            <Link to="/disputes/pending">Need Acceptance</Link>
+    <tr>
+      <td className="fw-bolder">#{id}</td>
+      <td>{title}</td>
+      <td>
+        <a href={`/users/${senderId}`}>{senderEmail}</a>
+      </td>
+      <td>
+        {adminEmail ? <a href={`/users/${adminId}`}>{adminEmail}</a> : "-"}
+      </td>
+      <td>{price}</td>
+      <td>{executionTime}</td>
+      <td>{status}</td>
+      <td>{createdAt}</td>
+      <td>
+        <div className="fast-actions">
+          <div className="cursor-pointer action-icon primary-action">
+            <a href={`/job-view/${id}`}>
+              <Eye size="20px" />
+            </a>
           </div>
-          <div>
-            <Link to="/disputes/in-progress">In progress</Link>
-          </div>
-          <div>
-            <Link to="/disputes/resolved">Done</Link>
+          <div className="cursor-pointer action-icon secondary-action">
+            <a href={`/job-edit/${id}`}>
+              <Pencil size="20px" />
+            </a>
           </div>
         </div>
-      </CardWrapper>
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
-        {Object.keys(disputes).map((disputeKey) => {
-          const dispute = disputes[disputeKey];
-          let cardAction = <></>;
+      </td>
+    </tr>
+  );
+};
 
-          if (status != "resolved") {
-            cardAction = (
-              <>
-                <hr />
-                <div className="d-flex align-items-center">
-                  <div className="dropdown ms-auto">
-                    {status == "pending" && (
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => handleAcceptDispute(dispute["id"])}
-                      >
-                        Take for solution
-                      </button>
-                    )}
+const DopFilterElem = ({ filter, changeFilter }) => (
+  <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
+    <a
+      className="btn btn-primary"
+      href={`/dispute-create`}
+      style={{ display: "flex", alignItems: "flex-end" }}
+    >
+      Create <Plus size="20px" />
+    </a>
+    <div className="input-group search-filter">
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Search..."
+        value={filter}
+        onInput={(e) => changeFilter(e.target.value)}
+      />
+    </div>
+  </div>
+);
 
-                    {status == "in-progress" && (
-                      <Link
-                        className="btn btn-primary"
-                        to={`/admin-dispute/${dispute["id"]}`}
-                      >
-                        View Dispute
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </>
-            );
-          }
+const AdminDisputes = () => {
+  const main = useContext(MainContext);
 
-          return (
-            <div className="card" key={disputeKey}>
-              <div className="card-body">
-                <h6 className="text-uppercase card-title">
-                  <div className="card-label">{dispute["title"]}</div>
-                  <div className="card-sublabel">
-                    {fullTimeFormat(dispute["created_at"])}
-                  </div>
-                </h6>
+  const {
+    moveToPage,
+    changeFilter,
+    filter,
+    order,
+    orderType,
+    handleChangeOrder,
+    canMoveNextPage,
+    canMovePrevPage,
+    items: disputes,
+    currentTo,
+    currentFrom,
+    page,
+    countPages,
+    countItems,
+    rebuild,
+    setItemFields,
+    options,
+  } = usePagination({
+    getItemsFunc: (props) =>
+      main.request({
+        url: getAllDisputes.url(),
+        data: getAllDisputes.convertData(props),
+        type: getAllDisputes.type,
+        convertRes: getAllDisputes.convertRes,
+      }),
+  });
 
-                <hr />
-
-                <div className="card-field">
-                  <div className="card-field-label">Offer status:</div>
-                  <div className="card-field-value">
-                    <JobStatus
-                      needWrapper={false}
-                      actualStatus={dispute["job_status"]}
-                    />
-                  </div>
-                </div>
-
-                <div className="card-field">
-                  <div className="card-field-label">Job price:</div>
-                  <div className="card-field-value">{dispute["price"]}</div>
-                </div>
-
-                <div className="card-field">
-                  <div className="card-field-label">Job Execution Time:</div>
-                  <div className="card-field-value">
-                    {dispute["execution_time"]}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="card-field">
-                    <div className="card-field-label">Address:</div>
-                    {dispute["address"]}
-                  </div>
-                </div>
-
-                <div className="card-field">
-                  <div className="card-field-label">Dispute description:</div>
-                  <div className="card-field-text">
-                    {dispute["description"]}
-                  </div>
-                </div>
-
-                {cardAction}
-              </div>
-            </div>
-          );
-        })}
-        <UploadTrigger onTriggerShown={getMoreDisputes} />
-      </CardWrapper>
-    </Layout>
+  return (
+    <BaseAdminTableLayoutPage
+      changeOrder={handleChangeOrder}
+      order={order}
+      orderType={orderType}
+      items={disputes}
+      title="Disputes"
+      headers={headers}
+      RowElem={DisputeRow}
+      DopFilterElem={() =>
+        DopFilterElem({
+          filter,
+          changeFilter,
+        })
+      }
+      paginationInfo={{
+        page,
+        countPages,
+        moveToPage,
+        canMoveNextPage,
+        canMovePrevPage,
+      }}
+    />
   );
 };
 

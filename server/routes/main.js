@@ -244,10 +244,10 @@ function route(app, db, io) {
     transactionsController.getUserPaymentTransactions
   );
 
-  app.post(
-    "/user-name-id-list",
-    isAuth,
-    userController.getUserPaymentTransactions
-  );
+  app.post("/user-name-id-list", isAuth, userController.userNameIdList);
+
+  app.post("/admin-job-list", isAdmin, jobController.getAllJobs);
+
+  app.post("/admin-dispute-list", isAdmin, disputeController.getAllDisputes);
 }
 module.exports = route;

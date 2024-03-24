@@ -29,6 +29,7 @@ import {
   AdminJobEdit,
   ResetPassword,
   ForgotPassword,
+  AdminStatusesDisputes,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -140,16 +141,20 @@ const adminRouter = createBrowserRouter([
     element: <AdminJobEdit />,
   },
   {
+    path: "/disputes",
+    element: <AdminDisputes />,
+  },
+  {
     path: "/disputes/pending",
-    element: <AdminDisputes status="pending" />,
+    element: <AdminStatusesDisputes status="pending" />,
   },
   {
     path: "/disputes/in-progress",
-    element: <AdminDisputes status="in-progress" />,
+    element: <AdminStatusesDisputes status="in-progress" />,
   },
   {
     path: "/disputes/resolved",
-    element: <AdminDisputes status="resolved" />,
+    element: <AdminStatusesDisputes status="resolved" />,
   },
   {
     path: "/dispute/:disputeId",

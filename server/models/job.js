@@ -5,6 +5,10 @@ class Job extends Model {
   __latitudeLongitudeToKilometers = 111.045;
   __degreesToRadians = 57.3;
 
+  strFilterFields = ["title", "address", "users.email"];
+
+  orderFields = ["id", "email", "address", "nick", "users.email"];
+
   create = async (title, price, address, description, lat, lng, userId) =>
     await this.errorWrapper(async () => {
       const job = await this.dbQueryAsync(
@@ -105,6 +109,36 @@ class Job extends Model {
         ("SELECT * FROM jobs WHERE id = ? AND author_id = ?",
         [jobId, authorId]);
       return jobs.length;
+    });
+
+  baseGetMany = (props) => {
+    const { filter } = props;
+    const filterRes = this.baseStrFilter(filter);
+    const baseQuery = `JOIN users ON jobs.authorId = users.id WHERE ${filterRes.conditions}`;
+    const baseProps = filterRes.props;
+    return { query: baseQuery, params: baseProps };
+  };
+
+  count = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props.params);
+      query = "SELECT COUNT(jobs.id) as count FROM jobs " + query;
+      const res = await this.dbQueryAsync(query, params);
+      return res[0]["count"];
+    });
+
+  list = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      const { orderType, order } = this.getOrderInfo(props);
+      const { start, count } = props;
+
+      query = `SELECT users.email as userEmail, users.id as userId,
+      jobs.id, jobs.title, jobs.price, jobs.address
+      FROM jobs ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      params.push(start, count);
+
+      return await this.dbQueryAsync(query, params);
     });
 }
 module.exports = Job;

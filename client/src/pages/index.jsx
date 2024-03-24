@@ -11,6 +11,7 @@ export { default as JobProposalView } from "./JobProposalView";
 export { default as ProposalsOnMyJobs } from "./ProposalsOnMyJobs";
 export { default as MyProposals } from "./MyProposals";
 export { default as AdminDisputes } from "./AdminDisputes";
+export { default as AdminStatusesDisputes } from "./AdminStatusesDisputes";
 export { default as AdminDispute } from "./AdminDispute";
 export { default as AdminClientChatView } from "./AdminClientChatView";
 export { default as UserProfile } from "./UserProfile";

@@ -419,3 +419,25 @@ export const getAllUsersPaymentTransactions = {
     countItems: res.data.countItems,
   }),
 };
+
+export const getAllDisputes = {
+  url: () => `admin-dispute-list`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.disputes,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};
+
+export const getAllJobs = {
+  url: () => `admin-job-list`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.jobs,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};

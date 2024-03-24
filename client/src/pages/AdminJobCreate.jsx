@@ -26,7 +26,7 @@ const AdminJobCreate = () => {
       window.location.replace("/job-edit/" + job.id);
     }
 
-    setBaseData(user);
+    setBaseData(job);
   };
 
   return (

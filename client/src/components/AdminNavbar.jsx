@@ -86,31 +86,29 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/jobs"
+                      className={`${
+                        window.location.pathname == "/jobs" ? "active" : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="lni lni-offer"></i>
+                      </div>
+                      <div className="menu-title">Jobs</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/disputes"
                       className={`${
                         window.location.pathname == "/disputes" ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">
-                        <i className="bx bxs-book-open"></i>
+                        <i className="lni lni-handshake"></i>
                       </div>
                       <div className="menu-title">Disputes</div>
-                    </a>
-                  </li>
-
-                  <li style={{ height: "43px" }}>
-                    <a
-                      href="/server-transactions"
-                      className={`${
-                        window.location.pathname == "/server-transactions"
-                          ? "active"
-                          : ""
-                      }`}
-                    >
-                      <div className="parent-icon">
-                        <i className="bx bxs-book-open"></i>
-                      </div>
-                      <div className="menu-title">Server Transactions</div>
                     </a>
                   </li>
 
@@ -124,9 +122,25 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                       }`}
                     >
                       <div className="parent-icon">
-                        <i className="bx bxs-book-open"></i>
+                        <i className="bx bx-credit-card"></i>
                       </div>
                       <div className="menu-title">Transactions</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/server-transactions"
+                      className={`${
+                        window.location.pathname == "/server-transactions"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bxl-mastercard"></i>
+                      </div>
+                      <div className="menu-title">Server Transactions</div>
                     </a>
                   </li>
 

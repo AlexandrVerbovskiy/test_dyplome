@@ -290,7 +290,7 @@ class User extends Model {
 
   count = async (props) =>
     await this.errorWrapper(async () => {
-      let { query, params } = this.baseGetMany(props);
+      let { query, params } = this.baseGetMany(props.params);
       query = "SELECT COUNT(*) as count FROM users " + query;
       const res = await this.dbQueryAsync(query, params);
       return res[0]["count"];

@@ -1,6 +1,10 @@
 import React, { useContext } from "react";
 import { useAdminJobEdit } from "../hooks";
 import { MainContext } from "../contexts";
+import Layout from "./Layout";
+import SingleMarkMap from "./SingleMarkMap";
+import Input from "./Input";
+import { Textarea } from "react-bootstrap-icons";
 
 const AdminJobEditForm = ({ baseData, onSave, hasId }) => {
   const { coords, address, title, price, description, validateJobEdit } =
@@ -19,7 +23,6 @@ const AdminJobEditForm = ({ baseData, onSave, hasId }) => {
       address: address.value,
       lat: coords.value.lat,
       lng: coords.value.lng,
-      jobId: jobId.value,
     };
 
     try {
