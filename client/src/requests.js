@@ -441,3 +441,13 @@ export const getAllJobs = {
     countItems: res.data.countItems,
   }),
 };
+
+export const stripeCharge = {
+  url: () => `stripe-charge`,
+  type: "post",
+  convertData: (amount, token) => ({
+    amount,
+    token,
+  }),
+  convertRes: (res) => res.charge,
+};

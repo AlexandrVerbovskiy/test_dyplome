@@ -28,3 +28,4 @@ export { default as AdminJobCreate } from "./AdminJobCreate";
 export { default as AdminJobEdit } from "./AdminJobEdit";
 export { default as ForgotPassword } from "./ForgotPassword";
 export { default as ResetPassword } from "./ResetPassword";
+export { default as Stripe } from "./Stripe";

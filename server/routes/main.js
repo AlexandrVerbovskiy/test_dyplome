@@ -2,6 +2,35 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 const express = require("express");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+
+/*stripe.customers.createSource(
+  "cus_Prt5cml2ePXtNw",
+  {
+    source: 'tok_visa',
+  },
+  function(err, card) {
+    // Обробляємо результати
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Card added successfully:', card);
+    }
+  }
+);*/
+
+stripe.customers.listSources(
+  "cus_Prt5cml2ePXtNw",
+  { object: "card", limit: 10 },
+  function (err, cards) {
+    // Обробляємо результати
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(cards.data);
+    }
+  }
+);
 
 const {
   User,
@@ -57,11 +86,7 @@ function route(app, db, io) {
 
   app.post("/register", isNotAuth, userController.registration);
   app.post("/login", isNotAuth, userController.login);
-  app.post(
-    "/reset-password-request",
-    isNotAuth,
-    userController.resetPasswordRequest
-  );
+  app.post("/forgot-password", isNotAuth, userController.resetPasswordRequest);
   app.post(
     "/reset-password-forgotten-password",
     isNotAuth,
@@ -249,5 +274,45 @@ function route(app, db, io) {
   app.post("/admin-job-list", isAdmin, jobController.getAllJobs);
 
   app.post("/admin-dispute-list", isAdmin, disputeController.getAllDisputes);
+
+  app.post("/stripe-charge", async (req, res) => {
+    try {
+      const { amount, token } = req.body;
+      const charge = await stripe.charges.create({
+        amount: amount,
+        currency: "usd",
+        source: token.id,
+        description: "Example Charge",
+      });
+
+      console.log("charge: ", charge);
+
+      res.json({ charge });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/stripe-balance", async (req, res) => {
+    const result = await stripe.balance.retrieve();
+    const available = result["available"][0]["amount"];
+    const pending = result["pending"][0]["amount"];
+    res.json({ pending, available });
+  });
+
+  app.get("/stripe-transaction-test", async (req, res) => {
+    try {
+      const result = await stripe.transfers.create({
+        amount: 100,
+        currency: "usd",
+        destination: "acct_1P2AQ7GJ2mASkdhN",
+    });
+
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 }
 module.exports = route;

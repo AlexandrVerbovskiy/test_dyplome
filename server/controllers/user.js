@@ -25,7 +25,11 @@ class User extends Controller {
 
   login = (req, res) =>
     this.errorWrapper(res, async () => {
-      const { email, password } = req.body;
+      const { email, password, rememberMe } = req.body;
+
+      const duration = rememberMe
+        ? process.env.JWT_REMEMBER_ACCESS_LIFETIME
+        : process.env.JWT_DEFAULT_ACCESS_LIFETIME;
 
       const user = await this.userModel.findByPasswordAndEmail(email, password);
       const userId = user.id;
@@ -34,7 +38,10 @@ class User extends Controller {
         {
           userId,
         },
-        process.env.SECRET_KEY
+        process.env.SECRET_KEY,
+        {
+          expiresIn: duration,
+        }
       );
 
       res.set("Authorization", `Bearer ${token}`);
@@ -277,7 +284,7 @@ class User extends Controller {
         res,
         "A password reset link has been sent to your email",
         {
-          resetLink,
+          email,
         }
       );
     });

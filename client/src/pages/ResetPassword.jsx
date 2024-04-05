@@ -9,8 +9,7 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const { request, setSuccess, setError } =
-    useContext(MainContext);
+  const { request, setSuccess, setError } = useContext(MainContext);
 
   const handleResetPasswordClick = async (e) => {
     e.preventDefault();
@@ -26,18 +25,18 @@ const ResetPassword = () => {
     }
 
     try {
-      await request({
+      const res = await request({
         url: resetPassword.url(),
         type: resetPassword.type,
         data: { email, password, token },
         convertRes: resetPassword.convertRes,
       });
 
+      console.log(res);
+
       setSuccess("Password reset successfully");
       redirect("/");
-    } catch (e) {
-      setError(e.message);
-    }
+    } catch (e) {}
   };
 
   return (

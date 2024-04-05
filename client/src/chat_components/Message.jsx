@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 const Message = ({ type, message, onClose }) => {
   const className =
-    "d-flex alert border-0 alert-dismissible fade show py-2 " +
+    "d-flex alert border-0 alert-dismissible fade show py-2 system-alert " +
     (type == "success" ? "alert-success bg-success" : "alert-danger bg-danger");
 
   const messageRef = useRef(null);

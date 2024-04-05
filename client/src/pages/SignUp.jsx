@@ -26,9 +26,7 @@ const SignUp = () => {
 
       main.setSuccess("User registered successfully");
       window.location = window.location.origin;
-    } catch {
-      main.setError(e.message);
-    }
+    } catch {}
   };
 
   return (

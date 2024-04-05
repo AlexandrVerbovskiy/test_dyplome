@@ -133,9 +133,9 @@ const config = {
     { value: "member", title: "Member" },
     { value: "admin", title: "Admin" },
   ],
-  CHAT_ADMIN_ROLES_SELECT: [
-    { value: "member", title: "Member" },
-  ],
+  CHAT_ADMIN_ROLES_SELECT: [{ value: "member", title: "Member" }],
+  STRIPE_PUBLIC_KEY:
+    "pk_test_51Mq9NRJOCxSbJmWptiojgsHHhJMLSJmu6QWEXD0g39q6FEEXEZrcdYIxTHj6xkVFEylGbNgjLr3CghO6G4hsndAR00ftyUUUoh",
 };
 
 export default config;

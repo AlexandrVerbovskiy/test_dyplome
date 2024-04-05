@@ -21,9 +21,7 @@ const ForgotPassword = () => {
 
       setSuccess("Letter to reset password sent successfully");
       redirect("/");
-    } catch (e) {
-      setError(e.message);
-    }
+    } catch (e) {}
   };
 
   return (

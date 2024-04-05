@@ -4,7 +4,9 @@ const useSystemMessage = () => {
 
   const setSuccess = (message) =>
     setSystemMessage({ message, type: "success" });
+
   const setError = (message) => setSystemMessage({ message, type: "error" });
+
   const clearMessage = () => setSystemMessage(null);
 
   return { setSuccess, setError, systemMessage, clearMessage };

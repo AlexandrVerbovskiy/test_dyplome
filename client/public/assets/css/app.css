@@ -3708,3 +3708,36 @@ body:has(.alert) .page-wrapper {
 #avatarInput img {
   width: 100%;
 }
+
+.sign-form-body-parent,
+.sign-page > div {
+  height: calc(100vh - 6rem);
+}
+
+@media (min-width: 992px) {
+  .sign-form-body-parent,
+  .sign-page > div {
+    height: 100vh;
+  }
+}
+
+.sign-form-body-parent > div:nth-of-type(2) {
+  height: calc(100% - 3rem - 35px);
+}
+
+.sign-form-body-parent > div:nth-of-type(1) {
+  margin-top: 3rem !important;
+  margin-bottom: 4rem !important;
+}
+
+.sign-form-body-parent > div:nth-of-type(2) > .card {
+  height: fit-content;
+}
+
+.system-alert {
+  justify-content: space-between;
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+  max-width: 550px;
+}
