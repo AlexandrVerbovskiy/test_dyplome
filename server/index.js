@@ -18,7 +18,8 @@ app.use(
   cors({
     credentials: true,
     exposedHeaders: "Authorization",
-    origin: process.env.CLIENT_URL,
+    origin: "*",
+    origin: [process.env.CLIENT_URL, "https://www.sandbox.paypal.com"],
   })
 );
 

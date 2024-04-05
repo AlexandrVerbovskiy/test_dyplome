@@ -449,5 +449,11 @@ export const stripeCharge = {
     amount,
     token,
   }),
-  convertRes: (res) => res.charge,
+  convertRes: (res) => res.data.charge,
+};
+
+export const paypalCharge = {
+  url: () => `paypal-charge`,
+  type: "post",
+  convertRes: (res) => res.data,
 };

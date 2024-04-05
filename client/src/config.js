@@ -136,6 +136,8 @@ const config = {
   CHAT_ADMIN_ROLES_SELECT: [{ value: "member", title: "Member" }],
   STRIPE_PUBLIC_KEY:
     "pk_test_51Mq9NRJOCxSbJmWptiojgsHHhJMLSJmu6QWEXD0g39q6FEEXEZrcdYIxTHj6xkVFEylGbNgjLr3CghO6G4hsndAR00ftyUUUoh",
+  PAYPAL_CLIENT_ID:
+    "ATdMAyx5HB3UHSNSCynPjUlm_MdzaCtooxbyMeSivBog1vmDYr7mqhtM_6KQi_KPmkZbY0ZBb9H13xKl",
 };
 
 export default config;

@@ -3,6 +3,46 @@ const multer = require("multer");
 const fs = require("fs");
 const express = require("express");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+const paypal = require("@paypal/checkout-server-sdk");
+const axios = require("axios");
+
+const clientId = process.env.PAYPAL_CLIENT_ID;
+const clientSecret = process.env.PAYPAL_SECRET_KEY;
+const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
+const client = new paypal.core.PayPalHttpClient(environment);
+
+async function createPayPalPayment(amount) {
+  const request = new paypal.orders.OrdersCreateRequest();
+  request.requestBody({
+    intent: "CAPTURE",
+    purchase_units: [
+      {
+        amount: {
+          currency_code: "USD",
+          value: amount.toString(),
+        },
+      },
+    ],
+  });
+
+  try {
+    const response = await client.execute(request);
+    return response.result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function capturePayPalPayment(orderId) {
+  const request = new paypal.orders.OrdersCaptureRequest(orderId);
+
+  try {
+    const response = await client.execute(request);
+    return response.result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 /*stripe.customers.createSource(
   "cus_Prt5cml2ePXtNw",
@@ -17,7 +57,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
       console.log('Card added successfully:', card);
     }
   }
-);*/
+);
 
 stripe.customers.listSources(
   "cus_Prt5cml2ePXtNw",
@@ -30,7 +70,7 @@ stripe.customers.listSources(
       console.log(cards.data);
     }
   }
-);
+);*/
 
 const {
   User,
@@ -285,8 +325,6 @@ function route(app, db, io) {
         description: "Example Charge",
       });
 
-      console.log("charge: ", charge);
-
       res.json({ charge });
     } catch (error) {
       console.error(error);
@@ -306,13 +344,73 @@ function route(app, db, io) {
       const result = await stripe.transfers.create({
         amount: 100,
         currency: "usd",
-        destination: "acct_1P2AQ7GJ2mASkdhN",
-    });
+        destination: "acct_1K1DDB2YSfjEr5Wy",
+      });
 
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  });
+
+  app.post("/paypal-charge", async (req, res) => {
+    try {
+      const { orderID, paymentID } = req.body;
+
+      try {
+        const request = new paypal.orders.OrdersGetRequest(orderID);
+        const response = await client.execute(request);
+        console.log(response);
+      } catch (e) {
+        console.log(e.message);
+      }
+      res.status(200).send("OK");
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  const tokenUrl = "https://api.sandbox.paypal.com/v1/oauth2/token";
+
+  const balanceUrl = "https://api.sandbox.paypal.com/v1/balance/";
+
+  async function getToken() {
+    const response = await axios.post(
+      tokenUrl,
+      `grant_type=client_credentials`,
+      {
+        auth: {
+          username: clientId,
+          password: clientSecret,
+        },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    return response.data.access_token;
+  }
+
+  async function getBalance() {
+    const token = await getToken();
+    console.log(token);
+
+    try {
+      const response = await axios.get(balanceUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  app.get("/paypal-balance", async (req, res) => {
+    getBalance();
+    res.status(200).send("OK");
   });
 }
 module.exports = route;

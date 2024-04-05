@@ -31,6 +31,7 @@ import {
   ForgotPassword,
   AdminStatusesDisputes,
   Stripe,
+  Paypal,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -77,10 +78,6 @@ const mainRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainJobs />,
-  },
-  {
-    path: "/test",
-    element: <Stripe />,
   },
   {
     path: "*",
@@ -179,7 +176,7 @@ const adminRouter = createBrowserRouter([
   },
   {
     path: "/test",
-    element: <Stripe />,
+    element: <Paypal />,
   },
 ]);
 
@@ -195,10 +192,6 @@ const signRouter = createBrowserRouter([
   {
     path: "/reset-password/:token",
     element: <ResetPassword />,
-  },
-  {
-    path: "/test",
-    element: <Stripe />,
   },
   {
     path: "*",

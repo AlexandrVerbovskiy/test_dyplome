@@ -29,3 +29,4 @@ export { default as AdminJobEdit } from "./AdminJobEdit";
 export { default as ForgotPassword } from "./ForgotPassword";
 export { default as ResetPassword } from "./ResetPassword";
 export { default as Stripe } from "./Stripe";
+export { default as Paypal } from "./Paypal";
