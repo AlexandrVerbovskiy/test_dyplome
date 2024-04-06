@@ -62,7 +62,7 @@ const SignIn = () => {
         />
       </div>
 
-      <div class="col-md-6 text-end">
+      <div className="col-md-6 text-end">
         <a href="/forgot-password">Forgot password ?</a>
       </div>
     </SignForm>

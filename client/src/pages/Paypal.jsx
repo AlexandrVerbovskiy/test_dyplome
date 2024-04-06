@@ -2,43 +2,35 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import config from "../config";
 import { MainContext } from "../contexts";
 import { useContext } from "react";
-import { paypalCharge } from "../requests";
+import { paypalApproveOrder, paypalCreateOrder } from "../requests";
 
 function PaymentPage() {
   const main = useContext(MainContext);
 
-  const onApprove = (data) => {
-    return fetch(config.API_URL +"/paypal-capture-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        body: JSON.stringify({
-          orderID: data.orderID,
-        }),
-      },
-    }).then((response) => response.json());
+  const onApprove = async (data) => {
+    const res = await main.request({
+      url: paypalApproveOrder.url(),
+      type: paypalApproveOrder.type,
+      convertRes: paypalApproveOrder.convertRes,
+      data: paypalApproveOrder.convertData(data.orderID),
+    });
+
+    console.log(res);
   };
 
   const onCancel = (data, actions) => {
     console.log("Payment cancelled:", data);
   };
 
-  const createOrder = (data) => {
-    return fetch(config.API_URL + "/paypal-create-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        product: {
-          description: JSON.stringify({ orderId: 123 }),
-          cost: "10.00",
-        },
+  const createOrder = async (data) => await main.request({
+      url: paypalCreateOrder.url(),
+      type: paypalCreateOrder.type,
+      convertRes: paypalCreateOrder.convertRes,
+      data: paypalCreateOrder.convertData({
+        description: JSON.stringify({ orderId: 123 }),
+        cost: "10.00",
       }),
-    })
-      .then((response) => response.json())
-      .then((order) => order.id);
-  };
+    });
 
   return (
     <PayPalScriptProvider

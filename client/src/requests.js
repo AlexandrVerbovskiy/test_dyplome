@@ -452,8 +452,18 @@ export const stripeCharge = {
   convertRes: (res) => res.data.charge,
 };
 
-export const paypalCharge = {
-  url: () => `paypal-charge`,
+export const paypalApproveOrder = {
+  url: () => `paypal-capture-order`,
   type: "post",
+  convertData: (orderId) => ({
+    orderID: orderId,
+  }),
   convertRes: (res) => res.data,
+};
+
+export const paypalCreateOrder = {
+  url: () => `paypal-create-order`,
+  type: "post",
+  convertData: (product) => ({ product }),
+  convertRes: (res) => res.data.id,
 };

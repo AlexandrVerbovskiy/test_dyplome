@@ -51,7 +51,6 @@ const {
 const {
   captureOrder,
   createOrder,
-  getBalance,
   sendMoneyToEmail,
 } = require("../utils/paypalApi");
 
@@ -348,19 +347,23 @@ function route(app, db, io) {
     }
   });
 
-  app.get("/paypal-balance", async (req, res) => {
-    //sendMoneyToEmail("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
-    //sendMoneyToEmail("PAYPAL_ID", "6WQ68DM2A9FGS", "1000.00", "USD");
-    //sendMoneyToEmail("PAYPAL_ID", "QNFXGMKGF2TWY", "1000.00", "USD");
-    getBalance();
-
-    res.status(200).send("OK");
+  app.get("/paypal-get-money-to-card", async (req, res) => {
+    //const result = await sendMoneyToEmail("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
+    //const result = await sendMoneyToEmail("PAYPAL_ID", "6WQ68DM2A9FGS", "1000.00", "USD");
+    const result = await sendMoneyToEmail("PAYPAL_ID", "QNFXGMKGF2TWY", "10.00", "USD");
+    
+    if(result.error){
+      res.status(402).send(result.error);
+    }else{
+      res.status(200).send("OK");
+    }
   });
 
   app.post("/paypal-create-order", async (req, res) => {
     try {
-      const { cart } = req.body;
-      const { jsonResponse, httpStatusCode } = await createOrder(cart);
+      console.log("test");
+      const { product } = req.body;
+      const { jsonResponse, httpStatusCode } = await createOrder(product);
       res.status(httpStatusCode).json(jsonResponse);
     } catch (error) {
       console.error("Failed to create order:", error);
@@ -370,6 +373,7 @@ function route(app, db, io) {
 
   app.post("/paypal-capture-order", async (req, res) => {
     try {
+      console.log(req.body);
       const { orderID } = req.body;
       const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
       res.status(httpStatusCode).json(jsonResponse);

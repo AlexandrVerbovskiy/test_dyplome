@@ -36,14 +36,7 @@ async function getToken() {
 }
 
 const createOrder = async (cart) => {
-  console.log(
-    "shopping cart information passed from the frontend createOrder() callback:",
-    cart
-  );
-
   const accessToken = await getToken();
-  console.log(accessToken);
-
   const url = `${base}/v2/checkout/orders`;
   const payload = {
     intent: "CAPTURE",
@@ -51,7 +44,7 @@ const createOrder = async (cart) => {
       {
         amount: {
           currency_code: "USD",
-          value: "100.00",
+          value: "10000.00",
         },
       },
     ],
@@ -81,37 +74,33 @@ const captureOrder = async (orderID) => {
     },
   });
 
-  return handleResponse(response);
-};
+  const jsonResponse = await response.json();
 
-async function getBalance() {
-  try {
-    const token = await getToken();
-    console.log(token);
+  if (jsonResponse.status.toLowerCase() === "completed") {
+    let newBalance = 0;
+    const purchaseUnits = jsonResponse.purchase_units;
 
-    const infoRes = await fetch(
-      "https://api-m.sandbox.paypal.com/v1/reporting/balances",
-      {
-        headers: {
-          "Content-Type": "application/scim+json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    purchaseUnits.forEach((unit) => {
+      unit.payments.captures.forEach((capture) => {
+        const gotMoney = Number(
+          capture.seller_receivable_breakdown.net_amount.value
+        );
+        newBalance += gotMoney;
+        console.log(gotMoney);
+      });
+    });
 
-    const info = await infoRes.json();
-
-    const usdInfo = info.balances.find(
-      (elem) => elem.currency.toLowerCase() === "usd"
-    );
-
-    console.log(usdInfo);
-
-    console.log(usdInfo.total_balance.value);
-  } catch (e) {
-    console.log(e.message);
+    return {
+      jsonResponse: { newBalance },
+      httpStatusCode: response.status,
+    };
+  } else {
+    return {
+      jsonResponse,
+      httpStatusCode: response.status,
+    };
   }
-}
+};
 
 async function sendMoneyToEmail(type, getter, amount, currency) {
   const token = await getToken();
@@ -146,10 +135,17 @@ async function sendMoneyToEmail(type, getter, amount, currency) {
     redirect: "follow",
   };
 
-  fetch("https://api-m.sandbox.paypal.com/v1/payments/payouts", requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .catch((error) => console.error(error));
+  const response = await fetch(
+    "https://api-m.sandbox.paypal.com/v1/payments/payouts",
+    requestOptions
+  );
+  const data = await response.json();
+
+  if (data.message) {
+    return { error: data.message };
+  } else {
+    return { error: false };
+  }
 }
 
 async function handleResponse(response) {
@@ -168,6 +164,5 @@ async function handleResponse(response) {
 module.exports = {
   captureOrder,
   createOrder,
-  getBalance,
   sendMoneyToEmail,
 };
