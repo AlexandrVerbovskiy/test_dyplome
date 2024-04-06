@@ -3,46 +3,7 @@ const multer = require("multer");
 const fs = require("fs");
 const express = require("express");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
-const paypal = require("@paypal/checkout-server-sdk");
-const axios = require("axios");
-
-const clientId = process.env.PAYPAL_CLIENT_ID;
-const clientSecret = process.env.PAYPAL_SECRET_KEY;
-const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
-const client = new paypal.core.PayPalHttpClient(environment);
-
-async function createPayPalPayment(amount) {
-  const request = new paypal.orders.OrdersCreateRequest();
-  request.requestBody({
-    intent: "CAPTURE",
-    purchase_units: [
-      {
-        amount: {
-          currency_code: "USD",
-          value: amount.toString(),
-        },
-      },
-    ],
-  });
-
-  try {
-    const response = await client.execute(request);
-    return response.result;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function capturePayPalPayment(orderId) {
-  const request = new paypal.orders.OrdersCaptureRequest(orderId);
-
-  try {
-    const response = await client.execute(request);
-    return response.result;
-  } catch (error) {
-    throw error;
-  }
-}
+const fetch = require("node-fetch");
 
 /*stripe.customers.createSource(
   "cus_Prt5cml2ePXtNw",
@@ -87,6 +48,12 @@ const {
   generateIsAuth,
   generateIsNotAuth,
 } = require("../middlewares");
+const {
+  captureOrder,
+  createOrder,
+  getBalance,
+  sendMoneyToEmail,
+} = require("../utils/paypalApi");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -358,9 +325,20 @@ function route(app, db, io) {
       const { orderID, paymentID } = req.body;
 
       try {
-        const request = new paypal.orders.OrdersGetRequest(orderID);
-        const response = await client.execute(request);
-        console.log(response);
+        const token = await getToken();
+
+        const orderInfoRes = await fetch(
+          `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const orderInfo = await orderInfoRes.json();
+        const productInfo = JSON.parse(orderInfo.purchase_units[0].description);
+        console.log(productInfo);
       } catch (e) {
         console.log(e.message);
       }
@@ -370,47 +348,35 @@ function route(app, db, io) {
     }
   });
 
-  const tokenUrl = "https://api.sandbox.paypal.com/v1/oauth2/token";
-
-  const balanceUrl = "https://api.sandbox.paypal.com/v1/balance/";
-
-  async function getToken() {
-    const response = await axios.post(
-      tokenUrl,
-      `grant_type=client_credentials`,
-      {
-        auth: {
-          username: clientId,
-          password: clientSecret,
-        },
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-    return response.data.access_token;
-  }
-
-  async function getBalance() {
-    const token = await getToken();
-    console.log(token);
-
-    try {
-      const response = await axios.get(balanceUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
-    } catch (e) {
-      console.log(e.message);
-    }
-  }
-
   app.get("/paypal-balance", async (req, res) => {
+    //sendMoneyToEmail("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
+    //sendMoneyToEmail("PAYPAL_ID", "6WQ68DM2A9FGS", "1000.00", "USD");
+    //sendMoneyToEmail("PAYPAL_ID", "QNFXGMKGF2TWY", "1000.00", "USD");
     getBalance();
+
     res.status(200).send("OK");
+  });
+
+  app.post("/paypal-create-order", async (req, res) => {
+    try {
+      const { cart } = req.body;
+      const { jsonResponse, httpStatusCode } = await createOrder(cart);
+      res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+      console.error("Failed to create order:", error);
+      res.status(500).json({ error: "Failed to create order." });
+    }
+  });
+
+  app.post("/paypal-capture-order", async (req, res) => {
+    try {
+      const { orderID } = req.body;
+      const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
+      res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+      console.error("Failed to create order:", error);
+      res.status(500).json({ error: "Failed to capture order." });
+    }
   });
 }
 module.exports = route;

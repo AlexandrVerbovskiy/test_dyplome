@@ -4,5 +4,6 @@ module.exports = {
   indicateMediaTypeByExtension: require("./indicateMediaTypeByExtension"),
   asyncDbRequest: require("./asyncDbRequest"),
   ...require("./dateHelpers"),
+  ...require("./paypalApi"),
   CustomError: require("./customError"),
 };

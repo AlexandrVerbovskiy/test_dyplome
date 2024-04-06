@@ -7,38 +7,49 @@ import { paypalCharge } from "../requests";
 function PaymentPage() {
   const main = useContext(MainContext);
 
-  const onApprove = async (data, actions) => {
-    console.log(data);
-
-    const res = await main.request({
-      url: paypalCharge.url(),
-      data,
-      type: paypalCharge.type,
-      convertRes: paypalCharge.convertRes,
-    });
-    console.log(res);
+  const onApprove = (data) => {
+    return fetch(config.API_URL +"/paypal-capture-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        body: JSON.stringify({
+          orderID: data.orderID,
+        }),
+      },
+    }).then((response) => response.json());
   };
 
   const onCancel = (data, actions) => {
     console.log("Payment cancelled:", data);
   };
 
+  const createOrder = (data) => {
+    return fetch(config.API_URL + "/paypal-create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        product: {
+          description: JSON.stringify({ orderId: 123 }),
+          cost: "10.00",
+        },
+      }),
+    })
+      .then((response) => response.json())
+      .then((order) => order.id);
+  };
+
   return (
-    <PayPalScriptProvider options={{ "client-id": config.PAYPAL_CLIENT_ID }}>
+    <PayPalScriptProvider
+      options={{
+        "client-id": config.PAYPAL_CLIENT_ID,
+        currency: "USD",
+        intent: "capture",
+      }}
+    >
       <PayPalButtons
-        createOrder={(data, actions) => {
-          return actions.order.create({
-            purchase_units: [
-              {
-                amount: {
-                  value: "10.00",
-                  currency_code: "USD",
-                },
-                tempNewOrderID:"123123"
-              },
-            ],
-          });
-        }}
+        createOrder={createOrder}
         onApprove={onApprove}
         onCancel={onCancel}
       />
