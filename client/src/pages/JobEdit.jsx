@@ -1,21 +1,44 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Textarea,
   Input,
   Layout,
   SingleMarkMap,
+  MapMarker,
 } from "../components";
 import { useJobEdit } from "../hooks";
 import { updateJob } from "../requests";
 import { MainContext } from "../contexts";
+import config from "../config";
 
 const JobEdit = () => {
-  let { id } = useParams();
+  let { id = null } = useParams();
   const main = useContext(MainContext);
 
   const { jobId, coords, address, title, price, description, validateJobEdit } =
     useJobEdit({ id });
+
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: main.sessionUser.lat,
+    lng: main.sessionUser.lng,
+  });
+
+  useEffect(() => {
+    if (currentLocation.lat !== null || currentLocation.lng !== null) return;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => setCurrentLocation(config.MAP_DEFAULT.center)
+      );
+    } else {
+      setCurrentLocation(config.MAP_DEFAULT.center);
+    }
+  }, []);
 
   const saveJob = async () => {
     const resValidation = validateJobEdit();
@@ -64,7 +87,14 @@ const JobEdit = () => {
                   coords={coords.value}
                   changeCoords={coords.change}
                   error={coords.error}
-                />
+                >
+                  <MapMarker
+                    title="Your position"
+                    lat={currentLocation.lat}
+                    lng={currentLocation.lng}
+                    main={true}
+                  />
+                </SingleMarkMap>
               </div>
 
               <div className="col-12 col-md-6 job-edit-inputs">

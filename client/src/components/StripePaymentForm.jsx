@@ -25,8 +25,6 @@ const StripePaymentForm = () => {
       return;
     }
 
-    console.log(token);
-
     const res = await request({
       url: stripeCharge.url(),
       type: stripeCharge.type,

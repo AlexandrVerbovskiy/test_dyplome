@@ -4,7 +4,7 @@ const Model = require("./model");
 const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
-  __visibleFields = "id, email, address, lat, lng, nick, avatar, admin";
+  __visibleFields = "id, email, address, lat, lng, nick, avatar, admin, activity_radius";
 
   strFilterFields = ["email", "address", "nick"];
 
@@ -102,18 +102,36 @@ class User extends Model {
   updateUserProfile = async (userId, profileData) =>
     await this.errorWrapper(async () => {
       const {
+        email,
         nick,
         address,
         avatar,
         lat,
         lng,
+        activityRadius,
         authorized,
         admin = null,
       } = profileData;
 
+      const countUserRes = await this.dbQueryAsync(
+        "SELECT COUNT(*) as count from users where email = ? AND id != ?",
+        [email, userId]
+      );
+      const count = countUserRes[0]["count"];
+      if (count) this.setError("Email was registered earlier", 409);
+
       let query =
-        "UPDATE users SET nick = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ?";
-      const props = [nick, address, avatar, lat, lng, authorized];
+        "UPDATE users SET activity_radius=?, nick = ?, email = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ?";
+      const props = [
+        activityRadius,
+        nick,
+        email,
+        address,
+        avatar,
+        lat,
+        lng,
+        authorized,
+      ];
 
       if (admin !== null) {
         query += ", admin = ?";
@@ -129,11 +147,13 @@ class User extends Model {
   createFull = async (profileData) =>
     await this.errorWrapper(async () => {
       const {
+        email,
         nick,
         address,
         avatar,
         lat,
         lng,
+        activityRadius,
         authorized,
         admin = null,
       } = profileData;
@@ -146,6 +166,7 @@ class User extends Model {
         lat,
         lng,
         profile_authorized: authorized,
+        activity_radius: activityRadius,
         admin,
         password: null,
       };

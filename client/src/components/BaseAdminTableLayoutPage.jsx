@@ -11,7 +11,7 @@ const BaseAdminTableLayoutPage = ({
   RowElem,
   items,
   DopFilterElem = null,
-  paginationInfo
+  paginationInfo,
 }) => {
   return (
     <Layout pageClassName="default-table-page">
@@ -59,13 +59,17 @@ const BaseAdminTableLayoutPage = ({
               </div>
             </div>
 
-            <Pagination
-              page={paginationInfo.page}
-              countPages={paginationInfo.countPages}
-              move={paginationInfo.moveToPage}
-              canNext={paginationInfo.canMoveNextPage}
-              canPrev={paginationInfo.canMovePrevPage}
-            />
+            {items.length > 0 ? (
+              <Pagination
+                page={paginationInfo.page}
+                countPages={paginationInfo.countPages}
+                move={paginationInfo.moveToPage}
+                canNext={paginationInfo.canMoveNextPage}
+                canPrev={paginationInfo.canMovePrevPage}
+              />
+            ) : (
+              <div className="empty-table">There are no entries yet</div>
+            )}
           </div>
         </div>
       </div>

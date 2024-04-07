@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
+import config from "../config";
 
 const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });
@@ -7,6 +8,7 @@ const useAdminUserEdit = ({ baseData }) => {
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const [admin, setAdmin] = useState({ value: false, error: null });
   const [authorized, setAuthorized] = useState({ value: false, error: null });
+  const [activityRadius, setActivityRadius] = useState(config.RADIUS_DEFAULT);
 
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
 
@@ -17,6 +19,7 @@ const useAdminUserEdit = ({ baseData }) => {
     address.change(baseData.address ?? "");
     changeEmail(baseData.email ?? "");
     changeNick(baseData.nick ?? "");
+    setActivityRadius(baseData.activity_radius ?? config.RADIUS_DEFAULT);
 
     if (baseData.avatar) changeImg(baseData.avatar);
   }, [baseData]);
@@ -83,6 +86,7 @@ const useAdminUserEdit = ({ baseData }) => {
     validateProfileEdit,
     admin: { ...admin, change: changeAdmin },
     authorized: { ...authorized, change: changeAuthorized },
+    activityRadius: { value: activityRadius, change: setActivityRadius },
   };
 };
 

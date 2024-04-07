@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SmallNotificationList } from "../notification_components";
+import { MainContext } from "../contexts";
+import { generateFullUserImgPath } from "../utils";
 
 const Navbar = ({
   notifications,
@@ -9,6 +11,7 @@ const Navbar = ({
   const [notificationClassName, setNotificationClassName] = useState("");
   const [notificationPopupActive, setNotificationPopupActive] = useState(false);
   const [burgerActive, setBurgerActive] = useState(false);
+  const { sessionUser } = useContext(MainContext);
 
   useEffect(() => {
     let notificationClassName =
@@ -36,7 +39,7 @@ const Navbar = ({
           href="/"
           style={{ display: "flex", alignItems: "center", width: "100px" }}
         >
-          <h6>Test site</h6>
+          <h6>Graduate</h6>
         </a>
         <button
           className="navbar-toggler"
@@ -50,6 +53,32 @@ const Navbar = ({
           className={`collapse navbar-collapse ${burgerActive ? "show" : ""}`}
           id="navbarSupportedContent1"
         >
+          <ul className="navbar-nav mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/" ? "active" : ""
+                }`}
+                href="/"
+              >
+                <i className="bx bx-home-alt me-1" />
+                Home
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/my-job-proposals"
+                    ? "active"
+                    : ""
+                }`}
+                href="/my-job-proposals"
+              >
+                <i className="bx bx-briefcase me-1" />
+                My Proposals
+              </a>
+            </li>
+          </ul>
           <ul className="navbar-nav ms-auto align-items-center icons-menu notification-level">
             <li className="nav-item dropdown dropdown-large">
               <a
@@ -85,52 +114,72 @@ const Navbar = ({
           </ul>
 
           <ul className="navbar-nav mb-2 mb-lg-0">
-            <li className="nav-item">
+            <div className="user-box dropdown">
               <a
-                className={`nav-link ${
-                  window.location.pathname == "/" ? "active" : ""
-                }`}
-                href="/"
+                className="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
-                <i className="bx bx-home-alt me-1" />
-                Home
+                <img
+                  src={generateFullUserImgPath(sessionUser.avatar)}
+                  className="user-img"
+                  alt="user avatar"
+                />
+                <div className="user-info ps-3">
+                  <p className="user-name mb-0">
+                    {sessionUser.nick ?? sessionUser.email}
+                  </p>
+                  {sessionUser.nick && (
+                    <p className="designattion mb-0">{sessionUser.email}</p>
+                  )}
+                </div>
               </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  window.location.pathname == "/profile-edit" ? "active" : ""
-                }`}
-                href="/profile-edit"
-              >
-                <i className="bx bx-edit" />
-                Profile
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  window.location.pathname == "/my-job-proposals"
-                    ? "active"
-                    : ""
-                }`}
-                href="/my-job-proposals"
-              >
-                <i className="bx bx-briefcase me-1" />
-                My Proposals
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  window.location.pathname == "/balance" ? "active" : ""
-                }`}
-                href="/balance"
-              >
-                <i className="bx bx-money me-1" />
-                Balance
-              </a>
-            </li>
+              <ul className="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a
+                    className={`dropdown-item ${
+                      window.location.pathname == "/profile-edit"
+                        ? "active"
+                        : ""
+                    }`}
+                    href="/profile-edit"
+                  >
+                    <i className="bx bx-user" />
+                    Profile
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    className={`dropdown-item ${
+                      window.location.pathname == "/balance" ? "active" : ""
+                    }`}
+                    href="/balance"
+                  >
+                    <i className="bx bx-money" />
+                    Balance
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    href="/"
+                    className="dropdown-item d-flex align-items-center"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.target.closest("form").submit();
+                    }}
+                  >
+                    <i className="bx bx-log-out-circle"></i>
+                    <form method="POST" action="/">
+                      <div className="menu-title">Logout</div>
+                    </form>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </ul>
         </div>
       </div>

@@ -143,7 +143,7 @@ class Job extends Controller {
   getAllJobs = (req, res) =>
     this.errorWrapper(res, async () => {
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.jobModel.count(params)
+        this.jobModel.count({params})
       );
 
       const jobs = await this.jobModel.list(options);

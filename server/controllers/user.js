@@ -101,12 +101,14 @@ class User extends Controller {
     address,
     lat,
     lng,
+    res,
     userId = null,
     admin = null,
     authorized = null,
+    activityRadius,
   }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!nick || !address || !lat || !lng || !email)
+    if (!nick || !email)
       return this.sendResponseValidationError(res, "All fields are required");
 
     if (nick.length < 3)
@@ -164,6 +166,8 @@ class User extends Controller {
         lng,
         admin,
         authorized,
+        email,
+        activityRadius,
       });
     } else {
       userId = await this.userModel.createFull({
@@ -173,16 +177,28 @@ class User extends Controller {
         lat,
         lng,
         admin,
+        email,
         authorized,
+        activityRadius,
       });
     }
 
-    return { nick, address, avatar, lat, lng, userId, admin, authorized };
+    return {
+      email,
+      nick,
+      address,
+      avatar,
+      lat,
+      lng,
+      userId,
+      admin,
+      authorized,
+    };
   };
 
   updateUserProfile = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { email, nick, address, lat, lng } = req.body;
+      const { email, nick, address, lat, lng, activityRadius } = req.body;
       const userId = req.userData.userId;
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
@@ -198,6 +214,8 @@ class User extends Controller {
         lng,
         admin: null,
         authorized: true,
+        activityRadius,
+        res,
       });
 
       return this.sendResponseSuccess(
@@ -224,6 +242,7 @@ class User extends Controller {
         lng,
         admin: null,
         authorized: true,
+        res,
       });
 
       return this.sendResponseSuccess(
@@ -249,6 +268,7 @@ class User extends Controller {
         lng,
         admin: null,
         authorized: true,
+        res,
       });
 
       return this.sendResponseSuccess(
@@ -471,7 +491,7 @@ class User extends Controller {
   getFullUsers = (req, res) =>
     this.errorWrapper(res, async () => {
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.userModel.count(params)
+        this.userModel.count({ params })
       );
 
       const users = await this.userModel.list(options);

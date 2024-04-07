@@ -3,6 +3,7 @@ import { useNotifications, useSocketInit } from "../hooks";
 import { NewNotificationList } from "../notification_components";
 import { AdminNavbar } from "../components";
 import { MainContext } from "../contexts";
+import { generateFullUserImgPath } from "../utils";
 
 const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
   const { socketIo: io } = useSocketInit();
@@ -39,9 +40,21 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
               <i className="bx bx-menu"></i>
             </div>
             <div className="top-menu ms-auto d-flex">
-              <div className="d-flex align-items-center user-email">
-                <span>{sessionUser.email}</span>
-              </div>
+              <a href="/profile-edit" className="d-flex align-items-center">
+                <img
+                  src={generateFullUserImgPath(sessionUser.avatar)}
+                  className="user-img"
+                  alt="user avatar"
+                />
+                <div className="user-info ps-3">
+                  <p className="user-name mb-0">
+                    {sessionUser.nick ?? sessionUser.email}
+                  </p>
+                  {sessionUser.nick && (
+                    <p className="designattion mb-0">{sessionUser.email}</p>
+                  )}
+                </div>
+              </a>
             </div>
           </nav>
         </div>

@@ -7,6 +7,7 @@ CREATE TABLE users (
     avatar varchar(255) DEFAULT NULL,
     lat double DEFAULT NULL,
     lng double DEFAULT NULL,
+    activity_radius double DEFAULT NULL,
     profile_authorized boolean DEFAULT false,
     online BOOLEAN DEFAULT false,
     `admin` BOOLEAN DEFAULT false,

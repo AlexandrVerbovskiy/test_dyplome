@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import useMap from "./useMap";
+import config from "../config";
 
 const useAddressCoordsRelation = () => {
   const { fullAddressToString, getAddressByCoords, getCoordsByAddress } =
@@ -19,11 +20,11 @@ const useAddressCoordsRelation = () => {
   const changeAddress = async (address) => {
     setAddress({ value: address, error: null });
     const res = await getCoordsByAddress(address);
-    
+
     if (res) {
       setCoords({ value: res, error: null });
     } else {
-      setCoords({ value: { lat: 0, lng: 0 }, error: null });
+      setCoords({ value: config.MAP_DEFAULT.center, error: null });
     }
   };
 

@@ -44,7 +44,11 @@ const mainRouter = createBrowserRouter([
     element: <ProfileEdit />,
   },
   {
-    path: "/job-edit/:id?",
+    path: "/job-create",
+    element: <JobEdit />,
+  },
+  {
+    path: "/job-edit/:id",
     element: <JobEdit />,
   },
   {

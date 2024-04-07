@@ -36,7 +36,7 @@ const Map = ({
   return (
     <GoogleMap
       center={center}
-      zoom={4}
+      zoom={8}
       onLoad={onLoad}
       onUnmount={onUnmount}
       onClick={handleMapClick}

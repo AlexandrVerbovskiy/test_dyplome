@@ -23,8 +23,6 @@ const useChatInit = ({
 
     io.on("created-chat", (data) => onGetNewChat(data));
     io.on("created-group-chat", (data) => {
-      console.log(data);
-
       onGetNewChat({
         chat_id: data.chatId,
         type: data.message.type,

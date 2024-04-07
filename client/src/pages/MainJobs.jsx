@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MainContext } from "../contexts";
 import {
   Map,
@@ -10,9 +10,10 @@ import {
 } from "../components";
 import { JobCard, MainFilter, CardWrapper } from "../job_components";
 import { useGetJobs, usePopupController } from "../hooks";
+import config from "../config";
 
 const MainPage = () => {
-  const { setSuccess, setError } = useContext(MainContext);
+  const { setSuccess, setError, sessionUser } = useContext(MainContext);
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
     useGetJobs();
   const { jobProposalFormState } = usePopupController({
@@ -20,10 +21,41 @@ const MainPage = () => {
     onError: setError,
   });
 
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: sessionUser.lat,
+    lng: sessionUser.lng,
+  });
+
+  useEffect(() => {
+    if (currentLocation.lat !== null || currentLocation.lng !== null) return;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => setCurrentLocation(config.MAP_DEFAULT.center)
+      );
+    } else {
+      setCurrentLocation(config.MAP_DEFAULT.center);
+    }
+  }, []);
+
   return (
     <Layout pageClassName="default-view-page">
       <CardWrapper bodyClass="jobs-map">
         <Map>
+          <MapMarker
+            title="Your position"
+            lat={currentLocation.lat}
+            lng={currentLocation.lng}
+            main={true}
+            needCircle={true}
+            radius={sessionUser.activity_radius}
+            circleEditable={false}
+          />
+
           {jobsIds.map((id) => (
             <MapMarker key={id} {...jobs[id]} />
           ))}

@@ -4,7 +4,7 @@ import { MainContext } from "../contexts";
 import Layout from "./Layout";
 import SingleMarkMap from "./SingleMarkMap";
 import Input from "./Input";
-import { Textarea } from "react-bootstrap-icons";
+import Textarea from "./Textarea";
 
 const AdminJobEditForm = ({ baseData, onSave, hasId }) => {
   const { coords, address, title, price, description, validateJobEdit } =

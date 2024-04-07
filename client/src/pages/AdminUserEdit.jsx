@@ -38,6 +38,7 @@ const AdminUserEdit = () => {
       data: formData,
     });
 
+    main.setSuccess("User updated successfully");
     setBaseData(user);
   };
 

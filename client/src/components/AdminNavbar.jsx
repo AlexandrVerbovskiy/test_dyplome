@@ -29,7 +29,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                       />
                     </div>
                     <div>
-                      <h4 className="logo-text">Rocker</h4>
+                      <h4 className="logo-text">Graduate</h4>
                     </div>
                   </a>
                   <div
@@ -153,7 +153,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                       }}
                     >
                       <div className="parent-icon">
-                        <i className="lni lni-exit"></i>
+                        <i className="bx bx-log-out-circle"></i>
                       </div>
                       <form method="POST" action="/">
                         <div className="menu-title">Logout</div>

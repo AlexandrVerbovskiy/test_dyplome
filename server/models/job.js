@@ -5,7 +5,7 @@ class Job extends Model {
   __latitudeLongitudeToKilometers = 111.045;
   __degreesToRadians = 57.3;
 
-  strFilterFields = ["title", "address", "users.email"];
+  strFilterFields = ["title", "jobs.address", "users.email"];
 
   orderFields = ["id", "email", "address", "nick", "users.email"];
 
@@ -114,7 +114,7 @@ class Job extends Model {
   baseGetMany = (props) => {
     const { filter } = props;
     const filterRes = this.baseStrFilter(filter);
-    const baseQuery = `JOIN users ON jobs.authorId = users.id WHERE ${filterRes.conditions}`;
+    const baseQuery = `JOIN users ON jobs.author_id = users.id WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
     return { query: baseQuery, params: baseProps };
   };

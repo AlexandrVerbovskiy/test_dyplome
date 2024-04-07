@@ -11,6 +11,7 @@ function App() {
 
   const request = useAjaxRequest({ onError: setError });
   const { logout, sessionUser, setSessionUser } = useAuth(request);
+  console.log(sessionUser);
 
   let routeBody = <SignRouter />;
   let isAdmin = false;

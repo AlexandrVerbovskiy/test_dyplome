@@ -3,7 +3,7 @@ import useAddressCoordsRelation from "./useAddressCoordsRelation";
 import { getJobInfo } from "../requests";
 import { MainContext } from "../contexts";
 
-const useJobEdit = ({ id }) => {
+const useJobEdit = ({ id = null }) => {
   const [jobId, setJobId] = useState(id);
   const [title, setTitle] = useState({ value: "", error: null });
   const [price, setPrice] = useState({ value: 0, error: null });

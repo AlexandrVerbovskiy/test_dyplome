@@ -16,6 +16,7 @@ const Input = ({
 }) => {
   const id = useId();
   const className = "col-" + columnCounts;
+  
   return (
     <div className={className} style={style}>
       {label && (
@@ -35,7 +36,7 @@ const Input = ({
         />
         {children != null && children}
       </div>
-      {hideError && <ErrorSpan error={error} />}
+      {!hideError && <ErrorSpan error={error} />}
     </div>
   );
 };

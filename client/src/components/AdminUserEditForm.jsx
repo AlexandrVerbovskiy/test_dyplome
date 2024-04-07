@@ -20,8 +20,9 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     authorized,
     profileImg,
     validateProfileEdit,
+    activityRadius,
   } = useAdminUserEdit({ baseData });
-  
+
   const main = useContext(MainContext);
 
   const saveProfile = async () => {
@@ -48,6 +49,7 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     formData.append("address", address.value);
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
+    formData.append("activityRadius", activityRadius.value);
 
     if (admin.value) {
       formData.append("admin", admin.value);
@@ -113,6 +115,9 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
                   markerTitle="Your position"
                   changeCoords={coords.change}
                   coords={coords.value}
+                  needCircle={true}
+                  changeRadius={activityRadius.change}
+                  radius={activityRadius.value}
                 />
               </div>
             </div>

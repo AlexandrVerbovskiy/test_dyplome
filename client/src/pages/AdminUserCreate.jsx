@@ -27,6 +27,12 @@ const AdminUserEdit = () => {
       window.location.replace("/user-edit/" + user.id);
     }
 
+    if (hasId) {
+      main.setSuccess("User updated successfully")
+    }else{
+      main.setSuccess("User created successfully")
+    }
+
     setBaseData(user);
   };
 

@@ -13,14 +13,22 @@ import { MainContext } from "../contexts";
 const ProfileEdit = () => {
   const main = useContext(MainContext);
 
-  const { coords, address, email, nick, profileImg, validateProfileEdit } =
-    useProfileEdit();
+  const {
+    coords,
+    address,
+    email,
+    nick,
+    profileImg,
+    activityRadius,
+    validateProfileEdit,
+  } = useProfileEdit();
 
   const { password, repeatedPassword, oldPassword, validateChangePassword } =
     useChangePassword();
 
   const saveProfile = async () => {
     const resValidation = validateProfileEdit();
+
     if (!resValidation) return;
 
     let avatar = null;
@@ -43,14 +51,28 @@ const ProfileEdit = () => {
     formData.append("address", address.value);
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
+    formData.append("activityRadius", activityRadius.value);
 
     try {
-      await main.request({
+      const res = await main.request({
         url: updateProfile.url(),
         type: updateProfile.type,
         data: formData,
         convertRes: updateProfile.convertRes,
       });
+
+      main.setSessionUser((prev) => ({
+        ...prev,
+        address: res.address,
+        admin: res.admin,
+        avatar: res.avatar,
+        nick: res.nick,
+        email: res.email,
+        lat: res.lat,
+        lng: res.lng,
+      }));
+
+      main.setSuccess("Profile updated successfully");
     } catch (e) {}
   };
 
@@ -73,6 +95,9 @@ const ProfileEdit = () => {
                   markerTitle="Your position"
                   changeCoords={coords.change}
                   coords={coords.value}
+                  needCircle={true}
+                  changeRadius={activityRadius.change}
+                  radius={activityRadius.value}
                 />
               </div>
 
