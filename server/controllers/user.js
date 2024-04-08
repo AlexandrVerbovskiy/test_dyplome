@@ -106,6 +106,7 @@ class User extends Controller {
     admin = null,
     authorized = null,
     activityRadius,
+    balance = null,
   }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!nick || !email)
@@ -168,6 +169,7 @@ class User extends Controller {
         authorized,
         email,
         activityRadius,
+        balance,
       });
     } else {
       userId = await this.userModel.createFull({
@@ -227,7 +229,7 @@ class User extends Controller {
 
   adminUpdateUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { userId, email, nick, address, lat, lng } = req.body;
+      const { userId, email, nick, address, lat, lng, balance = 0 } = req.body;
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
 
@@ -240,6 +242,7 @@ class User extends Controller {
         address,
         lat,
         lng,
+        balance,
         admin: null,
         authorized: true,
         res,
@@ -254,7 +257,7 @@ class User extends Controller {
 
   adminCreateUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { email, nick, address, lat, lng } = req.body;
+      const { email, nick, address, lat, lng, balance = 0 } = req.body;
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
 
@@ -268,6 +271,7 @@ class User extends Controller {
         lng,
         admin: null,
         authorized: true,
+        balance,
         res,
       });
 

@@ -21,6 +21,7 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     profileImg,
     validateProfileEdit,
     activityRadius,
+    balance,
   } = useAdminUserEdit({ baseData });
 
   const main = useContext(MainContext);
@@ -50,6 +51,7 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
     formData.append("activityRadius", activityRadius.value);
+    formData.append("balance", balance.value);
 
     if (admin.value) {
       formData.append("admin", admin.value);
@@ -84,7 +86,7 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
             <hr />
 
             <div className="row">
-              <div className="profile-edit-inputs col">
+              <div className="profile-edit-inputs col col-md-6">
                 <Input
                   type="text"
                   label="Nickname"
@@ -94,10 +96,8 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
                   onChange={(e) => nick.change(e.target.value)}
                 />
               </div>
-            </div>
 
-            <div className="row mb-2">
-              <div className="profile-edit-inputs col">
+              <div className="profile-edit-inputs col col-md-6">
                 <Input
                   type="text"
                   label="Email"
@@ -107,10 +107,11 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
                   onChange={(e) => email.change(e.target.value)}
                 />
               </div>
-            </div>
 
-            <div className="row">
-              <div className="profile-edit-map col" style={{ height: "400px" }}>
+              <div
+                className="profile-edit-map col col-md-12 mt-2"
+                style={{ height: "400px" }}
+              >
                 <SingleMarkMap
                   markerTitle="Your position"
                   changeCoords={coords.change}
@@ -120,10 +121,8 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
                   radius={activityRadius.value}
                 />
               </div>
-            </div>
 
-            <div className="row">
-              <div className="profile-edit-inputs col">
+              <div className="profile-edit-inputs col col-md-12 mt-2">
                 <Input
                   type="text"
                   label="Address"
@@ -132,33 +131,33 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
                   error={address.error}
                   onChange={(e) => address.change(e.target.value)}
                 />
-              </div>
-            </div>
 
-            <div className="row mb-2">
-              <div className="profile-edit-inputs col">
+                <label htmlFor="#userAvatarInput" className="form-label">
+                  Avatar
+                </label>
                 <ImageInput
-                  id="avatarInput"
-                  btnText="Change avatar"
+                  id="userAvatarInput"
+                  btnText="Change photo"
                   url={profileImg.value}
                   onChange={(img) => profileImg.change(img)}
                   error={profileImg.error}
                 />
-              </div>
-            </div>
 
-            <div className="row">
-              <div className="col">
+                <Input
+                  type="text"
+                  label="Balance"
+                  placeholder="12.23"
+                  value={balance.value}
+                  error={balance.error}
+                  onChange={(e) => balance.change(e.target.value)}
+                />
+
                 <Activator
                   value={authorized.value}
                   onChange={authorized.change}
                   label="Profile Authorized"
                 />
-              </div>
-            </div>
 
-            <div className="row">
-              <div className="col">
                 <Activator
                   value={admin.value}
                   onChange={admin.change}
@@ -168,6 +167,7 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
             </div>
 
             <hr />
+
             <div className="d-flex align-items-center">
               <div className="dropdown ms-auto">
                 <button className="btn btn-primary" onClick={saveProfile}>

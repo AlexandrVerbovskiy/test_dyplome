@@ -1,6 +1,6 @@
 const Controller = require("./controller");
 
-class Transactions extends Controller {
+class Transaction extends Controller {
   getServerTransactions = (req, res) =>
     this.errorWrapper(res, async () => {
       const timeInfos = await this.listTimeOption(req);
@@ -67,4 +67,4 @@ class Transactions extends Controller {
     });
 }
 
-module.exports = Transactions;
+module.exports = Transaction;

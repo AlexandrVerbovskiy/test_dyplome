@@ -449,7 +449,7 @@ export const stripeCharge = {
     amount,
     token,
   }),
-  convertRes: (res) => res.data.charge,
+  convertRes: (res) => res.data.newBalance,
 };
 
 export const paypalApproveOrder = {
@@ -458,7 +458,7 @@ export const paypalApproveOrder = {
   convertData: (orderId) => ({
     orderID: orderId,
   }),
-  convertRes: (res) => res.data,
+  convertRes: (res) => res.data.newBalance,
 };
 
 export const paypalCreateOrder = {

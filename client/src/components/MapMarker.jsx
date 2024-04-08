@@ -54,9 +54,9 @@ const MyMarker = ({
           radius={radius}
           ref={circleRef}
           options={{
-            strokeColor: "#FF0000",
+            strokeColor: main ? "blue" : "red",
             strokeWeight: 2,
-            fillColor: "#FF0000",
+            fillColor: main ? "blue" : "red",
             draggable: false,
             editable: circleEditable,
           }}

@@ -80,6 +80,10 @@ const mainRouter = createBrowserRouter([
     element: <Balance />,
   },
   {
+    path: "/test",
+    element: <Stripe />,
+  },
+  {
     path: "/",
     element: <MainJobs />,
   },
@@ -180,7 +184,7 @@ const adminRouter = createBrowserRouter([
   },
   {
     path: "/test",
-    element: <Paypal />,
+    element: <Stripe />,
   },
 ]);
 

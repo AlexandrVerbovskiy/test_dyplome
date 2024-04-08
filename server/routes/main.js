@@ -3,35 +3,6 @@ const multer = require("multer");
 const fs = require("fs");
 const express = require("express");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
-const fetch = require("node-fetch");
-
-/*stripe.customers.createSource(
-  "cus_Prt5cml2ePXtNw",
-  {
-    source: 'tok_visa',
-  },
-  function(err, card) {
-    // Обробляємо результати
-    if (err) {
-      console.error(err);
-    } else {
-      console.log('Card added successfully:', card);
-    }
-  }
-);
-
-stripe.customers.listSources(
-  "cus_Prt5cml2ePXtNw",
-  { object: "card", limit: 10 },
-  function (err, cards) {
-    // Обробляємо результати
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(cards.data);
-    }
-  }
-);*/
 
 const {
   User,
@@ -40,7 +11,8 @@ const {
   JobProposal,
   Dispute,
   Comment,
-  Transactions,
+  Transaction,
+  Payment,
 } = require("../controllers");
 
 const {
@@ -82,7 +54,8 @@ function route(app, db, io) {
   const jobProposalController = new JobProposal(db);
   const disputeController = new Dispute(db);
   const commentController = new Comment(db);
-  const transactionsController = new Transactions(db);
+  const transactionsController = new Transaction(db);
+  const payment = new Payment(db);
 
   chatController.setIo(io);
 
@@ -281,106 +254,14 @@ function route(app, db, io) {
 
   app.post("/admin-dispute-list", isAdmin, disputeController.getAllDisputes);
 
-  app.post("/stripe-charge", async (req, res) => {
-    try {
-      const { amount, token } = req.body;
-      const charge = await stripe.charges.create({
-        amount: amount,
-        currency: "usd",
-        source: token.id,
-        description: "Example Charge",
-      });
+  app.post("/stripe-charge", isAuth, payment.stripeBalanceReplenishment);
 
-      res.json({ charge });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
-    }
-  });
+  app.get("/stripe-get-money-to-bank-id", isAdmin, payment.stripeGetMoneyToBankId);
 
-  app.get("/stripe-balance", async (req, res) => {
-    const result = await stripe.balance.retrieve();
-    const available = result["available"][0]["amount"];
-    const pending = result["pending"][0]["amount"];
-    res.json({ pending, available });
-  });
+  app.get("/paypal-get-money-to-user", isAdmin, payment.paypalGetMoneyToUser);
 
-  app.get("/stripe-transaction-test", async (req, res) => {
-    try {
-      const result = await stripe.transfers.create({
-        amount: 100,
-        currency: "usd",
-        destination: "acct_1K1DDB2YSfjEr5Wy",
-      });
+  app.post("/paypal-create-order", isAuth, payment.paypalCreateOrder);
 
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  app.post("/paypal-charge", async (req, res) => {
-    try {
-      const { orderID, paymentID } = req.body;
-
-      try {
-        const token = await getToken();
-
-        const orderInfoRes = await fetch(
-          `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const orderInfo = await orderInfoRes.json();
-        const productInfo = JSON.parse(orderInfo.purchase_units[0].description);
-        console.log(productInfo);
-      } catch (e) {
-        console.log(e.message);
-      }
-      res.status(200).send("OK");
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  app.get("/paypal-get-money-to-card", async (req, res) => {
-    //const result = await sendMoneyToEmail("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
-    //const result = await sendMoneyToEmail("PAYPAL_ID", "6WQ68DM2A9FGS", "1000.00", "USD");
-    const result = await sendMoneyToEmail("PAYPAL_ID", "QNFXGMKGF2TWY", "10.00", "USD");
-    
-    if(result.error){
-      res.status(402).send(result.error);
-    }else{
-      res.status(200).send("OK");
-    }
-  });
-
-  app.post("/paypal-create-order", async (req, res) => {
-    try {
-      console.log("test");
-      const { product } = req.body;
-      const { jsonResponse, httpStatusCode } = await createOrder(product);
-      res.status(httpStatusCode).json(jsonResponse);
-    } catch (error) {
-      console.error("Failed to create order:", error);
-      res.status(500).json({ error: "Failed to create order." });
-    }
-  });
-
-  app.post("/paypal-capture-order", async (req, res) => {
-    try {
-      console.log(req.body);
-      const { orderID } = req.body;
-      const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
-      res.status(httpStatusCode).json(jsonResponse);
-    } catch (error) {
-      console.error("Failed to create order:", error);
-      res.status(500).json({ error: "Failed to capture order." });
-    }
-  });
+  app.post("/paypal-capture-order", isAuth, payment.paypalBalanceReplenishment);
 }
 module.exports = route;

@@ -4,7 +4,8 @@ const Model = require("./model");
 const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
-  __visibleFields = "id, email, address, lat, lng, nick, avatar, admin, activity_radius";
+  __visibleFields =
+    "id, email, address, lat, lng, nick, avatar, admin, activity_radius, balance";
 
   strFilterFields = ["email", "address", "nick"];
 
@@ -111,6 +112,7 @@ class User extends Model {
         activityRadius,
         authorized,
         admin = null,
+        balance = null,
       } = profileData;
 
       const countUserRes = await this.dbQueryAsync(
@@ -138,6 +140,11 @@ class User extends Model {
         props.push(admin);
       }
 
+      if (balance !== null) {
+        query += ", balance = ?";
+        props.push(balance);
+      }
+
       query += " WHERE id = ?";
       props.push(userId);
 
@@ -156,6 +163,7 @@ class User extends Model {
         activityRadius,
         authorized,
         admin = null,
+        balance = 0,
       } = profileData;
 
       const user = {
@@ -169,6 +177,7 @@ class User extends Model {
         activity_radius: activityRadius,
         admin,
         password: null,
+        balance,
       };
 
       const countUserRes = await this.dbQueryAsync(
@@ -379,6 +388,51 @@ class User extends Model {
       );
 
       if (!findUserRes) return true;
+    });
+
+  canRejectBalance = async (userId, value) =>
+    await this.errorWrapper(async () => {
+      const userInfo = await this.dbQueryAsync(
+        `SELECT balance FROM users WHERE id = ?`,
+        [userId]
+      );
+
+      const userBalance = userInfo[0]["balance"];
+      const balanceDiff = Number(userBalance) - Number(value);
+
+      return balanceDiff > 0;
+    });
+
+  addBalance = async (userId, value) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        `UPDATE users SET balance = balance + ? WHERE id = ?`,
+        [value, userId]
+      );
+
+      const userInfo = await this.dbQueryAsync(
+        `SELECT balance FROM users WHERE id = ?`,
+        [userId]
+      );
+
+      const userBalance = userInfo[0]["balance"];
+      return Number(userBalance);
+    });
+
+  rejectBalance = async (userId, value) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        `UPDATE users SET balance = balance - ? WHERE id = ?`,
+        [value, userId]
+      );
+
+      const userInfo = await this.dbQueryAsync(
+        `SELECT balance FROM users WHERE id = ?`,
+        [userId]
+      );
+
+      const userBalance = userInfo[0]["balance"];
+      return Number(userBalance);
     });
 }
 

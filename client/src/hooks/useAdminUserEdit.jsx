@@ -4,6 +4,7 @@ import config from "../config";
 
 const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });
+  const [balance, setBalance] = useState({ value: 0, error: null });
   const [email, setEmail] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const [admin, setAdmin] = useState({ value: false, error: null });
@@ -19,6 +20,7 @@ const useAdminUserEdit = ({ baseData }) => {
     address.change(baseData.address ?? "");
     changeEmail(baseData.email ?? "");
     changeNick(baseData.nick ?? "");
+    changeBalance(baseData.balance ?? 0);
     setActivityRadius(baseData.activity_radius ?? config.RADIUS_DEFAULT);
 
     if (baseData.avatar) changeImg(baseData.avatar);
@@ -30,6 +32,10 @@ const useAdminUserEdit = ({ baseData }) => {
 
   const changeNick = (nick) => {
     setNick({ value: nick, error: null });
+  };
+
+  const changeBalance = (balance) => {
+    setBalance({ value: balance, error: null });
   };
 
   const changeAuthorized = () => {
@@ -65,6 +71,14 @@ const useAdminUserEdit = ({ baseData }) => {
       validated = false;
     }
 
+    if (balance.value && isNaN(Number(balance.value))) {
+      setBalance((prev) => ({
+        ...prev,
+        error: "Balance must be a number",
+      }));
+      validated = false;
+    }
+
     if (!profileImg.value) {
       setProfileImg((prev) => ({
         ...prev,
@@ -87,6 +101,7 @@ const useAdminUserEdit = ({ baseData }) => {
     admin: { ...admin, change: changeAdmin },
     authorized: { ...authorized, change: changeAuthorized },
     activityRadius: { value: activityRadius, change: setActivityRadius },
+    balance: { ...balance, change: changeBalance },
   };
 };
 

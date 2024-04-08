@@ -59,7 +59,7 @@ const createOrder = async (cart) => {
     body: JSON.stringify(payload),
   });
 
-  return handleResponse(response);
+  return await response.json();
 };
 
 const captureOrder = async (orderID) => {
@@ -77,7 +77,7 @@ const captureOrder = async (orderID) => {
   const jsonResponse = await response.json();
 
   if (jsonResponse.status.toLowerCase() === "completed") {
-    let newBalance = 0;
+    let money = 0;
     const purchaseUnits = jsonResponse.purchase_units;
 
     purchaseUnits.forEach((unit) => {
@@ -85,24 +85,23 @@ const captureOrder = async (orderID) => {
         const gotMoney = Number(
           capture.seller_receivable_breakdown.net_amount.value
         );
-        newBalance += gotMoney;
-        console.log(gotMoney);
+        money += gotMoney;
       });
     });
 
     return {
-      jsonResponse: { newBalance },
-      httpStatusCode: response.status,
+      body: { money },
+      error: false,
     };
   } else {
     return {
-      jsonResponse,
-      httpStatusCode: response.status,
+      body: jsonResponse,
+      error: true,
     };
   }
 };
 
-async function sendMoneyToEmail(type, getter, amount, currency) {
+async function sendMoneyToUser(type, getter, amount, currency) {
   const token = await getToken();
 
   const myHeaders = new Headers();
@@ -148,21 +147,8 @@ async function sendMoneyToEmail(type, getter, amount, currency) {
   }
 }
 
-async function handleResponse(response) {
-  try {
-    const jsonResponse = await response.json();
-    return {
-      jsonResponse,
-      httpStatusCode: response.status,
-    };
-  } catch (err) {
-    const errorMessage = await response.text();
-    throw new Error(errorMessage);
-  }
-}
-
 module.exports = {
   captureOrder,
   createOrder,
-  sendMoneyToEmail,
+  sendMoneyToUser,
 };
