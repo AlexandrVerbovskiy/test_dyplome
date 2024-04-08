@@ -3150,17 +3150,17 @@ body:has(.navbar) .alert {
   margin-top: -30px;
 }
 
-.profile-comments-type-select .card-title {
+.card-header-type-select .card-title {
   padding: 0;
   border-bottom: 1px solid #d2d4d5;
 }
 
-.profile-comments-type-select .card-title .row {
+.card-header-type-select .card-title .row {
   margin: 0;
   width: 100%;
 }
 
-.profile-comments-type-select .card-title .col {
+.card-header-type-select .card-title .col {
   margin-bottom: 0 !important;
   height: 40px;
   display: flex;
@@ -3168,13 +3168,16 @@ body:has(.navbar) .alert {
   justify-content: center;
 }
 
-.profile-comments-type-select h6 {
+.card-header-type-select h6 {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  background-color: transparent;
 }
 
-.profile-comments-type-select h6.active {
-  background-color: #f8f9fa;
+.card-header-type-select h6:hover,
+.card-header-type-select h6.active {
+  background-color: #f5f5f5;
+  color: #008cff;
 }
 
 .star-form-submit-row {
@@ -3762,4 +3765,25 @@ img {
 .container-xxl {
   padding-right: var(--bs-gutter-x, 1.5rem) !important;
   padding-left: var(--bs-gutter-x, 1.5rem) !important;
+}
+
+.stripe-payment-form {
+  width: 100%;
+}
+
+.stripe-payment-form button {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.stripe-payment-form {
+  width: 100%;
+}
+
+.paypal-payment-buttons {
+  width: 100%;
+}
+
+hr:has(+ .balance-payment-type-select) {
+  margin-bottom: 0!important;
 }

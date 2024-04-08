@@ -131,9 +131,9 @@ const Navbar = ({
                   <p className="user-name mb-0">
                     {sessionUser.nick ?? sessionUser.email}
                   </p>
-                  {sessionUser.nick && (
-                    <p className="designattion mb-0">{sessionUser.email}</p>
-                  )}
+                  <p className="designattion mb-0">
+                    ${sessionUser.balance}
+                  </p>
                 </div>
               </a>
               <ul className="dropdown-menu dropdown-menu-end">

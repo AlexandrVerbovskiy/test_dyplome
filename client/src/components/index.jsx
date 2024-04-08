@@ -39,3 +39,4 @@ export { default as Layout } from "./Layout";
 export { default as BaseAdminTableLayoutPage } from "./BaseAdminTableLayoutPage.jsx";
 
 export { default as StripePaymentForm } from "./StripePaymentForm";
+export { default as PaypalPaymentForm } from "./PaypalPaymentForm";

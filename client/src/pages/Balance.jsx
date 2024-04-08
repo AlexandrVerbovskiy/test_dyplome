@@ -1,91 +1,63 @@
 import React, { useState } from "react";
-import { Layout } from "../components";
+import { Layout, PaypalPaymentForm, StripePaymentForm } from "../components";
 import { Paypal, Stripe } from "react-bootstrap-icons";
 
+const paypalType = "paypal";
+const stripeType = "stripe";
+
 const PaymentForm = () => {
-  const [paymentPlatform, setPaymentPlatform] = useState("paypal");
+  const [paymentPlatform, setPaymentPlatform] = useState(paypalType);
 
-  const handlePlatformChange = (platform) => {
-    setPaymentPlatform(platform);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Додатковий код для обробки оплати
-  };
+  const handleSetPaypalType = () => setPaymentPlatform(paypalType);
+  const handleSetStripeType = () => setPaymentPlatform(stripeType);
 
   return (
     <Layout pageClassName="default-view-page table-page">
       <div className="page-content">
-        <div className="card">
+        <div className="card card-header-type-select">
           <div className="card-body">
-            <h5 className="card-title">Top up</h5>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3 d-flex justify-content-center">
-                {paymentPlatform === "paypal" ? (
-                  <img
-                    src="/assets/images/paypal.png"
-                    alt="PayPal"
-                    className="selected-platform-logo"
-                  />
-                ) : (
-                  <img
-                    src="/assets/images/stripe.png"
-                    alt="Stripe"
-                    className="selected-platform-logo"
-                  />
-                )}
-              </div>
-              <div className="mb-1">
-                <div className="platform-options">
-                  <div
-                    className={`platform-option ${
-                      paymentPlatform === "paypal" ? "active" : ""
+            <h6 className="text-uppercase">Replenishment</h6>
+            <hr />
+
+            <div className="card-title balance-payment-type-select mb-4">
+              <div className="row">
+                <h6
+                  onClick={handleSetPaypalType}
+                  className={`col ${
+                    paymentPlatform == paypalType ? "active" : ""
+                  }`}
+                >
+                  <Paypal
+                    size={14}
+                    className={`platform-icon ${
+                      paymentPlatform === paypalType ? "active" : ""
                     }`}
-                    onClick={() => handlePlatformChange("paypal")}
-                  >
-                    <div
-                      className="w-100 col-md-4 text-center platform-icon"
-                      onClick={() => handlePlatformChange("PayPal")}
-                    >
-                      <Paypal
-                        size={14}
-                        className={`platform-icon ${
-                          paymentPlatform === "PayPal" ? "active" : ""
-                        }`}
-                      />
-                      <span className="ms-1 platform-name">PayPal</span>
-                    </div>
-                  </div>
-                  <div
-                    className={`platform-option ${
-                      paymentPlatform === "stripe" ? "active" : ""
+                  />
+                  <span className="ms-1 platform-name">PayPal</span>
+                </h6>
+                <h6
+                  onClick={handleSetStripeType}
+                  className={`col ${
+                    paymentPlatform == stripeType ? "active" : ""
+                  }`}
+                >
+                  <Stripe
+                    size={14}
+                    className={`platform-icon ${
+                      paymentPlatform === stripeType ? "active" : ""
                     }`}
-                    onClick={() => handlePlatformChange("stripe")}
-                  >
-                    <div
-                      className="w-100 col-md-4 text-center platform-icon"
-                      onClick={() => handlePlatformChange("Stripe")}
-                    >
-                      <Stripe
-                        size={14}
-                        className={`platform-icon ${
-                          paymentPlatform === "Stripe" ? "active" : ""
-                        }`}
-                      />
-                      <span className="ms-1 platform-name">Stripe</span>
-                    </div>
-                  </div>
-                </div>
+                  />
+                  <span className="ms-1 platform-name">Stripe</span>
+                </h6>
               </div>
-              <div className="mb-3">
-                <label className="form-label">Top up Balance</label>
-                <input type="text" className="form-control" />
-              </div>
-              <button type="submit" className="btn btn-primary btn-lg w-100">
-                Top Up
-              </button>
-            </form>
+            </div>
+            <div className="d-flex justify-content-center">
+              {paymentPlatform === "paypal" ? (
+                <PaypalPaymentForm />
+              ) : (
+                <StripePaymentForm />
+              )}
+            </div>
           </div>
         </div>
       </div>

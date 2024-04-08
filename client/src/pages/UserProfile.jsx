@@ -46,7 +46,7 @@ const UserProfile = () => {
   return (
     <Layout pageClassName="default-view-page">
       <div className="page-content">
-        <div className="card profile-comments-type-select">
+        <div className="card profile-comments-type-select card-header-type-select">
           <div className="card-title">
             <div className="row">
               <h6

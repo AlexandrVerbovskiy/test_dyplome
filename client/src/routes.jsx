@@ -30,8 +30,6 @@ import {
   ResetPassword,
   ForgotPassword,
   AdminStatusesDisputes,
-  Stripe,
-  Paypal,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -78,10 +76,6 @@ const mainRouter = createBrowserRouter([
   {
     path: "/balance",
     element: <Balance />,
-  },
-  {
-    path: "/test",
-    element: <Stripe />,
   },
   {
     path: "/",
@@ -181,10 +175,6 @@ const adminRouter = createBrowserRouter([
   {
     path: "/transactions",
     element: <AdminPaymentTransactions />,
-  },
-  {
-    path: "/test",
-    element: <Stripe />,
   },
 ]);
 

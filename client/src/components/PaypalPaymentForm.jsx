@@ -4,7 +4,7 @@ import { MainContext } from "../contexts";
 import { useContext } from "react";
 import { paypalApproveOrder, paypalCreateOrder } from "../requests";
 
-function PaymentPage() {
+const PaypalPaymentForm = () => {
   const main = useContext(MainContext);
 
   const onApprove = async (data) => {
@@ -22,7 +22,8 @@ function PaymentPage() {
     console.log("Payment cancelled:", data);
   };
 
-  const createOrder = async (data) => await main.request({
+  const createOrder = async (data) =>
+    await main.request({
       url: paypalCreateOrder.url(),
       type: paypalCreateOrder.type,
       convertRes: paypalCreateOrder.convertRes,
@@ -41,12 +42,14 @@ function PaymentPage() {
       }}
     >
       <PayPalButtons
+        className="paypal-payment-buttons"
         createOrder={createOrder}
         onApprove={onApprove}
         onCancel={onCancel}
+        style={{ color: "blue", disableMaxWidth: true }}
       />
     </PayPalScriptProvider>
   );
-}
+};
 
-export default PaymentPage;
+export default PaypalPaymentForm;
