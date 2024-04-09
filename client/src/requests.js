@@ -464,6 +464,27 @@ export const paypalApproveOrder = {
 export const paypalCreateOrder = {
   url: () => `paypal-create-order`,
   type: "post",
-  convertData: (product) => ({ product }),
+  convertData: (amount) => ({ amount }),
   convertRes: (res) => res.data.id,
+};
+
+export const stripeGetMoneyToBankId = {
+  url: () => `stripe-get-money-to-bank-id`,
+  type: "post",
+  convertData: (bankId, amount) => ({
+    bankId,
+    amount,
+  }),
+  convertRes: (res) => res.data,
+};
+
+export const paypalGetMoneyToBankId = {
+  url: () => `paypal-get-money-to-user`,
+  type: "post",
+  convertData: (type, typeValue, amount) => ({
+    amount,
+    type,
+    typeValue,
+  }),
+  convertRes: (res) => res.data,
 };

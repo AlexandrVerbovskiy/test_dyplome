@@ -9,6 +9,7 @@ import { MainContext } from "../contexts";
 import { stripeCharge } from "../requests";
 import { loadStripe } from "@stripe/stripe-js";
 import config from "../config";
+import Input from "./Input";
 
 const stripePromise = loadStripe(config.STRIPE_PUBLIC_KEY);
 
@@ -16,13 +17,26 @@ const StripePaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
-  const { request } = useContext(MainContext);
+  const [amount, setAmount] = useState("");
+  const [amountError, setAmountError] = useState(null);
+
+  const { request, setSessionUser, setSuccess } = useContext(MainContext);
+
+  const amountChange = (value) => {
+    setAmount(value);
+    setAmountError(null);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     if (!stripe || !elements) return;
+
+    if (!amount || isNaN(Number(amount))) {
+      setAmountError("Invalid field");
+      return null;
+    }
 
     const cardElement = elements.getElement(CardElement);
 
@@ -34,12 +48,14 @@ const StripePaymentForm = () => {
       return;
     }
 
-    const res = await request({
+    const newBalance = await request({
       url: stripeCharge.url(),
       type: stripeCharge.type,
-      data: stripeCharge.convertData(120, token),
+      data: stripeCharge.convertData(amount, token),
     });
 
+    setSuccess("Operation successful");
+    setSessionUser((data) => ({ ...data, balance: newBalance }));
     setLoading(false);
   };
 
@@ -76,13 +92,26 @@ const StripePaymentForm = () => {
           </div>
 
           <div className="w-100 mt-4">
-            <button
-              className="w-100 btn btn-primary"
-              type="submit"
-              disabled={!stripe || loading}
-            >
-              {loading ? "Loading..." : "Pay"}
-            </button>
+            <div className="card mb-0">
+              <div className="card-body">
+                <Input
+                  type="text"
+                  label="Money to replenishment"
+                  placeholder="Enter money to replenishment"
+                  value={amount}
+                  onChange={(e) => amountChange(e.target.value)}
+                  error={amountError}
+                />
+
+                <button
+                  className="w-100 btn btn-primary"
+                  type="submit"
+                  disabled={!stripe || loading}
+                >
+                  {loading ? "Loading..." : "Pay"}
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>

@@ -23,8 +23,8 @@ class Payment extends Controller {
 
   paypalCreateOrder = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { product } = req.body;
-      const result = await createOrder(product);
+      const { amount } = req.body;
+      const result = await createOrder(amount);
       return this.sendResponseSuccess(
         res,
         "Order created successfully",
@@ -51,34 +51,44 @@ class Payment extends Controller {
 
   paypalGetMoneyToUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { type, getterValue } = req.body;
+      const { userId } = req.userData;
+      const { amount, type, typeValue } = req.body;
       //const result = await sendMoneyToUser("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
-      //const result = await sendMoneyToUser("PAYPAL_ID", "6WQ68DM2A9FGS", "1000.00", "USD");
+      //const result = await sendMoneyToUser("PHONE", "+380678888888", "10.00", "USD");
       //const result = await sendMoneyToUser("PAYPAL_ID", "QNFXGMKGF2TWY", "10.00", "USD");
 
-      const result = await sendMoneyToUser(type, getterValue, "10.00", "USD");
+      const result = await sendMoneyToUser(type, typeValue, amount, "USD");
 
       if (result.error) {
+        console.log(result);
         return this.sendResponseError(res, "Operation error", 402);
       } else {
+        const newBalance = await this.userModel.rejectBalance(userId, amount);
+
         return this.sendResponseSuccess(
           res,
-          "Operation completed successfully"
+          "Operation completed successfully",
+          { newBalance }
         );
       }
     });
 
   stripeGetMoneyToBankId = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { bankId = "acct_1K1DDB2YSfjEr5Wy" } = req.body;
+      const { userId } = req.userData;
+      const { amount, bankId } = req.body;
 
       await stripe.transfers.create({
-        amount: 100,
+        amount: amount,
         currency: "usd",
         destination: bankId,
       });
 
-      return this.sendResponseSuccess(res, "Operation completed successfully");
+      const newBalance = await this.userModel.rejectBalance(userId, amount);
+
+      return this.sendResponseSuccess(res, "Operation completed successfully", {
+        newBalance,
+      });
     });
 }
 

@@ -35,7 +35,7 @@ async function getToken() {
   return data.access_token;
 }
 
-const createOrder = async (cart) => {
+const createOrder = async (amount) => {
   const accessToken = await getToken();
   const url = `${base}/v2/checkout/orders`;
   const payload = {
@@ -44,7 +44,7 @@ const createOrder = async (cart) => {
       {
         amount: {
           currency_code: "USD",
-          value: "10000.00",
+          value: amount,
         },
       },
     ],
@@ -141,7 +141,7 @@ async function sendMoneyToUser(type, getter, amount, currency) {
   const data = await response.json();
 
   if (data.message) {
-    return { error: data.message };
+    return { error: data.message, details: data.details };
   } else {
     return { error: false };
   }

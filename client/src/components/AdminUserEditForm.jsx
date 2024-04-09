@@ -4,7 +4,6 @@ import {
   ImageInput,
   Input,
   Layout,
-  PasswordInput,
   SingleMarkMap,
 } from ".";
 import { useChangeUserPassword, useAdminUserEdit } from "../hooks";
@@ -68,14 +67,6 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
       main.setError(e.message);
     }
   };
-
-  const savePassword = () => {
-    const res = validateChangePassword();
-    if (res) alert("done 2");
-  };
-
-  const { password, repeatedPassword, validateChangePassword } =
-    useChangeUserPassword();
 
   return (
     <Layout pageClassName="profile-edit-page">
@@ -177,40 +168,6 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
             </div>
           </div>
         </div>
-
-        {hasId && (
-          <div className="card">
-            <div className="card-body">
-              <h6 className="text-uppercase">Secure</h6>
-              <hr />
-
-              <div className="row secure-edit-inputs">
-                <PasswordInput
-                  label="New password"
-                  value={password.value}
-                  error={password.error}
-                  onChange={(e) => password.change(e.target.value)}
-                />
-
-                <PasswordInput
-                  label="Repeated password"
-                  value={repeatedPassword.value}
-                  error={repeatedPassword.error}
-                  onChange={(e) => repeatedPassword.change(e.target.value)}
-                />
-              </div>
-
-              <hr />
-              <div className="d-flex align-items-center">
-                <div className="dropdown ms-auto">
-                  <button className="btn btn-primary" onClick={savePassword}>
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </Layout>
   );

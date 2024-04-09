@@ -256,9 +256,9 @@ function route(app, db, io) {
 
   app.post("/stripe-charge", isAuth, payment.stripeBalanceReplenishment);
 
-  app.get("/stripe-get-money-to-bank-id", isAdmin, payment.stripeGetMoneyToBankId);
+  app.post("/stripe-get-money-to-bank-id", isAuth, payment.stripeGetMoneyToBankId);
 
-  app.get("/paypal-get-money-to-user", isAdmin, payment.paypalGetMoneyToUser);
+  app.post("/paypal-get-money-to-user", isAuth, payment.paypalGetMoneyToUser);
 
   app.post("/paypal-create-order", isAuth, payment.paypalCreateOrder);
 

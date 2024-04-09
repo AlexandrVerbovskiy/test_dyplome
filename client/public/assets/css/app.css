@@ -3785,5 +3785,14 @@ img {
 }
 
 hr:has(+ .balance-payment-type-select) {
-  margin-bottom: 0!important;
+  margin-bottom: 0 !important;
+}
+
+.payment-form {
+  height: 250px;
+  /*align-items: center;*/
+}
+
+.get-money-form {
+  width: 100%;
 }

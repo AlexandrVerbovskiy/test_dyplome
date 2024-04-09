@@ -6,6 +6,7 @@ export { default as ViewInput } from "./ViewInput";
 export { default as PasswordInput } from "./PasswordInput";
 export { default as TextInput } from "./TextInput";
 export { default as Textarea } from "./Textarea";
+export { default as Select } from "./AdaptiveSelect";
 
 export { default as Navbar } from "./Navbar";
 export { default as AdminNavbar } from "./AdminNavbar";
@@ -40,3 +41,6 @@ export { default as BaseAdminTableLayoutPage } from "./BaseAdminTableLayoutPage.
 
 export { default as StripePaymentForm } from "./StripePaymentForm";
 export { default as PaypalPaymentForm } from "./PaypalPaymentForm";
+
+export { default as GetMoneyByPaypal } from "./GetMoneyByPaypal";
+export { default as GetMoneyByStripe } from "./GetMoneyByStripe";
