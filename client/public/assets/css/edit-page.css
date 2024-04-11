@@ -4,7 +4,9 @@
 }
 
 body:has(.admin-page-wrapper) .alert,
+.system-options-page.admin-page-wrapper,
 .default-table-page.admin-page-wrapper,
+.default-admin-page.admin-page-wrapper,
 .profile-edit-page.admin-page-wrapper,
 .default-edit-page.admin-page-wrapper {
   margin-left: 250px;
@@ -13,6 +15,8 @@ body:has(.admin-page-wrapper) .alert,
 @media screen and (max-width: 800px) {
   body:has(.admin-page-wrapper) .alert,
   .default-table-page.admin-page-wrapper,
+  .default-admin-page.admin-page-wrapper,
+  .system-options-page.admin-page-wrapper,
   .profile-edit-page.admin-page-wrapper,
   .default-edit-page.admin-page-wrapper {
     margin-left: 0;
@@ -22,6 +26,8 @@ body:has(.admin-page-wrapper) .alert,
 @media screen and (min-width: 800px)and (max-width: 1025px) {
   body:has(.admin-page-wrapper) .alert,
   .default-table-page.admin-page-wrapper,
+  .default-admin-page.admin-page-wrapper,
+  .system-options-page.admin-page-wrapper,
   .profile-edit-page.admin-page-wrapper,
   .default-edit-page.admin-page-wrapper {
     margin-left: 70px;

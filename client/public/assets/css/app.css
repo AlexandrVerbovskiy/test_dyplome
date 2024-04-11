@@ -3796,3 +3796,41 @@ hr:has(+ .balance-payment-type-select) {
 .get-money-form {
   width: 100%;
 }
+
+.balance-info-parent {
+  background-color: #008cff;
+  color: white;
+  font-size: 52px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  padding-left: 40px;
+}
+
+.balance-info-icon {
+  position: absolute;
+  right: 40px;
+  font-size: 128px;
+}
+
+.balance-tabs-body {
+  display: flex;
+  width: 100%;
+  grid-column-gap: 20px;
+}
+
+.balance-tabs  .nav-tabs {
+  display: flex !important;
+  flex-direction: column;
+  border-bottom: 0;
+}
+
+.balance-tabs .tab-content {
+  width: 100%;
+}
+
+.balance-tabs .nav-primary.nav-tabs .nav-link.active {
+  color: #008cff;
+  border: 1px solid #008cff;
+  border-radius: 0.25rem;
+}

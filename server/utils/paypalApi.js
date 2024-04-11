@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const fs = require("fs");
 
 const { PAYPAL_CLIENT_ID, PAYPAL_SECRET_KEY } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -82,15 +83,13 @@ const captureOrder = async (orderID) => {
 
     purchaseUnits.forEach((unit) => {
       unit.payments.captures.forEach((capture) => {
-        const gotMoney = Number(
-          capture.seller_receivable_breakdown.net_amount.value
-        );
+        const gotMoney = Number(capture.amount.value);
         money += gotMoney;
       });
     });
 
     return {
-      body: { money },
+      body: { money: money.toFixed(2) },
       error: false,
     };
   } else {

@@ -12,6 +12,8 @@ module.exports = {
   EmployeeComment: require("./employeeComment"),
   ReplyComment: require("./replyComment"),
   Notification: require("./notification"),
+  GetMoneyRequest: require("./getMoneyRequest"),
   ServerTransaction: require("./serverTransaction"),
   PaymentTransaction: require("./paymentTransaction"),
+  SystemOption: require("./systemOption"),
 };

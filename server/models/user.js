@@ -406,7 +406,7 @@ class User extends Model {
   addBalance = async (userId, value) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        `UPDATE users SET balance = balance + ? WHERE id = ?`,
+        `UPDATE users SET balance = ROUND(balance + ?, 2) WHERE id = ?`,
         [value, userId]
       );
 
@@ -422,7 +422,7 @@ class User extends Model {
   rejectBalance = async (userId, value) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        `UPDATE users SET balance = balance - ? WHERE id = ?`,
+        `UPDATE users SET balance = ROUND(balance - ?, 2) WHERE id = ?`,
         [value, userId]
       );
 

@@ -4,6 +4,7 @@ import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
 import { getAllDisputes } from "../requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
+import { fullTimeFormat } from "../utils";
 
 const headers = [
   {
@@ -86,7 +87,7 @@ const DisputeRow = ({
       <td>{price}</td>
       <td>{executionTime}</td>
       <td>{status}</td>
-      <td>{createdAt}</td>
+      <td>{fullTimeFormat(createdAt)}</td>
       <td>
         <div className="fast-actions">
           <div className="cursor-pointer action-icon primary-action">

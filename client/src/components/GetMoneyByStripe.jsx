@@ -3,8 +3,10 @@ import YesNoPopup from "./YesNoPopup";
 import { useContext, useState } from "react";
 import { MainContext } from "../contexts";
 import { stripeGetMoneyToBankId } from "../requests";
+import FeeCalculate from "./FeeCalculate";
+import { calculateFee } from "../utils";
 
-const GetMoneyByStripe = () => {
+const GetMoneyByStripe = ({ feeInfo, onComplete }) => {
   const [bankId, setBankId] = useState("");
   const [bankIdError, setBankIdError] = useState(null);
   const [amount, setAmount] = useState("");
@@ -39,9 +41,12 @@ const GetMoneyByStripe = () => {
 
       main.setSuccess(result.message);
       main.setSessionUser((data) => ({ ...data, balance: result.newBalance }));
-      setYesNoActive(true);
+      onComplete();
+      setAmount("");
+      setBankId("");
     } finally {
       setLoading(false);
+      setYesNoActive(false);
     }
   };
 
@@ -60,6 +65,13 @@ const GetMoneyByStripe = () => {
     if (amount && Number(amount) > main.sessionUser.balance) {
       valid = false;
       setAmountError("Can't be more than your balance");
+    }
+
+    if (amount && Number(amount) <= calculateFee(feeInfo, amount)) {
+      valid = false;
+      setAmountError(
+        "The fee cannot be greater than or equal to the amount you withdraw"
+      );
     }
 
     if (valid) {
@@ -88,6 +100,8 @@ const GetMoneyByStripe = () => {
             onChange={(e) => amountChange(e.target.value)}
             error={amountError}
           />
+
+          <FeeCalculate feeInfo={feeInfo} enterPrice={amount} />
 
           <div className="w-100 mb-4 mt-2">
             <button

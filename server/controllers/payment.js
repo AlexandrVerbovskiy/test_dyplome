@@ -1,4 +1,9 @@
-const { captureOrder, createOrder, sendMoneyToUser } = require("../utils");
+const {
+  captureOrder,
+  createOrder,
+  sendMoneyToUser,
+  calculateFee,
+} = require("../utils");
 const Controller = require("./controller");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
@@ -15,6 +20,11 @@ class Payment extends Controller {
       });
 
       const newBalance = await this.userModel.addBalance(userId, amount);
+
+      await this.paymentTransactionModel.createReplenishmentByStripe(
+        userId,
+        Number(body.money).toFixed(2)
+      );
 
       return this.sendResponseSuccess(res, "Balance updated successfully", {
         newBalance,
@@ -44,6 +54,11 @@ class Payment extends Controller {
 
       const newBalance = await this.userModel.addBalance(userId, body.money);
 
+      await this.paymentTransactionModel.createReplenishmentByPaypal(
+        userId,
+        Number(body.money).toFixed(2)
+      );
+
       return this.sendResponseSuccess(res, "Balance updated successfully", {
         newBalance,
       });
@@ -57,13 +72,58 @@ class Payment extends Controller {
       //const result = await sendMoneyToUser("PHONE", "+380678888888", "10.00", "USD");
       //const result = await sendMoneyToUser("PAYPAL_ID", "QNFXGMKGF2TWY", "10.00", "USD");
 
-      const result = await sendMoneyToUser(type, typeValue, amount, "USD");
+      const feeInfo = await this.systemOptionModel.getFeeInfo();
+      const fee = calculateFee(feeInfo, amount);
+      const moneyWithoutFee = Number(amount) - fee;
+
+      const result = await sendMoneyToUser(
+        type,
+        typeValue,
+        moneyWithoutFee.toFixed(2),
+        "USD"
+      );
 
       if (result.error) {
-        console.log(result);
-        return this.sendResponseError(res, "Operation error", 402);
+        if (
+          result.error.toLowerCase() ==
+          "Sender does not have sufficient funds. Please add funds and retry.".toLowerCase()
+        ) {
+          const newBalance = await this.userModel.rejectBalance(userId, amount);
+
+          await this.paymentTransactionModel.createWithdrawalByPaypal(
+            userId,
+            Number(amount).toFixed(2),
+            fee,
+            true
+          );
+
+          await this.getMoneyRequestModel.create(
+            userId,
+            moneyWithoutFee.toFixed(2),
+            "paypal"
+          );
+
+          return this.sendResponseSuccess(
+            res,
+            "Operation completed successfully",
+            { newBalance }
+          );
+        } else {
+          return this.sendResponseError(res, "Operation error", 402);
+        }
       } else {
         const newBalance = await this.userModel.rejectBalance(userId, amount);
+
+        await this.paymentTransactionModel.createWithdrawalByPaypal(
+          userId,
+          Number(amount).toFixed(2),
+          fee
+        );
+
+        await this.serverTransactionModel.createReplenishmentByPaypalFee(
+          userId,
+          moneyWithoutFee.toFixed(2)
+        );
 
         return this.sendResponseSuccess(
           res,
@@ -78,13 +138,28 @@ class Payment extends Controller {
       const { userId } = req.userData;
       const { amount, bankId } = req.body;
 
+      const feeInfo = await this.systemOptionModel.getFeeInfo();
+      const fee = calculateFee(feeInfo, amount);
+      const moneyWithoutFee = Number(amount) - fee;
+
       await stripe.transfers.create({
-        amount: amount,
+        amount: moneyWithoutFee.toFixed(2),
         currency: "usd",
         destination: bankId,
       });
 
       const newBalance = await this.userModel.rejectBalance(userId, amount);
+
+      await this.paymentTransactionModel.createWithdrawalByStripe(
+        userId,
+        Number(amount).toFixed(2),
+        fee
+      );
+
+      await this.serverTransactionModel.createReplenishmentByStripeFee(
+        userId,
+        moneyWithoutFee
+      );
 
       return this.sendResponseSuccess(res, "Operation completed successfully", {
         newBalance,

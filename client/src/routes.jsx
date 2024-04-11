@@ -17,7 +17,6 @@ import {
   UserProfile,
   SystemChat,
   AdminIndex,
-  PaymentTransactions,
   AdminPaymentTransactions,
   AdminServerTransactions,
   Balance,
@@ -30,6 +29,7 @@ import {
   ResetPassword,
   ForgotPassword,
   AdminStatusesDisputes,
+  SystemOptions,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -68,10 +68,6 @@ const mainRouter = createBrowserRouter([
   {
     path: "/profile/:userId",
     element: <UserProfile />,
-  },
-  {
-    path: "/transactions",
-    element: <PaymentTransactions />,
   },
   {
     path: "/balance",
@@ -171,6 +167,10 @@ const adminRouter = createBrowserRouter([
   {
     path: "/server-transactions",
     element: <AdminServerTransactions />,
+  },
+  {
+    path: "/system",
+    element: <SystemOptions />,
   },
   {
     path: "/transactions",

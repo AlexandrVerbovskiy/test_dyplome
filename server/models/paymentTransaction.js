@@ -7,7 +7,6 @@ class PaymentTransaction extends Model {
   orderFields = [
     "payment_transactions.id",
     "money",
-    "platform",
     "created_at",
     "users.email",
     "users.nick",
@@ -19,19 +18,17 @@ class PaymentTransaction extends Model {
     senderId,
     balanceChangeType,
     money,
-    platform,
     operationType,
     transactionData,
   }) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
         `INSERT INTO payment_transactions 
-        (balance_change_type, money, platform, operation_type, transaction_data, sender_id)
+        (balance_change_type, money, operation_type, transaction_data, user_id)
          VALUES (?, ?, ?, ?, ?)`,
         [
           balanceChangeType,
           money,
-          platform,
           operationType,
           JSON.stringify(transactionData),
           senderId,
@@ -39,20 +36,75 @@ class PaymentTransaction extends Model {
       );
     });
 
-  baseGetMany = (props) => {
+  createReplenishmentByPaypal = (senderId, money) =>
+    this.create({
+      senderId,
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "replenishment_by_paypal",
+      transactionData: {
+        description: `The balance was topped up by $${money} through PayPal`,
+      },
+    });
+
+  createReplenishmentByStripe = (senderId, money) =>
+    this.create({
+      senderId,
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "replenishment_by_stripe",
+      transactionData: {
+        description: `The balance was topped up by $${money} through Stripe`,
+      },
+    });
+
+  createWithdrawalByPaypal = (senderId, money, fee, waitingStatus = false) => {
+    const status = waitingStatus ? "in_process" : "success";
+
+    return this.create({
+      senderId,
+      balanceChangeType: "reduced",
+      money,
+      operationType: "withdrawal_by_paypal",
+      transactionData: {
+        description: `The balance was reduced by $${money} through PayPal. The withdrawal fee is $${fee}`,
+        status,
+      },
+    });
+  };
+
+  createWithdrawalByStripe = (senderId, money, fee) =>
+    this.create({
+      senderId,
+      balanceChangeType: "reduced",
+      money,
+      operationType: "withdrawal_by_stripe",
+      transactionData: {
+        description: `The balance was reduced by $${money} through Stripe. The withdrawal fee is $${fee}`,
+      },
+    });
+
+  baseGetMany = (props, needTimeCondition = true) => {
     const { filter } = props;
 
     const filterRes = this.baseStrFilter(filter);
     const baseQuery = `JOIN users ON users.id = payment_transactions.user_id WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
 
-    const resTimeQueryBuild = this.baseListTimeFilter(
-      props,
-      baseQuery,
-      baseProps
-    );
+    let query = baseQuery;
+    let params = baseProps;
 
-    let { query, params } = resTimeQueryBuild;
+    if (needTimeCondition) {
+      const resTimeQueryBuild = this.baseListTimeFilter(
+        props,
+        baseQuery,
+        baseProps
+      );
+
+      query = resTimeQueryBuild.query;
+      params = resTimeQueryBuild.params;
+    }
+
     return { query, params };
   };
 
@@ -70,7 +122,7 @@ class PaymentTransaction extends Model {
       query =
         "SELECT COUNT(*) as count FROM payment_transactions " +
         query +
-        " AND sender_id = ?";
+        " AND user_id = ?";
 
       params.push(props.senderId);
 
@@ -89,27 +141,28 @@ class PaymentTransaction extends Model {
         users.email as userEmail, users.nick as userNick, 
         users.id as userId, users.avatar as userAvatar,
         created_at as createdAt FROM payment_transactions
-        ${query} ORDER BY ? ? LIMIT ?, ?`;
+        ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
-      params.push(order, orderType, start, count);
+      params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
     });
 
   listForUser = async (props) =>
     await this.errorWrapper(async () => {
-      let { query, params } = this.baseGetMany(props);
+      let { query, params } = this.baseGetMany(props, false);
       const { orderType, order } = this.getOrderInfo(props);
       const { start, count, senderId } = props;
 
       query = `SELECT payment_transactions.id as id, money, operation_type as operationType, 
         balance_change_type as balanceChangeType, transaction_data as transactionData, 
         created_at as createdAt FROM payment_transactions
-        ${query} AND sender_id = ? ORDER BY ? ? LIMIT ?, ?`;
+        ${query} AND user_id = ? ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
-      params.push(senderId, order, orderType, start, count);
+      params.push(senderId, start, count);
 
-      return await this.dbQueryAsync(query, params);
+      const res = await this.dbQueryAsync(query, params);
+      return res;
     });
 }
 

@@ -5,7 +5,6 @@ class ServerTransaction extends Model {
   orderFields = [
     "server_transactions.id",
     "money",
-    "platform",
     "created_at",
     "operation_type",
     "balance_change_type",
@@ -14,23 +13,43 @@ class ServerTransaction extends Model {
   create = async ({
     balanceChangeType,
     money,
-    platform,
     operationType,
     transactionData,
   }) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
         `INSERT INTO server_transactions 
-        (balance_change_type, money, platform, operation_type, transaction_data)
+        (balance_change_type, money, operation_type, transaction_data)
          VALUES (?, ?, ?, ?, ?)`,
         [
           balanceChangeType,
           money,
-          platform,
           operationType,
           JSON.stringify(transactionData),
         ]
       );
+    });
+
+  createReplenishmentByPaypalFee = ({ senderId, money }) =>
+    this.create({
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "withdrawal_by_paypal",
+      transactionData: {
+        senderId,
+        platform: "paypal",
+      },
+    });
+
+  createReplenishmentByStripeFee = ({ senderId, money }) =>
+    this.create({
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "withdrawal_by_stripe",
+      transactionData: {
+        senderId,
+        platform: "stripe",
+      },
     });
 
   baseGetMany = (props) => {
@@ -55,9 +74,9 @@ class ServerTransaction extends Model {
       query = `SELECT server_transactions.id as id, money, operation_type as operationType, 
         balance_change_type as balanceChangeType, transaction_data as transactionData, 
         created_at as createdAt FROM server_transactions
-        ${query} ORDER BY ? ? LIMIT ?, ?`;
+        ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
-      params.push(order, orderType, start, count);
+      params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
     });

@@ -146,6 +146,20 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/system"
+                      className={`${
+                        window.location.pathname == "/system" ? "active" : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bx-server"></i>
+                      </div>
+                      <div className="menu-title">System Options</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/"
                       onClick={(e) => {
                         e.preventDefault();

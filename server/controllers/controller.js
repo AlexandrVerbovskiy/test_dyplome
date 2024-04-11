@@ -21,6 +21,8 @@ const {
   Notification: NotificationModel,
   ServerTransaction: ServerTransactionModel,
   PaymentTransaction: PaymentTransactionModel,
+  SystemOption: SystemOptionModel,
+  GetMoneyRequest: GetMoneyRequestModel,
 } = require("../models");
 const {
   getDateByCurrentAdd,
@@ -71,6 +73,8 @@ class Controller {
     this.notificationModel = new NotificationModel(db);
     this.serverTransactionModel = new ServerTransactionModel(db);
     this.paymentTransactionModel = new PaymentTransactionModel(db);
+    this.systemOptionModel = new SystemOptionModel(db);
+    this.getMoneyRequestModel = new GetMoneyRequestModel(db);
 
     this.__mailTransporter = nodemailer.createTransport({
       service: process.env.MAIL_SERVICE,

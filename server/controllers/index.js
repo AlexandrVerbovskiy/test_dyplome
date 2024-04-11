@@ -8,4 +8,5 @@ module.exports = {
   Comment: require("./comment"),
   Transaction: require("./transaction"),
   Payment: require("./payment"),
+  Main: require("./main"),
 };

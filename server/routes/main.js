@@ -13,6 +13,7 @@ const {
   Comment,
   Transaction,
   Payment,
+  Main,
 } = require("../controllers");
 
 const {
@@ -56,6 +57,7 @@ function route(app, db, io) {
   const commentController = new Comment(db);
   const transactionsController = new Transaction(db);
   const payment = new Payment(db);
+  const main = new Main(db);
 
   chatController.setIo(io);
 
@@ -256,12 +258,20 @@ function route(app, db, io) {
 
   app.post("/stripe-charge", isAuth, payment.stripeBalanceReplenishment);
 
-  app.post("/stripe-get-money-to-bank-id", isAuth, payment.stripeGetMoneyToBankId);
+  app.post(
+    "/stripe-get-money-to-bank-id",
+    isAuth,
+    payment.stripeGetMoneyToBankId
+  );
 
   app.post("/paypal-get-money-to-user", isAuth, payment.paypalGetMoneyToUser);
 
   app.post("/paypal-create-order", isAuth, payment.paypalCreateOrder);
 
   app.post("/paypal-capture-order", isAuth, payment.paypalBalanceReplenishment);
+
+  app.get("/fee-info", isAuth, main.getFeeInfo);
+
+  app.post("/update-fee-info", isAdmin, main.setFeeInfo);
 }
 module.exports = route;

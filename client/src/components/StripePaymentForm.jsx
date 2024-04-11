@@ -13,7 +13,7 @@ import Input from "./Input";
 
 const stripePromise = loadStripe(config.STRIPE_PUBLIC_KEY);
 
-const StripePaymentForm = () => {
+const StripePaymentForm = ({ onComplete }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,8 @@ const StripePaymentForm = () => {
     setSuccess("Operation successful");
     setSessionUser((data) => ({ ...data, balance: newBalance }));
     setLoading(false);
+    onComplete();
+    setAmount("");
   };
 
   useEffect(() => {
@@ -119,10 +121,10 @@ const StripePaymentForm = () => {
   );
 };
 
-const FormWrapper = () => {
+const FormWrapper = ({ onComplete }) => {
   return (
     <Elements stripe={stripePromise}>
-      <StripePaymentForm />
+      <StripePaymentForm onComplete={onComplete} />
     </Elements>
   );
 };

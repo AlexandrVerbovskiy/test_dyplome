@@ -488,3 +488,20 @@ export const paypalGetMoneyToBankId = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getFeeInfo = {
+  url: () => `fee-info`,
+  type: "get",
+  convertRes: (res) => res.data,
+};
+
+export const setFeeInfo = {
+  url: () => `update-fee-info`,
+  type: "post",
+  convertData: (type, fixedValue, percentValue) => ({
+    type,
+    fixedValue,
+    percentValue,
+  }),
+  convertRes: (res) => res.data,
+};

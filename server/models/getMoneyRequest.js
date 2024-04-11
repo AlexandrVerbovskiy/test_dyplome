@@ -66,9 +66,9 @@ class GetMoneyRequest extends Model {
         users.email as userEmail, users.nick as userNick, 
         users.id as userId, users.avatar as userAvatar,
         done_at as doneAt FROM get_money_requests ${query} 
-        ORDER BY ? ? LIMIT ?, ?`;
+        ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
-      params.push(order, orderType, start, limit);
+      params.push(start, limit);
 
       return await this.dbQueryAsync(query, params);
     });

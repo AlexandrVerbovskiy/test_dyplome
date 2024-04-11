@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
+  BaseAdminTable,
   GetMoneyByPaypal,
   GetMoneyByStripe,
   Layout,
@@ -7,9 +8,90 @@ import {
   StripePaymentForm,
 } from "../components";
 import { Paypal, Stripe } from "react-bootstrap-icons";
+import { MainContext } from "../contexts";
+import { getFeeInfo, getPaymentTransactions } from "../requests";
+import { usePagination } from "../hooks";
+import { fullTimeFormat } from "../utils";
 
 const paypalType = "paypal";
 const stripeType = "stripe";
+
+const headers = [
+  {
+    value: "id",
+    title: "Id",
+    width: "10%",
+    canChange: true,
+  },
+  {
+    value: "status",
+    title: "Type",
+    width: "15%",
+  },
+  {
+    value: "money",
+    title: "Money",
+    width: "15%",
+    canChange: true,
+  },
+  {
+    value: "description",
+    title: "Description",
+    width: "50%",
+  },
+  {
+    value: "created_at",
+    title: "Date",
+    width: "10%",
+    canChange: true,
+  },
+];
+
+const TransactionRow = ({
+  id,
+  money,
+  operationType,
+  balanceChangeType,
+  createdAt,
+  transactionData,
+}) => {
+  transactionData = JSON.parse(transactionData);
+  let description = transactionData.description;
+  let status = "success";
+
+  if (operationType == "withdrawal_by_paypal") {
+    status = transactionData.status;
+  }
+
+  return (
+    <tr>
+      <td className="fw-bolder">#{id}</td>
+      <td>
+        {status == "success" && (
+          <span className="badge bg-gradient-quepal text-white shadow-sm w-100">
+            Success
+          </span>
+        )}
+
+        {status == "in_process" && (
+          <span className="badge bg-gradient-blooker text-white shadow-sm w-100">
+            In process
+          </span>
+        )}
+      </td>
+      <td>
+        {balanceChangeType == "topped_up" && (
+          <span className="font-weight-bold text-success">+${money}</span>
+        )}
+        {balanceChangeType == "reduced" && (
+          <span className="font-weight-bold text-danger">-${money}</span>
+        )}
+      </td>
+      <td>{description}</td>
+      <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
+    </tr>
+  );
+};
 
 const PaypalStripeSwap = ({ platform, handleSetPlatform }) => {
   const handleSetPaypalType = () => handleSetPlatform(paypalType);
@@ -47,52 +129,173 @@ const PaypalStripeSwap = ({ platform, handleSetPlatform }) => {
   );
 };
 
+const TabHeader = ({ id, title, selected = false }) => (
+  <li class="nav-item" role="presentation">
+    <a
+      class={`nav-link ${selected ? "active" : ""}`}
+      data-bs-toggle="tab"
+      href={"#" + id}
+      role="tab"
+      aria-selected={selected ? "true" : null}
+    >
+      <div class="d-flex align-items-center">
+        <div class="tab-title">{title}</div>
+      </div>
+    </a>
+  </li>
+);
+
 const PaymentForm = () => {
   const [paymentPlatform, setPaymentPlatform] = useState(paypalType);
   const [withdrawalPlatform, setWithdrawalPlatform] = useState(paypalType);
+  const [feeInfo, setFeeInfo] = useState({});
+  const main = useContext(MainContext);
+
+  const {
+    moveToPage,
+    changeFilter,
+    filter,
+    order,
+    orderType,
+    handleChangeOrder,
+    canMoveNextPage,
+    canMovePrevPage,
+    items: transactions,
+    currentTo,
+    currentFrom,
+    page,
+    countPages,
+    countItems,
+    rebuild,
+    setItemFields,
+    options,
+  } = usePagination({
+    getItemsFunc: (props) =>
+      main.request({
+        url: getPaymentTransactions.url(),
+        data: getPaymentTransactions.convertData(props),
+        type: getPaymentTransactions.type,
+        convertRes: getPaymentTransactions.convertRes,
+      }),
+  });
+
+  const init = async () => {
+    const res = await main.request({
+      url: getFeeInfo.url(),
+      type: getFeeInfo.type,
+      convertRes: getFeeInfo.convertRes,
+    });
+
+    setFeeInfo(res);
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <Layout pageClassName="default-view-page table-page">
       <div className="page-content">
-        <div className="card card-header-type-select">
-          <div className="card-body">
-            <h6 className="text-uppercase">Replenishment</h6>
+        <div className="card">
+          <div className="card-body balance-tabs">
+            <div class="d-flex justify-content-between">
+              <h6 class="text-uppercase">Balance</h6>
+            </div>
+
             <hr />
 
-            <PaypalStripeSwap
-              platform={paymentPlatform}
-              handleSetPlatform={setPaymentPlatform}
-            />
+            <div className="balance-tabs-body">
+              <ul class="nav nav-tabs nav-primary" role="tablist">
+                <TabHeader
+                  title="Current Balance"
+                  id="balance"
+                  selected={true}
+                />
+                <TabHeader title="Replenishment" id="replenishment" />
+                <TabHeader title="Withdrawal" id="withdrawal" />
+              </ul>
+              <div class="tab-content">
+                <div
+                  class="tab-pane fade active show"
+                  id="balance"
+                  role="tabpanel"
+                >
+                  <div className="d-flex justify-content-center payment-form">
+                    <div className="row w-100 mb-3">
+                      <div className="col-12 balance-info-parent">
+                        <div className="balance-info">
+                          ${main.sessionUser.balance}
+                        </div>
+                        <div className="balance-info-icon bx bx-money"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="d-flex justify-content-center payment-form">
-              {paymentPlatform === "paypal" ? (
-                <PaypalPaymentForm />
-              ) : (
-                <StripePaymentForm />
-              )}
+                <div
+                  class="tab-pane fade card-header-type-select"
+                  id="replenishment"
+                  role="tabpanel"
+                >
+                  <PaypalStripeSwap
+                    platform={paymentPlatform}
+                    handleSetPlatform={setPaymentPlatform}
+                  />
+
+                  <div className="d-flex justify-content-center payment-form">
+                    {paymentPlatform === "paypal" ? (
+                      <PaypalPaymentForm onComplete={() => rebuild()} />
+                    ) : (
+                      <StripePaymentForm onComplete={() => rebuild()} />
+                    )}
+                  </div>
+                </div>
+
+                <div
+                  class="tab-pane fade card-header-type-select"
+                  id="withdrawal"
+                  role="tabpanel"
+                >
+                  <PaypalStripeSwap
+                    platform={withdrawalPlatform}
+                    handleSetPlatform={setWithdrawalPlatform}
+                  />
+
+                  <div className="d-flex justify-content-center withdrawal-form">
+                    {withdrawalPlatform === "paypal" ? (
+                      <GetMoneyByPaypal
+                        feeInfo={feeInfo}
+                        onComplete={() => rebuild()}
+                      />
+                    ) : (
+                      <GetMoneyByStripe
+                        feeInfo={feeInfo}
+                        onComplete={() => rebuild()}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="card card-header-type-select">
-          <div className="card-body">
-            <h6 className="text-uppercase">Withdrawal</h6>
-            <hr />
-
-            <PaypalStripeSwap
-              platform={withdrawalPlatform}
-              handleSetPlatform={setWithdrawalPlatform}
-            />
-
-            <div className="d-flex justify-content-center withdrawal-form">
-              {withdrawalPlatform === "paypal" ? (
-                <GetMoneyByPaypal />
-              ) : (
-                <GetMoneyByStripe />
-              )}
-            </div>
-          </div>
-        </div>
+        <BaseAdminTable
+          title="Transactions"
+          changeOrder={handleChangeOrder}
+          order={order}
+          orderType={orderType}
+          items={transactions}
+          headers={headers}
+          RowElem={TransactionRow}
+          paginationInfo={{
+            page,
+            countPages,
+            moveToPage,
+            canMoveNextPage,
+            canMovePrevPage,
+          }}
+        />
       </div>
     </Layout>
   );

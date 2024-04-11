@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import { paypalApproveOrder, paypalCreateOrder } from "../requests";
 import Input from "./Input";
 
-const PaypalPaymentForm = () => {
+const PaypalPaymentForm = ({ onComplete }) => {
   const [amount, setAmount] = useState("");
   const [amountError, setAmountError] = useState(null);
 
@@ -26,15 +26,11 @@ const PaypalPaymentForm = () => {
 
     main.setSuccess("Operation successful");
     main.setSessionUser((data) => ({ ...data, balance: newBalance }));
-  };
-
-  const onCancel = (data, actions) => {
-    console.log("Payment cancelled:", data);
+    onComplete();
+    setAmount("");
   };
 
   const createOrder = async (data) => {
-    console.log(amount);
-
     if (!amount || isNaN(Number(amount))) {
       setAmountError("Invalid field");
       return null;
@@ -72,7 +68,6 @@ const PaypalPaymentForm = () => {
             createOrder={(data) => createOrder(data)}
             forceReRender={[amount]}
             onApprove={onApprove}
-            onCancel={onCancel}
             style={{ color: "blue", disableMaxWidth: true }}
           />
         </PayPalScriptProvider>

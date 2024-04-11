@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useContext } from "react";
 import { MainContext } from "../contexts";
 import { paypalGetMoneyToBankId } from "../requests";
+import FeeCalculate from "./FeeCalculate";
+import { calculateFee } from "../utils";
 
 const paymentOptions = [
   { value: "EMAIL", label: "Your Email" },
@@ -14,7 +16,7 @@ const paymentOptions = [
 
 const basePayment = paymentOptions[0]["value"];
 
-const GetMoneyByPaypal = () => {
+const GetMoneyByPaypal = ({ feeInfo, onComplete }) => {
   const [type, setType] = useState(basePayment);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
@@ -74,9 +76,15 @@ const GetMoneyByPaypal = () => {
 
       main.setSuccess(result.message);
       main.setSessionUser((data) => ({ ...data, balance: result.newBalance }));
-      setYesNoActive(true);
+      onComplete();
+      setAmount("");
+      setType(basePayment);
+      setEmail("");
+      setPhone("");
+      setPaypalId("");
     } finally {
       setLoading(false);
+      setYesNoActive(false);
     }
   };
 
@@ -105,6 +113,13 @@ const GetMoneyByPaypal = () => {
     if (amount && Number(amount) > main.sessionUser.balance) {
       valid = false;
       setAmountError("Can't be more than your balance");
+    }
+
+    if (amount && Number(amount) <= calculateFee(feeInfo, amount)) {
+      valid = false;
+      setAmountError(
+        "The fee cannot be greater than or equal to the amount you withdraw"
+      );
     }
 
     if (valid) {
@@ -154,7 +169,7 @@ const GetMoneyByPaypal = () => {
 
           <Select
             value={type}
-            onChange={setType}
+            onChange={(event) => setType(event.value)}
             options={paymentOptions}
             label="How do you want to withdraw funds?"
             className="w-100"
@@ -169,6 +184,8 @@ const GetMoneyByPaypal = () => {
             onChange={(e) => amountChange(e.target.value)}
             error={amountError}
           />
+
+          <FeeCalculate feeInfo={feeInfo} enterPrice={amount} />
 
           <div className="w-100 mb-4 mt-2">
             <button
