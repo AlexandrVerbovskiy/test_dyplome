@@ -13,7 +13,8 @@ class Comment extends Controller {
         const employeeId = req.body.entityId;
         const rating = req.body.rating;
 
-        if (!rating) return this.sendResponseError(res, "No comment rating", 400);
+        if (!rating)
+          return this.sendResponseError(res, "No comment rating", 400);
         if (!employeeId)
           return this.sendResponseError(res, "No comment employee", 400);
 
@@ -27,8 +28,10 @@ class Comment extends Controller {
         const workerId = req.body.entityId;
         const rating = req.body.rating;
 
-        if (!rating) return this.sendResponseError(res, "No comment rating", 400);
-        if (!workerId) return this.sendResponseError(res, "No comment worker", 400);
+        if (!rating)
+          return this.sendResponseError(res, "No comment rating", 400);
+        if (!workerId)
+          return this.sendResponseError(res, "No comment worker", 400);
 
         comment = await this.workerCommentModel.create({
           senderId: userId,
@@ -59,7 +62,7 @@ class Comment extends Controller {
         });
       }
 
-      return this.sendResponseSuccess(res,"Comment sended success", comment);
+      return this.sendResponseSuccess(res, "Comment sended success", comment);
     });
 
   getById = async (req, res) =>
@@ -78,7 +81,7 @@ class Comment extends Controller {
       }
 
       const comment = await getById(commentId);
-      return this.sendResponseSuccess(res,"Comment got success", {
+      return this.sendResponseSuccess(res, "Comment got success", {
         comment,
       });
     });
@@ -100,7 +103,7 @@ class Comment extends Controller {
       }
 
       const comments = await getComments(lastId, limit);
-      return this.sendResponseSuccess(res,"Comment got success", {
+      return this.sendResponseSuccess(res, "Comment got success", {
         comments,
       });
     });
@@ -129,15 +132,15 @@ class Comment extends Controller {
 
       const comments = await getComments(parentId, lastId, limit);
 
-      const res = {
+      const result = {
         comments,
       };
 
       if (needCount) {
-        res["totalCount"] = await getCountComments();
+        result["totalCount"] = await getCountComments();
       }
 
-      return this.sendResponseSuccess(res,"Comments got success", res);
+      return this.sendResponseSuccess(res, "Comments got success", result);
     });
 }
 

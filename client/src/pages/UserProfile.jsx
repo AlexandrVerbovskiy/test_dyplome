@@ -46,26 +46,14 @@ const UserProfile = () => {
   return (
     <Layout pageClassName="default-view-page">
       <div className="page-content">
-        <div className="card profile-comments-type-select card-header-type-select">
-          <div className="card-title">
-            <div className="row">
-              <h6
-                onClick={handleSetSellerType}
-                className={`col ${type == sellerType ? "active" : ""}`}
-              >
-                Seller Comments
-              </h6>
-              <h6
-                onClick={handleSetWorkerType}
-                className={`col ${type == workerType ? "active" : ""}`}
-              >
-                Worker Comments
-              </h6>
-            </div>
-          </div>
+        <UserProfileStatisticInfo
+          userInfo={userInfo}
+          handleSetSellerType={handleSetSellerType}
+          handleSetWorkerType={handleSetWorkerType}
+          type={type}
+        />
 
-          <UserProfileStatisticInfo userInfo={userInfo} />
-
+        <div className="card">
           <CommentCard
             comments={comments}
             totalCount={totalCount}

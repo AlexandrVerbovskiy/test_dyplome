@@ -130,6 +130,22 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/get-money-requests"
+                      className={`${
+                        window.location.pathname == "/get-money-requests"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="lni lni-money-protection"></i>
+                      </div>
+                      <div className="menu-title">Get Money Requests</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/server-transactions"
                       className={`${
                         window.location.pathname == "/server-transactions"

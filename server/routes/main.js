@@ -14,6 +14,7 @@ const {
   Transaction,
   Payment,
   Main,
+  GetMoneyRequest
 } = require("../controllers");
 
 const {
@@ -56,8 +57,9 @@ function route(app, db, io) {
   const disputeController = new Dispute(db);
   const commentController = new Comment(db);
   const transactionsController = new Transaction(db);
-  const payment = new Payment(db);
-  const main = new Main(db);
+  const paymentController = new Payment(db);
+  const mainController = new Main(db);
+  const getMoneyRequestController = new GetMoneyRequest(db);
 
   chatController.setIo(io);
 
@@ -256,22 +258,30 @@ function route(app, db, io) {
 
   app.post("/admin-dispute-list", isAdmin, disputeController.getAllDisputes);
 
-  app.post("/stripe-charge", isAuth, payment.stripeBalanceReplenishment);
+  app.post("/stripe-charge", isAuth, paymentController.stripeBalanceReplenishment);
 
   app.post(
     "/stripe-get-money-to-bank-id",
     isAuth,
-    payment.stripeGetMoneyToBankId
+    paymentController.stripeGetMoneyToBankId
   );
 
-  app.post("/paypal-get-money-to-user", isAuth, payment.paypalGetMoneyToUser);
+  app.post("/paypal-get-money-to-user", isAuth, paymentController.paypalGetMoneyToUser);
 
-  app.post("/paypal-create-order", isAuth, payment.paypalCreateOrder);
+  app.post("/paypal-create-order", isAuth, paymentController.paypalCreateOrder);
 
-  app.post("/paypal-capture-order", isAuth, payment.paypalBalanceReplenishment);
+  app.post("/paypal-capture-order", isAuth, paymentController.paypalBalanceReplenishment);
 
-  app.get("/fee-info", isAuth, main.getFeeInfo);
+  app.get("/fee-info", isAuth, mainController.getFeeInfo);
 
-  app.post("/update-fee-info", isAdmin, main.setFeeInfo);
+  app.post("/update-fee-info", isAdmin, mainController.setFeeInfo);
+
+  app.post("/update-fee-info", isAdmin, mainController.setFeeInfo);
+
+  app.get("/get-money-request/:id", isAdmin, getMoneyRequestController.getOneById);
+
+  app.post("/get-money-request-accept", isAdmin, getMoneyRequestController.accept);
+
+  app.post("/get-money-request-list", isAdmin, getMoneyRequestController.getRequestList);
 }
 module.exports = route;

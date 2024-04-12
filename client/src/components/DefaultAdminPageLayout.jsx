@@ -66,7 +66,7 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
         resetCountNewNotifications={resetCountNewNotifications}
         setActive={setActive}
       />
-      <div className={"admin-page-wrapper page-wrapper " + pageClassName}>
+      <div className={"default-admin-page admin-page-wrapper page-wrapper " + pageClassName}>
         {children}
 
         <NewNotificationList

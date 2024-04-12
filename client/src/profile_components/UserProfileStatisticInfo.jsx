@@ -1,20 +1,25 @@
 import React from "react";
 import { generateFullUserImgPath } from "../utils";
+import config from "../config";
 
 const svgSize = 16;
+const sellerType = config.COMMENT_TYPES.employee;
+const workerType = config.COMMENT_TYPES.worker;
 
-const UserProfileStatisticInfo = ({ userInfo }) => {
+const UserProfileStatisticInfo = ({
+  userInfo,
+  handleSetSellerType,
+  handleSetWorkerType,
+  type,
+}) => {
   return (
     <div className="card">
       <div className="card-body">
-        <h6 className="text-uppercase">
-          User Statistic: {userInfo["email"]}{" "}
-          {userInfo["nick"] && `(${userInfo["email"]})`}
-        </h6>
+        <h6 className="text-uppercase">User Statistic</h6>
         <hr />
 
-        <div className="row mb-5">
-          <div className="col-md-6 d-flex justify-content-center mt-4">
+        <div className="row mb-4">
+          <div className="col-md-6 d-flex justify-content-center">
             <img
               src={generateFullUserImgPath(userInfo["avatar"])}
               alt={userInfo["email"]}
@@ -24,7 +29,7 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
             />
           </div>
 
-          <div className="col-md-6 mt-4">
+          <div className="col-md-6">
             <div className="row mb-2">
               <div>
                 <label className="form-label form-label-view">Email</label>
@@ -41,7 +46,36 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
           </div>
         </div>
 
-        <hr />
+        <div className="row card-header-type-select">
+          <div className="col" style={{ paddingRight: "0" }}>
+            <h6
+              onClick={handleSetSellerType}
+              className={`${type == sellerType ? "active" : ""}`}
+              style={{
+                padding: "1rem",
+                marginBottom: "0",
+                textAlign: "center",
+              }}
+            >
+              Seller Comments
+            </h6>
+          </div>
+          <div className="col" style={{ paddingLeft: "0" }}>
+            <h6
+              onClick={handleSetWorkerType}
+              className={`${type == workerType ? "active" : ""}`}
+              style={{
+                padding: "1rem",
+                marginBottom: "0",
+                textAlign: "center",
+              }}
+            >
+              Worker Comments
+            </h6>
+          </div>
+        </div>
+
+        <hr style={{ marginTop: "0" }} />
 
         <div className="row">
           <div className="col statistic-info">

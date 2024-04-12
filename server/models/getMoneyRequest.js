@@ -12,29 +12,48 @@ class GetMoneyRequest extends Model {
     "users.email",
     "users.nick",
     "done_at",
+    "status",
   ];
 
-  create = async (senderId, money, platform) =>
+  getById = async (id) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "INSERT INTO get_money_requests (sender_id, money, platform) VALUES (?, ?, ?)",
-        [senderId, money, platform]
+        `SELECT money, platform, created_at, users.email as user_email, users.nick as user_nick,` +
+          `users.id as user_id, done_at, status, get_money_requests.id as id FROM get_money_requests` +
+          `JOIN users ON users.id = get_money_requests.sender_id WHERE id = ?`,
+        [id]
+      );
+    });
+
+  create = async (transactionId, senderId, money, platform, body) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "INSERT INTO get_money_requests (user_transaction_id, sender_id, money, platform, body) VALUES (?, ?, ?, ?, ?)",
+        [transactionId, senderId, money, platform, JSON.stringify(body)]
       );
     });
 
   accept = async (requestId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE get_money_requests SET done_at = CURRENT_TIMESTAMP WHERE id = ?",
+        "UPDATE get_money_requests SET done_at = CURRENT_TIMESTAMP, status = 'success' WHERE id = ?",
         [requestId]
       );
     });
 
-  baseGetMany = async (props) => {
+  error = async (requestId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE get_money_requests SET status = 'error' WHERE id = ?",
+        [requestId]
+      );
+    });
+
+  baseGetMany = (props) => {
     const { filter } = props;
 
     const filterRes = this.baseStrFilter(filter);
-    const baseQuery = `JOIN user ON user.id = get_money_requests.sender_id WHERE ${filterRes.conditions}`;
+    const baseQuery = `JOIN users ON users.id = get_money_requests.sender_id WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
 
     const resTimeQueryBuild = this.baseListTimeFilter(
@@ -59,16 +78,18 @@ class GetMoneyRequest extends Model {
     await this.errorWrapper(async () => {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
-      const { start, limit } = props;
+      const { start, count } = props;
 
-      query = `SELECT get_money_requests.id as id, money, 
-        platform, created_at as createdAt, 
-        users.email as userEmail, users.nick as userNick, 
-        users.id as userId, users.avatar as userAvatar,
-        done_at as doneAt FROM get_money_requests ${query} 
-        ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      query =
+        `SELECT get_money_requests.id as id, money,` +
+        `platform, created_at as createdAt,` +
+        `get_money_requests.status as status,` +
+        `users.email as userEmail, users.nick as userNick,` +
+        `users.id as userId, users.avatar as userAvatar,` +
+        `done_at as doneAt FROM get_money_requests ${query}` +
+        `ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
-      params.push(start, limit);
+      params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
     });

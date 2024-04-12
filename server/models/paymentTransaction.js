@@ -22,7 +22,7 @@ class PaymentTransaction extends Model {
     transactionData,
   }) =>
     await this.errorWrapper(async () => {
-      await this.dbQueryAsync(
+      const insertRes = await this.dbQueryAsync(
         `INSERT INTO payment_transactions 
         (balance_change_type, money, operation_type, transaction_data, user_id)
          VALUES (?, ?, ?, ?, ?)`,
@@ -34,6 +34,8 @@ class PaymentTransaction extends Model {
           senderId,
         ]
       );
+
+      return insertRes.insertId;
     });
 
   createReplenishmentByPaypal = (senderId, money) =>
@@ -71,6 +73,13 @@ class PaymentTransaction extends Model {
         status,
       },
     });
+  };
+
+  setSuccessStatus = async (transactionId) => {
+    await this.dbQueryAsync(
+      `UPDATE payment_transactions SET status = 'success' WHERE id = ?`,
+      [transactionId]
+    );
   };
 
   createWithdrawalByStripe = (senderId, money, fee) =>

@@ -30,6 +30,7 @@ import {
   ForgotPassword,
   AdminStatusesDisputes,
   SystemOptions,
+  AdminGetMoneyRequests,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -66,7 +67,7 @@ const mainRouter = createBrowserRouter([
     element: <JobProposalView />,
   },
   {
-    path: "/profile/:userId",
+    path: "/users/:userId",
     element: <UserProfile />,
   },
   {
@@ -101,7 +102,11 @@ const adminRouter = createBrowserRouter([
     element: <JobProposalView />,
   },
   {
-    path: "/profile/:userId",
+    path: "/get-money-requests",
+    element: <AdminGetMoneyRequests />,
+  },
+  {
+    path: "/users/:userId",
     element: <UserProfile />,
   },
   {

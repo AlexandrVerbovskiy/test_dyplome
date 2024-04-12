@@ -90,17 +90,20 @@ class Payment extends Controller {
         ) {
           const newBalance = await this.userModel.rejectBalance(userId, amount);
 
-          await this.paymentTransactionModel.createWithdrawalByPaypal(
-            userId,
-            Number(amount).toFixed(2),
-            fee,
-            true
-          );
+          const createdId =
+            await this.paymentTransactionModel.createWithdrawalByPaypal(
+              userId,
+              Number(amount).toFixed(2),
+              fee,
+              true
+            );
 
           await this.getMoneyRequestModel.create(
+            createdId,
             userId,
             moneyWithoutFee.toFixed(2),
-            "paypal"
+            "paypal",
+            { type, typeValue }
           );
 
           return this.sendResponseSuccess(

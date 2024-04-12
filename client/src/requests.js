@@ -505,3 +505,29 @@ export const setFeeInfo = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getGetMoneyRequestById = {
+  url: (id) => `get-money-request/${id}`,
+  type: "get",
+  convertRes: (res) => res.data,
+};
+
+export const acceptGetMoneyRequest = {
+  url: () => `get-money-request-accept`,
+  type: "post",
+  convertData: (id) => ({
+    id,
+  }),
+  convertRes: (res) => res.data,
+};
+
+export const getAllGetMoneyRequests = {
+  url: () => `get-money-request-list`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.requests,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};
