@@ -176,34 +176,39 @@ class Controller {
     };
   };
 
-  listTimeOption = async (
+  listDateOption = async (
     req,
-    startFromCurrentDaysAdd = 1,
+    startFromCurrentDaysAdd = 15,
     endToCurrentDaysReject = 0
   ) => {
     const { clientTime } = req.body;
-    let { fromTime, toTime } = req.body;
+    let { fromDate, toDate } = req.body;
     const clientServerHoursDiff = clientServerHoursDifference(clientTime);
 
-    if (!fromTime) {
-      fromTime = timeConverter(
+    if (!fromDate) {
+      fromDate = timeConverter(
         getDateByCurrentReject(clientTime, startFromCurrentDaysAdd)
       );
     }
 
-    if (!toTime) {
-      toTime = timeConverter(
+    if (!toDate) {
+      toDate = timeConverter(
         getDateByCurrentAdd(clientTime, endToCurrentDaysReject)
       );
     }
 
-    const serverFromTime = adaptClientTimeToServer(
-      fromTime,
-      clientServerHoursDiff
+    const serverFromDate = adaptClientTimeToServer(
+      fromDate,
+      clientServerHoursDiff,
+      { h: 0, m: 0, s: 0, ms: 0 }
     );
-    const serverToTime = adaptClientTimeToServer(toTime, clientServerHoursDiff);
+    const serverToDate = adaptClientTimeToServer(
+      toDate,
+      clientServerHoursDiff,
+      { h: 23, m: 59, s: 59, ms: 999 }
+    );
 
-    return { fromTime, serverFromTime, toTime, serverToTime };
+    return { fromDate, serverFromDate, toDate, serverToDate };
   };
 }
 

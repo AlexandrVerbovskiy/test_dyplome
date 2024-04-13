@@ -48,20 +48,34 @@ const clientServerHoursDifference = (clientTime) => {
   return Math.round(hoursDiff);
 };
 
-const adaptTimeByHoursDiff = (dateStr, hoursDiff) => {
-  const [datePart, timePart] = dateStr.split(" ");
+const adaptTimeByHoursDiff = (dateStr, hoursDiff, dopTime = null) => {
+  const datePart = dateStr.split(" ")[0];
   const [month, day, year] = datePart.split("/").map(Number);
-  const [hours, minutes, seconds] = timePart.split(":").map(Number);
-  let date = new Date(year, month - 1, day, hours, minutes, seconds);
+  
+  let date = new Date(
+    year,
+    month - 1,
+    day,
+    dopTime?.h ?? 0,
+    dopTime?.m ?? 0,
+    dopTime?.s ?? 0,
+    dopTime?.ms ?? 0
+  );
   date.setHours(date.getHours() - hoursDiff);
   return timeConverter(date);
 };
 
-const adaptServerTimeToClient = (serverDateStr, clientServerHoursDiff) =>
-  adaptTimeByHoursDiff(serverDateStr, -clientServerHoursDiff);
+const adaptServerTimeToClient = (
+  serverDateStr,
+  clientServerHoursDiff,
+  dopTime = null
+) => adaptTimeByHoursDiff(serverDateStr, -clientServerHoursDiff, dopTime);
 
-const adaptClientTimeToServer = (clientDateStr, clientServerHoursDiff) =>
-  adaptTimeByHoursDiff(clientDateStr, clientServerHoursDiff);
+const adaptClientTimeToServer = (
+  clientDateStr,
+  clientServerHoursDiff,
+  dopTime = null
+) => adaptTimeByHoursDiff(clientDateStr, clientServerHoursDiff, dopTime);
 
 module.exports = {
   timeConverter,
@@ -71,5 +85,5 @@ module.exports = {
   adaptClientTimeToServer,
   adaptServerTimeToClient,
   getDateByCurrentAdd,
-  getDateByCurrentReject
+  getDateByCurrentReject,
 };

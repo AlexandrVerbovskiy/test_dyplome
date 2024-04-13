@@ -65,24 +65,24 @@ class Model {
     return { conditions: `(${conditions})`, props };
   };
 
-  baseListTimeFilter = (
+  baseListDateFilter = (
     props,
     query = "",
     params = [],
     field = "created_at"
   ) => {
-    const { serverFromTime, serverToTime } = props;
+    const { serverFromDate, serverToDate } = props;
     let hasWhere = !!query;
 
-    if (serverFromTime) {
+    if (serverFromDate) {
       query += `${hasWhere ? " AND" : "WHERE"} ${field} >= ?`;
-      params.push(formatDateToSQLFormat(serverFromTime));
+      params.push(formatDateToSQLFormat(serverFromDate));
       hasWhere = true;
     }
 
-    if (serverToTime) {
+    if (serverToDate) {
       query += `${hasWhere ? " AND" : "WHERE"} ${field} <= ?`;
-      params.push(formatDateToSQLFormat(serverToTime));
+      params.push(formatDateToSQLFormat(serverToDate));
       hasWhere = true;
     }
 

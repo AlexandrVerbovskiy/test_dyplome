@@ -4,6 +4,7 @@ import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
 import { getAllJobs } from "../requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
+import { CreateLink, SearchFilter } from "../components";
 
 const headers = [
   {
@@ -75,22 +76,8 @@ const JobRow = ({ userEmail, userId, id, title, price, address }) => {
 
 const DopFilterElem = ({ filter, changeFilter }) => (
   <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
-    <a
-      className="btn btn-primary"
-      href={`/job-create`}
-      style={{ display: "flex", alignItems: "flex-end" }}
-    >
-      Create <Plus size="20px" />
-    </a>
-    <div className="input-group search-filter">
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Search..."
-        value={filter}
-        onInput={(e) => changeFilter(e.target.value)}
-      />
-    </div>
+    <CreateLink link="job-create" />
+    <SearchFilter filter={filter} changeFilter={changeFilter} />
   </div>
 );
 

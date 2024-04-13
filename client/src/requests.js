@@ -509,7 +509,7 @@ export const setFeeInfo = {
 export const getGetMoneyRequestById = {
   url: (id) => `get-money-request/${id}`,
   type: "get",
-  convertRes: (res) => res.data,
+  convertRes: (res) => res.data.info,
 };
 
 export const acceptGetMoneyRequest = {
@@ -518,7 +518,7 @@ export const acceptGetMoneyRequest = {
   convertData: (id) => ({
     id,
   }),
-  convertRes: (res) => res.data,
+  convertRes: (res) => res.data.info,
 };
 
 export const getAllGetMoneyRequests = {

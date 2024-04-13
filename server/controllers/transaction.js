@@ -3,13 +3,13 @@ const Controller = require("./controller");
 class Transaction extends Controller {
   getServerTransactions = (req, res) =>
     this.errorWrapper(res, async () => {
-      const timeInfos = await this.listTimeOption(req);
+      const dateInfos = await this.listDateOption(req);
 
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.serverTransactionModel.count({ params, ...timeInfos })
+        this.serverTransactionModel.count({ params, ...dateInfos })
       );
 
-      Object.keys(timeInfos).forEach((key) => (options[key] = timeInfos[key]));
+      Object.keys(dateInfos).forEach((key) => (options[key] = dateInfos[key]));
 
       const transactions = await this.serverTransactionModel.list(options);
 
@@ -22,13 +22,13 @@ class Transaction extends Controller {
 
   getPaymentTransactions = (req, res) =>
     this.errorWrapper(res, async () => {
-      const timeInfos = await this.listTimeOption(req);
+      const dateInfos = await this.listDateOption(req);
 
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.paymentTransactionModel.count({ params, ...timeInfos })
+        this.paymentTransactionModel.count({ params, ...dateInfos })
       );
 
-      Object.keys(timeInfos).forEach((key) => (options[key] = timeInfos[key]));
+      Object.keys(dateInfos).forEach((key) => (options[key] = dateInfos[key]));
 
       const transactions = await this.paymentTransactionModel.list(options);
 
@@ -42,18 +42,18 @@ class Transaction extends Controller {
   getUserPaymentTransactions = (req, res) =>
     this.errorWrapper(res, async () => {
       const senderId = req.userData.userId;
-      const timeInfos = await this.listTimeOption(req);
+      const dateInfos = await this.listDateOption(req);
 
       const { options, countItems } = await this.baseList(req, (params) =>
         this.paymentTransactionModel.countForUser({
           ...params,
-          ...timeInfos,
+          ...dateInfos,
           senderId,
         })
       );
 
       options["senderId"] = senderId;
-      Object.keys(timeInfos).forEach((key) => (options[key] = timeInfos[key]));
+      Object.keys(dateInfos).forEach((key) => (options[key] = dateInfos[key]));
 
       const transactions = await this.paymentTransactionModel.listForUser(
         options

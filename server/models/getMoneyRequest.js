@@ -17,12 +17,15 @@ class GetMoneyRequest extends Model {
 
   getById = async (id) =>
     await this.errorWrapper(async () => {
-      await this.dbQueryAsync(
-        `SELECT money, platform, created_at, users.email as user_email, users.nick as user_nick,` +
-          `users.id as user_id, done_at, status, get_money_requests.id as id FROM get_money_requests` +
-          `JOIN users ON users.id = get_money_requests.sender_id WHERE id = ?`,
+      const resSearch = await this.dbQueryAsync(
+        `SELECT money, platform, created_at, users.email as user_email, users.nick as user_nick, ` +
+          `users.avatar as user_avatar, get_money_requests.body, get_money_requests.user_transaction_id, ` +
+          `users.id as user_id, done_at, status, get_money_requests.id as id FROM get_money_requests ` +
+          `JOIN users ON users.id = get_money_requests.sender_id WHERE get_money_requests.id = ?`,
         [id]
       );
+
+      return resSearch[0];
     });
 
   create = async (transactionId, senderId, money, platform, body) =>
@@ -50,19 +53,27 @@ class GetMoneyRequest extends Model {
     });
 
   baseGetMany = (props) => {
-    const { filter } = props;
+    const { filter, type } = props;
 
     const filterRes = this.baseStrFilter(filter);
-    const baseQuery = `JOIN users ON users.id = get_money_requests.sender_id WHERE ${filterRes.conditions}`;
+    let baseQuery = `JOIN users ON users.id = get_money_requests.sender_id WHERE ${filterRes.conditions}`;
     const baseProps = filterRes.props;
 
-    const resTimeQueryBuild = this.baseListTimeFilter(
+    if (type == "active") {
+      baseQuery += " AND status != 'success'";
+    }
+
+    if (type == "done") {
+      baseQuery += " AND status = 'success'";
+    }
+
+    const resDateQueryBuild = this.baseListDateFilter(
       props,
       baseQuery,
       baseProps
     );
 
-    let { query, params } = resTimeQueryBuild;
+    let { query, params } = resDateQueryBuild;
     return { query, params };
   };
 
@@ -86,7 +97,7 @@ class GetMoneyRequest extends Model {
         `get_money_requests.status as status,` +
         `users.email as userEmail, users.nick as userNick,` +
         `users.id as userId, users.avatar as userAvatar,` +
-        `done_at as doneAt FROM get_money_requests ${query}` +
+        `done_at as doneAt FROM get_money_requests ${query} ` +
         `ORDER BY ${order} ${orderType} LIMIT ?, ?`;
 
       params.push(start, count);

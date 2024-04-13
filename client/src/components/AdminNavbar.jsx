@@ -1,6 +1,8 @@
 import React from "react";
 
 const AdminNavbar = ({ setHovered, setActive }) => {
+  console.log(window.location.pathname);
+
   return (
     <div className={`sidebar-wrapper`} data-simplebar="init">
       <div
@@ -58,7 +60,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/profile-edit"
                       className={`${
-                        window.location.pathname == "/profile-edit"
+                        window.location.pathname.includes("/profile-edit")
                           ? "active"
                           : ""
                       }`}
@@ -74,7 +76,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/users"
                       className={`${
-                        window.location.pathname == "/users" ? "active" : ""
+                        window.location.pathname.includes("/users") ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -88,7 +90,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/jobs"
                       className={`${
-                        window.location.pathname == "/jobs" ? "active" : ""
+                        window.location.pathname.includes("/jobs") ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -102,7 +104,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/disputes"
                       className={`${
-                        window.location.pathname == "/disputes" ? "active" : ""
+                        window.location.pathname.includes("/disputes") ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -116,7 +118,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/transactions"
                       className={`${
-                        window.location.pathname == "/transactions"
+                        window.location.pathname.includes("/transactions")
                           ? "active"
                           : ""
                       }`}
@@ -132,7 +134,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/get-money-requests"
                       className={`${
-                        window.location.pathname == "/get-money-requests"
+                        window.location.pathname.includes("/get-money-requests")
                           ? "active"
                           : ""
                       }`}
@@ -148,7 +150,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/server-transactions"
                       className={`${
-                        window.location.pathname == "/server-transactions"
+                        window.location.pathname.includes("/server-transactions")
                           ? "active"
                           : ""
                       }`}
@@ -164,7 +166,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/system"
                       className={`${
-                        window.location.pathname == "/system" ? "active" : ""
+                        window.location.pathname.includes("/system") ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">

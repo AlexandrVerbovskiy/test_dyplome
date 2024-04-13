@@ -28,6 +28,8 @@ export { default as generatePagination } from "./generatePagination";
 
 export { default as calculateFee } from "./calculateFee";
 
+export { default as getQueryParams } from "./getQueryParams";
+
 export * from "./dateHelpers";
 
 export * from "./notification";

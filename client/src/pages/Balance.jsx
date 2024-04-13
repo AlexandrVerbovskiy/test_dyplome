@@ -6,6 +6,7 @@ import {
   Layout,
   PaypalPaymentForm,
   StripePaymentForm,
+  TabHeader,
 } from "../components";
 import { Paypal, Stripe } from "react-bootstrap-icons";
 import { MainContext } from "../contexts";
@@ -129,22 +130,6 @@ const PaypalStripeSwap = ({ platform, handleSetPlatform }) => {
   );
 };
 
-const TabHeader = ({ id, title, selected = false }) => (
-  <li class="nav-item" role="presentation">
-    <a
-      class={`nav-link ${selected ? "active" : ""}`}
-      data-bs-toggle="tab"
-      href={"#" + id}
-      role="tab"
-      aria-selected={selected ? "true" : null}
-    >
-      <div class="d-flex align-items-center">
-        <div class="tab-title">{title}</div>
-      </div>
-    </a>
-  </li>
-);
-
 const PaymentForm = () => {
   const [paymentPlatform, setPaymentPlatform] = useState(paypalType);
   const [withdrawalPlatform, setWithdrawalPlatform] = useState(paypalType);
@@ -198,8 +183,8 @@ const PaymentForm = () => {
       <div className="page-content">
         <div className="card">
           <div className="card-body balance-tabs">
-            <div class="d-flex justify-content-between">
-              <h6 class="text-uppercase">Balance</h6>
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="text-uppercase mb-0">Balance</h6>
             </div>
 
             <hr />

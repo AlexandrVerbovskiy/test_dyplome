@@ -45,3 +45,8 @@ export { default as PaypalPaymentForm } from "./PaypalPaymentForm";
 
 export { default as GetMoneyByPaypal } from "./GetMoneyByPaypal";
 export { default as GetMoneyByStripe } from "./GetMoneyByStripe";
+export { default as DatePicker } from "./DatePicker";
+export { default as SearchFilter } from "./SearchFilter";
+export { default as CreateLink } from "./CreateLink";
+
+export { default as TabHeader } from "./TabHeader";

@@ -5,6 +5,7 @@ import { MainContext } from "../contexts";
 import { getAllDisputes } from "../requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
 import { fullTimeFormat } from "../utils";
+import { CreateLink, SearchFilter } from "../components";
 
 const headers = [
   {
@@ -108,22 +109,8 @@ const DisputeRow = ({
 
 const DopFilterElem = ({ filter, changeFilter }) => (
   <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
-    <a
-      className="btn btn-primary"
-      href={`/dispute-create`}
-      style={{ display: "flex", alignItems: "flex-end" }}
-    >
-      Create <Plus size="20px" />
-    </a>
-    <div className="input-group search-filter">
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Search..."
-        value={filter}
-        onInput={(e) => changeFilter(e.target.value)}
-      />
-    </div>
+    <CreateLink link="dispute-create"/>
+    <SearchFilter filter={filter} changeFilter={changeFilter} />
   </div>
 );
 

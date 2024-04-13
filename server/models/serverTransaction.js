@@ -53,7 +53,7 @@ class ServerTransaction extends Model {
     });
 
   baseGetMany = (props) => {
-    let { query, params } = this.baseListTimeFilter(props);
+    let { query, params } = this.baseListDateFilter(props);
     return { query, params };
   };
 

@@ -1,10 +1,24 @@
-import { useContext } from "react";
-import { usePagination } from "../hooks";
+import { useContext, useState } from "react";
+import {
+  useInitSearchDateFilter,
+  usePagination,
+  useSearchDateFilter,
+} from "../hooks";
 import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
-import { allGetMoneyRequests, getAllGetMoneyRequests } from "../requests";
-import { Eye, Pencil } from "react-bootstrap-icons";
-import { fullTimeFormat } from "../utils";
+import { getAllGetMoneyRequests } from "../requests";
+import { Eye, Paypal, Stripe } from "react-bootstrap-icons";
+import { fullTimeFormat, getQueryParams } from "../utils";
+import { DatePicker, SearchFilter } from "../components";
+import Select from "react-select";
+
+const filterTypeOptions = [
+  { value: "actual", label: "Actual" },
+  { value: "done", label: "Done" },
+  { value: "all", label: "All" },
+];
+
+const baseFilterType = filterTypeOptions[0]["value"];
 
 const headers = [
   {
@@ -69,24 +83,45 @@ const RequestRow = ({
   return (
     <tr>
       <td className="fw-bolder">#{id}</td>
-      <td className="fw-bolder">{platform}</td>
+      <td className="fw-bolder">
+        {platform == "paypal" ? (
+          <div className="d-flex align-items-center">
+            <Paypal size={14} />
+            <span className="ms-1 platform-name">PayPal</span>
+          </div>
+        ) : (
+          <div className="d-flex align-items-center">
+            <Stripe size={14} />
+            <span className="ms-1 platform-name">Stripe</span>
+          </div>
+        )}
+      </td>
       <td className="fw-bolder">${money}</td>
       <td>{<a href={`/users/${userId}`}>{userNick ?? userEmail}</a>}</td>
       <td>
         {status == "success" && (
-          <span className="badge bg-gradient-quepal text-white shadow-sm w-100">
+          <span
+            className="badge bg-gradient-quepal text-white shadow-sm"
+            style={{ width: "90px" }}
+          >
             Success
           </span>
         )}
 
         {status == "in_process" && (
-          <span className="badge bg-gradient-blooker text-white shadow-sm w-100">
+          <span
+            className="badge bg-gradient-blooker text-white shadow-sm"
+            style={{ width: "90px" }}
+          >
             In process
           </span>
         )}
 
         {status == "error" && (
-          <span className="badge bg-gradient-bloody text-white shadow-sm w-100">
+          <span
+            className="badge bg-gradient-bloody text-white shadow-sm"
+            style={{ width: "90px" }}
+          >
             Failed
           </span>
         )}
@@ -106,22 +141,44 @@ const RequestRow = ({
   );
 };
 
-const DopFilterElem = ({ filter, changeFilter }) => (
+const DopFilterElem = ({
+  filter,
+  changeFilter,
+  fromDate,
+  toDate,
+  handleChangeDateFilter,
+  filterType,
+  setFilterType,
+}) => (
   <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
-    <div className="input-group search-filter">
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Search..."
-        value={filter}
-        onInput={(e) => changeFilter(e.target.value)}
+    <DatePicker value={[fromDate, toDate]} onChange={handleChangeDateFilter} />
+    <div className="input-group">
+      <Select
+        className="custom-search-select w-100"
+        options={filterTypeOptions}
+        value={filterTypeOptions.find((option) => option.value === filterType)}
+        onChange={(event) => setFilterType(event.value)}
+        isSearchable={false}
       />
     </div>
+
+    <SearchFilter filter={filter} changeFilter={changeFilter} />
   </div>
 );
 
 const AdminGetMoneyRequests = () => {
   const main = useContext(MainContext);
+
+  const { fromDate, setFromDate, toDate, setToDate, getDateFilterProps } =
+    useInitSearchDateFilter();
+
+  let { type: defaultFilterType } = getQueryParams();
+
+  if (!defaultFilterType) {
+    defaultFilterType = baseFilterType;
+  }
+
+  const [filterType, setFilterType] = useState(defaultFilterType);
 
   const {
     moveToPage,
@@ -149,7 +206,28 @@ const AdminGetMoneyRequests = () => {
         type: getAllGetMoneyRequests.type,
         convertRes: getAllGetMoneyRequests.convertRes,
       }),
+    getDopProps: () => ({
+      ...getDateFilterProps(),
+      type: {
+        value: filterType,
+        hidden: (value) => value === "actual",
+      },
+    }),
   });
+
+  const { handleChangeDateFilter } = useSearchDateFilter({
+    options,
+    fromDate,
+    setFromDate,
+    toDate,
+    setToDate,
+    rebuild,
+  });
+
+  const handleChangeFilterType = (value) => {
+    setFilterType(value);
+    rebuild({ type: value });
+  };
 
   return (
     <BaseAdminTableLayoutPage
@@ -164,6 +242,11 @@ const AdminGetMoneyRequests = () => {
         DopFilterElem({
           filter,
           changeFilter,
+          fromDate,
+          toDate,
+          handleChangeDateFilter,
+          filterType,
+          setFilterType: handleChangeFilterType,
         })
       }
       paginationInfo={{

@@ -38,26 +38,30 @@ class PaymentTransaction extends Model {
       return insertRes.insertId;
     });
 
-  createReplenishmentByPaypal = (senderId, money) =>
-    this.create({
-      senderId,
-      balanceChangeType: "topped_up",
-      money,
-      operationType: "replenishment_by_paypal",
-      transactionData: {
-        description: `The balance was topped up by $${money} through PayPal`,
-      },
+  createReplenishmentByPaypal = async (senderId, money) =>
+    await this.errorWrapper(async () => {
+      this.create({
+        senderId,
+        balanceChangeType: "topped_up",
+        money,
+        operationType: "replenishment_by_paypal",
+        transactionData: {
+          description: `The balance was topped up by $${money} through PayPal`,
+        },
+      });
     });
 
-  createReplenishmentByStripe = (senderId, money) =>
-    this.create({
-      senderId,
-      balanceChangeType: "topped_up",
-      money,
-      operationType: "replenishment_by_stripe",
-      transactionData: {
-        description: `The balance was topped up by $${money} through Stripe`,
-      },
+  createReplenishmentByStripe = async (senderId, money) =>
+    await this.errorWrapper(async () => {
+      this.create({
+        senderId,
+        balanceChangeType: "topped_up",
+        money,
+        operationType: "replenishment_by_stripe",
+        transactionData: {
+          description: `The balance was topped up by $${money} through Stripe`,
+        },
+      });
     });
 
   createWithdrawalByPaypal = (senderId, money, fee, waitingStatus = false) => {
@@ -75,12 +79,25 @@ class PaymentTransaction extends Model {
     });
   };
 
-  setSuccessStatus = async (transactionId) => {
-    await this.dbQueryAsync(
-      `UPDATE payment_transactions SET status = 'success' WHERE id = ?`,
-      [transactionId]
-    );
-  };
+  setSuccessStatus = async (transactionId) =>
+    await this.errorWrapper(async () => {
+      const info = await this.dbQueryAsync(
+        `SELECT transaction_data FROM payment_transactions WHERE id = ?`,
+        [transactionId]
+      );
+
+      const paymentTransactions = JSON.parse(info[0].transaction_data);
+
+      await this.dbQueryAsync(
+        `UPDATE payment_transactions SET transaction_data = ? WHERE id = ?`,
+        [
+          JSON.stringify({
+            description: paymentTransactions.description,
+          }),
+          transactionId,
+        ]
+      );
+    });
 
   createWithdrawalByStripe = (senderId, money, fee) =>
     this.create({
@@ -104,7 +121,7 @@ class PaymentTransaction extends Model {
     let params = baseProps;
 
     if (needTimeCondition) {
-      const resTimeQueryBuild = this.baseListTimeFilter(
+      const resTimeQueryBuild = this.baseListDateFilter(
         props,
         baseQuery,
         baseProps

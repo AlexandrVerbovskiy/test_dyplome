@@ -25,9 +25,12 @@ const AdaptiveSelect = (props) => {
           name={props.name}
         />
       </div>
-      <div id="error-message" className="text-danger empty">
-        {props.error ?? ""}
-      </div>
+
+      {props.errorHidden !== true && (
+        <div id="error-message" className="text-danger empty">
+          {props.error ?? ""}
+        </div>
+      )}
     </div>
   );
 };

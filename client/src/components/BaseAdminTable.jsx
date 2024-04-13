@@ -15,8 +15,8 @@ const BaseAdminTable = ({
   return (
     <div className="card">
       <div className="card-body">
-        <div className="d-flex justify-content-between">
-          <h6 className="text-uppercase">{title}</h6>
+        <div className="d-flex justify-content-between align-items-center">
+          <h6 className="text-uppercase mb-0">{title}</h6>
           {DopFilterElem && <DopFilterElem />}
         </div>
         <hr />

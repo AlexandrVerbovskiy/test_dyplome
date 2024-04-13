@@ -31,6 +31,7 @@ import {
   AdminStatusesDisputes,
   SystemOptions,
   AdminGetMoneyRequests,
+  AdminGetMoneyRequest,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -104,6 +105,10 @@ const adminRouter = createBrowserRouter([
   {
     path: "/get-money-requests",
     element: <AdminGetMoneyRequests />,
+  },
+  {
+    path: "/get-money-request/:id",
+    element: <AdminGetMoneyRequest />,
   },
   {
     path: "/users/:userId",

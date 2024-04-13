@@ -97,13 +97,13 @@ class Dispute extends Controller {
 
   getAllDisputes = (req, res) =>
     this.errorWrapper(res, async () => {
-      const timeInfos = await this.listTimeOption(req);
+      const dateInfos = await this.listDateOption(req);
 
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.disputeModel.count({ params, ...timeInfos })
+        this.disputeModel.count({ params, ...dateInfos })
       );
 
-      Object.keys(timeInfos).forEach((key) => (options[key] = timeInfos[key]));
+      Object.keys(dateInfos).forEach((key) => (options[key] = dateInfos[key]));
 
       const disputes = await this.disputeModel.list(options);
 
