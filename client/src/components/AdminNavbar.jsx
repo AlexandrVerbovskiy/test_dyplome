@@ -1,8 +1,6 @@
 import React from "react";
 
 const AdminNavbar = ({ setHovered, setActive }) => {
-  console.log(window.location.pathname);
-
   return (
     <div className={`sidebar-wrapper`} data-simplebar="init">
       <div

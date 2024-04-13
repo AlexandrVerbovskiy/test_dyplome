@@ -32,6 +32,7 @@ import {
   SystemOptions,
   AdminGetMoneyRequests,
   AdminGetMoneyRequest,
+  Notifications,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -74,6 +75,10 @@ const mainRouter = createBrowserRouter([
   {
     path: "/balance",
     element: <Balance />,
+  },
+  {
+    path: "/notifications",
+    element: <Notifications />,
   },
   {
     path: "/",
@@ -181,6 +186,10 @@ const adminRouter = createBrowserRouter([
   {
     path: "/system",
     element: <SystemOptions />,
+  },
+  {
+    path: "/notifications",
+    element: <Notifications />,
   },
   {
     path: "/transactions",

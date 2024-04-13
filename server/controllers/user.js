@@ -443,7 +443,7 @@ class User extends Controller {
       const count = req.body.count ?? 20;
       const lastId = req.body.lastId ?? 0;
 
-      const notifications = await this.notificationModel.getUserNotifications(
+      const notifications = await this.notificationModel.getUserNotificationsInfinity(
         userId,
         lastId,
         count
@@ -451,6 +451,28 @@ class User extends Controller {
 
       return this.sendResponseSuccess(res, "User notifications got success", {
         notifications,
+      });
+    });
+
+  getPersonalNotificationsPagination = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const dateInfos = await this.listDateOption(req);
+      const userId = req.userData.userId;
+
+      const { options, countItems } = await this.baseList(req, (params) =>
+        this.notificationModel.count({ params, ...dateInfos, userId })
+      );
+
+      Object.keys(dateInfos).forEach((key) => (options[key] = dateInfos[key]));
+
+      options["userId"] = userId;
+
+      const notifications = await this.notificationModel.list(options);
+
+      this.sendResponseSuccess(res, "Notification list got success", {
+        notifications,
+        options,
+        countItems,
       });
     });
 

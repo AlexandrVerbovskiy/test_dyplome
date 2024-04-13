@@ -10,7 +10,6 @@ const SingleMarkMap = ({
   changeRadius = null,
   radius = null,
 }) => {
-  console.log(radius);
   return (
     <>
       <Map onClick={changeCoords}>

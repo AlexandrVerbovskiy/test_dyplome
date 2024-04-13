@@ -30,3 +30,4 @@ export { default as AdminGetMoneyRequest } from "./AdminGetMoneyRequest";
 export { default as ForgotPassword } from "./ForgotPassword";
 export { default as ResetPassword } from "./ResetPassword";
 export { default as SystemOptions } from "./SystemOptions";
+export { default as Notifications } from "./Notifications";

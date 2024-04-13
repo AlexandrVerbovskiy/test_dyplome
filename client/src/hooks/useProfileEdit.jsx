@@ -32,7 +32,6 @@ const useProfileEdit = () => {
             (position) => {
               const { latitude, longitude } = position.coords;
               coords.change({ lat: latitude, lng: longitude });
-              console.log({ latitude, longitude });
             },
             (error) => {
               coords.change(config.MAP_DEFAULT.center);

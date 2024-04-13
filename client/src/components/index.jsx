@@ -50,3 +50,4 @@ export { default as SearchFilter } from "./SearchFilter";
 export { default as CreateLink } from "./CreateLink";
 
 export { default as TabHeader } from "./TabHeader";
+export { default as Pagination } from "./Pagination";

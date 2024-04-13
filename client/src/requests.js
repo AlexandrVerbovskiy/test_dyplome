@@ -531,3 +531,14 @@ export const getAllGetMoneyRequests = {
     countItems: res.data.countItems,
   }),
 };
+
+export const getNotificationsPaginationVersion = {
+  url: () => `get-notifications-pagination`,
+  type: "post",
+  convertData: (params) => params,
+  convertRes: (res) => ({
+    items: res.data.notifications,
+    options: res.data.options,
+    countItems: res.data.countItems,
+  }),
+};

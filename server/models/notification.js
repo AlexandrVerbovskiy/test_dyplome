@@ -11,7 +11,41 @@ class Notification extends Model {
       return insertChatRes.insertId;
     });
 
-  getUserNotifications = async (userId, lastId = 0, count = 20) =>
+  baseGetMany = (props) => {
+    const { userId } = props;
+
+    const baseQuery = `WHERE user_id = ?`;
+    const baseProps = [userId];
+
+    const resDateQueryBuild = this.baseListDateFilter(
+      props,
+      baseQuery,
+      baseProps
+    );
+
+    let { query, params } = resDateQueryBuild;
+    return { query, params };
+  };
+
+  count = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      query = "SELECT COUNT(*) as count FROM notifications " + query;
+      const res = await this.dbQueryAsync(query, params);
+      return res[0]["count"];
+    });
+
+  list = async (props) =>
+    await this.errorWrapper(async () => {
+      let { query, params } = this.baseGetMany(props);
+      const { orderType, order } = this.getOrderInfo(props);
+      const { start, count } = props;
+      query = `SELECT * FROM notifications ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      params.push(start, count);
+      return await this.dbQueryAsync(query, params);
+    });
+
+  getUserNotificationsInfinity = async (userId, lastId = 0, count = 20) =>
     await this.errorWrapper(async () => {
       const params = [userId];
       let query = `SELECT * FROM notifications WHERE user_id = ?`;

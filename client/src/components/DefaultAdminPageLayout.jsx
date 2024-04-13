@@ -13,6 +13,7 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
     newNotifications,
     setNewNotifications,
   } = useNotifications({ io });
+
   const { sessionUser } = useContext(MainContext);
   const currentYear = new Date().getFullYear();
   const [hovered, setHovered] = useState(false);

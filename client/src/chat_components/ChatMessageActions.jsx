@@ -7,8 +7,6 @@ const ChatMessageActions = ({
   canEdit,
   usersViewed,
 }) => {
-  console.log(usersViewed);
-
   return (
     <div className="card message-action">
       {usersViewed.map((user) => (

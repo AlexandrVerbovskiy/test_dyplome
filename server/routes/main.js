@@ -205,6 +205,12 @@ function route(app, db, io) {
   );
 
   app.post(
+    "/get-notifications-pagination",
+    isAuth,
+    userController.getPersonalNotificationsPagination
+  );
+
+  app.post(
     "/get-comments-by-entity/:type?",
     isAuth,
     commentController.getAllByEntityId
