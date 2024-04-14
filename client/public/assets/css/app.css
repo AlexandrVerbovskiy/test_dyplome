@@ -2805,12 +2805,20 @@ body:has(.navbar) .alert {
   /*padding: 20px 30px;*/
 }
 
+.job-address,
+.job-author {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
 .job-card {
   width: 100%;
   padding: 15px;
   box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.13);
   background-color: white;
   border-radius: 6px;
+  overflow: hidden;
 }
 
 @media (min-width: 576px) {
@@ -2827,33 +2835,33 @@ body:has(.navbar) .alert {
   .job-card {
     width: 24%;
   }
+}
 
-  .job-list {
-    grid-column-gap: 1%;
+@media (min-width: 784px) {
+  .job-card {
+    width: 32%;
   }
 }
 
 .job-dop-info,
 .job-main-info {
   width: 100%;
+  position: relative;
+}
+
+.job-dop-info {
+  margin: 8px 0;
 }
 
 .job-title {
   font-weight: 700;
   font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.job-address,
-.job-description {
-  margin-bottom: 42px;
+  margin-bottom: 15px;
 }
 
 .job-price,
 .job-created-time {
-  position: absolute;
-  bottom: 0;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .job-created-time {
@@ -2877,10 +2885,10 @@ body:has(.navbar) .alert {
 .job-body {
   display: flex;
   position: relative;
+  flex-direction: column;
 }
 
 .job-actions {
-  margin-top: 5px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -2893,6 +2901,8 @@ body:has(.navbar) .alert {
   font-weight: 700;
   transition: all 0.3s ease-in-out;
   text-decoration: none;
+  font-size: 12px;
+  margin-top: 2px;
 }
 
 .write-to-author:hover {
@@ -2919,6 +2929,14 @@ body:has(.navbar) .alert {
   margin-left: 5px;
   display: flex;
   align-items: center;
+}
+
+.product-actions > *:first-child,
+.product-actions > *:last-child {
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  font-weight: 500;
 }
 
 .product-actions > *:first-child {
@@ -3727,7 +3745,7 @@ body:has(.navbar) .alert {
   min-height: auto;
 }
 
-.sign-form-body-parent,
+/*.sign-form-body-parent,
 .sign-page > div {
   height: calc(100vh - 6rem);
 }
@@ -3737,10 +3755,10 @@ body:has(.navbar) .alert {
   .sign-page > div {
     height: 100vh;
   }
-}
+}*/
 
 .sign-form-body-parent > div:nth-of-type(2) {
-  height: calc(100% - 3rem - 35px);
+  height: calc(100% - 3rem - 100px);
 }
 
 .sign-form-body-parent > div:nth-of-type(1) {

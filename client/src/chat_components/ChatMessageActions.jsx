@@ -18,6 +18,7 @@ const ChatMessageActions = ({
             className="rounded-circle"
             alt={user.user_id}
             title={user.user_id}
+            style={{width: "24px", height: "24px"}}
           />
           <span>{user.user_email}</span>
         </div>

@@ -65,6 +65,7 @@ const Navbar = ({
                 Home
               </a>
             </li>
+
             <li className="nav-item">
               <a
                 className={`nav-link ${
@@ -74,8 +75,22 @@ const Navbar = ({
                 }`}
                 href="/my-job-proposals"
               >
+                <i className="lni lni-offer me-1" />
+                My Offers
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/my-jobs"
+                    ? "active"
+                    : ""
+                }`}
+                href="/my-jobs"
+              >
                 <i className="bx bx-briefcase me-1" />
-                My Proposals
+                My Jobs
               </a>
             </li>
           </ul>

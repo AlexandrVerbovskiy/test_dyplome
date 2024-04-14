@@ -1,17 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const JobCard = ({
+const AuthorJobCard = ({
   description,
   timeCreated,
   address,
   title,
-  authorNick,
-  authorEmail,
   price,
   id,
-  authorId,
-  activateProposalForm,
 }) => {
   const maxCharLimit = 250;
   const isLongText = description.length > maxCharLimit;
@@ -23,20 +19,18 @@ const JobCard = ({
       </div>
       <div className="job-body">
         <div className="job-main-info">
-          <div className="job-author">
-            <b>Author: </b>
-            <a href={`/users/${authorId}`}>{authorNick ?? authorEmail}</a>
-          </div>
           <div className="job-address">
             <b>Address: </b>
             {address}
           </div>
+
           <div className="job-price">
             <b>Price: ${price}</b>
           </div>
         </div>
         <div className="job-dop-info">
           <p className="job-description" style={{ marginBottom: "0" }}>
+            <b>Description: </b>
             <span>
               {description.slice(0, maxCharLimit)}
               {isLongText && <>...</>}
@@ -50,23 +44,13 @@ const JobCard = ({
       </div>
       <div className="job-actions">
         <div className="product-actions d-flex flex-column flex-sm-row">
-          <Link to={`/job-view/${id}`} className="btn btn-primary">
-            View job
+          <Link to={`/job-edit/${id}`} className="btn btn-primary">
+            Edit job
           </Link>
-
-          <button className="btn btn-success" onClick={activateProposalForm}>
-            Send proposal
-          </button>
         </div>
-        <a
-          href={`/chat/personal/${authorId}`}
-          className="btn btn-link write-to-author"
-        >
-          Write to author
-        </a>
       </div>
     </div>
   );
 };
 
-export default JobCard;
+export default AuthorJobCard;

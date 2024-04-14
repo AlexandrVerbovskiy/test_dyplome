@@ -57,6 +57,7 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             width="42"
             height="42"
             className="rounded-circle"
+            style={{ width: "42px", height: "42px" }}
             alt={chat.user_email}
           />
         </div>

@@ -26,45 +26,47 @@ class JobProposal extends Model {
       return null;
     });
 
-  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) => {
-    let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
-    const params = [userId];
+  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+    await this.errorWrapper(async () => {
+      let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
+      const params = [userId];
 
-    if (skippedIds.length > 0) {
-      query += ` AND job_requests.id NOT IN (?)`;
-      params.push(skippedIds);
-    }
+      if (skippedIds.length > 0) {
+        query += ` AND job_requests.id NOT IN (?)`;
+        params.push(skippedIds);
+      }
 
-    if (filter && filter.length > 0) {
-      query += ` AND (jobs.title like "%${filter}%")`;
-    }
+      if (filter && filter.length > 0) {
+        query += ` AND (jobs.title like "%${filter}%")`;
+      }
 
-    query += ` LIMIT ?`;
+      query += ` LIMIT ?`;
 
-    params.push(limit);
-    const requests = await this.dbQueryAsync(query, params);
-    return requests;
-  };
+      params.push(limit);
+      const requests = await this.dbQueryAsync(query, params);
+      return requests;
+    });
 
-  getForProposalAuthor = async (userId, skippedIds, filter = "", limit=8) => {
-    let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
+  getForProposalAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+    await this.errorWrapper(async () => {
+      let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
 
-    const params = [userId];
+      const params = [userId];
 
-    if (skippedIds.length > 0) {
-      query += ` AND job_requests.id NOT IN (?)`;
-      params.push(skippedIds);
-    }
+      if (skippedIds.length > 0) {
+        query += ` AND job_requests.id NOT IN (?)`;
+        params.push(skippedIds);
+      }
 
-    if (filter && filter.length > 0) {
-      query += ` AND (jobs.title like "%${filter}%")`;
-    }
+      if (filter && filter.length > 0) {
+        query += ` AND (jobs.title like "%${filter}%")`;
+      }
 
-    query += ` LIMIT ?`;
-    params.push(limit);
-    const requests = await this.dbQueryAsync(query, params);
-    return requests;
-  };
+      query += ` LIMIT ?`;
+      params.push(limit);
+      const requests = await this.dbQueryAsync(query, params);
+      return requests;
+    });
 
   create = async (jobId, candidateId, pricePerHour, time) =>
     await this.errorWrapper(async () => {

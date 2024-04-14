@@ -33,6 +33,7 @@ import {
   AdminGetMoneyRequests,
   AdminGetMoneyRequest,
   Notifications,
+  MyJobs,
 } from "./pages";
 
 const mainRouter = createBrowserRouter([
@@ -55,6 +56,10 @@ const mainRouter = createBrowserRouter([
   {
     path: "/job-view/:id?",
     element: <JobView />,
+  },
+  {
+    path: "/my-jobs",
+    element: <MyJobs />,
   },
   {
     path: "/my-job-proposals",

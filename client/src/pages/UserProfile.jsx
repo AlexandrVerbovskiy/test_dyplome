@@ -54,6 +54,37 @@ const UserProfile = () => {
         />
 
         <div className="card">
+          <div className="row card-header-type-select">
+            <div className="col" style={{ paddingRight: "0" }}>
+              <h6
+                onClick={handleSetSellerType}
+                className={`${type == sellerType ? "active" : ""}`}
+                style={{
+                  padding: "1rem",
+                  marginBottom: "0",
+                  textAlign: "center",
+                }}
+              >
+                Seller Comments
+              </h6>
+            </div>
+            <div className="col" style={{ paddingLeft: "0" }}>
+              <h6
+                onClick={handleSetWorkerType}
+                className={`${type == workerType ? "active" : ""}`}
+                style={{
+                  padding: "1rem",
+                  marginBottom: "0",
+                  textAlign: "center",
+                }}
+              >
+                Worker Comments
+              </h6>
+            </div>
+          </div>
+
+          <hr style={{ marginTop: "0" }} />
+
           <CommentCard
             comments={comments}
             totalCount={totalCount}

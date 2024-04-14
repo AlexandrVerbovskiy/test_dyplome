@@ -41,7 +41,8 @@ export const validateToken = {
 
 export const getUsersToChatting = {
   url: () => "users-to-chatting",
-  convertData: (lastChatId, limit, searchString) => ({
+  convertData: ({ lastChatId, lastUserId, limit, searchString }) => ({
+    lastUserId,
     lastChatId,
     limit,
     searchString,
@@ -189,6 +190,12 @@ export const getMyProposals = {
   url: () => `get-my-proposals`,
   type: "post",
   convertRes: (res) => res.data.proposals ?? [],
+};
+
+export const getMyJobs = {
+  url: () => `get-my-jobs`,
+  type: "post",
+  convertRes: (res) => res.data.jobs ?? [],
 };
 
 export const getProposalsOnMyJobs = {

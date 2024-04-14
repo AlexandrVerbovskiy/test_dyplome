@@ -10,6 +10,7 @@ export { default as MainJobs } from "./MainJobs";
 export { default as JobProposalView } from "./JobProposalView";
 export { default as ProposalsOnMyJobs } from "./ProposalsOnMyJobs";
 export { default as MyProposals } from "./MyProposals";
+export { default as MyJobs} from "./MyJobs";
 export { default as AdminDisputes } from "./AdminDisputes";
 export { default as AdminStatusesDisputes } from "./AdminStatusesDisputes";
 export { default as AdminDispute } from "./AdminDispute";

@@ -49,8 +49,8 @@ class Job extends Model {
   ) =>
     await this.errorWrapper(async () => {
       const generateDistanceRow = `SQRT(POW(${this.__latitudeLongitudeToKilometers} * (jobs.lat - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - jobs.lng) * COS(jobs.lat / ${this.__degreesToRadians}), 2))`;
-      let query = `SELECT jobs.*, nick as author, ${generateDistanceRow} AS distanceFromCenter FROM jobs
-            join users on users.id = jobs.author_id`;
+      let query = `SELECT jobs.*, jobs.author_id as authorId, users.nick as authorNick, users.email as authorEmail, 
+                      ${generateDistanceRow} AS distanceFromCenter FROM jobs join users on users.id = jobs.author_id`;
       const params = [latitude, longitude];
 
       const jobSkipIdsRequest = "jobs.id NOT IN (?)";
@@ -139,6 +139,27 @@ class Job extends Model {
       params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
+    });
+
+  getForAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+    await this.errorWrapper(async () => {
+      let query = `SELECT jobs.title, jobs.price, jobs.address, jobs.description, jobs.id, jobs.time_created as timeCreated FROM jobs WHERE jobs.author_id = ?`;
+      const params = [userId];
+
+      if (skippedIds.length > 0) {
+        query += ` AND jobs.author_id NOT IN (?)`;
+        params.push(skippedIds);
+      }
+
+      if (filter && filter.length > 0) {
+        query += ` AND (jobs.title like "%${filter}%")`;
+      }
+
+      query += ` LIMIT ?`;
+
+      params.push(limit);
+      const jobs = await this.dbQueryAsync(query, params);
+      return jobs;
     });
 }
 module.exports = Job;

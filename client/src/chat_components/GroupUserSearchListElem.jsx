@@ -34,6 +34,7 @@ const GroupUserSearchListElem = ({
           alt={id}
           title={id}
           onClick={onChange}
+          style={{width: "48px", height: "48px"}}
         />
 
         <div className="user-to-group-row-info">

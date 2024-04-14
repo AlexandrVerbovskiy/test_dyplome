@@ -135,6 +135,7 @@ class Job extends Controller {
         filter,
         needCountJobs
       );
+
       return this.sendResponseSuccess(res, "The job was get successfully", {
         jobs,
       });
@@ -143,7 +144,7 @@ class Job extends Controller {
   getAllJobs = (req, res) =>
     this.errorWrapper(res, async () => {
       const { options, countItems } = await this.baseList(req, (params) =>
-        this.jobModel.count({params})
+        this.jobModel.count({ params })
       );
 
       const jobs = await this.jobModel.list(options);
@@ -152,6 +153,23 @@ class Job extends Controller {
         jobs,
         options,
         countItems,
+      });
+    });
+
+  getForAuthor = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
+      const filter = req.body.filter ?? "";
+      const needCountJobs = req.body.count ? req.body.count : 20;
+      const jobs = await this.jobModel.getForAuthor(
+        userId,
+        skippedIds,
+        filter,
+        needCountJobs
+      );
+      return this.sendResponseSuccess(res, "Jobs was get successfully", {
+        jobs,
       });
     });
 }

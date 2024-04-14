@@ -92,7 +92,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                       }`}
                     >
                       <div className="parent-icon">
-                        <i className="lni lni-offer"></i>
+                        <i className="bx bx-briefcase"></i>
                       </div>
                       <div className="menu-title">Jobs</div>
                     </a>

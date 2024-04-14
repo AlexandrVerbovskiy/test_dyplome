@@ -19,7 +19,7 @@ const UserProfileLink = ({ user_id, user_email, user_avatar }) => {
           width="30"
           height="30"
           className="rounded-circle"
-          style={{ marginRight: "10px" }}
+          style={{ marginRight: "10px", width: "30px", height: "30px" }}
         />
         <h4 className="mb-0 font-weight-bold">{user_email}</h4>
       </a>
@@ -156,6 +156,7 @@ const Message = ({
         className="sender-message-avatar rounded-circle"
         alt={user_id}
         title={user_id}
+        style={{width: "46px", height: "46px"}}
       />
       <div className="flex-grow-1 ms-2">
         {nearTimeMessage}

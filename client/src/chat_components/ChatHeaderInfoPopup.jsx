@@ -77,7 +77,7 @@ const ChatHeaderInfoPopup = ({
             width="45"
             height="45"
             className="rounded-circle"
-            style={{ marginRight: "10px" }}
+            style={{ marginRight: "10px", width: "45px", height: "45px" }}
           />
           <h4 className="mb-0 font-weight-bold">{chatName}</h4>
         </div>

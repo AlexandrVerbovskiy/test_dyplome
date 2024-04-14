@@ -136,6 +136,13 @@ function route(app, db, io) {
     isAuth,
     jobProposalController.getForProposalAuthor
   );
+
+  app.post(
+    "/get-my-jobs",
+    isAuth,
+    jobController.getForAuthor
+  );
+
   app.post(
     "/get-proposals-for-me",
     isAuth,

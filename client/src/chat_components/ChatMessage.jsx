@@ -89,7 +89,7 @@ const ChatMessage = ({
           className="rounded-circle"
           alt={user_id}
           title={user_id}
-          style={displayImage}
+          style={{ ...displayImage, width: "48px", height: "48px" }}
         />
         <div className="flex-grow-1 ms-2">
           <p

@@ -8,6 +8,7 @@ export { default as useAdminJobEdit } from "./useAdminJobEdit";
 export { default as useAddressCoordsRelation } from "./useAddressCoordsRelation";
 export { default as useGetJobs } from "./useGetJobs";
 export { default as useMyProposals } from "./useMyProposals";
+export { default as useMyJobs } from "./useMyJobs";
 export { default as useProposalsOnMyJobs } from "./useProposalsOnMyJobs";
 export { default as usePopupController } from "./usePopupController";
 export { default as useAdminDisputes } from "./useAdminDisputes";

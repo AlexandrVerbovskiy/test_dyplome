@@ -38,7 +38,7 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
                   width="38"
                   height="38"
                   className="rounded-circle"
-                  style={{ marginRight: "10px" }}
+                  style={{ marginRight: "10px", width: "38px", height: "38px" }}
                 />
                 <div className="d-flex flex-column justify-content-center">
                   <h6 className="mb-0 font-weight-bold">

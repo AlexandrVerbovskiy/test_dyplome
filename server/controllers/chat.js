@@ -11,7 +11,9 @@ class Chat extends Controller {
 
   __checkIsBodyHasKeys(req, keys) {
     for (let i = 0; i < keys.length; i++) {
-      if (!(keys[i] in req.body)) return false;
+      if (!Object.keys(req.body).includes(keys[i])) {
+        return false;
+      }
     }
     return true;
   }
@@ -174,8 +176,13 @@ class Chat extends Controller {
     return message;
   };
 
-  __getNextMessage = async (chatId, messageId, userId=null) => {
-    const messages = await this.chatModel.getChatMessages(chatId, messageId, 1, userId);
+  __getNextMessage = async (chatId, messageId, userId = null) => {
+    const messages = await this.chatModel.getChatMessages(
+      chatId,
+      messageId,
+      1,
+      userId
+    );
     return messages[0];
   };
 

@@ -1,17 +1,9 @@
 import React from "react";
 import { generateFullUserImgPath } from "../utils";
-import config from "../config";
 
 const svgSize = 16;
-const sellerType = config.COMMENT_TYPES.employee;
-const workerType = config.COMMENT_TYPES.worker;
 
-const UserProfileStatisticInfo = ({
-  userInfo,
-  handleSetSellerType,
-  handleSetWorkerType,
-  type,
-}) => {
+const UserProfileStatisticInfo = ({ userInfo }) => {
   return (
     <div className="card">
       <div className="card-body">
@@ -43,35 +35,6 @@ const UserProfileStatisticInfo = ({
                 <div className="input-group">{userInfo["nick"] ?? "-"}</div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="row card-header-type-select">
-          <div className="col" style={{ paddingRight: "0" }}>
-            <h6
-              onClick={handleSetSellerType}
-              className={`${type == sellerType ? "active" : ""}`}
-              style={{
-                padding: "1rem",
-                marginBottom: "0",
-                textAlign: "center",
-              }}
-            >
-              Seller Comments
-            </h6>
-          </div>
-          <div className="col" style={{ paddingLeft: "0" }}>
-            <h6
-              onClick={handleSetWorkerType}
-              className={`${type == workerType ? "active" : ""}`}
-              style={{
-                padding: "1rem",
-                marginBottom: "0",
-                textAlign: "center",
-              }}
-            >
-              Worker Comments
-            </h6>
           </div>
         </div>
 
