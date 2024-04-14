@@ -25,14 +25,12 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await request({
+      await request({
         url: resetPassword.url(),
         type: resetPassword.type,
         data: { email, password, token },
         convertRes: resetPassword.convertRes,
       });
-
-      console.log(res);
 
       setSuccess("Password reset successfully");
       redirect("/");

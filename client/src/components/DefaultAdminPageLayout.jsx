@@ -62,9 +62,6 @@ const DefaultAdminPageLayout = ({ children, pageClassName = "" }) => {
       </header>
       <AdminNavbar
         setHovered={setHovered}
-        notifications={notifications}
-        countNewNotifications={newNotifications.length}
-        resetCountNewNotifications={resetCountNewNotifications}
         setActive={setActive}
       />
       <div className={"default-admin-page admin-page-wrapper page-wrapper " + pageClassName}>

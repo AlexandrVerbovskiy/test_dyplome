@@ -2,6 +2,8 @@ require("dotenv").config();
 const Model = require("./model");
 
 class Notification extends Model {
+  __selectAllFields = `id, \`type\`, user_id as userId, body as body, created_at as createdAt`;
+
   create = async ({ type, user_id, body = "" }) =>
     await this.errorWrapper(async () => {
       const insertChatRes = await this.dbQueryAsync(
@@ -40,7 +42,7 @@ class Notification extends Model {
       let { query, params } = this.baseGetMany(props);
       const { orderType, order } = this.getOrderInfo(props);
       const { start, count } = props;
-      query = `SELECT * FROM notifications ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      query = `SELECT ${this.__selectAllFields} FROM notifications ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
       params.push(start, count);
       return await this.dbQueryAsync(query, params);
     });
@@ -48,7 +50,7 @@ class Notification extends Model {
   getUserNotificationsInfinity = async (userId, lastId = 0, count = 20) =>
     await this.errorWrapper(async () => {
       const params = [userId];
-      let query = `SELECT * FROM notifications WHERE user_id = ?`;
+      let query = `SELECT ${this.__selectAllFields} FROM notifications WHERE user_id = ?`;
 
       if (lastId) {
         query += " AND id < ?";

@@ -12,7 +12,7 @@ const Comment = ({ comment, onCreateReplyComment, onGetMoreReplies }) => {
     setReplyDescription(e.target.value);
 
   const handleClickBaseCommentReply = () => {
-    setReplyDescription(comment["sender_email"] + ", ");
+    setReplyDescription(comment["senderEmail"] + ", ");
     setShownSend(true);
   };
 
@@ -46,11 +46,11 @@ const Comment = ({ comment, onCreateReplyComment, onGetMoreReplies }) => {
     <div className="card comment-parent">
       <div className="comment">
         <BaseComment
-          name={comment["sender_nick"] ?? comment["sender_email"]}
-          sendTime={comment["created_at"]}
+          name={comment["senderNick"] ?? comment["senderEmail"]}
+          sendTime={comment["createdAt"]}
           description={comment["body"]}
           rating={comment["rating"] ?? null}
-          avatarSrc={comment["sender_avatar"]}
+          avatarSrc={comment["senderAvatar"]}
           onReplyClick={handleClickBaseCommentReply}
           replyShow={!shownSend}
         />
@@ -72,14 +72,14 @@ const Comment = ({ comment, onCreateReplyComment, onGetMoreReplies }) => {
         {comment["replies"].map((replyComment) => (
           <div className="reply-comment" key={replyComment["id"]}>
             <BaseComment
-              name={replyComment["sender_nick"] ?? replyComment["sender_email"]}
-              sendTime={replyComment["created_at"]}
+              name={replyComment["senderNick"] ?? replyComment["senderEmail"]}
+              sendTime={replyComment["createdAt"]}
               description={replyComment["body"]}
-              avatarSrc={replyComment["sender_avatar"]}
+              avatarSrc={replyComment["senderAvatar"]}
               onReplyClick={() =>
                 handleClickReplyCommentReply(
                   replyComment["id"],
-                  replyComment["sender_email"]
+                  replyComment["senderEmail"]
                 )
               }
             />

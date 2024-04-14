@@ -34,19 +34,19 @@ const AdminDispute = () => {
       jobTitle={dispute.title}
       jobLat={dispute.lat}
       jobLng={dispute.lng}
-      proposalStatus={dispute.job_status}
+      proposalStatus={dispute.jobStatus}
       disputeStatus={dispute.status}
       jobAddress={dispute.address}
-      jobDescription={dispute.job_description}
+      jobDescription={dispute.jobDescription}
       proposalPrice={dispute.price}
       needShowAllStatus={true}
     >
       <hr />
       <div className="d-flex justify-content-end">
-        {dispute.chat_id && (
+        {dispute.chatId && (
           <Link
             className="btn btn-primary"
-            to={"/admin-client-chat-view/" + dispute.chat_id}
+            to={"/admin-client-chat-view/" + dispute.chatId}
           >
             View Chat
           </Link>

@@ -7,10 +7,11 @@ class BaseComment extends Model {
   __needCountReply = false;
   __commentType = "";
   __mustBeUniqueParent = false;
+  __baseFieldSelect = "*";
 
   __fullCommentSelect =
-    () => `SELECT ${this.__table}.*, users.nick as sender_nick, users.email as sender_email,
-  users.avatar as sender_avatar, users.id as sender_id FROM ${this.__table}
+    () => `SELECT ${this.__fieldSelect}, users.nick as senderNick, users.email as senderEmail,
+  users.avatar as senderAvatar, users.id as senderId FROM ${this.__table}
   JOIN users ON ${this.__table}.sender_id = users.id`;
 
   __create = async (insertRow, params) =>
@@ -32,7 +33,7 @@ class BaseComment extends Model {
   getById = async (commentId) =>
     await this.errorWrapper(async () => {
       const selectCommentRes = await this.dbQueryAsync(
-        `SELECT * FROM ${this.__table} WHERE id = ?`,
+        `SELECT ${this.__fieldSelect} FROM ${this.__table} WHERE id = ?`,
         [commentId]
       );
       return selectCommentRes[0];
@@ -41,7 +42,7 @@ class BaseComment extends Model {
   checkUserCommented = async (userId, entityId) =>
     await this.errorWrapper(async () => {
       const selectCommentRes = await this.dbQueryAsync(
-        `SELECT * FROM ${this.__table} WHERE ${this.__entityId} = ? AND sender_id = ?`,
+        `SELECT ${this.__fieldSelect} FROM ${this.__table} WHERE ${this.__entityId} = ? AND sender_id = ?`,
         [userId, entityId]
       );
 

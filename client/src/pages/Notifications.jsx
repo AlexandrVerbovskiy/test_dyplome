@@ -85,7 +85,7 @@ const Notifications = () => {
 
             <div className="main-notification-list d-flex">
               {notifications.map((notification) => {
-                const { id, type, body } = notification;
+                const { id, type, body, createdAt } = notification;
                 const iconClass = getNotificationIcon(type);
                 const mainNotificationColor = getNotificationMainColor(type);
 
@@ -102,9 +102,12 @@ const Notifications = () => {
                           <i className={`notify ${iconClass}`}></i>
                         </div>
                         <div>
-                          <p className="mb-0 text-secondary fw-bold">
+                          <h6 className="msg-name">
                             {getNotificationTitleByType(type, body)}
-                          </p>
+                            <span className="msg-time float-end">
+                              {shortTimeFormat(createdAt)}
+                            </span>
+                          </h6>
                           <p className="mb-0 font-13">
                             {getNotificationBodyByType(type, body)}
                           </p>

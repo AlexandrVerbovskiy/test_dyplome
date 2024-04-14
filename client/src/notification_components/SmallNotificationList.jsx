@@ -31,7 +31,7 @@ const SmallNotificationList = ({ notifications, active, onClose }) => {
               key={notification.id}
               type={notification.type}
               body={notification.body}
-              createdAt={notification.created_at}
+              createdAt={notification.createdAt}
             />
           ))}
         </div>

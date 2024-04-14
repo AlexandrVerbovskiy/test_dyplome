@@ -82,11 +82,11 @@ class PaymentTransaction extends Model {
   setSuccessStatus = async (transactionId) =>
     await this.errorWrapper(async () => {
       const info = await this.dbQueryAsync(
-        `SELECT transaction_data FROM payment_transactions WHERE id = ?`,
+        `SELECT transaction_data as transactionData FROM payment_transactions WHERE id = ?`,
         [transactionId]
       );
 
-      const paymentTransactions = JSON.parse(info[0].transaction_data);
+      const paymentTransactions = JSON.parse(info[0].transactionData);
 
       await this.dbQueryAsync(
         `UPDATE payment_transactions SET transaction_data = ? WHERE id = ?`,

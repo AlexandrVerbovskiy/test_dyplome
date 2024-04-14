@@ -18,9 +18,10 @@ class GetMoneyRequest extends Model {
   getById = async (id) =>
     await this.errorWrapper(async () => {
       const resSearch = await this.dbQueryAsync(
-        `SELECT money, platform, created_at, users.email as user_email, users.nick as user_nick, ` +
-          `users.avatar as user_avatar, get_money_requests.body, get_money_requests.user_transaction_id, ` +
-          `users.id as user_id, done_at, status, get_money_requests.id as id FROM get_money_requests ` +
+        `SELECT money, platform, created_at as createdAt, users.email as userEmail, users.nick as userNick, ` +
+          `users.avatar as userAvatar, get_money_requests.body, ` +
+          `get_money_requests.user_transaction_id as userTransactionId, ` +
+          `users.id as userId, done_at as doneAt, status, get_money_requests.id as id FROM get_money_requests ` +
           `JOIN users ON users.id = get_money_requests.sender_id WHERE get_money_requests.id = ?`,
         [id]
       );

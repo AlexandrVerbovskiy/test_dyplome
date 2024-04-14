@@ -45,8 +45,6 @@ const AdminGetMoneyRequest = () => {
         data: acceptGetMoneyRequest.convertData(id),
       });
 
-      console.log(res);
-
       setRequestInfo({
         ...res,
       });
@@ -76,11 +74,11 @@ const AdminGetMoneyRequest = () => {
                   User:{" "}
                 </label>
                 <div className="input-group">
-                  <a href={`/users/${requestInfo.user_id}`}>
-                    {requestInfo.user_nick ?? requestInfo.user_email}
+                  <a href={`/users/${requestInfo.userId}`}>
+                    {requestInfo.userNick ?? requestInfo.userEmail}
                     <img
-                      src={generateFullUserImgPath(requestInfo.user_avatar)}
-                      alt={requestInfo.user_email}
+                      src={generateFullUserImgPath(requestInfo.userAvatar)}
+                      alt={requestInfo.userEmail}
                       height="20px"
                       width="20px"
                       style={{
@@ -135,7 +133,7 @@ const AdminGetMoneyRequest = () => {
                   Created at:{" "}
                 </label>
                 <div className="input-group">
-                  {fullTimeFormat(requestInfo.created_at)}
+                  {fullTimeFormat(requestInfo.createdAt)}
                 </div>
               </div>
 
@@ -184,8 +182,8 @@ const AdminGetMoneyRequest = () => {
                   Done at:{" "}
                 </label>
                 <div className="input-group">
-                  {requestInfo.done_at
-                    ? fullTimeFormat(requestInfo.done_at)
+                  {requestInfo.doneAt
+                    ? fullTimeFormat(requestInfo.doneAt)
                     : "-"}
                 </div>
               </div>

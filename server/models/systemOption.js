@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Model = require("./model");
 
-class SystemOptions extends Model {
+class SystemOption extends Model {
   getFeeInfo = async () => {
     const resSelect = await this.dbQueryAsync(
       "SELECT name, value FROM system_options WHERE name='fee_type' OR name='fixed_fee' OR name='percent_fee'",
@@ -34,4 +34,4 @@ class SystemOptions extends Model {
     });
 }
 
-module.exports = SystemOptions;
+module.exports = SystemOption;

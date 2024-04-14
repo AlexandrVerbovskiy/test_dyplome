@@ -296,6 +296,7 @@ class User extends Controller {
       let resetLink = await this.passwordResetLinkModel.getLinkByAccountId(
         user.id
       );
+
       if (!resetLink) {
         const resetToken = randomString();
         resetLink = await this.passwordResetLinkModel.createLink(
@@ -311,27 +312,6 @@ class User extends Controller {
           email,
         }
       );
-    });
-
-  updateForgottenPassword = (req, res) =>
-    this.errorWrapper(res, async () => {
-      const { password } = req.body;
-      const resetToken = req.query.token;
-
-      const resetLink = await this.passwordResetLinkModel.getLinkByToken(
-        resetToken
-      );
-      if (!resetLink)
-        return this.sendResponseNoFoundError(
-          res,
-          "Invalid password reset token"
-        );
-
-      const accountId = resetLink.account_id;
-      await this.userModel.updatePassword(accountId, password);
-      await this.passwordResetLinkModel.deleteLink(resetLink.id);
-
-      return this.sendResponseSuccess(res, "Password successfully updated");
     });
 
   resetPassword = (req, res) =>

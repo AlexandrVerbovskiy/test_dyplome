@@ -94,7 +94,7 @@ const AdminDisputes = ({ status = "pending" }) => {
                 <h6 className="text-uppercase card-title">
                   <div className="card-label">{dispute["title"]}</div>
                   <div className="card-sublabel">
-                    {fullTimeFormat(dispute["created_at"])}
+                    {fullTimeFormat(dispute["createdAt"])}
                   </div>
                 </h6>
 
@@ -105,7 +105,7 @@ const AdminDisputes = ({ status = "pending" }) => {
                   <div className="card-field-value">
                     <JobStatus
                       needWrapper={false}
-                      actualStatus={dispute["job_status"]}
+                      actualStatus={dispute["jobStatus"]}
                     />
                   </div>
                 </div>
@@ -118,7 +118,7 @@ const AdminDisputes = ({ status = "pending" }) => {
                 <div className="card-field">
                   <div className="card-field-label">Job Execution Time:</div>
                   <div className="card-field-value">
-                    {dispute["execution_time"]}
+                    {dispute["executionTime"]}
                   </div>
                 </div>
 

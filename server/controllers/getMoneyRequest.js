@@ -41,7 +41,7 @@ class GetMoneyRequest extends Controller {
       const info = await this.getMoneyRequestModel.getById(id);
       const money = info.money;
       const platform = info.platform;
-      const userTransactionId = info.user_transaction_id;
+      const userTransactionId = info.userTransactionId;
       const body = JSON.parse(info.body);
 
       if (platform == "paypal") {

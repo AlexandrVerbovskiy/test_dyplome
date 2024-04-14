@@ -2,22 +2,13 @@ require("dotenv").config();
 const Model = require("./model");
 
 class Dispute extends Model {
-  create = async (jobProposalId, userId, description) =>
-    await this.errorWrapper(async () => {
-      const insertRes = await this.dbQueryAsync(
-        "INSERT INTO disputes (job_request_id, user_id, description) VALUES (?, ?, ?)",
-        [jobProposalId, userId, description]
-      );
-
-      const dispute = await this.getById(insertRes.insertId);
-      return dispute;
-    });
-
   __fullDisputeInfo = `disputes.status as status, disputes.description as description,
-     disputes.created_at as created_at, disputes.id as id, disputes.*,
-     job_requests.status as job_status, jobs.description as job_description, jobs.title, job_requests.price, 
-     job_requests.user_id as worker_id, job_requests.execution_time,
-     jobs.address, jobs.lat, jobs.lng, jobs.author_id as job_author_id FROM disputes
+     disputes.created_at as createdAt, disputes.id as id, disputes.*,
+     disputes.job_request_id as jobRequestId, disputes.admin_id as adminId,
+     disputes.user_id as userId, disputes.updated_at as updatedAt,
+     job_requests.status as jobStatus, jobs.description as jobDescription, jobs.title, job_requests.price, 
+     job_requests.user_id as workerId, job_requests.execution_time as executionTime,
+     jobs.address, jobs.lat, jobs.lng, jobs.author_id as jobAuthorId FROM disputes
      JOIN job_requests ON job_requests.id = disputes.job_request_id
      JOIN jobs ON job_requests.job_id = jobs.id`;
 
@@ -34,10 +25,21 @@ class Dispute extends Model {
     "jobs.title",
   ];
 
+  create = async (jobProposalId, userId, description) =>
+    await this.errorWrapper(async () => {
+      const insertRes = await this.dbQueryAsync(
+        "INSERT INTO disputes (job_request_id, user_id, description) VALUES (?, ?, ?)",
+        [jobProposalId, userId, description]
+      );
+
+      const dispute = await this.getById(insertRes.insertId);
+      return dispute;
+    });
+
   getById = async (id) =>
     await this.errorWrapper(async () => {
       const disputes = await this.dbQueryAsync(
-        `SELECT cu1.chat_id, ${this.__fullDisputeInfo} 
+        `SELECT cu1.chat_id as chatId, ${this.__fullDisputeInfo} 
         
         JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
         JOIN chats_users as cu2 ON (cu2.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)
@@ -95,7 +97,7 @@ class Dispute extends Model {
     await this.errorWrapper(async () => {
       const params = [];
 
-      let query = `SELECT cu1.chat_id, ${this.__fullDisputeInfo} 
+      let query = `SELECT cu1.chat_id as chatId, ${this.__fullDisputeInfo} 
       
       JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
       JOIN chats_users as cu2 ON (cu2.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)

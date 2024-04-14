@@ -70,11 +70,8 @@ function route(app, db, io) {
   app.post("/register", isNotAuth, userController.registration);
   app.post("/login", isNotAuth, userController.login);
   app.post("/forgot-password", isNotAuth, userController.resetPasswordRequest);
-  app.post(
-    "/reset-password-forgotten-password",
-    isNotAuth,
-    userController.updateForgottenPassword
-  );
+  app.post("/reset-password", isAuth, userController.resetPassword);
+
   app.post("/check-token", isAuth, userController.validateToken);
   app.post(
     "/update-profile",
@@ -100,7 +97,6 @@ function route(app, db, io) {
   app.post("/get-user-profile", userController.getUserById);
   app.get("/get-profile", isAuth, userController.getPersonalProfile);
   app.post("/get-full-user-info", isAuth, userController.getFullUserById);
-  app.post("/reset-password", isAuth, userController.resetPassword);
 
   app.post("/users-to-chatting", isAuth, chatController.getUsersToChatting);
   app.post("/admin-chats", isAdmin, chatController.getAdminChats);
