@@ -24,14 +24,14 @@ const useChatInit = ({
     io.on("created-chat", (data) => onGetNewChat(data));
     io.on("created-group-chat", (data) => {
       onGetNewChat({
-        chat_id: data.chatId,
+        chatId: data.chatId,
         type: data.message.type,
-        chat_type: data.message.chat_type,
+        chatType: data.message.chatType,
         content: data.message.content,
-        chat_avatar: data.avatar,
-        chat_name: data.name,
-        time_sended: data.message.time_sended,
-        delete_time: null,
+        chatAvatar: data.avatar,
+        chatName: data.name,
+        timeSended: data.message.timeSended,
+        deleteTime: null,
       });
     });
 
@@ -65,8 +65,8 @@ const useChatInit = ({
       deactivateChat(data.chatId, data.time);
     });
 
-    io.on("file-part-uploaded", async ({ temp_key, message = null }) => {
-      const nextPartData = await onSuccessSendBlobPart(temp_key);
+    io.on("file-part-uploaded", async ({ tempKey, message = null }) => {
+      const nextPartData = await onSuccessSendBlobPart(tempKey);
 
       if (!nextPartData) return;
       if (nextPartData == "success saved" && message) {
@@ -74,12 +74,12 @@ const useChatInit = ({
         return;
       }
 
-      onUpdateMessagePercent({ temp_key, percent: nextPartData["percent"] });
+      onUpdateMessagePercent({ tempKey, percent: nextPartData["percent"] });
       setTimeout(() => io.emit("file-part-upload", { ...nextPartData }), 1000);
     });
 
-    io.on("message-cancelled", async ({ temp_key }) =>
-      onCancelledMessage({ temp_key })
+    io.on("message-cancelled", async ({ tempKey }) =>
+      onCancelledMessage({ tempKey })
     );
   }, [io]);
 
@@ -91,23 +91,23 @@ const useChatInit = ({
     });
   };
 
-  const sendMessage = (chatId, typeMessage, content, chat_type, dop) => {
+  const sendMessage = (chatId, typeMessage, content, chatType, dop) => {
     const dataToSend = {
       chatId,
       typeMessage,
       content,
-      chat_type,
+      chatType,
       ...dop,
     };
 
     const dataToInsert = {
-      chat_id: chatId,
+      chatId: chatId,
       type: typeMessage,
       content,
-      chat_type,
-      user_id: sessionUser.id,
-      in_process: true,
-      time_sended: new Date().toISOString(),
+      chatType,
+      userId: sessionUser.id,
+      inProcess: true,
+      timeSended: new Date().toISOString(),
       ...dop,
     };
 
@@ -146,23 +146,23 @@ const useChatInit = ({
     const messageType = indicateMediaTypeByExtension(filetype);
     const content = messageType == "file" ? filename : data;
     const dataToInsert = {
-      chat_id: dataToSend["chatId"],
+      chatId: dataToSend["chatId"],
       type: messageType,
       content: content,
-      chat_type: dataToSend["chat_type"],
-      user_id: sessionUser.id,
-      in_process: true,
-      time_sended: new Date().toISOString(),
-      temp_key: dataToSend["temp_key"],
+      chatType: dataToSend["chatType"],
+      userId: sessionUser.id,
+      inProcess: true,
+      timeSended: new Date().toISOString(),
+      tempKey: dataToSend["tempKey"],
     };
 
     onGetMessageForSockets(dataToInsert);
     io.emit("file-part-upload", { ...dataToSend });
   };
 
-  const stopSendMedia = (temp_key) => {
-    onStopSendMedia(temp_key);
-    io.emit("stop-file-upload", { temp_key });
+  const stopSendMedia = (tempKey) => {
+    onStopSendMedia(tempKey);
+    io.emit("stop-file-upload", { tempKey });
   };
 
   return {

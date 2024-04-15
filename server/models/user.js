@@ -11,6 +11,10 @@ class User extends Model {
 
   orderFields = ["id", "email", "address", "nick"];
 
+  __selectAllFields = `users.id, users.email, users.nick, users.address, users.avatar, users.lat, users.lng, 
+  users.activity_radius as activityRadius, users.profile_authorized as profileAuthorized, 
+  users.online, users.admin, users.time_created as timeCreated, users.balance as balance`;
+
   create = async (email, password) =>
     await this.errorWrapper(async () => {
       const hashedPassword = await bcrypt.hash(
@@ -88,7 +92,8 @@ class User extends Model {
   getUserInfo = (userId) =>
     this.__baseGetUserInfo(`${this.__visibleFields} FROM users `, userId);
 
-  getFullUserInfo = (userId) => this.__baseGetUserInfo(`* FROM users `, userId);
+  getFullUserInfo = (userId) =>
+    this.__baseGetUserInfo(`${this.__selectAllFields} FROM users `, userId);
 
   checkIsAdmin = async (userId) =>
     await this.errorWrapper(async () => {
@@ -201,11 +206,11 @@ class User extends Model {
       );
 
       const newRoleInfo = await this.dbQueryAsync(
-        "SELECT profile_authorized FROM users WHERE id = ?",
+        "SELECT profile_authorized as profileAuthorized FROM users WHERE id = ?",
         [userId]
       );
 
-      return newRoleInfo[0]["profile_authorized"];
+      return newRoleInfo[0]["profileAuthorized"];
     });
 
   changeRole = async (userId) =>
@@ -332,7 +337,7 @@ class User extends Model {
       const { orderType, order } = this.getOrderInfo(props);
       const { start, count } = props;
 
-      query = `SELECT * FROM users ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      query = `SELECT ${this.__selectAllFields} FROM users ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
       params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
@@ -348,7 +353,7 @@ class User extends Model {
   generateResetPasswordTokenByEmail = async (email) =>
     await this.errorWrapper(async () => {
       const findUserRes = await this.dbQueryAsync(
-        `SELECT * FROM users WHERE email = ?`,
+        `SELECT reset_password_token as resetPasswordToken FROM users WHERE email = ?`,
         [email]
       );
 
@@ -358,7 +363,7 @@ class User extends Model {
         return null;
       }
 
-      if (user["reset_password_token"]) return user["reset_password_token"];
+      if (user["resetPasswordToken"]) return user["resetPasswordToken"];
 
       const newToken = generateRandomString();
       await this.dbQueryAsync(
@@ -371,7 +376,7 @@ class User extends Model {
   setPasswordByEmailAndToken = async (email, token, password) =>
     await this.errorWrapper(async () => {
       const findUserRes = await this.dbQueryAsync(
-        `SELECT * FROM reset_password_token WHERE reset_password_token = ? AND email = ?`,
+        `SELECT ${this.__selectAllFields} FROM reset_password_token WHERE reset_password_token = ? AND email = ?`,
         [email, token]
       );
 

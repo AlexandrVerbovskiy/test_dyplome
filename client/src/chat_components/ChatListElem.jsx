@@ -11,10 +11,10 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
     useContext(ChatContext);
 
   if (
-    (activeChatId && activeChatId === chat.chat_id) ||
+    (activeChatId && activeChatId === chat.chatId) ||
     (!activeChatId &&
-      activeChat.chat_type == "personal" &&
-      chat.user_id == activeChat.user_id)
+      activeChat.chatType == "personal" &&
+      chat.userId == activeChat.userId)
   )
     className += " active";
 
@@ -26,27 +26,27 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
   const content =
     chat.type === "text" ? chat.content.split("<div>")[0] : chat.type;
 
-  const isGroup = chat.chat_type === "group";
-  const isPersonal = chat.chat_type === "personal";
-  const isSystem = chat.chat_type === "system";
+  const isGroup = chat.chatType === "group";
+  const isPersonal = chat.chatType === "personal";
+  const isSystem = chat.chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? chat.chat_avatar : chat.avatar,
-    isSystem && chat.user_id == null
+    isGroup ? chat.chatAvatar : chat.avatar,
+    isSystem && chat.userId == null
   );
 
   let chatName = "System chat";
 
   if (isGroup) {
-    chatName = chat.chat_name;
+    chatName = chat.chatName;
   }
 
-  if (isPersonal || (isSystem && chat.user_id != null)) {
-    chatName = chat.user_email;
+  if (isPersonal || (isSystem && chat.userId != null)) {
+    chatName = chat.userEmail;
   }
 
   const userOnlineClass =
-    isPersonal && chat.user_online ? "chat-user-online" : "";
+    isPersonal && chat.userOnline ? "chat-user-online" : "";
 
   return (
     <li onClick={handleElemClick} className={className}>
@@ -58,26 +58,26 @@ const ChatListElem = ({ chat, first = false, last = false }) => {
             height="42"
             className="rounded-circle"
             style={{ width: "42px", height: "42px" }}
-            alt={chat.user_email}
+            alt={chat.userEmail}
           />
         </div>
         <div className="flex-grow-1 ms-2 chat-user-info d-flex flex-column justify-content-center">
           <h6 className="mb-0 chat-title">
             <div className="chat-name">{chatName}</div>
-            <div className="chat-time">{fullTimeFormat(chat.time_sended)}</div>
+            <div className="chat-time">{fullTimeFormat(chat.timeSended)}</div>
           </h6>
 
           <div className="chat-msg-parent">
             <p
               className="mb-0 chat-msg"
-              style={chat.count_unread_messages ? { fontWeight: "700" } : {}}
+              style={chat.countUnreadMessages ? { fontWeight: "700" } : {}}
               dangerouslySetInnerHTML={{ __html: content }}
             />
 
-            {chat.count_unread_messages > 0 && (
+            {chat.countUnreadMessages > 0 && (
               <div className="chat-count-unread-parent">
                 <div className="chat-count-unread">
-                  {chat.count_unread_messages}
+                  {chat.countUnreadMessages}
                 </div>
               </div>
             )}

@@ -92,7 +92,7 @@ const JobView = () => {
               <div className="dropdown job-proposal-statuses-change">
                 <div>
                   <a
-                    href={"/chat/personal/" + job.author_id}
+                    href={"/chat/personal/" + job.authorId}
                     className="btn btn-primary"
                   >
                     Write to author

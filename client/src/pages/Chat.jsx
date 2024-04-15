@@ -108,9 +108,9 @@ const Chat = () => {
   const editor = useChatTextEditor();
   const emojiPopup = useChatEmojiPopup();
 
-  const handleStartTyping = () => startTyping(activeChat.chat_id);
+  const handleStartTyping = () => startTyping(activeChat.chatId);
 
-  const handleEndTyping = () => endTyping(activeChat.chat_id);
+  const handleEndTyping = () => endTyping(activeChat.chatId);
 
   const handleSendMedia = (data, dataType, filetype, dop, filename) => {
     sendMedia(data, dataType, filetype, dop, filename);
@@ -124,21 +124,15 @@ const Chat = () => {
       unsetEditMessage();
     } else {
       const dop = {
-        temp_key: randomString(),
+        tempKey: randomString(),
       };
 
-      if (activeChat.chat_type == "personal") {
-        dop["chatId"] = activeChat?.chat_id;
-        dop["getter_id"] = activeChat.user_id;
+      if (activeChat.chatType == "personal") {
+        dop["chatId"] = activeChat?.chatId;
+        dop["getterId"] = activeChat.userId;
       }
 
-      sendMessage(
-        activeChat.chat_id,
-        "text",
-        message,
-        activeChat.chat_type,
-        dop
-      );
+      sendMessage(activeChat.chatId, "text", message, activeChat.chatType, dop);
     }
   };
 
@@ -152,7 +146,7 @@ const Chat = () => {
           appendUsers,
           chatUsers,
           chatInfo,
-          activeChatId: activeChat?.chat_id,
+          activeChatId: activeChat?.chatId,
           selectChat,
           setChatListSearch,
           getMoreChats,
@@ -171,7 +165,7 @@ const Chat = () => {
           onDeleteMessage,
           handleSendMedia,
           stopSendMedia,
-          chatType: activeChat.chat_type,
+          chatType: activeChat.chatType,
           leftChat,
           kickUser,
           getUsersToJoin,

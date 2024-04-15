@@ -76,9 +76,9 @@ const ChatBody = () => {
     onEditMessage(id, content);
   };
 
-  const onStopClick = (temp_key) => {
-    if (!temp_key) return null;
-    return () => stopSendMedia(temp_key);
+  const onStopClick = (tempKey) => {
+    if (!tempKey) return null;
+    return () => stopSendMedia(tempKey);
   };
 
   const handleScrollBody = (e) => {
@@ -93,11 +93,11 @@ const ChatBody = () => {
         <ChatHeader />
         <div className="card-body" ref={bodyRef} onScroll={handleScrollBody}>
           {messages.map((message) => {
-            const key = message.in_process
-              ? message.temp_key
-              : message.message_id;
+            const key = message.inProcess
+              ? message.tempKey
+              : message.messageId;
 
-            if (!message.user_id)
+            if (!message.userId)
               return (
                 <ChatSystemMessage
                   key={key}
@@ -109,13 +109,13 @@ const ChatBody = () => {
               <ChatMessage
                 key={key}
                 onRightBtnClick={() =>
-                  openActiveMessagePopup(message.message_id)
+                  openActiveMessagePopup(message.messageId)
                 }
-                activePopup={activeMessageActionPopup === message.message_id}
+                activePopup={activeMessageActionPopup === message.messageId}
                 closeActionPopup={() => setActiveMessageActionPopup(null)}
                 onDelete={deleteMessage}
                 onEdit={editMessage}
-                stopSendMedia={onStopClick(message.temp_key)}
+                stopSendMedia={onStopClick(message.tempKey)}
                 {...message}
               />
             );

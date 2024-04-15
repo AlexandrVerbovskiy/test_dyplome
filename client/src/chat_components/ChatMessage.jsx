@@ -9,18 +9,18 @@ const ChatMessage = ({
   onRightBtnClick,
   activePopup,
   closeActionPopup,
-  message_id,
+  messageId,
   type,
   content,
-  user_id,
-  user_email,
-  in_process: inProcess,
-  time_sended,
+  userId,
+  userEmail,
+  inProcess,
+  timeSended,
   onDelete,
   onEdit,
   stopSendMedia,
   percent = null,
-  sender_avatar = null,
+  senderAvatar = null,
 }) => {
   const main = useContext(MainContext);
   const { sessionUser } = main;
@@ -39,8 +39,8 @@ const ChatMessage = ({
     my: "chat-right-msg card",
   };
 
-  const isGroupChat = activeChat.chat_type == "group";
-  const isSessionUserSender = sessionUser.id == user_id;
+  const isGroupChat = activeChat.chatType == "group";
+  const isSessionUserSender = sessionUser.id == userId;
   const myOrNormal = isSessionUserSender ? "my" : "normal";
   const timeAlign = isSessionUserSender ? "end" : "start";
   const displayImage = isSessionUserSender ? { display: "none" } : {};
@@ -54,7 +54,7 @@ const ChatMessage = ({
   };
 
   const handleMessageEditClick = () => {
-    onEdit(message_id, content);
+    onEdit(messageId, content);
     closeActionPopup();
   };
 
@@ -64,15 +64,14 @@ const ChatMessage = ({
   };
 
   const onAcceptDelete = () => {
-    onDelete(message_id);
+    onDelete(messageId);
     deleteMessageWrapperRef.current.click();
   };
 
   const usersViewed = isSessionUserSender
     ? chatUsers.filter(
         (user) =>
-          user.last_viewed_message_id >= message_id &&
-          user.user_id != sessionUser.id
+          user.lastViewedMessageId >= messageId && user.userId != sessionUser.id
       )
     : [];
 
@@ -81,14 +80,14 @@ const ChatMessage = ({
       <div className="d-flex">
         <img
           src={generateFullUserImgPath(
-            sender_avatar,
-            activeChat.chat_type === "system" && activeChat.user_id == null
+            senderAvatar,
+            activeChat.chatType === "system" && activeChat.userId == null
           )}
           width="48"
           height="48"
           className="rounded-circle"
-          alt={user_id}
-          title={user_id}
+          alt={userId}
+          title={userId}
           style={{ ...displayImage, width: "48px", height: "48px" }}
         />
         <div className="flex-grow-1 ms-2">
@@ -100,8 +99,8 @@ const ChatMessage = ({
               alignItems: "center",
             }}
           >
-            {isGroupChat && !isSessionUserSender && <>{user_email} </>}
-            {!inProcess && fullTimeFormat(time_sended)}
+            {isGroupChat && !isSessionUserSender && <>{userEmail} </>}
+            {!inProcess && fullTimeFormat(timeSended)}
             {inProcess && (
               <>
                 <i
@@ -146,7 +145,7 @@ const ChatMessage = ({
             )}
 
             <AcceptDeleteMessageModal
-              id={message_id}
+              id={messageId}
               wrapperRef={deleteMessageWrapperRef}
               triggerRef={deleteMessageRef}
               onAccept={onAcceptDelete}

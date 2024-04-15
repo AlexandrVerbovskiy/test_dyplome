@@ -24,7 +24,7 @@ const MyProposals = () => {
           <ProposalCard
             key={id}
             {...proposals[id]}
-            userId={proposals[id].author_id}
+            userId={proposals[id].authorId}
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreProposals} />

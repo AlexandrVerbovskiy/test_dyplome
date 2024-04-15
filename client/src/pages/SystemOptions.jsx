@@ -30,10 +30,10 @@ const SystemOptions = () => {
   };
 
   const updateStates = (body) => {
-    const { fee_type, fixed_fee, percent_fee } = body;
-    setFeeType(fee_type);
-    setFeeFixedValue(fixed_fee);
-    setFeePercentValue(percent_fee);
+    const { feeType, fixedFee, percentFee } = body;
+    setFeeType(feeType);
+    setFeeFixedValue(fixedFee);
+    setFeePercentValue(percentFee);
   };
 
   const init = async () => {

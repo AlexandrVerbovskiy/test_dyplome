@@ -67,7 +67,7 @@ class JobProposal extends Controller {
 
   __changeStatus = async (req, res, validationType, validationCallback) =>
     this.errorWrapper(res, async () => {
-      const { proposal_id: proposalId } = req.body;
+      const { proposalId } = req.body;
 
       const job = await this.jobProposalModel.getById(proposalId);
       const jobId = job.id;

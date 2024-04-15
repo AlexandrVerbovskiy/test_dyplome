@@ -16,15 +16,15 @@ const MediaFileAcceptPopup = () => {
     const dop = {};
     const { data, dataType } = await autoConvert(file.src);
 
-    if (activeChat.chat_type == "personal") {
+    if (activeChat.chatType == "personal") {
       dop["chatId"] = activeChatId;
-      dop["chat_type"] = activeChat.chat_type;
-      dop["getter_id"] = activeChat.user_id;
+      dop["chatType"] = activeChat.chatType;
+      dop["getterId"] = activeChat.userId;
     }
 
-    if (activeChat.chat_type == "group") {
+    if (activeChat.chatType == "group") {
       dop["chatId"] = activeChatId;
-      dop["chat_type"] = activeChat.chat_type;
+      dop["chatType"] = activeChat.chatType;
     }
 
     handleSendMedia(data, dataType, file.type, dop, file.name);

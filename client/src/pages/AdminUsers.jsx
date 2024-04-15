@@ -62,7 +62,7 @@ const headers = [
 const UserRow = ({
   id,
   avatar,
-  profile_authorized,
+  profileAuthorized,
   nick,
   email,
   balance,
@@ -96,7 +96,7 @@ const UserRow = ({
       <td className="fw-bolder">${balance}</td>
       <td>
         <YesNoSpan
-          active={profile_authorized}
+          active={profileAuthorized}
           onClick={isCurrentUser ? null : () => authorizedChange(id)}
         />
       </td>
@@ -194,7 +194,7 @@ const AdminUsers = () => {
       convertRes: adminUpdateUserAuthorized.convertRes,
     });
 
-    setItemFields({ profile_authorized: authorized }, id);
+    setItemFields({ profileAuthorized: authorized }, id);
   };
 
   return (

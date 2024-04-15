@@ -270,7 +270,7 @@ export const getNotifications = {
 const __changeProposalStatus = (url) => ({
   url: () => url,
   type: "post",
-  convertData: (proposalId) => ({ id: proposalId }),
+  convertData: (proposalId) => ({ proposalId }),
   convertRes: (res) => res.data ?? {},
 });
 

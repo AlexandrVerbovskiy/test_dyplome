@@ -9,7 +9,7 @@ const useTyping = ({ isGroup, typingUsers }) => {
 
     if (typingUsers.length) {
       const typingNames = typingUsers.map(
-        (user) => user.user_nick ?? user.user_email
+        (user) => user.userNick ?? user.userEmail
       );
 
       let typingText = "typing";

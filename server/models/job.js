@@ -5,6 +5,9 @@ class Job extends Model {
   __latitudeLongitudeToKilometers = 111.045;
   __degreesToRadians = 57.3;
 
+  __selectAllFields = `jobs.id, jobs.author_id as authorId, jobs.title, jobs.price, jobs.address, 
+  jobs.description, jobs.lat, jobs.lng, jobs.created_at as createdAt`;
+
   strFilterFields = ["title", "jobs.address", "users.email"];
 
   orderFields = ["id", "email", "address", "nick", "users.email"];
@@ -33,9 +36,10 @@ class Job extends Model {
 
   getById = async (jobId) =>
     await this.errorWrapper(async () => {
-      const jobs = await this.dbQueryAsync("SELECT * FROM jobs WHERE id = ?", [
-        jobId,
-      ]);
+      const jobs = await this.dbQueryAsync(
+        `SELECT ${this.__selectAllFields} FROM jobs WHERE id = ?`,
+        [jobId]
+      );
       if (jobs.length) return jobs[0];
       return null;
     });
@@ -49,7 +53,7 @@ class Job extends Model {
   ) =>
     await this.errorWrapper(async () => {
       const generateDistanceRow = `SQRT(POW(${this.__latitudeLongitudeToKilometers} * (jobs.lat - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - jobs.lng) * COS(jobs.lat / ${this.__degreesToRadians}), 2))`;
-      let query = `SELECT jobs.*, jobs.author_id as authorId, users.nick as authorNick, users.email as authorEmail, 
+      let query = `SELECT ${this.__selectAllFields}, users.nick as authorNick, users.email as authorEmail, 
                       ${generateDistanceRow} AS distanceFromCenter FROM jobs join users on users.id = jobs.author_id`;
       const params = [latitude, longitude];
 
@@ -80,7 +84,7 @@ class Job extends Model {
   getByAuthor = async (authorId) =>
     await this.errorWrapper(async () => {
       const jobs = await this.dbQueryAsync(
-        "SELECT * FROM jobs WHERE author_id = ?",
+        `SELECT ${this.__selectAllFields} FROM jobs WHERE author_id = ?`,
         [authorId]
       );
       return jobs;
@@ -88,11 +92,11 @@ class Job extends Model {
 
   getCountByAuthor = async (authorId) =>
     await this.errorWrapper(async () => {
-      const jobs = await this.dbQueryAsync(
-        "SELECT * FROM jobs WHERE author_id = ?",
+      const result = await this.dbQueryAsync(
+        "SELECT count(*) as count FROM jobs WHERE author_id = ?",
         [authorId]
       );
-      return jobs.length;
+      return result[0].count;
     });
 
   exists = async (jobId) =>
@@ -105,10 +109,10 @@ class Job extends Model {
 
   checkAuthor = async (jobId, authorId) =>
     await this.errorWrapper(async () => {
-      const jobs =
-        ("SELECT * FROM jobs WHERE id = ? AND author_id = ?",
+      const result =
+        (`SELECT count(*) as count FROM jobs WHERE id = ? AND author_id = ?`,
         [jobId, authorId]);
-      return jobs.length;
+      return result[0].count;
     });
 
   baseGetMany = (props) => {

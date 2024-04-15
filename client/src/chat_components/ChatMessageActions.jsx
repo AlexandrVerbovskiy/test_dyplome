@@ -10,17 +10,17 @@ const ChatMessageActions = ({
   return (
     <div className="card message-action">
       {usersViewed.map((user) => (
-        <div key={user.user_id} className="message-viewer">
+        <div key={user.userId} className="message-viewer">
           <img
-            src={generateFullUserImgPath(user.user_avatar)}
+            src={generateFullUserImgPath(user.userAvatar)}
             width="24"
             height="24"
             className="rounded-circle"
-            alt={user.user_id}
-            title={user.user_id}
+            alt={user.userId}
+            title={user.userId}
             style={{width: "24px", height: "24px"}}
           />
-          <span>{user.user_email}</span>
+          <span>{user.userEmail}</span>
         </div>
       ))}
 

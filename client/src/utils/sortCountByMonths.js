@@ -4,10 +4,10 @@ const sortCountByMonths = (data, months) => {
       return null;
     }
 
-    let minDate = new Date(data[0].time_created);
+    let minDate = new Date(data[0].timeCreated);
 
     data.forEach((item) => {
-      const itemDate = new Date(item.time_created);
+      const itemDate = new Date(item.timeCreated);
       if (itemDate < minDate) {
         minDate = itemDate;
       }
@@ -28,7 +28,7 @@ const sortCountByMonths = (data, months) => {
       report[label] = 0;
 
       data.forEach((item) => {
-        const itemDate = new Date(item.time_created);
+        const itemDate = new Date(item.timeCreated);
         if (
           itemDate.getFullYear() === currentMonth.getFullYear() &&
           itemDate.getMonth() === currentMonth.getMonth()

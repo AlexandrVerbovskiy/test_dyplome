@@ -24,7 +24,7 @@ const useMediaActions = () => {
     const last = mediaActionsRef.current[tempFileKey]["inQueue"].length == 1;
 
     return {
-      temp_key: tempFileKey,
+      tempKey: tempFileKey,
       type: filetype,
       data: blobToSend,
       last,
@@ -54,7 +54,7 @@ const useMediaActions = () => {
     const dop = action["dop"];
 
     return {
-      temp_key: key,
+      tempKey: key,
       type,
       data: blob,
       last,

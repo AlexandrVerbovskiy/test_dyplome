@@ -31,8 +31,8 @@ const JobProposalView = () => {
         setProposal({
           ...res,
           status: res.status.toLocaleLowerCase(),
-          disputeId: res.dispute_id,
-          disputeStatus: res.dispute_status,
+          disputeId: res.disputeId,
+          disputeStatus: res.disputeStatus,
         });
       } catch (e) {}
     })();
@@ -109,7 +109,7 @@ const JobProposalView = () => {
             )}
 
             <a
-              href={"/chat/personal/" + proposal.author_id}
+              href={"/chat/personal/" + proposal.authorId}
               className="btn btn-primary mt-2 mt-md-0"
             >
               Write to author

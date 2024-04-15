@@ -21,7 +21,7 @@ const useAdminUserEdit = ({ baseData }) => {
     changeEmail(baseData.email ?? "");
     changeNick(baseData.nick ?? "");
     changeBalance(baseData.balance ?? 0);
-    setActivityRadius(baseData.activity_radius ?? config.RADIUS_DEFAULT);
+    setActivityRadius(baseData.activityRadius ?? config.RADIUS_DEFAULT);
 
     if (baseData.avatar) changeImg(baseData.avatar);
   }, [baseData]);

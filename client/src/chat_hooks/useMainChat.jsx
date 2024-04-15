@@ -53,7 +53,7 @@ const useMainChat = ({
         const count = res.messages ? res.messages.length : 0;
 
         if (count > 0) {
-          setLastMessageId(res.messages[0].message_id);
+          setLastMessageId(res.messages[0].messageId);
           setMessages(res.messages);
         } else {
           setMessages([]);
@@ -94,12 +94,12 @@ const useMainChat = ({
   async function handleChangeChat(chat) {
     if (chat === null) return (activeChat.current = null);
 
-    const chatId = chat.chat_id;
+    const chatId = chat.chatId;
     const activeChatId =
-      activeChat.current !== null ? activeChat.current.chat_id : null;
+      activeChat.current !== null ? activeChat.current.chatId : null;
     if (
       (chatId && activeChatId == chatId) ||
-      (chat.user_id && chat.user_id == activeChat.current.user_id)
+      (chat.userId && chat.userId == activeChat.current.userId)
     )
       return;
 
@@ -122,9 +122,9 @@ const useMainChat = ({
 
       chatCountUnreadMessageReset(chatId);
 
-      if (chat.last_message_id != chat.current_last_viewed_message_id) {
+      if (chat.lastMessageId != chat.currentLastViewedMessageId) {
         setChatLastMessageCurrentViewed(chatId);
-        onMessageViewed(chat.chat_id, chat.last_message_id);
+        onMessageViewed(chat.chatId, chat.lastMessageId);
       }
 
       const messages = res.messages;
@@ -138,26 +138,26 @@ const useMainChat = ({
       const count = messages.length;
 
       if (count > 0) {
-        setLastMessageId(messages[0].message_id);
+        setLastMessageId(messages[0].messageId);
       }
 
-      if (chat.chat_type == "group") {
+      if (chat.chatType == "group") {
         leftChatRef.current = () => {
           return main.request({
             url: leftChat.url(),
             type: leftChat.type,
-            data: leftChat.convertData(chat.chat_id),
+            data: leftChat.convertData(chat.chatId),
             convertRes: leftChat.convertRes,
           });
         };
 
         kickUserRef.current = async (userId) => {
-          setChatUsers((prev) => prev.filter((user) => user.user_id != userId));
+          setChatUsers((prev) => prev.filter((user) => user.userId != userId));
 
           const { messages } = await main.request({
             url: kickChatUser.url(),
             type: kickChatUser.type,
-            data: kickChatUser.convertData(chat.chat_id, userId),
+            data: kickChatUser.convertData(chat.chatId, userId),
             convertRes: kickChatUser.convertRes,
           });
 
@@ -173,15 +173,15 @@ const useMainChat = ({
   }
 
   const deactivateChat = (chatId, time) => {
-    if (activeChat.current.chat_id === chatId) {
-      activeChat.current.delete_time = time;
+    if (activeChat.current.chatId === chatId) {
+      activeChat.current.deleteTime = time;
     }
 
     deactivateChatInList(chatId, time);
   };
 
   const showMoreMessages = async () => {
-    const activeChatId = activeChat.current ? activeChat.current.chat_id : null;
+    const activeChatId = activeChat.current ? activeChat.current.chatId : null;
 
     try {
       const gotMessages = await main.request({
@@ -198,7 +198,7 @@ const useMainChat = ({
       setMessages((prev) => [...gotMessages, ...prev]);
 
       if (gotMessages[0]) {
-        setLastMessageId(gotMessages[0]["message_id"]);
+        setLastMessageId(gotMessages[0]["messageId"]);
       }
     } catch (e) {}
   };
@@ -208,38 +208,38 @@ const useMainChat = ({
     onChatUpdate(message);
 
     if (
-      activeChat.current.chat_id &&
-      activeChat.current.chat_id === message.chat_id
+      activeChat.current.chatId &&
+      activeChat.current.chatId === message.chatId
     ) {
-      setChatLastMessageCurrentViewed(activeChat.current.chat_id);
-      onMessageViewed(activeChat.current.chat_id, message.message_id);
+      setChatLastMessageCurrentViewed(activeChat.current.chatId);
+      onMessageViewed(activeChat.current.chatId, message.messageId);
     }
 
     if (
-      (activeChat.current.chat_id &&
-        message.chat_id === activeChat.current.chat_id) ||
-      (message.chat_type === "personal" &&
-        message.getter_id === activeChat.current.user_id)
+      (activeChat.current.chatId &&
+        message.chatId === activeChat.current.chatId) ||
+      (message.chatType === "personal" &&
+        message.getterId === activeChat.current.userId)
     ) {
-      if (message.in_process) {
+      if (message.inProcess) {
         setMessages((prev) => [...prev, message]);
       } else {
-        if (!activeChat.current.chat_id)
-          activeChat.current.chat_id = message.chat_id;
+        if (!activeChat.current.chatId)
+          activeChat.current.chatId = message.chatId;
 
         setMessages((prev) => {
-          const newMessages = [...prev.filter((m) => !m.in_process), message];
-          const inProcessMessages = message.temp_key
+          const newMessages = [...prev.filter((m) => !m.inProcess), message];
+          const inProcessMessages = message.tempKey
             ? prev.filter(
-                (m) => m.in_process && m.temp_key !== message.temp_key
+                (m) => m.inProcess && m.tempKey !== message.tempKey
               )
-            : prev.filter((m) => m.in_process);
+            : prev.filter((m) => m.inProcess);
           return [...newMessages, ...inProcessMessages];
         });
       }
 
-      if (message.message_id) {
-        setLastMessageId(message.message_id);
+      if (message.messageId) {
+        setLastMessageId(message.messageId);
 
         setStatistic((prev) => {
           prev["all"] = prev["all"] + 1;
@@ -253,42 +253,42 @@ const useMainChat = ({
   const onGetMessageAtTheEndList = (message) => {
     if (!message) return;
 
-    if (message.chat_id === activeChat.current.chat_id) {
+    if (message.chatId === activeChat.current.chatId) {
       setMessages((prev) => [...prev, message]);
-      setLastMessageId(message.message_id);
+      setLastMessageId(message.messageId);
     }
   };
 
-  const onUpdateMessagePercent = ({ temp_key, percent }) => {
+  const onUpdateMessagePercent = ({ tempKey, percent }) => {
     setMessages((prev) => {
       const newMessages = prev.map((m) => {
-        if (m.temp_key && m.temp_key == temp_key) return { ...m, percent };
+        if (m.tempKey && m.tempKey == tempKey) return { ...m, percent };
         return { ...m };
       });
       return [...newMessages];
     });
   };
 
-  const onCancelledMessage = ({ temp_key }) => {
+  const onCancelledMessage = ({ tempKey }) => {
     setMessages((prev) => {
-      const newMessages = [...prev.filter((m) => m.temp_key != temp_key)];
+      const newMessages = [...prev.filter((m) => m.tempKey != tempKey)];
       return [...newMessages];
     });
   };
 
   const onUpdateMessage = (message) => {
     if (!message) return;
-    if (message.chat_id === activeChat.current.chat_id) {
+    if (message.chatId === activeChat.current.chatId) {
       setMessages((prev) => {
         const messages = [];
         prev.forEach((prevMessage) => {
-          if (prevMessage.message_id == message.message_id) {
+          if (prevMessage.messageId == message.messageId) {
             messages.push({ ...prevMessage, ...message });
           } else {
             messages.push(prevMessage);
           }
         });
-        if (messages.length > 0) setLastMessageId(messages[0].message_id);
+        if (messages.length > 0) setLastMessageId(messages[0].messageId);
         return messages;
       });
       onChatUpdate(message);
@@ -304,15 +304,15 @@ const useMainChat = ({
       messageToList,
     } = info;
 
-    if (deletedChatId === activeChat.current.chat_id) {
+    if (deletedChatId === activeChat.current.chatId) {
       setMessages((prev) => {
         let newMessages = prev.filter(
-          (elem) => elem.message_id != deletedMessageId
+          (elem) => elem.messageId != deletedMessageId
         );
 
         if (messageToChat) {
           newMessages = [messageToChat, ...newMessages];
-          setLastMessageId(messageToChat.message_id);
+          setLastMessageId(messageToChat.messageId);
         }
         return newMessages;
       });
@@ -329,13 +329,13 @@ const useMainChat = ({
 
   const onChangeTyping = (data, typing) => {
     const activeChatId =
-      activeChat.current !== null ? activeChat.current.chat_id : null;
+      activeChat.current !== null ? activeChat.current.chatId : null;
     onChangeListTyping(data, typing);
     if (activeChatId != data.chatId) return;
 
     setChatUsers((prev) =>
       prev.map((user) => {
-        if (user.user_id == data.userId) {
+        if (user.userId == data.userId) {
           return { ...user, typing };
         } else {
           return { ...user };
@@ -348,20 +348,20 @@ const useMainChat = ({
     const { userId } = data;
 
     const activeUserId =
-      activeChat.current !== null && activeChat.current.chat_type == "personal"
-        ? activeChat.current.user_id
+      activeChat.current !== null && activeChat.current.chatType == "personal"
+        ? activeChat.current.userId
         : null;
 
     onChangeListOnline(userId, online);
 
     if (activeUserId != userId) return;
-    activeChat.current.user_online = online;
+    activeChat.current.userOnline = online;
   };
 
   const onGetNewChat = (data) => {
     onGetChat(data);
 
-    if (data.chat_id === activeChat.current.chat_id) {
+    if (data.chatId === activeChat.current.chatId) {
       activeChat.current = { ...data };
     }
   };
@@ -370,7 +370,7 @@ const useMainChat = ({
     const res = await main.request({
       url: addChatUsers.url(),
       type: addChatUsers.type,
-      data: addChatUsers.convertData(activeChat.current.chat_id, users),
+      data: addChatUsers.convertData(activeChat.current.chatId, users),
       convertRes: addChatUsers.convertRes,
     });
 
@@ -379,10 +379,10 @@ const useMainChat = ({
       users.forEach((user) =>
         res.push({
           role: user.role,
-          user_avatar: user.avatar,
-          user_email: user.email,
-          user_id: user.id,
-          user_nick: user.nick,
+          userAvatar: user.avatar,
+          userEmail: user.email,
+          userId: user.id,
+          userNick: user.nick,
         })
       );
       return res;
@@ -397,7 +397,7 @@ const useMainChat = ({
       url: getUsersToGroupToJoin.url(),
       type: getUsersToGroupToJoin.type,
       data: getUsersToGroupToJoin.convertData(
-        activeChat.current.chat_id,
+        activeChat.current.chatId,
         lastUserId,
         ignoreIds,
         filterValue

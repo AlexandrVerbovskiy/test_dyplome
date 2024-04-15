@@ -26,7 +26,7 @@ const ProposalsOnMyJobs = () => {
             userType="Performer"
             {...proposals[id]}
             writeBtnText="Write to performer"
-            userId={proposals[id].user_id}
+            userId={proposals[id].userId}
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreProposals} />

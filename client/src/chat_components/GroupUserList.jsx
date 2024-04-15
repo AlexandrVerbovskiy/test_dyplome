@@ -31,10 +31,10 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
           }
 
           return (
-            <div className="chat-user-list-row" key={user["user_id"]}>
+            <div className="chat-user-list-row" key={user["userId"]}>
               <div className="d-flex">
                 <img
-                  src={generateFullUserImgPath(user["user_avatar"])}
+                  src={generateFullUserImgPath(user["userAvatar"])}
                   width="38"
                   height="38"
                   className="rounded-circle"
@@ -42,7 +42,7 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
                 />
                 <div className="d-flex flex-column justify-content-center">
                   <h6 className="mb-0 font-weight-bold">
-                    {user["user_nick"] ?? user["user_email"]}
+                    {user["userNick"] ?? user["userEmail"]}
                   </h6>
                   <div className="chat-user-role">
                     {config.CHAT_ROLES[user["role"]]}
@@ -53,7 +53,7 @@ const GroupUserList = ({ users, currentUserRole, kickUser }) => {
                 <div className="d-flex">
                   <button
                     className="remove-chat-user"
-                    onClick={() => setIdToDelete(user["user_id"])}
+                    onClick={() => setIdToDelete(user["userId"])}
                   >
                     Remove
                   </button>

@@ -28,7 +28,7 @@ const ChatHeaderMainInfo = ({ isGroup, chatOnline, typingUsers }) => {
         ) : (
           <></>
         )}
-        {(activeChat.chat_type == "personal" || activeChat.delete_time) && (
+        {(activeChat.chatType == "personal" || activeChat.deleteTime) && (
           <ChatSubText
             isGroup={isGroup}
             chatOnline={chatOnline}

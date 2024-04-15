@@ -2,11 +2,11 @@ require("dotenv").config();
 const Model = require("./model");
 
 class Chat extends Model {
-  __usersFields =
-    "users.online as user_online, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+  __usersFields = `users.online as userOnline, users.email as userEmail, users.avatar as userAvatar, 
+    users.nick as userNick, users.id as userId`;
 
-  __messageSelect = `messages.type as type, messages.id as message_id, messages.time_created as time_sended,
-   ${this.__usersFields}, contents.content as content, chats.id as chat_id, chats.type as chat_type FROM messages
+  __messageSelect = `messages.type as type, messages.id as messageId, messages.time_created as timeSended,
+   ${this.__usersFields}, contents.content as content, chats.id as chatId, chats.type as chatType FROM messages
     JOIN (SELECT mc.id as content_id, mc.content, mc.message_id, mc.time_edited
         FROM messages_contents mc
         INNER JOIN (
@@ -20,7 +20,7 @@ class Chat extends Model {
     JOIN chats ON messages.chat_id = chats.id`;
 
   __getUserChats = `
-    SELECT chats.id as chat_id FROM 
+    SELECT chats.id as chatId FROM 
     (
         SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
             JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
@@ -31,7 +31,7 @@ class Chat extends Model {
   __groupChatFields =
     "chats.avatar as chat_avatar, chats.name as chat_name, users.online as user_online, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
 
-  __getUserChatsGroups = `SELECT chats.id as chat_id FROM 
+  __getUserChatsGroups = `SELECT chats.id as chatId FROM 
   (
       SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
           JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
@@ -40,20 +40,20 @@ class Chat extends Model {
 
   hasUserAccess = async (chatId, userId) =>
     await this.errorWrapper(async () => {
-      const relations = await this.dbQueryAsync(
-        "SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?",
+      const result = await this.dbQueryAsync(
+        "SELECT count(*) as count FROM chats_users WHERE chat_id = ? AND user_id = ?",
         [chatId, userId]
       );
-      return relations.length;
+      return result[0].count;
     });
 
   lastReadMessageIdByUser = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       const relations = await this.dbQueryAsync(
-        "SELECT * FROM chats_users WHERE chat_id = ? AND user_id = ?",
+        "SELECT last_viewed_message_id as lastViewedMessageId FROM chats_users WHERE chat_id = ? AND user_id = ?",
         [chatId, userId]
       );
-      return relations[0]["last_viewed_message_id"];
+      return relations[0]["lastViewedMessageId"];
     });
 
   create = async (type, chatName = null, chatAvatar = null) =>
@@ -85,7 +85,7 @@ class Chat extends Model {
   getChatRelations = async (chatId) =>
     await this.errorWrapper(async () => {
       return await this.dbQueryAsync(
-        `SELECT * FROM chats_users where chat_id = ?`,
+        `SELECT id, user_id as userId FROM chats_users where chat_id = ?`,
         [chatId]
       );
     });
@@ -102,7 +102,7 @@ class Chat extends Model {
       const insertedIds = [];
 
       relations.forEach((relation) => {
-        if (insertUserIds.includes(relation.user_id))
+        if (insertUserIds.includes(relation.userId))
           insertedIds.push(relation.id);
       });
 
@@ -227,10 +227,12 @@ class Chat extends Model {
       return chatId;
     });
 
+  __selectAllFieldsFromMessageContent = `id, message_id as messageId, content, time_edited as timeEdited`;
+
   getAllMessageContents = async (messageId) =>
     await this.errorWrapper(async () => {
       const contents = await this.dbQueryAsync(
-        "SELECT * FROM messages_contents WHERE message_id = ?",
+        `SELECT ${this.__selectAllFieldsFromMessageContent} FROM messages_contents WHERE message_id = ?`,
         [messageId]
       );
       if (contents.length > 0) return contents;
@@ -240,7 +242,7 @@ class Chat extends Model {
   getMessageContent = async (messageId) =>
     await this.errorWrapper(async () => {
       const contents = await this.dbQueryAsync(
-        "SELECT * FROM messages_contents WHERE message_id = ?",
+        `SELECT ${this.__selectAllFieldsFromMessageContent} FROM messages_contents WHERE message_id = ?`,
         [messageId]
       );
       if (contents.length > 0) return contents[0];
@@ -257,9 +259,9 @@ class Chat extends Model {
     });
 
     const joins = await this.dbQueryAsync(
-      `SELECT chat_id,
-          DATE_FORMAT(time_created, '%Y-%m-%d %H:%i:%s') as time_created, 
-          DATE_FORMAT(delete_time, '%Y-%m-%d %H:%i:%s') as delete_time
+      `SELECT chat_id as chatId,
+          DATE_FORMAT(time_created, '%Y-%m-%d %H:%i:%s') as timeCreated, 
+          DATE_FORMAT(delete_time, '%Y-%m-%d %H:%i:%s') as deleteTime
           FROM chats_users WHERE chat_id IN (?) AND user_id=?`,
       [chatIds, userId]
     );
@@ -305,11 +307,12 @@ class Chat extends Model {
     dopFilter = [],
   }) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT chats.id as chat_id, chats.type as chat_type, chats.name as chat_name, 
-            messages.type, messages.time_created as time_sended, messages_contents.content,
-            chat_info.last_viewed_message_id, chat_info.current_last_viewed_message_id,
-             chat_info.last_message_id, 
-            chat_info.time_created, chat_info.delete_time, ${selectFields}
+      let query = `SELECT chats.id as chatId, chats.type as chatType, chats.name as chatName, 
+            messages.type, messages.timeCreated as timeSended, messages_contents.content,
+            chat_info.last_viewed_message_id as lastViewedMessageId, 
+            chat_info.current_last_viewed_message_id as currentLastViewedMessageId, 
+            chat_info.last_message_id as lastMessageId, chat_info.time_created as timeCreated,
+            chat_info.delete_time as deleteTime, ${selectFields}
             FROM chats
             LEFT JOIN chats_users ON chats_users.chat_id = chats.id AND chats_users.user_id != ? AND chats.type = "personal"
             LEFT JOIN users ON chats_users.user_id = users.id
@@ -398,9 +401,12 @@ class Chat extends Model {
     searchString = ""
   ) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT chats.id as chat_id, chats.type as chat_type, 
-          messages.type, messages.time_created as time_sended, messages_contents.content,
-          chat_info.last_message_id, chats_users.time_created, chats_users.delete_time, ${this.__usersFields}
+      let query = `SELECT chats.id as chatId, chats.type as chatType, 
+          messages.type, messages.time_created as timeSended, messages_contents.content,
+          chat_info.last_message_id as lastMessageId, 
+          chats_users.time_created as timeCreated, 
+          chats_users.delete_time as deleteTime, 
+          ${this.__usersFields}
           FROM chats
           LEFT JOIN chats_users ON chats_users.chat_id = chats.id
           LEFT JOIN users ON chats_users.user_id = users.id
@@ -447,7 +453,7 @@ class Chat extends Model {
     await this.errorWrapper(async () => {
       const props = [currentUserId, currentUserId];
 
-      let query = `SELECT ${this.__usersFields}, "personal" as chat_type FROM users WHERE id != ? AND id NOT IN(
+      let query = `SELECT ${this.__usersFields}, "personal" as chatType FROM users WHERE id != ? AND id NOT IN(
           SELECT chats_users.user_id FROM chats_users
         JOIN chats ON chats_users.chat_id = chats.id AND chats.type = "personal"
         JOIN chats_users cu2 ON cu2.chat_id = chats.id AND cu2.user_id = ?)`;
@@ -524,24 +530,24 @@ class Chat extends Model {
   __getChatStatistic = (where = "") => {
     where = where.length > 0 ? ` AND ${where}` : "";
     return `
-      SELECT COUNT(*) as total, 'text' as message_type FROM messages WHERE chat_id=? AND type = 'text' AND hidden = 0${where}
+      SELECT COUNT(*) as total, 'text' as messageType FROM messages WHERE chat_id=? AND type = 'text' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'audio' as message_type FROM messages WHERE chat_id=? AND type = 'audio' AND hidden = 0${where}
+      SELECT COUNT(*) as total, 'audio' as messageType FROM messages WHERE chat_id=? AND type = 'audio' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'image' as message_type FROM messages WHERE chat_id=? AND type = 'image' AND hidden = 0${where}
+      SELECT COUNT(*) as total, 'image' as messageType FROM messages WHERE chat_id=? AND type = 'image' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'video' as message_type FROM messages WHERE chat_id=? AND type = 'video' AND hidden = 0${where}
+      SELECT COUNT(*) as total, 'video' as messageType FROM messages WHERE chat_id=? AND type = 'video' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'file' as message_type FROM messages WHERE chat_id=? AND type = 'file' AND hidden = 0${where}
+      SELECT COUNT(*) as total, 'file' as messageType FROM messages WHERE chat_id=? AND type = 'file' AND hidden = 0${where}
         UNION
-      SELECT COUNT(*) as total, 'all' as message_type FROM messages WHERE chat_id=? AND hidden = 0${where};
+      SELECT COUNT(*) as total, 'all' as messageType FROM messages WHERE chat_id=? AND hidden = 0${where};
     `;
   };
 
   getChatInfo = async (chatId) =>
     await this.errorWrapper(async () => {
       const chats = await this.dbQueryAsync(
-        "SELECT * FROM chats WHERE id = ?",
+        "SELECT id, `type`, `name`, `avatar` FROM chats WHERE id = ?",
         [chatId]
       );
       if (chats.length > 0) return chats[0];
@@ -682,7 +688,7 @@ class Chat extends Model {
     await this.errorWrapper(async () => {
       const users = await this.dbQueryAsync(
         `SELECT chats_users.typing as typing, 
-          chats_users.last_viewed_message_id as last_viewed_message_id, 
+          chats_users.last_viewed_message_id as lastViewedMessageId, 
           chats_users.role as role, ${this.__usersFields} FROM chats_users 
           JOIN users ON chats_users.user_id = users.id AND chats_users.chat_id = ? AND chats_users.delete_time IS NULL`,
         [chatId]

@@ -52,7 +52,7 @@ const MainPage = () => {
             lng={currentLocation.lng}
             main={true}
             needCircle={true}
-            radius={sessionUser.activity_radius}
+            radius={sessionUser.activityRadius}
             circleEditable={false}
           />
 

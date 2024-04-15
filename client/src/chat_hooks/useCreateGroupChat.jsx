@@ -132,13 +132,13 @@ const useCreateGroupChat = () => {
       deactivateChat();
 
       const convertedChat = {
-        chat_id: data.chatId,
+        chatId: data.chatId,
         type: data.message.type,
-        chat_type: data.message.chat_type,
+        chatType: data.message.chatType,
         content: data.message.content,
-        chat_avatar: data.avatar,
-        chat_name: data.name,
-        time_sended: data.message.time_sended,
+        chatAvatar: data.avatar,
+        chatName: data.name,
+        timeSended: data.message.timeSended,
       };
 
       onGetNewChat(convertedChat);

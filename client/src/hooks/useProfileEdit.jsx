@@ -25,7 +25,7 @@ const useProfileEdit = () => {
 
         changeEmail(res.email ?? "");
         changeNick(res.nick ?? "");
-        setActivityRadius(res.activity_radius ?? config.RADIUS_DEFAULT);
+        setActivityRadius(res.activityRadius ?? config.RADIUS_DEFAULT);
 
         if (res.lat === null && res.lng === null) {
           navigator.geolocation.getCurrentPosition(

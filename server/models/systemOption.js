@@ -10,7 +10,11 @@ class SystemOption extends Model {
 
     const res = {};
     resSelect.forEach((row) => (res[row["name"]] = row["value"]));
-    return res;
+    return {
+      feeType: res["fee_type"],
+      fixedFee: res["fixed_fee"],
+      percentFee: res["percent_fee"],
+    };
   };
 
   setFeeInfo = async ({ type, fixedValue, percentValue }) =>

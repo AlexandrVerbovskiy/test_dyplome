@@ -71,8 +71,9 @@ const JobProposalChangerStatus = ({
 
   const handleChangeClick = async () => {
     const res = await main.request({
-      url: changeStatusReq.url(proposalId),
+      url: changeStatusReq.url(),
       type: changeStatusReq.type,
+      data: changeStatusReq.convertData(proposalId),
       convertRes: changeStatusReq.convertRes,
     });
 

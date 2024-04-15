@@ -9,7 +9,7 @@ const ChatList = ({ chatList, children }) => {
         <ul className="list-unstyled">
           {chatList.map((chat, index) => (
             <ChatListElem
-              key={chat.chat_id ? chat.chat_id : chat.user_email}
+              key={chat.chatId ? chat.chatId : chat.userEmail}
               chat={chat}
               first={index === 0}
               last={index === chatList.length - 1}

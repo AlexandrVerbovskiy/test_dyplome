@@ -27,18 +27,18 @@ const ChatHeader = () => {
   const isSystem = chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? activeChat.chat_avatar : activeChat.avatar,
-    isSystem && activeChat.user_id == null
+    isGroup ? activeChat.chatAvatar : activeChat.avatar,
+    isSystem && activeChat.userId == null
   );
 
   let chatName = "System chat";
 
   if (isGroup) {
-    chatName = activeChat.chat_name;
+    chatName = activeChat.chatName;
   }
 
-  if (isPersonal || (isSystem && activeChat.user_id != null)) {
-    chatName = activeChat.user_email;
+  if (isPersonal || (isSystem && activeChat.userId != null)) {
+    chatName = activeChat.userEmail;
   }
 
   return (
@@ -60,7 +60,7 @@ const ChatHeader = () => {
           {!isSystem && (
             <ChatHeaderMainInfo
               isGroup={isGroup}
-              chatOnline={activeChat?.user_online}
+              chatOnline={activeChat?.userOnline}
               typingUsers={chatUsers.filter((user) => user.typing)}
             />
           )}

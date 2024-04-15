@@ -8,20 +8,20 @@ import { MainContext } from "../contexts";
 import config from "../config";
 const { API_URL } = config;
 
-const UserProfileLink = ({ user_id, user_email, user_avatar }) => {
-  if (!user_avatar) user_avatar = "/assets/images/avatars/avatar-1.png";
+const UserProfileLink = ({ userId, userEmail, userAvatar }) => {
+  if (!userAvatar) userAvatar = "/assets/images/avatars/avatar-1.png";
 
   return (
     <div className="admin-chat-user-profile">
-      <a href={"#" + user_id}>
+      <a href={"#" + userId}>
         <img
-          src={user_avatar}
+          src={userAvatar}
           width="30"
           height="30"
           className="rounded-circle"
           style={{ marginRight: "10px", width: "30px", height: "30px" }}
         />
-        <h4 className="mb-0 font-weight-bold">{user_email}</h4>
+        <h4 className="mb-0 font-weight-bold">{userEmail}</h4>
       </a>
     </div>
   );
@@ -74,7 +74,7 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
                 {story.map((elem) => (
                   <div key={elem["id"]} className="flex-grow-1">
                     <p className="mb-0 chat-time">
-                      {shortTimeFormat(elem["time_edited"])}
+                      {shortTimeFormat(elem["timeEdited"])}
                     </p>
                     <div className="chat-base-msg card">
                       <MessageContent type="text" content={elem.content} />
@@ -92,17 +92,17 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
 };
 
 const Message = ({
-  time_sended,
+  timeSended,
   type,
-  user_id,
-  user_avatar,
-  user_email,
+  userId,
+  userAvatar,
+  userEmail,
   content,
   senderIndex = 0,
   hidden = false,
   story = [],
 }) => {
-  if (!user_avatar) user_avatar = "/assets/images/avatars/avatar-3.png";
+  if (!userAvatar) userAvatar = "/assets/images/avatars/avatar-3.png";
 
   const timeTextAlign = senderIndex === 0 ? "start" : "end";
   let contentCardClass =
@@ -113,13 +113,13 @@ const Message = ({
 
   let nearTimeMessage = (
     <div className="mb-0 chat-time" style={{ timeTextAlign }}>
-      {shortTimeFormat(time_sended)}
+      {shortTimeFormat(timeSended)}
     </div>
   );
   if (hidden && story.length > 1) {
     nearTimeMessage = (
       <TimeRow
-        timeSended={time_sended}
+        timeSended={timeSended}
         textAlign={timeTextAlign}
         text="(edited & deleted)"
         story={story}
@@ -130,7 +130,7 @@ const Message = ({
   } else if (hidden) {
     nearTimeMessage = (
       <div className="mb-0 chat-time" style={{ timeTextAlign }}>
-        {shortTimeFormat(time_sended)}
+        {shortTimeFormat(timeSended)}
         <div className="deleted-message-label">(deleted)</div>
       </div>
     );
@@ -138,7 +138,7 @@ const Message = ({
   } else if (story.length > 1) {
     nearTimeMessage = (
       <TimeRow
-        timeSended={time_sended}
+        timeSended={timeSended}
         textAlign={timeTextAlign}
         text="(edited)"
         story={story}
@@ -150,13 +150,13 @@ const Message = ({
   return (
     <div className={"d-flex admin-chat-views " + mainCardClass}>
       <img
-        src={user_avatar}
+        src={userAvatar}
         width="46"
         height="46"
         className="sender-message-avatar rounded-circle"
-        alt={user_id}
-        title={user_id}
-        style={{width: "46px", height: "46px"}}
+        alt={userId}
+        title={userId}
+        style={{ width: "46px", height: "46px" }}
       />
       <div className="flex-grow-1 ms-2">
         {nearTimeMessage}
@@ -214,10 +214,10 @@ const AdminClientChatView = () => {
               <div>
                 {messages.map((message) => (
                   <Message
-                    key={message["message_id"]}
+                    key={message["messageId"]}
                     {...message}
                     senderIndex={
-                      message["user_id"] == users[0]["user_id"] ? 0 : 1
+                      message["userId"] == users[0]["userId"] ? 0 : 1
                     }
                   />
                 ))}
