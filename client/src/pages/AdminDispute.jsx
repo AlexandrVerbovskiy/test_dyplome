@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { MainContext } from "../contexts";
-import { getJobDisputeInfo } from "../requests";
+import { adminAssignDispute, getJobDisputeInfo } from "../requests";
 import { BaseJobEntityTemplate } from "../job_components";
 import { Link } from "react-router-dom";
+import { ViewInput } from "../components";
 
 const AdminDispute = () => {
   let { disputeId } = useParams();
   const [dispute, setDispute] = useState(null);
-  const { setSuccess, setError, request } = useContext(MainContext);
+  const { setSuccess, setError, request, sessionUser } =
+    useContext(MainContext);
 
   useEffect(() => {
     (async () => {
@@ -28,6 +30,21 @@ const AdminDispute = () => {
 
   if (!dispute) return;
 
+  const handleAcceptDispute = async (id) => {
+    try {
+      await request({
+        url: adminAssignDispute.url(),
+        type: adminAssignDispute.type,
+        data: adminAssignDispute.convertData(id),
+        convertRes: adminAssignDispute.convertRes,
+      });
+
+      setDispute((prev) => ({ ...prev, adminId: sessionUser.id }));
+    } catch (e) {}
+  };
+
+  console.log(dispute);
+
   return (
     <BaseJobEntityTemplate
       pageTitle="Proposal Info"
@@ -42,7 +59,22 @@ const AdminDispute = () => {
       needShowAllStatus={true}
     >
       <hr />
+      <ViewInput
+        label="Dispute description"
+        className="view-job-description"
+        value={dispute.description}
+      />
+      <hr />
       <div className="d-flex justify-content-end">
+        {!dispute.adminId && (
+          <button
+            onClick={handleAcceptDispute}
+            type="button"
+            className="btn btn-warning"
+          >
+            Fasten dispute by you
+          </button>
+        )}
         {dispute.chatId && (
           <Link
             className="btn btn-primary"

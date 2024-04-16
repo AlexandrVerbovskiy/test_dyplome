@@ -13,6 +13,7 @@ import {
   getNotificationBodyByType,
   getNotificationMainColor,
   getNotificationTitleByType,
+  shortTimeFormat,
 } from "../utils";
 
 const Notifications = () => {

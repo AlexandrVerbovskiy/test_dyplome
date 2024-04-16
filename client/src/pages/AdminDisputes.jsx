@@ -1,11 +1,15 @@
 import { useContext } from "react";
-import { usePagination } from "../hooks";
+import {
+  useInitSearchDateFilter,
+  usePagination,
+  useSearchDateFilter,
+} from "../hooks";
 import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
 import { getAllDisputes } from "../requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
 import { fullTimeFormat } from "../utils";
-import { CreateLink, SearchFilter } from "../components";
+import { CreateLink, DatePicker, SearchFilter } from "../components";
 
 const headers = [
   {
@@ -92,13 +96,8 @@ const DisputeRow = ({
       <td>
         <div className="fast-actions">
           <div className="cursor-pointer action-icon primary-action">
-            <a href={`/job-view/${id}`}>
+            <a href={`/dispute/${id}`}>
               <Eye size="20px" />
-            </a>
-          </div>
-          <div className="cursor-pointer action-icon secondary-action">
-            <a href={`/job-edit/${id}`}>
-              <Pencil size="20px" />
             </a>
           </div>
         </div>
@@ -107,15 +106,25 @@ const DisputeRow = ({
   );
 };
 
-const DopFilterElem = ({ filter, changeFilter }) => (
+const DopFilterElem = ({
+  filter,
+  changeFilter,
+  fromDate,
+  toDate,
+  handleChangeDateFilter,
+}) => (
   <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
-    <CreateLink link="dispute-create"/>
+    <CreateLink link="dispute-create" />
+    <DatePicker value={[fromDate, toDate]} onChange={handleChangeDateFilter} />
     <SearchFilter filter={filter} changeFilter={changeFilter} />
   </div>
 );
 
 const AdminDisputes = () => {
   const main = useContext(MainContext);
+
+  const { fromDate, setFromDate, toDate, setToDate, getDateFilterProps } =
+    useInitSearchDateFilter();
 
   const {
     moveToPage,
@@ -143,6 +152,18 @@ const AdminDisputes = () => {
         type: getAllDisputes.type,
         convertRes: getAllDisputes.convertRes,
       }),
+    getDopProps: () => ({
+      ...getDateFilterProps(),
+    }),
+  });
+
+  const { handleChangeDateFilter } = useSearchDateFilter({
+    options,
+    fromDate,
+    setFromDate,
+    toDate,
+    setToDate,
+    rebuild,
   });
 
   return (
@@ -156,6 +177,9 @@ const AdminDisputes = () => {
       RowElem={DisputeRow}
       DopFilterElem={() =>
         DopFilterElem({
+          fromDate,
+          toDate,
+          handleChangeDateFilter,
           filter,
           changeFilter,
         })

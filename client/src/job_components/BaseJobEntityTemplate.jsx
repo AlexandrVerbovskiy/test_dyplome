@@ -37,16 +37,16 @@ const BaseJobEntityTemplate = ({
               </div>
 
               <div className="col-12 col-md-6 job-edit-inputs">
-                <ViewInput label="Proposal title" value={jobTitle} />
+                <ViewInput label="Job title" value={jobTitle} />
                 <JobStatus
                   needShowAllStatus={needShowAllStatus}
                   actualStatus={proposalStatus}
                   disputeStatus={disputeStatus}
                 />
                 <ViewInput label="Proposal price" value={proposalPrice} />
-                <ViewInput label="Proposal address" value={jobAddress} />
+                <ViewInput label="Job address" value={jobAddress} />
                 <ViewInput
-                  label="Proposal description"
+                  label="Job description"
                   className="view-job-description"
                   value={jobDescription}
                 />
