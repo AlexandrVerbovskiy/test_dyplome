@@ -61,6 +61,7 @@ const PaypalPaymentForm = ({ onComplete }) => {
             "client-id": config.PAYPAL_CLIENT_ID,
             currency: "USD",
             intent: "capture",
+            locale: "en_US",
           }}
         >
           <PayPalButtons

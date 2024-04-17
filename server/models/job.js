@@ -6,7 +6,7 @@ class Job extends Model {
   __degreesToRadians = 57.3;
 
   __selectAllFields = `jobs.id, jobs.author_id as authorId, jobs.title, jobs.price, jobs.address, 
-  jobs.description, jobs.lat, jobs.lng, jobs.created_at as createdAt`;
+  jobs.description, jobs.lat, jobs.lng, jobs.time_created as timeCreated`;
 
   strFilterFields = ["title", "jobs.address", "users.email"];
 

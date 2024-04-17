@@ -22,18 +22,18 @@ class Chat extends Model {
   __getUserChats = `
     SELECT chats.id as chatId FROM 
     (
-        SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
+        SELECT DISTINCT cu1.chat_id as chatId FROM chats_users as cu1 
             JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
     ) as c1 
     JOIN chats on c1.chat_id = chats.id and chats.type = ?
     `;
 
   __groupChatFields =
-    "chats.avatar as chat_avatar, chats.name as chat_name, users.online as user_online, users.email as user_email, users.avatar as user_avatar, users.nick as user_nick, users.id as user_id";
+    "chats.avatar as chatAvatar, chats.name as chatName, users.online as userOnline, users.email as userEmail, users.avatar as userAvatar, users.nick as userNick, users.id as userId";
 
   __getUserChatsGroups = `SELECT chats.id as chatId FROM 
   (
-      SELECT DISTINCT cu1.chat_id as chat_id FROM chats_users as cu1 
+      SELECT DISTINCT cu1.chat_id as chatId FROM chats_users as cu1 
           JOIN chats_users as cu2 ON cu1.chat_id = cu2.chat_id AND cu2.user_id = ? AND cu1.user_id != ?
   ) as c1 
   JOIN chats on c1.chat_id = chats.id`;
@@ -267,17 +267,17 @@ class Chat extends Model {
     );
 
     joins.forEach((join) => {
-      let where = `${name}.time_created >= '${join.time_created}'`;
+      let where = `${name}.time_created >= '${join.timeCreated}'`;
 
-      if (join["delete_time"]) {
-        where += ` AND ${name}.time_created <= '${join.delete_time}'`;
+      if (join["deleteTime"]) {
+        where += ` AND ${name}.time_created <= '${join.deleteTime}'`;
       } else {
-        chatInfos[join.chat_id]["active"] = true;
+        chatInfos[join.chatId]["active"] = true;
       }
 
       where = `(${where})`;
 
-      chatInfos[join.chat_id]["where"].push(where);
+      chatInfos[join.chatId]["where"].push(where);
     });
 
     Object.keys(chatInfos).forEach((chatId) => {
@@ -308,7 +308,7 @@ class Chat extends Model {
   }) =>
     await this.errorWrapper(async () => {
       let query = `SELECT chats.id as chatId, chats.type as chatType, chats.name as chatName, 
-            messages.type, messages.timeCreated as timeSended, messages_contents.content,
+            messages.type, messages.time_created as timeSended, messages_contents.content,
             chat_info.last_viewed_message_id as lastViewedMessageId, 
             chat_info.current_last_viewed_message_id as currentLastViewedMessageId, 
             chat_info.last_message_id as lastMessageId, chat_info.time_created as timeCreated,
@@ -571,7 +571,7 @@ class Chat extends Model {
 
       const statistic = await this.dbQueryAsync(query, props);
       const res = {};
-      statistic.forEach((elem) => (res[elem["message_type"]] = elem["total"]));
+      statistic.forEach((elem) => (res[elem["messageType"]] = elem["total"]));
       return res;
     });
 
@@ -601,7 +601,7 @@ class Chat extends Model {
         params.push(Number(lastId));
       }
 
-      query += ` ORDER BY time_sended DESC, messages.id DESC LIMIT 0, ?;`;
+      query += ` ORDER BY messages.time_created DESC, messages.id DESC LIMIT 0, ?;`;
       params.push(Number(count));
       const messages = await this.dbQueryAsync(query, params);
       return messages.reverse();
@@ -623,7 +623,7 @@ class Chat extends Model {
 
       params.push(Number(userId));
 
-      query += ` ORDER BY time_sended DESC, messages.id DESC`;
+      query += ` ORDER BY messages.time_created DESC, messages.id DESC`;
       const messages = await this.dbQueryAsync(query, params);
       return messages.length;
     });
@@ -650,7 +650,7 @@ class Chat extends Model {
       let userRole = "member";
 
       resChatUsers.forEach((user) => {
-        if (user["user_id"] != userId) {
+        if (user["userId"] != userId) {
           users.push(user);
         } else {
           userRole = user["role"];
