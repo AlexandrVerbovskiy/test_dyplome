@@ -35,8 +35,48 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
                 <div className="input-group">{userInfo["nick"] ?? "-"}</div>
               </div>
             </div>
+
+            <div className="row">
+              <div>
+                <label className="form-label form-label-view">Phone</label>
+                <div className="input-group">{userInfo["phone"] ?? "-"}</div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div>
+                <label className="form-label form-label-view">
+                  Linkedin Url
+                </label>
+                <div className="input-group">
+                  {userInfo["linkedinUrl"] ?? "-"}
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div>
+                <label className="form-label form-label-view">
+                  Instagram Url
+                </label>
+                <div className="input-group">
+                  {userInfo["instagramUrl"] ?? "-"}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {userInfo["biography"] && (
+          <div className="row mb-4">
+            <div className="col col-12">
+              <div>
+                <label className="form-label form-label-view">Biography</label>
+                <div className="input-group">{userInfo["biography"]}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <hr style={{ marginTop: "0" }} />
 

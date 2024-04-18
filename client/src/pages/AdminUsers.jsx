@@ -109,7 +109,7 @@ const UserRow = ({
         {!isCurrentUser && (
           <div className="fast-actions">
             <div className="cursor-pointer action-icon primary-action">
-              <a href={`/user-view/${id}`}>
+              <a href={`/users/${id}`}>
                 <Eye size="20px" />
               </a>
             </div>

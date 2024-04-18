@@ -4,6 +4,9 @@ CREATE TABLE users (
     password varchar(255) NOT NULL,
     nick varchar(255) DEFAULT NULL,
     `address` varchar(255) DEFAULT NULL,
+    phone varchar(255) DEFAULT NULL,
+    instagram_url varchar(255) DEFAULT NULL,
+    linkedin_url varchar(255) DEFAULT NULL,
     avatar varchar(255) DEFAULT NULL,
     lat double DEFAULT NULL,
     lng double DEFAULT NULL,
@@ -13,4 +16,5 @@ CREATE TABLE users (
     `admin` BOOLEAN DEFAULT false,
     time_created timestamp DEFAULT CURRENT_TIMESTAMP,
     balance double DEFAULT 0,
+    biography text,
 );

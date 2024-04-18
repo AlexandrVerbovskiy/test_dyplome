@@ -11,8 +11,9 @@ class User extends Model {
 
   orderFields = ["id", "email", "address", "nick"];
 
-  __selectAllFields = `users.id, users.email, users.nick, users.address, users.avatar, users.lat, users.lng, 
-  users.activity_radius as activityRadius, users.profile_authorized as profileAuthorized, 
+  __selectAllFields = `users.id, users.email, users.phone, users.nick, users.address, users.avatar, users.lat, users.lng, 
+  users.activity_radius as activityRadius, users.profile_authorized as profileAuthorized, users.instagram_url as instagramUrl,
+  users.linkedin_url as linkedinUrl, users.biography,
   users.online, users.admin, users.time_created as timeCreated, users.balance as balance`;
 
   create = async (email, password) =>
@@ -25,6 +26,7 @@ class User extends Model {
         email,
         password: hashedPassword,
         admin: 0,
+        biography: "",
       };
 
       const countUserRes = await this.dbQueryAsync(
@@ -118,6 +120,10 @@ class User extends Model {
         authorized,
         admin = null,
         balance = null,
+        phone = null,
+        biography = "",
+        instagramUrl = "",
+        linkedinUrl = "",
       } = profileData;
 
       const countUserRes = await this.dbQueryAsync(
@@ -128,7 +134,7 @@ class User extends Model {
       if (count) this.setError("Email was registered earlier", 409);
 
       let query =
-        "UPDATE users SET activity_radius=?, nick = ?, email = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ?";
+        "UPDATE users SET activity_radius=?, nick = ?, email = ?, `address` = ?, avatar = ?, lat = ?, lng = ?, profile_authorized = ?, phone= ?, biography = ?, instagram_url = ?, linkedin_url = ?";
       const props = [
         activityRadius,
         nick,
@@ -138,6 +144,10 @@ class User extends Model {
         lat,
         lng,
         authorized,
+        phone,
+        biography,
+        instagramUrl,
+        linkedinUrl,
       ];
 
       if (admin !== null) {
@@ -169,6 +179,10 @@ class User extends Model {
         authorized,
         admin = null,
         balance = 0,
+        phone = null,
+        biography = "",
+        instagramUrl = "",
+        linkedinUrl = "",
       } = profileData;
 
       const user = {
@@ -183,6 +197,10 @@ class User extends Model {
         admin,
         password: null,
         balance,
+        phone,
+        biography,
+        instagram_url: instagramUrl,
+        linkedin_url: linkedinUrl,
       };
 
       const countUserRes = await this.dbQueryAsync(

@@ -6,6 +6,10 @@ const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [balance, setBalance] = useState({ value: 0, error: null });
   const [email, setEmail] = useState({ value: "", error: null });
+  const [phone, setPhone] = useState({ value: "", error: null });
+  const [biography, setBiography] = useState({ value: "", error: null });
+  const [instagramUrl, setInstagramUrl] = useState({ value: "", error: null });
+  const [linkedinUrl, setLinkedinUrl] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const [admin, setAdmin] = useState({ value: false, error: null });
   const [authorized, setAuthorized] = useState({ value: false, error: null });
@@ -48,6 +52,22 @@ const useAdminUserEdit = ({ baseData }) => {
 
   const changeImg = (img) => {
     setProfileImg({ value: img, error: null });
+  };
+
+  const changePhone = (phone) => {
+    setPhone({ value: phone, error: null });
+  };
+
+  const changeBiography = (biography) => {
+    setPhone({ value: biography, error: null });
+  };
+
+  const changeLinkedinUrl = (linkedinUrl) => {
+    setPhone({ value: linkedinUrl, error: null });
+  };
+
+  const changeInstagramUrl = (instagramUrl) => {
+    setPhone({ value: instagramUrl, error: null });
   };
 
   const validateProfileEdit = () => {
@@ -102,6 +122,10 @@ const useAdminUserEdit = ({ baseData }) => {
     authorized: { ...authorized, change: changeAuthorized },
     activityRadius: { value: activityRadius, change: setActivityRadius },
     balance: { ...balance, change: changeBalance },
+    biography: { ...biography, change: changeBiography },
+    phone: { ...phone, change: changePhone },
+    instagramUrl: { ...instagramUrl, change: changeInstagramUrl },
+    linkedinUrl: { ...linkedinUrl, change: changeLinkedinUrl },
   };
 };
 
