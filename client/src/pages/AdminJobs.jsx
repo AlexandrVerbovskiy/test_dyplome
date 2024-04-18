@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { usePagination } from "../hooks";
 import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
 import { MainContext } from "../contexts";
-import { getAllJobs } from "../requests";
+import { getAllJobs, jobChangeActiveByAdmin } from "../requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
-import { CreateLink, SearchFilter } from "../components";
+import { CreateLink, SearchFilter, YesNoSpan } from "../components";
 
 const headers = [
   {
@@ -22,7 +22,7 @@ const headers = [
   {
     value: "users.email",
     title: "userEmail",
-    width: "20%",
+    width: "15%",
     canChange: true,
   },
   {
@@ -34,8 +34,14 @@ const headers = [
   {
     value: "price",
     title: "Price",
-    width: "15%",
+    width: "10%",
     canChange: true,
+  },
+  {
+    value: "active",
+    title: "Active",
+    width: "10%",
+    canChange: false,
   },
   {
     value: "actions",
@@ -44,7 +50,18 @@ const headers = [
   },
 ];
 
-const JobRow = ({ userEmail, userId, id, title, price, address }) => {
+const JobRow = ({
+  userEmail,
+  userId,
+  id,
+  title,
+  price,
+  address,
+  active,
+  activeChange,
+  processRequests,
+}) => {
+  console.log(processRequests);
   return (
     <tr>
       <td className="fw-bolder">#{id}</td>
@@ -56,6 +73,9 @@ const JobRow = ({ userEmail, userId, id, title, price, address }) => {
       </td>
       <td className="fw-bolder">${price}</td>
       <td>{address}</td>
+      <td>
+        <YesNoSpan active={active} onClick={() => activeChange(id)} />
+      </td>
       <td>
         <div className="fast-actions">
           <div className="cursor-pointer action-icon primary-action">
@@ -112,6 +132,18 @@ const AdminJobs = () => {
       }),
   });
 
+  const activeChange = async (id) => {
+    const active = await main.request({
+      url: jobChangeActiveByAdmin.url(),
+      data: jobChangeActiveByAdmin.convertData(id),
+      type: jobChangeActiveByAdmin.type,
+      convertRes: jobChangeActiveByAdmin.convertRes,
+    });
+
+    setItemFields({ active }, id);
+  };
+  console.log(jobs);
+
   return (
     <BaseAdminTableLayoutPage
       changeOrder={handleChangeOrder}
@@ -120,7 +152,7 @@ const AdminJobs = () => {
       items={jobs}
       title="Jobs"
       headers={headers}
-      RowElem={JobRow}
+      RowElem={(data) => <JobRow activeChange={activeChange} {...data} />}
       DopFilterElem={() =>
         DopFilterElem({
           filter,

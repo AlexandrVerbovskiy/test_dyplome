@@ -172,6 +172,62 @@ class Job extends Controller {
         jobs,
       });
     });
+
+  changeActivate = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const jobId = req.body.id;
+      const userId = req.userData.userId;
+
+      const hasProposals = await this.jobProposalModel.checkJobHasProposals(
+        jobId
+      );
+
+      /*if (hasProposals) {
+        return this.sendResponseError(
+          res,
+          "The job has pending offers. You cannot hide it until you complete them."
+        );
+      }*/
+
+      const active = await this.jobModel.changeActivate(jobId, userId);
+
+      return this.sendResponseSuccess(
+        res,
+        "The job active was updated successfully",
+        {
+          active,
+        }
+      );
+    });
+
+  changeActivateByAdmin = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const jobId = req.body.id;
+
+      const hasProposals = await this.jobProposalModel.checkJobHasProposals(
+        jobId
+      );
+
+      console.log(hasProposals);
+
+      if (hasProposals) {
+        return this.sendResponseError(
+          res,
+          "The job has pending offers. You cannot hide it until you complete them.",
+          409
+        );
+      }
+
+      const active = await this.jobModel.changeActivate(jobId);
+
+      return this.sendResponseSuccess(
+        res,
+        "The job active was update successfully",
+        {
+          active,
+        }
+      );
+    });
 }
 
 module.exports = Job;

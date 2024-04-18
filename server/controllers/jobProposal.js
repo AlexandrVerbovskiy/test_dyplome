@@ -59,7 +59,8 @@ class JobProposal extends Controller {
       userId
     );
     if (!proposalExists)
-      return this.sendResponseNoFoundError(res, 
+      return this.sendResponseNoFoundError(
+        res,
         "Proposal not found or you are not the owner"
       );
     return false;
@@ -86,13 +87,17 @@ class JobProposal extends Controller {
   accept = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.accept(proposalId);
-      return this.sendResponseSuccess(res, "Proposal accepted success", { proposal });
+      return this.sendResponseSuccess(res, "Proposal accepted success", {
+        proposal,
+      });
     });
 
   reject = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.reject(proposalId);
-      return this.sendResponseSuccess(res, "Proposal rejected success", { proposal });
+      return this.sendResponseSuccess(res, "Proposal rejected success", {
+        proposal,
+      });
     });
 
   requestToCancel = async (req, res) =>
@@ -108,7 +113,9 @@ class JobProposal extends Controller {
   acceptCancelled = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCancelled(proposalId);
-      return this.sendResponseSuccess(res, "Job cancelled success", { proposal });
+      return this.sendResponseSuccess(res, "Job cancelled success", {
+        proposal,
+      });
     });
 
   requestToComplete = async (req, res) =>
@@ -126,7 +133,9 @@ class JobProposal extends Controller {
   acceptCompleted = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
-      return this.sendResponseSuccess(res, "Contract closed success", { proposal });
+      return this.sendResponseSuccess(res, "Contract closed success", {
+        proposal,
+      });
     });
 
   getById = async (req, res) => {

@@ -2931,6 +2931,21 @@ body:has(.navbar) .alert {
   align-items: center;
 }
 
+.w-md-50{
+  width: 50%;
+}
+
+@media screen and (max-width: 720px) {
+  .product-actions {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .w-md-50{
+    width: 100%;;
+  }
+}
+
 .product-actions > *:first-child,
 .product-actions > *:last-child {
   font-size: 12px;

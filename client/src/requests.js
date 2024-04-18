@@ -255,6 +255,20 @@ export const createComment = {
   convertRes: (res) => res.data ?? {},
 };
 
+export const jobChangeActive = {
+  url: () => `job-change-active`,
+  type: "post",
+  convertData: (id) => ({ id }),
+  convertRes: (res) => res.data ?? {},
+};
+
+export const jobChangeActiveByAdmin = {
+  url: () => `admin-job-change-active`,
+  type: "post",
+  convertData: (id) => ({ id }),
+  convertRes: (res) => res.data.active ?? false,
+};
+
 export const getComments = {
   url: (type) => `get-comments-by-entity/${type}`,
   type: "post",
@@ -289,11 +303,6 @@ export const completeJobProposal = __changeProposalStatus("proposal-complete");
 export const acceptCompleteJobProposal = __changeProposalStatus(
   "proposal-accept-complete"
 );
-
-export const test = {
-  url: () => "test",
-  type: "post",
-};
 
 export const getUsersToNewGroup = {
   url: () => `get-users-to-new-group`,

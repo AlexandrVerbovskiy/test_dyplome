@@ -6,7 +6,7 @@ class Job extends Model {
   __degreesToRadians = 57.3;
 
   __selectAllFields = `jobs.id, jobs.author_id as authorId, jobs.title, jobs.price, jobs.address, 
-  jobs.description, jobs.lat, jobs.lng, jobs.time_created as timeCreated`;
+  jobs.description, jobs.lat, jobs.active, jobs.lng, jobs.time_created as timeCreated`;
 
   strFilterFields = ["title", "jobs.address", "users.email"];
 
@@ -60,17 +60,19 @@ class Job extends Model {
       const jobSkipIdsRequest = "jobs.id NOT IN (?)";
       const jobFilterRequest = `(jobs.title like "%${filter}%" OR nick like "%${filter}%")`;
 
+      query += " WHERE jobs.active = true";
+
       if (skippedIds.length > 0 && filter && filter.length > 0) {
-        query += ` WHERE ${jobSkipIdsRequest} AND ${jobFilterRequest}`;
+        query += ` AND ${jobSkipIdsRequest} AND ${jobFilterRequest}`;
         params.push(skippedIds);
       } else {
         if (skippedIds.length > 0) {
-          query += ` WHERE ${jobSkipIdsRequest}`;
+          query += ` AND ${jobSkipIdsRequest}`;
           params.push(skippedIds);
         }
 
         if (filter && filter.length > 0) {
-          query += ` WHERE ${jobFilterRequest}`;
+          query += ` AND ${jobFilterRequest}`;
         }
       }
 
@@ -137,9 +139,10 @@ class Job extends Model {
       const { orderType, order } = this.getOrderInfo(props);
       const { start, count } = props;
 
-      query = `SELECT users.email as userEmail, users.id as userId,
-      jobs.id, jobs.title, jobs.price, jobs.address
-      FROM jobs ${query} ORDER BY ${order} ${orderType} LIMIT ?, ?`;
+      query = `SELECT users.email as userEmail, users.id as userId, jobs.active,
+      jobs.id, jobs.title, jobs.price, jobs.address, COUNT(job_requests.job_id) AS processRequests FROM jobs
+      LEFT JOIN job_requests ON jobs.id = job_requests.job_id AND status != 'Completed' AND status != 'Cancelled' AND status != 'Rejected'
+      ${query} GROUP BY jobs.id ORDER BY ${order} ${orderType} LIMIT ?, ?`;
       params.push(start, count);
 
       return await this.dbQueryAsync(query, params);
@@ -147,7 +150,10 @@ class Job extends Model {
 
   getForAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT jobs.title, jobs.price, jobs.address, jobs.description, jobs.id, jobs.time_created as timeCreated FROM jobs WHERE jobs.author_id = ?`;
+      let query = `SELECT jobs.title, jobs.price, jobs.address, jobs.description, jobs.id, 
+      jobs.active, jobs.time_created as timeCreated, COUNT(job_requests.job_id) AS processRequests FROM jobs
+      LEFT JOIN job_requests ON jobs.id = job_requests.job_id AND status != 'Completed' AND status != 'Cancelled' AND status != 'Rejected'
+      WHERE jobs.author_id = ?`;
       const params = [userId];
 
       if (skippedIds.length > 0) {
@@ -159,11 +165,31 @@ class Job extends Model {
         query += ` AND (jobs.title like "%${filter}%")`;
       }
 
-      query += ` LIMIT ?`;
+      query += ` GROUP BY jobs.id LIMIT ?`;
 
       params.push(limit);
       const jobs = await this.dbQueryAsync(query, params);
       return jobs;
+    });
+
+  changeActivate = async (jobId, userId = null) =>
+    await this.errorWrapper(async () => {
+      let query = "UPDATE jobs SET active = !active WHERE id = ?";
+      const props = [jobId];
+
+      if (userId) {
+        query += " AND author_id = ?";
+        props.push(userId);
+      }
+
+      await this.dbQueryAsync(query, props);
+
+      const result = await this.dbQueryAsync(
+        `SELECT active FROM jobs WHERE id = ?`,
+        [jobId]
+      );
+
+      return result[0]?.active;
     });
 }
 module.exports = Job;

@@ -71,7 +71,6 @@ const UserRow = ({
   authorizedChange,
   adminChange,
 }) => {
-  const [activeDelete, setActiveDelete] = useState(false);
   const main = useContext(MainContext);
   const isCurrentUser = main.sessionUser.id === id;
 

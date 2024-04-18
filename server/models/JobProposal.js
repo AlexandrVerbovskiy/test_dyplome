@@ -140,6 +140,15 @@ class JobProposal extends Model {
       return result[0].count;
     });
 
+  checkJobHasProposals = async (jobId) =>
+    await this.errorWrapper(async () => {
+      const result = await this.dbQueryAsync(
+        `SELECT count(*) as count FROM job_requests WHERE job_id = ? AND status != 'Completed' AND status != 'Cancelled' AND status != 'Rejected'`,
+        [jobId]
+      );
+      return result[0].count;
+    });
+
   checkJobOwner = async (proposalId, userId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(

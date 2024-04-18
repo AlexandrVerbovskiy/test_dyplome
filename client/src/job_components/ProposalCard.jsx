@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import JobProposalViewStatus from "../components/JobProposalViewStatus";
 
 const ProposalCard = ({
   description,
@@ -8,6 +9,7 @@ const ProposalCard = ({
   title,
   author,
   price,
+  status,
   id,
   userId,
   userType = "Author",
@@ -34,6 +36,9 @@ const ProposalCard = ({
           <div className="job-price">
             <b>Price: ${price}</b>
           </div>
+        </div>
+        <div>
+          <JobProposalViewStatus status={status} />
         </div>
         <div className="job-dop-info">
           <div className="job-description">
