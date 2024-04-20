@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { validateToken } from "../requests";
+import { validateToken } from "requests";
 import { redirect } from "react-router-dom";
 
 const useAuth = (request) => {

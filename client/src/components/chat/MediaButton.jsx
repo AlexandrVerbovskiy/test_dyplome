@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { MicFill, CameraVideoFill } from "react-bootstrap-icons";
-import { ChatBodyContext } from "../../contexts";
+import { ChatBodyContext } from "contexts";
 
 const MediaButton = () => {
   const { recorder } = useContext(ChatBodyContext);

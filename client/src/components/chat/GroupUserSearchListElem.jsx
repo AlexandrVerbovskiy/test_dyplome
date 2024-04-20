@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { generateFullUserImgPath } from "../../utils";
-import config from "../../config";
+import { generateFullUserImgPath } from "utils";
+import config from "config";
 
 const GroupUserSearchListElem = ({
   role = null,

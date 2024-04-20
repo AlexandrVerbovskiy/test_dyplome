@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import {
   JobProposalChangerStatus,
   DisputeBtn,
   AcceptPopup,
   BaseJobEntityTemplate,
-} from "../components";
-import { getJobProposalInfo } from "../requests";
-import { usePopupController } from "../hooks";
-import { createDispute } from "../requests";
+} from "components";
+import { getJobProposalInfo } from "requests";
+import { usePopupController } from "hooks";
+import { createDispute } from "requests";
 
 const JobProposalView = () => {
   const isSeller = true;

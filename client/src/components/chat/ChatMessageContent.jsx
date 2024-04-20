@@ -1,5 +1,5 @@
 import React from "react";
-import config from "../../config";
+import config from "config";
 
 const ChatMessageContent = ({ type, content, inProcess }) => {
   const { API_URL } = config;

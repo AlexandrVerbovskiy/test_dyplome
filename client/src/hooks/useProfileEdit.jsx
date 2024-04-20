@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getProfileInfo } from "../requests";
-import { MainContext } from "../contexts";
-import config from "../config";
+import { getProfileInfo } from "requests";
+import { MainContext } from "contexts";
+import config from "config";
 
 const useProfileEdit = () => {
   const [nick, setNick] = useState({ value: "", error: null });

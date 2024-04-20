@@ -5,7 +5,7 @@ import {
   getNotificationIcon,
   getNotificationBodyByType,
   getNotificationTitleByType,
-} from "../utils";
+} from "utils";
 
 const NotificationElem = ({ type, body, createdAt }) => {
   body = JSON.parse(body);

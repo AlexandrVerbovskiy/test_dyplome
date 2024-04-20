@@ -1,5 +1,5 @@
 import React from "react";
-import { generateFullUserImgPath } from "../../utils";
+import { generateFullUserImgPath } from "utils";
 
 const ChatMessageActions = ({
   onDeleteClick,

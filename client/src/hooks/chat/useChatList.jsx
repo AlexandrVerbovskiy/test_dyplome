@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { MainContext } from "../../contexts";
+import { MainContext } from "contexts";
 
 const useChatList = ({ onInit, getRequest }) => {
   const limit = 20;

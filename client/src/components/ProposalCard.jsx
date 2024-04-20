@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import JobProposalViewStatus from "./JobProposalViewStatus";
-import { timeNormalConverter } from "../utils";
+import { timeNormalConverter } from "utils";
 
 const ProposalCard = ({
   description,
@@ -34,12 +34,15 @@ const ProposalCard = ({
             <b>Address: </b>
             {address}
           </div>
-          <div className="job-price">
-            <b>Price: ${price}</b>
-          </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <b>Status: </b>
             <JobProposalViewStatus status={status} />
+          </div>
+          <div className="job-price">
+            <b>Price:</b> ${price}
+          </div>
+          <div className="job-created-time">
+            <b>Offer started at:</b> {timeNormalConverter(timeCreated)}
           </div>
         </div>
         <div className="job-dop-info">
@@ -52,23 +55,21 @@ const ProposalCard = ({
               </>
             )}
           </div>
-          <div className="job-created-time">
-            {timeNormalConverter(timeCreated)}
-          </div>
         </div>
       </div>
       <div className="job-actions">
         <div className="product-actions d-flex flex-column flex-sm-row">
-          <Link to={`/job-proposal/${id}`} className="btn btn-primary">
+          <Link to={`/job-proposal/${id}`} className="btn btn-primary w-md-50">
             View proposal
           </Link>
+
+          <a
+            href={"/chat/personal/" + userId}
+            className="btn btn-success w-md-50"
+          >
+            {writeBtnText}
+          </a>
         </div>
-        <a
-          href={"/chat/personal/" + userId}
-          className="btn btn-link write-to-author"
-        >
-          {writeBtnText}
-        </a>
       </div>
     </div>
   );

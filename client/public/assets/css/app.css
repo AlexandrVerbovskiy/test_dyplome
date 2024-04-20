@@ -2801,7 +2801,7 @@ body:has(.navbar) .alert {
   display: flex;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   /*padding: 20px 30px;*/
 }
 
@@ -2827,7 +2827,7 @@ body:has(.navbar) .alert {
   }
 
   .job-list {
-    grid-column-gap: 1%;
+    grid-column-gap: 2%;
   }
 }
 
@@ -2862,11 +2862,6 @@ body:has(.navbar) .alert {
 .job-price,
 .job-created-time {
   font-size: 14px;
-}
-
-.job-created-time {
-  color: gray;
-  right: 0;
 }
 
 .show-more-job-description {
@@ -2943,6 +2938,15 @@ body:has(.navbar) .alert {
 
   .w-md-50 {
     width: 100%;
+  }
+
+  .product-actions > *:first-child {
+    margin-right: 0;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .product-actions > *:last-child {
+    margin-left: 0;
   }
 }
 
@@ -3895,7 +3899,12 @@ hr:has(+ .balance-payment-type-select) {
 .status-view {
   cursor: auto !important;
   font-size: 12px;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
   margin-left: 5px;
   font-weight: 500;
+}
+
+.px-0 {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }

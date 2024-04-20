@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const MainFilter = ({ value, onClick = (value) => {} }) => {
+const MainFilter = ({ value, children = null, onClick = (value) => {} }) => {
   const [filterValue, setFilterValue] = useState(value);
 
   const handleSearch = () => onClick(filterValue);
@@ -27,6 +27,7 @@ const MainFilter = ({ value, onClick = (value) => {} }) => {
       >
         Search
       </button>
+      {children ? children : <></>}
     </div>
   );
 };

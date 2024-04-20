@@ -5,10 +5,10 @@ import {
   useElements,
   Elements,
 } from "@stripe/react-stripe-js";
-import { MainContext } from "../contexts";
-import { stripeCharge } from "../requests";
+import { MainContext } from "contexts";
+import { stripeCharge } from "requests";
 import { loadStripe } from "@stripe/stripe-js";
-import config from "../config";
+import config from "config";
 import Input from "./Input";
 
 const stripePromise = loadStripe(config.STRIPE_PUBLIC_KEY);

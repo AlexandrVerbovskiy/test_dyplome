@@ -1,20 +1,19 @@
 import { useContext } from "react";
-import { DatePicker, Layout, SearchFilter } from "../components";
-import { MainContext } from "../contexts";
+import { DatePicker, Layout, SearchFilter, Pagination } from "components";
+import { MainContext } from "contexts";
 import {
   useInitSearchDateFilter,
   usePagination,
   useSearchDateFilter,
-} from "../hooks";
-import { getNotificationsPaginationVersion } from "../requests";
-import { Pagination } from "../components";
+} from "hooks";
+import { getNotificationsPaginationVersion } from "requests";
 import {
   getNotificationIcon,
   getNotificationBodyByType,
   getNotificationMainColor,
   getNotificationTitleByType,
   shortTimeFormat,
-} from "../utils";
+} from "utils";
 
 const Notifications = () => {
   const main = useContext(MainContext);

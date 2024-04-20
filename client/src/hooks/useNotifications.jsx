@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
-import { getNotifications } from "../requests";
+import { getNotifications } from "requests";
 
 const useNotifications = ({ io, onGetNotification }) => {
   const [newNotifications, setNewNotifications] = useState([]);

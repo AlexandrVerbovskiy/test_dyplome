@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { PopupWrapper } from "../";
+import { PopupWrapper } from "components"
 import CustomAudio from "./CustomAudio";
-import { ChatBodyContext, ChatContext } from "../../contexts";
-import config from "../../config";
-import { autoConvert } from "../../utils";
+import { ChatBodyContext, ChatContext } from "contexts";
+import config from "config";
+import { autoConvert } from "utils";
 
 const MediaFileAcceptPopup = () => {
   const { handleSendMedia, activeChat, activeChatId } = useContext(ChatContext);

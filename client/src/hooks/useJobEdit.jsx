@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getJobInfo } from "../requests";
-import { MainContext } from "../contexts";
+import { getJobInfo } from "requests";
+import { MainContext } from "contexts";
 
 const useJobEdit = ({ id = null }) => {
   const [jobId, setJobId] = useState(id);

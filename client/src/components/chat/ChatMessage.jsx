@@ -2,8 +2,8 @@ import React, { useRef, useContext } from "react";
 import ChatMessageContent from "./ChatMessageContent";
 import ChatMessageActions from "./ChatMessageActions";
 import AcceptDeleteMessageModal from "./AcceptDeleteMessageModal";
-import { generateFullUserImgPath, fullTimeFormat } from "../../utils";
-import { ChatContext, MainContext } from "../../contexts";
+import { generateFullUserImgPath, fullTimeFormat } from "utils";
+import { ChatContext, MainContext } from "contexts";
 
 const ChatMessage = ({
   onRightBtnClick,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { getChatMessagesByAdmin } from "../requests";
-import { MainContext } from "../contexts";
-import config from "../config";
+import { getChatMessagesByAdmin } from "requests";
+import { MainContext } from "contexts";
+import config from "config";
 
 const useAdminChatMessages = ({ chatId }) => {
   const main = useContext(MainContext);

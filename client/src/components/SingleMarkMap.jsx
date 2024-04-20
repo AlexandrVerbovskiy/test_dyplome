@@ -1,5 +1,5 @@
 import React from "react";
-import { Map, MapMarker } from "../components";
+import { Map, MapMarker } from "components";
 
 const SingleMarkMap = ({
   markerTitle,

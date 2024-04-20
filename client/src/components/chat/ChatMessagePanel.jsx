@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { TextInput } from "../";
-import { ChatContext } from "../../contexts";
+import { TextInput } from "components"
+import { ChatContext } from "contexts";
 import { EmojiSmile } from "react-bootstrap-icons";
 import EmojiPopup from "./EmojiPopup";
 import ChatTextEditor from "./ChatTextEditor";

@@ -1,5 +1,5 @@
 import React from "react";
-import { generateSmilesArray, isRangeInDocument } from "../../utils";
+import { generateSmilesArray, isRangeInDocument } from "utils";
 
 const EmojiPopup = ({ textRef, savedSelection, setSavedSelection }) => {
   const emojiList = generateSmilesArray();

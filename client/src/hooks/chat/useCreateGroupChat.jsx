@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { getUsersToNewGroup, createGroupChat } from "../../requests";
-import { ChatContext, MainContext } from "../../contexts";
+import { getUsersToNewGroup, createGroupChat } from "requests";
+import { ChatContext, MainContext } from "contexts";
 
 const useCreateGroupChat = () => {
   const [activeCreateChat, setActiveCreateChat] = useState(false);

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { ChatContext } from "../../contexts";
+import { ChatContext } from "contexts";
 import GroupChatCreateModal from "./GroupChatCreateModal";
 
 const AdminChatListHeader = () => {

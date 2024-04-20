@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 
 import {
   acceptJobProposal,
@@ -8,9 +8,9 @@ import {
   acceptCancelJobProposal,
   completeJobProposal,
   acceptCompleteJobProposal,
-} from "../requests";
+} from "requests";
 
-import config from "../config";
+import config from "config";
 
 const JobProposalChangerStatus = ({
   setProposal,

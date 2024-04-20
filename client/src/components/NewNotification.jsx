@@ -5,7 +5,7 @@ import {
   getNotificationBodyByType,
   getNotificationTitleByType,
   close,
-} from "../utils";
+} from "utils";
 
 const NewNotification = ({ id, type, body, close }) => {
   body = JSON.parse(body);

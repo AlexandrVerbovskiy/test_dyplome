@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import {
   Map,
   MapMarker,
@@ -10,9 +10,9 @@ import {
   JobCard,
   JobMainFilter,
   JobCardWrapper,
-} from "../components";
-import { useGetJobs, usePopupController } from "../hooks";
-import config from "../config";
+} from "components";
+import { useGetJobs, usePopupController } from "hooks";
+import config from "config";
 
 const MainPage = () => {
   const { setSuccess, setError, sessionUser } = useContext(MainContext);

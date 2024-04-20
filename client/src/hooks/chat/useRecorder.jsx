@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { randomString, startRecording } from "../../utils";
+import { randomString, startRecording } from "utils";
 
 const useRecorder = (setFile) => {
   const [active, setActive] = useState(false);

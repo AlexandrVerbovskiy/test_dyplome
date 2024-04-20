@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { usePagination } from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
-import { MainContext } from "../contexts";
-import { getAllJobs, jobChangeActiveByAdmin } from "../requests";
+import { usePagination } from "hooks";
+import { MainContext } from "contexts";
+import { getAllJobs, jobChangeActiveByAdmin } from "requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
-import { CreateLink, SearchFilter, YesNoSpan } from "../components";
+import { CreateLink, SearchFilter, YesNoSpan, BaseAdminTableLayoutPage } from "components";
 
 const headers = [
   {

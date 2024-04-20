@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-import { Input, SignForm } from "../components";
-import { MainContext } from "../contexts";
-import { forgotPassword } from "../requests";
+import { Input, SignForm } from "components";
+import { MainContext } from "contexts";
+import { forgotPassword } from "requests";
 import { redirect } from "react-router-dom";
 
 const ForgotPassword = () => {

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { ChatContext, MainContext } from "../../contexts";
-import { fullTimeFormat, generateFullUserImgPath } from "../../utils";
+import { ChatContext, MainContext } from "contexts";
+import { fullTimeFormat, generateFullUserImgPath } from "utils";
 
 const ChatListElem = ({
   needNewMessagesCountView,

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import useMediaActions from "./useMediaActions";
-import {indicateMediaTypeByExtension} from "../../utils";
+import {indicateMediaTypeByExtension} from "utils";
 
 const useChatInit = ({
   sessionUser,

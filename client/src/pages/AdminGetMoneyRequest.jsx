@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import { useParams } from "react-router-dom";
-import { acceptGetMoneyRequest, getGetMoneyRequestById } from "../requests";
-import { Layout } from "../components";
+import { acceptGetMoneyRequest, getGetMoneyRequestById } from "requests";
+import { Layout } from "components";
 import { Paypal, Stripe } from "react-bootstrap-icons";
-import { fullTimeFormat, generateFullUserImgPath } from "../utils";
+import { fullTimeFormat, generateFullUserImgPath } from "utils";
 
 const labelWidth = 150;
 

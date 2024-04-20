@@ -6,10 +6,10 @@ import {
   PasswordInput,
   SingleMarkMap,
   Textarea,
-} from "../components";
-import { useChangePassword, useProfileEdit } from "../hooks";
-import { updateProfile } from "../requests";
-import { MainContext } from "../contexts";
+} from "components";
+import { useChangePassword, useProfileEdit } from "hooks";
+import { updateProfile } from "requests";
+import { MainContext } from "contexts";
 
 const ProfileEdit = () => {
   const main = useContext(MainContext);

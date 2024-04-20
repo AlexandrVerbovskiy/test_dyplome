@@ -7,8 +7,8 @@ import {
   SingleMarkMap,
   Textarea,
 } from ".";
-import { useChangeUserPassword, useAdminUserEdit } from "../hooks";
-import { MainContext } from "../contexts";
+import { useChangeUserPassword, useAdminUserEdit } from "hooks";
+import { MainContext } from "contexts";
 
 const AdminUserEditForm = ({ baseData, onSave, hasId }) => {  
   const {

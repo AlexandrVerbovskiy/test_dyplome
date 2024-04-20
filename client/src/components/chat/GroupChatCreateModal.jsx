@@ -5,9 +5,9 @@ import {
   Input,
   PopupWrapper,
   UploadTrigger,
-} from "../";
+} from "components";
 import GroupUserSearchListElem from "./GroupUserSearchListElem";
-import { useCreateGroupChat } from "../../hooks/chat";
+import { useCreateGroupChat } from "hooks/chat";
 
 const GroupChatCreateModal = () => {
   const {

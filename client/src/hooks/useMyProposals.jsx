@@ -1,6 +1,6 @@
 import React from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
-import { getMyProposals } from "../requests";
+import { getMyProposals } from "requests";
 
 const useMyProposals = () => {
   const {

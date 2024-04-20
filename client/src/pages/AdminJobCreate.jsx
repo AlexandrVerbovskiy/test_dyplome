@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 
-import { adminUpdateJob } from "../requests";
-import { MainContext } from "../contexts";
-import AdminJobEditForm from "../components/AdminJobEditForm";
+import { adminUpdateJob } from "requests";
+import { MainContext } from "contexts";
+import { AdminJobEditForm } from "components";
 
 const AdminJobCreate = () => {
   const main = useContext(MainContext);

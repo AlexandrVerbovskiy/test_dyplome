@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { MainContext } from "../contexts";
-import { jobChangeActive } from "../requests";
+import { MainContext } from "contexts";
+import { jobChangeActive } from "requests";
+import { timeNormalConverter } from "utils";
 
 const AuthorJobCard = ({
   description,
@@ -49,28 +50,30 @@ const AuthorJobCard = ({
           <div className="job-price">
             <b>Price: ${price}</b>
           </div>
+
+          <div className="job-created-time">
+            <b>Created at:</b> {timeNormalConverter(timeCreated)}
+          </div>
         </div>
         <div className="job-dop-info">
           <p className="job-description" style={{ marginBottom: "0" }}>
-            <b>Description: </b>
-            <span>
-              {description.slice(0, maxCharLimit)}
-              {isLongText && <>...</>}
-            </span>
+            {description.slice(0, maxCharLimit)}
             {isLongText && (
-              <button className="show-more-job-description">Show More</button>
+              <>
+                ...
+                <button className="show-more-job-description">Show More</button>
+              </>
             )}
           </p>
-          <div className="job-created-time">{timeCreated}</div>
         </div>
       </div>
       <div className="job-actions">
         <div className="product-actions d-flex flex-column flex-md-row">
-          <Link to={`/job-view/${id}`} className="btn btn-primary">
+          <Link to={`/job-view/${id}`} className="btn btn-primary w-md-50">
             View job
           </Link>
 
-          <Link to={`/job-edit/${id}`} className="btn btn-success">
+          <Link to={`/job-edit/${id}`} className="btn btn-success w-md-50">
             Edit job
           </Link>
         </div>

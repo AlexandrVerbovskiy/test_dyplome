@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { ChatContext } from "../../contexts";
+import { ChatContext } from "contexts";
 
 const useAddGroupMembers = ({ resetTrigger }) => {
   const requestUsersCount = 25;

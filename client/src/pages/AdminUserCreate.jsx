@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 
-import { updateUser, createUser } from "../requests";
-import { MainContext } from "../contexts";
-import AdminUserEditForm from "../components/AdminUserEditForm";
+import { updateUser, createUser } from "requests";
+import { MainContext } from "contexts";
+import AdminUserEditForm from "components/AdminUserEditForm";
 
 const AdminUserEdit = () => {
   const main = useContext(MainContext);

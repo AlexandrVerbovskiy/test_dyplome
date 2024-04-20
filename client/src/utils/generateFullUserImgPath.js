@@ -1,4 +1,4 @@
-import config from "../config";
+import config from "config";
 
 const generateFullUserImgPath = (url, system) => {
   let res = "/assets/images/icons/no-profile.jpg";

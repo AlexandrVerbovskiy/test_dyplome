@@ -33,7 +33,7 @@ import {
   AdminGetMoneyRequest,
   Notifications,
   MyJobs,
-} from "$pages";
+} from "pages";
 
 const mainRouter = createBrowserRouter([
   {

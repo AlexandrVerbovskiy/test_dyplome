@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { ChatContext } from "../../contexts";
+import { ChatContext } from "contexts";
 
 const ChatListHeader = () => {
   const { setChatListSearch } = useContext(ChatContext);

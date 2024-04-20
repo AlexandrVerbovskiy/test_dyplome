@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import {
   MapMarker,
   Map,
@@ -9,10 +9,10 @@ import {
   ViewInput,
   PopupWrapper,
   CommentCard,
-} from "../components";
-import config from "../config";
-import { getJobInfo } from "../requests";
-import { usePopupController, useComments } from "../hooks";
+} from "components";
+import config from "config";
+import { getJobInfo } from "requests";
+import { usePopupController, useComments } from "hooks";
 
 const jobType = config.COMMENT_TYPES.job;
 
@@ -88,25 +88,27 @@ const JobView = () => {
 
             <hr />
 
-            <div className="d-flex align-items-center">
-              <div className="dropdown job-proposal-statuses-change">
-                <div>
-                  <a
-                    href={"/chat/personal/" + job.authorId}
-                    className="btn btn-primary"
-                  >
-                    Write to author
-                  </a>
+            {main.sessionUser.id != job.authorId && (
+              <div className="d-flex align-items-center">
+                <div className="dropdown job-proposal-statuses-change">
+                  <div>
+                    <a
+                      href={"/chat/personal/" + job.authorId}
+                      className="btn btn-primary"
+                    >
+                      Write to author
+                    </a>
 
-                  <button
-                    className="btn btn-success"
-                    onClick={() => jobProposalFormState.setJobId(id)}
-                  >
-                    Send proposal
-                  </button>
+                    <button
+                      className="btn btn-success"
+                      onClick={() => jobProposalFormState.setJobId(id)}
+                    >
+                      Send proposal
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

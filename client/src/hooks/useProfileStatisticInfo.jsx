@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getUserStatistic } from "../requests";
-import { sortCountByMonths } from "../utils";
-import { MainContext } from "../contexts";
+import { getUserStatistic } from "requests";
+import { sortCountByMonths } from "utils";
+import { MainContext } from "contexts";
 
-import config from "../config";
+import config from "config";
 const months = config.MONTH_NAMES;
 
 const useProfileStatisticInfo = ({ userId }) => {

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { useTyping } from "../../hooks/chat";
-import { ChatContext } from "../../contexts";
+import { useTyping } from "hooks/chat";
+import { ChatContext } from "contexts";
 
 const ChatSubText = ({ isGroup, chatOnline, typingUsers }) => {
   const typingText = useTyping({ isGroup, typingUsers });

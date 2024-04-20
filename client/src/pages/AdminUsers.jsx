@@ -1,16 +1,16 @@
 import { useContext, useState } from "react";
-import { usePagination } from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
+import { usePagination } from "hooks";
+import BaseAdminTableLayoutPage from "components/BaseAdminTableLayoutPage";
 import {
   adminDeleteUser,
   adminUpdateUserAdmin,
   adminUpdateUserAuthorized,
   getFullUsers,
-} from "../requests";
-import { MainContext } from "../contexts";
-import { CreateLink, SearchFilter, YesNoSpan } from "../components";
+} from "requests";
+import { MainContext } from "contexts";
+import { CreateLink, SearchFilter, YesNoSpan } from "components";
 import { Eye, Pencil, Plus, ChatText } from "react-bootstrap-icons";
-import { generateFullUserImgPath } from "../utils";
+import { generateFullUserImgPath } from "utils";
 
 const headers = [
   {

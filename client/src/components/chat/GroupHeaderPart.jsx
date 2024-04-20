@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import GroupUserList from "./GroupUserList";
-import { ChatContext } from "../../contexts";
+import { ChatContext } from "contexts";
 import { Plus } from "react-bootstrap-icons";
 import AddGroupMembersPopup from "./AddGroupMembersPopup";
 

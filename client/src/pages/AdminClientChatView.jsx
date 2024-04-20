@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { getChatInfoByAdmin } from "../requests";
-import { DefaultPageLayout, UploadTrigger } from "../components";
-import { useAdminChatMessages } from "../hooks";
-import { shortTimeFormat } from "../utils";
-import { MainContext } from "../contexts";
-import config from "../config";
+import { getChatInfoByAdmin } from "requests";
+import { DefaultPageLayout, UploadTrigger } from "components";
+import { useAdminChatMessages } from "hooks";
+import { shortTimeFormat } from "utils";
+import { MainContext } from "contexts";
+import config from "config";
 const { API_URL } = config;
 
 const UserProfileLink = ({ userId, userEmail, userAvatar }) => {

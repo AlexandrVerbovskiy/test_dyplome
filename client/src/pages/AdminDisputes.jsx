@@ -3,13 +3,12 @@ import {
   useInitSearchDateFilter,
   usePagination,
   useSearchDateFilter,
-} from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
-import { MainContext } from "../contexts";
-import { getAllDisputes } from "../requests";
+} from "hooks";
+import { MainContext } from "contexts";
+import { getAllDisputes } from "requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
-import { fullTimeFormat } from "../utils";
-import { CreateLink, DatePicker, SearchFilter } from "../components";
+import { fullTimeFormat } from "utils";
+import { CreateLink, DatePicker, SearchFilter, BaseAdminTableLayoutPage } from "components";
 
 const headers = [
   {

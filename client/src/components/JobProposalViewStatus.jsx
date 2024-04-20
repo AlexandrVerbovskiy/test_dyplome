@@ -1,4 +1,4 @@
-import config from "../config";
+import config from "config";
 
 const JobProposalViewStatus = ({ status }) => {
   const jobStatusKey = Object.keys(config["JOB_STATUSES"]).find(

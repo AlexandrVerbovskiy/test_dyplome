@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { PopupWrapper, Input, UploadTrigger } from "../";
-import { useAddGroupMembers } from "../../hooks/chat";
+import { PopupWrapper, Input, UploadTrigger } from "components";
+import { useAddGroupMembers } from "hooks/chat";
 import GroupUserSearchListElem from "./GroupUserSearchListElem";
 
 const AddGroupMembersPopup = ({ close, active, currentUserRole }) => {

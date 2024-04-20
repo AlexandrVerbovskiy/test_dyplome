@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { randomString, splitBlob, splitDataIntoChunks } from "../../utils";
-import config from "../../config";
+import { randomString, splitBlob, splitDataIntoChunks } from "utils";
+import config from "config";
 
 const useMediaActions = () => {
   const mediaActionsRef = useRef({});

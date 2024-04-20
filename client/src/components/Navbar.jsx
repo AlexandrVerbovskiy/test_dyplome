@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SmallNotificationList } from "../components";
-import { MainContext } from "../contexts";
-import { generateFullUserImgPath } from "../utils";
+import { SmallNotificationList } from "components";
+import { MainContext } from "contexts";
+import { generateFullUserImgPath } from "utils";
 
 const Navbar = ({
   notifications,

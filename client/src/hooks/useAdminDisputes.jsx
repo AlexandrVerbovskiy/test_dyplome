@@ -1,6 +1,6 @@
 import React from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
-import { getAdminDisputes } from "../requests";
+import { getAdminDisputes } from "requests";
 
 const useAdminDisputes = ({ disputesStatus = "pending" }) => {
   const getAdminDisputesCurrentStatus = {

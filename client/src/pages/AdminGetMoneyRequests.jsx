@@ -3,13 +3,12 @@ import {
   useInitSearchDateFilter,
   usePagination,
   useSearchDateFilter,
-} from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
-import { MainContext } from "../contexts";
-import { getAllGetMoneyRequests } from "../requests";
+} from "hooks";
+import { MainContext } from "contexts";
+import { getAllGetMoneyRequests } from "requests";
 import { Eye, Paypal, Stripe } from "react-bootstrap-icons";
-import { fullTimeFormat, getQueryParams } from "../utils";
-import { DatePicker, SearchFilter } from "../components";
+import { fullTimeFormat, getQueryParams } from "utils";
+import { DatePicker, SearchFilter, BaseAdminTableLayoutPage } from "components";
 import Select from "react-select";
 
 const filterTypeOptions = [

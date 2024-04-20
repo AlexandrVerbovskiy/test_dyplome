@@ -5,8 +5,8 @@ import {
   JobMainFilter,
   JobCardWrapper,
   Layout,
-} from "../components";
-import { useProposalsOnMyJobs } from "../hooks";
+} from "components";
+import { useProposalsOnMyJobs } from "hooks";
 
 const ProposalsOnMyJobs = () => {
   const {

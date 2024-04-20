@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { StopFill } from "react-bootstrap-icons";
-import { PopupWrapper } from "../";
-import { ChatBodyContext } from "../../contexts";
-import { formatTime } from "../../utils";
+import { PopupWrapper } from "components";
+import { ChatBodyContext } from "contexts";
+import { formatTime } from "utils";
 import VisualizeCamera from "./VisualizeCamera";
 import VisualizeAudio from "./VisualizeAudio";
 

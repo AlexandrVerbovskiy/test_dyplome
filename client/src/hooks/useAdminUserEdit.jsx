@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import config from "../config";
+import config from "config";
 
 const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });

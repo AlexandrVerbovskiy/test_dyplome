@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getComments, createComment } from "../requests";
-import { MainContext } from "../contexts";
+import { getComments, createComment } from "requests";
+import { MainContext } from "contexts";
 
 const useComments = ({ type, entityId }) => {
   const [comments, setComments] = useState([]);

@@ -4,7 +4,7 @@ import {
   getDateByCurrentReject,
   getQueryParams,
   timeNormalConverter,
-} from "../utils";
+} from "utils";
 
 const useInitSearchDateFilter = ({
   defaultFromDate = null,

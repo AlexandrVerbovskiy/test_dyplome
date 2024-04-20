@@ -5,8 +5,9 @@ import {
   JobMainFilter,
   JobCardWrapper,
   UploadTrigger,
-} from "../components";
-import { useMyProposals } from "../hooks";
+  EmptyList,
+} from "components";
+import { useMyProposals } from "hooks";
 
 const MyProposals = () => {
   const {
@@ -19,23 +20,34 @@ const MyProposals = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <JobCardWrapper>
+      <JobCardWrapper cardClass="m-0">
         <JobMainFilter
           value={proposalsFilter}
           onClick={proposalsFilterChange}
         />
       </JobCardWrapper>
 
-      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
-        {proposalsIds.map((id) => (
-          <ProposalCard
-            key={id}
-            {...proposals[id]}
-            userId={proposals[id].authorId}
-          />
-        ))}
-        <UploadTrigger onTriggerShown={getMoreProposals} />
-      </JobCardWrapper>
+      {proposalsIds.length > 0 && (
+        <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+          {proposalsIds.map((id) => (
+            <ProposalCard
+              key={id}
+              {...proposals[id]}
+              userId={proposals[id].authorId}
+            />
+          ))}
+          <UploadTrigger onTriggerShown={getMoreProposals} />
+        </JobCardWrapper>
+      )}
+
+      {proposalsIds.length < 1 && (
+        <JobCardWrapper
+          cardClass="jobs-card-section mb-0"
+          bodyClass="job-list px-0"
+        >
+          <EmptyList text="No offers found" />
+        </JobCardWrapper>
+      )}
     </Layout>
   );
 };

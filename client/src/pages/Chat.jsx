@@ -6,25 +6,25 @@ import {
   useChatTextEditor,
   useMainChat,
   useChatWindowsChanger,
-} from "../hooks/chat";
-import { useSocketInit } from "../hooks";
+} from "hooks/chat";
+import { useSocketInit } from "hooks";
 import {
   ChatList,
   ChatBody,
   ChatListHeader,
   AdminChatListHeader,
-} from "../components/chat";
-import { ChatContext, MainContext } from "../contexts";
+} from "components/chat";
+import { ChatContext, MainContext } from "contexts";
 import NoChats from "./NoChats";
-import { randomString } from "../utils";
+import { randomString } from "utils";
 import {
   getUsersToChatting,
   getAdminChats,
   selectChat as selectChatRequest,
   getChatMessages,
   getUsersChat,
-} from "../requests";
-import { Layout } from "../components";
+} from "requests";
+import { Layout } from "components";
 
 const Chat = () => {
   const { accountId } = useParams();

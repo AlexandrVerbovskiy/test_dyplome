@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { ChatContext, MainContext } from "../../contexts";
-import { generateFullUserImgPath } from "../../utils";
+import { ChatContext, MainContext } from "contexts";
+import { generateFullUserImgPath } from "utils";
 import ChatHeaderInfoPopup from "./ChatHeaderInfoPopup";
 import ChatHeaderMainInfo from "./ChatHeaderMainInfo";
 

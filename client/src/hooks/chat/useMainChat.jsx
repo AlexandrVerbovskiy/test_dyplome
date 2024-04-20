@@ -5,8 +5,8 @@ import {
   kickChatUser,
   addChatUsers,
   getUsersToGroupToJoin,
-} from "../../requests";
-import { MainContext } from "../../contexts";
+} from "requests";
+import { MainContext } from "contexts";
 
 const useMainChat = ({
   accountId,

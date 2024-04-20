@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { PopupWrapper } from "../";
+import { PopupWrapper } from "components";
 import GroupHeaderPart from "./GroupHeaderPart";
-import { ChatContext } from "../../contexts";
+import { ChatContext } from "contexts";
 
 const InfoRow = ({ text, iconClass }) => (
   <div className="chat-info-row">
