@@ -125,7 +125,7 @@ a {
 
 .page-footer {
   background: #fff;
-  left: 250px;
+  left: 0;
   right: 0;
   bottom: 0;
   position: fixed;
@@ -2156,13 +2156,13 @@ input.search-control-2::placeholder {
 }
 
 .user-info .user-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #413c3c;
 }
 
 .user-info .designattion {
-  font-size: 13px;
+  font-size: 11px;
   color: #a9a8a8;
 }
 
@@ -2931,7 +2931,7 @@ body:has(.navbar) .alert {
   align-items: center;
 }
 
-.w-md-50{
+.w-md-50 {
   width: 50%;
 }
 
@@ -2941,8 +2941,8 @@ body:has(.navbar) .alert {
     margin-left: 0;
   }
 
-  .w-md-50{
-    width: 100%;;
+  .w-md-50 {
+    width: 100%;
   }
 }
 
@@ -3890,4 +3890,12 @@ hr:has(+ .balance-payment-type-select) {
   color: #008cff;
   border: 1px solid #008cff;
   border-radius: 0.25rem;
+}
+
+.status-view {
+  cursor: auto !important;
+  font-size: 12px;
+  padding: 0 .5rem;
+  margin-left: 5px;
+  font-weight: 500;
 }

@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNotifications, useSocketInit } from "../hooks";
-import { NewNotificationList } from "../notification_components";
-import { AdminNavbar } from "../components";
+import { AdminNavbar, NewNotificationList } from "../components";
 import { MainContext } from "../contexts";
 import { generateFullUserImgPath } from "../utils";
 

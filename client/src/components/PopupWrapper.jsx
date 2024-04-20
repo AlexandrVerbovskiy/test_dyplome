@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const PopupWrapper = ({
   children,
@@ -17,6 +17,29 @@ const PopupWrapper = ({
   if (centered) popupClassName += " modal-dialog-centered";
 
   const onParentClick = closeParentClick ? onClose : () => {};
+
+  useEffect(() => {
+    const header = document.querySelector("header, .header-nav");
+    const footer = document.querySelector("footer");
+
+    if (activeTrigger) {
+      if (header) {
+        header.classList.add("zero-index");
+      }
+
+      if (footer) {
+        footer.classList.add("zero-index");
+      }
+    } else {
+      if (header) {
+        header.classList.remove("zero-index");
+      }
+
+      if (footer) {
+        footer.classList.remove("zero-index");
+      }
+    }
+  }, [activeTrigger]);
 
   return (
     <div>

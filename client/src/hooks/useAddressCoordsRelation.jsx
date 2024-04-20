@@ -41,8 +41,17 @@ const useAddressCoordsRelation = () => {
   };
 
   return {
-    coords: { value: coords.value, error: coords.error, change: changeCoords },
-    address: { ...address, change: changeAddress },
+    coords: {
+      value: coords.value,
+      error: coords.error,
+      change: changeCoords,
+      set: (value) => setCoords({ value, error: null }),
+    },
+    address: {
+      ...address,
+      change: changeAddress,
+      set: (value) => setAddress({ value, error: null }),
+    },
     addressCoordsValidate,
   };
 };

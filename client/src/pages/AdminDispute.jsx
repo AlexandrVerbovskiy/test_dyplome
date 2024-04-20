@@ -2,9 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { MainContext } from "../contexts";
 import { adminAssignDispute, getJobDisputeInfo } from "../requests";
-import { BaseJobEntityTemplate } from "../job_components";
 import { Link } from "react-router-dom";
-import { ViewInput } from "../components";
+import { ViewInput, BaseJobEntityTemplate } from "../components";
 
 const AdminDispute = () => {
   let { disputeId } = useParams();

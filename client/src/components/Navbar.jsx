@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SmallNotificationList } from "../notification_components";
+import { SmallNotificationList } from "../components";
 import { MainContext } from "../contexts";
 import { generateFullUserImgPath } from "../utils";
 
@@ -33,7 +33,7 @@ const Navbar = ({
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm header-nav">
       <div className="container-fluid">
         <a
           href="/"
@@ -83,14 +83,24 @@ const Navbar = ({
             <li className="nav-item">
               <a
                 className={`nav-link ${
-                  window.location.pathname == "/my-jobs"
-                    ? "active"
-                    : ""
+                  window.location.pathname == "/my-jobs" ? "active" : ""
                 }`}
                 href="/my-jobs"
               >
                 <i className="bx bx-briefcase me-1" />
                 My Jobs
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a
+                className={`nav-link ${
+                  window.location.pathname == "/chat" ? "active" : ""
+                }`}
+                href="/chat"
+              >
+                <i className="bx bx-chat me-1" />
+                Chat
               </a>
             </li>
           </ul>
@@ -146,9 +156,7 @@ const Navbar = ({
                   <p className="user-name mb-0">
                     {sessionUser.nick ?? sessionUser.email}
                   </p>
-                  <p className="designattion mb-0">
-                    ${sessionUser.balance}
-                  </p>
+                  <p className="designattion mb-0">${sessionUser.balance}</p>
                 </div>
               </a>
               <ul className="dropdown-menu dropdown-menu-end">

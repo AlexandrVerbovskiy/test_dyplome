@@ -6,17 +6,19 @@ import {
   useChatTextEditor,
   useMainChat,
   useChatWindowsChanger,
-} from "../chat_hooks";
+} from "../hooks/chat";
 import { useSocketInit } from "../hooks";
-import { ChatList, ChatBody, ChatListHeader } from "../chat_components";
+import { ChatList, ChatBody, ChatListHeader } from "../components/chat";
 import {
   getAdminUserSystemChats,
   selectSystemChatByAdmin,
   getAdminChatMessages,
+  getUserSystemChat,
 } from "../requests";
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
+import { Layout } from "../components";
 
 const SystemChat = () => {
   const { accountId } = useParams();
@@ -54,6 +56,7 @@ const SystemChat = () => {
     getRequest: getAdminUserSystemChats,
     selectChatRequest: selectSystemChatByAdmin,
     getChatMessages: getAdminChatMessages,
+    getChatMessagesByUserId: getUserSystemChat,
   });
 
   const { sessionUser } = useContext(MainContext);
@@ -72,7 +75,7 @@ const SystemChat = () => {
     endTyping,
     sendMedia,
     stopSendMedia,
-    messageViewed
+    messageViewed,
   } = useChatInit({
     sessionUser,
     onGetNewChat,
@@ -115,56 +118,60 @@ const SystemChat = () => {
         dop["getterId"] = activeChat.userId;
       }
 
-      sendMessage(
-        activeChat.chatId,
-        "text",
-        message,
-        activeChat.chatType,
-        dop
-      );
+      sendMessage(activeChat.chatId, "text", message, activeChat.chatType, dop);
     }
   };
 
   if (chatList.length < 1 && !activeChat) return <NoChats />;
 
   return (
-    <div id="chatPage" className="row" ref={bodyRef}>
-      <ChatContext.Provider
-        value={{
-          onGetNewChat,
-          appendUsers,
-          chatUsers,
-          chatInfo,
-          activeChatId: activeChat?.chatId,
-          selectChat,
-          setChatListSearch,
-          getMoreChats,
-          handleSendTextMessage,
-          handleStartTyping,
-          handleEndTyping,
-          editor,
-          emojiPopup,
-          messages,
-          activeChat,
-          setListWindow,
-          setChatWindow,
-          activeWindow,
-          onEditMessage,
-          onDeleteMessage,
-          handleSendMedia,
-          stopSendMedia,
-          chatType: activeChat.chatType,
-          leftChat,
-          kickUser,
-          getUsersToJoin,
-          showMoreMessages,
-          messageViewed
-        }}
-      >
-        <ChatList chatList={chatList}>{<ChatListHeader />}</ChatList>
-        <ChatBody />
-      </ChatContext.Provider>
-    </div>
+    <Layout pageClassName="default-view-page table-page">
+      <div className="page-content">
+        <div className={`card`} style={{ marginBottom: 0 }}>
+          <div className={`card-body`} style={{ padding: "0" }}>
+            <div id="chatPage" className="row" ref={bodyRef}>
+              <ChatContext.Provider
+                value={{
+                  onGetNewChat,
+                  appendUsers,
+                  chatUsers,
+                  chatInfo,
+                  activeChatId: activeChat?.chatId,
+                  selectChat,
+                  setChatListSearch,
+                  getMoreChats,
+                  handleSendTextMessage,
+                  handleStartTyping,
+                  handleEndTyping,
+                  editor,
+                  emojiPopup,
+                  messages,
+                  activeChat,
+                  setListWindow,
+                  setChatWindow,
+                  activeWindow,
+                  onEditMessage,
+                  onDeleteMessage,
+                  handleSendMedia,
+                  stopSendMedia,
+                  chatType: activeChat.chatType,
+                  leftChat,
+                  kickUser,
+                  getUsersToJoin,
+                  showMoreMessages,
+                  messageViewed,
+                }}
+              >
+                <ChatList chatList={chatList} needNewMessagesCountView={false}>
+                  {<ChatListHeader />}
+                </ChatList>
+                <ChatBody />
+              </ChatContext.Provider>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 };
 

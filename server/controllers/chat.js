@@ -244,6 +244,16 @@ class Chat extends Controller {
   getSystemChatMessages = (req, res) =>
     this.__getChatMessages(req, res, false, true, false);
 
+  getUserSystemChatMessages = async (req, res) => {
+    req.body["chatId"] = await this.chatModel.getUserSystemChatInfo(
+      req.body.userId
+    );
+    req.body["lastId"] = 0;
+    req.body["count"] = 20;
+
+    return await this.__getChatMessages(req, res, false, true, false);
+  };
+
   getChatMessagesFullContents = (req, res) =>
     this.__getChatMessages(req, res, false, true);
 

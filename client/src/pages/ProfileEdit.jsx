@@ -73,7 +73,6 @@ const ProfileEdit = () => {
       main.setSessionUser((prev) => ({
         ...prev,
         address: res.address,
-        admin: res.admin,
         avatar: res.avatar,
         nick: res.nick,
         email: res.email,
@@ -170,7 +169,11 @@ const ProfileEdit = () => {
                   error={instagramUrl.error}
                   onChange={(e) => instagramUrl.change(e.target.value)}
                 />
+              </div>
+            </div>
 
+            <div className="row mt-2">
+              <div className="col-12">
                 <Textarea
                   title="Biography"
                   value={biography.value}
@@ -181,6 +184,7 @@ const ProfileEdit = () => {
                 />
               </div>
             </div>
+
             <hr />
             <div className="d-flex align-items-center">
               <div className="dropdown ms-auto">

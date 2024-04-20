@@ -5,11 +5,11 @@ import {
   JobProposalChangerStatus,
   DisputeBtn,
   AcceptPopup,
+  BaseJobEntityTemplate,
 } from "../components";
 import { getJobProposalInfo } from "../requests";
 import { usePopupController } from "../hooks";
 import { createDispute } from "../requests";
-import { BaseJobEntityTemplate } from "../job_components";
 
 const JobProposalView = () => {
   const isSeller = true;

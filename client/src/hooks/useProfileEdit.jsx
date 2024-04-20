@@ -30,6 +30,10 @@ const useProfileEdit = () => {
         changeEmail(res.email ?? "");
         changeNick(res.nick ?? "");
         setActivityRadius(res.activityRadius ?? config.RADIUS_DEFAULT);
+        changeBiography(res.biography ?? "");
+        changeInstagramUrl(res.instagramUrl ?? "");
+        changeLinkedinUrl(res.linkedinUrl ?? "");
+        changePhone(res.phone ?? "");
 
         if (res.lat === null && res.lng === null) {
           navigator.geolocation.getCurrentPosition(
@@ -38,7 +42,7 @@ const useProfileEdit = () => {
               coords.change({ lat: latitude, lng: longitude });
             },
             (error) => {
-              coords.change(config.MAP_DEFAULT.center);
+              coords.set(config.MAP_DEFAULT.center);
             }
           );
 
@@ -48,17 +52,17 @@ const useProfileEdit = () => {
                 const { latitude, longitude } = position.coords;
                 coords.change({ lat: latitude, lng: longitude });
               },
-              (error) => coords.change(config.MAP_DEFAULT.center)
+              (error) => coords.set(config.MAP_DEFAULT.center)
             );
           } else {
-            coords.change(config.MAP_DEFAULT.center);
+            coords.set(config.MAP_DEFAULT.center);
           }
         } else {
-          coords.change({
+          coords.set({
             lat: res.lat ?? config.MAP_DEFAULT.center.lat,
             lng: res.lng ?? config.MAP_DEFAULT.center.lng,
           });
-          address.change(res.address ?? "");
+          address.set(res.address ?? "");
         }
 
         if (res.avatar) changeImg(res.avatar);
@@ -83,15 +87,15 @@ const useProfileEdit = () => {
   };
 
   const changeBiography = (biography) => {
-    setPhone({ value: biography, error: null });
+    setBiography({ value: biography, error: null });
   };
 
   const changeLinkedinUrl = (linkedinUrl) => {
-    setPhone({ value: linkedinUrl, error: null });
+    setLinkedinUrl({ value: linkedinUrl, error: null });
   };
 
   const changeInstagramUrl = (instagramUrl) => {
-    setPhone({ value: instagramUrl, error: null });
+    setInstagramUrl({ value: instagramUrl, error: null });
   };
 
   const validateProfileEdit = () => {

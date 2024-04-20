@@ -6,14 +6,14 @@ import {
   useChatTextEditor,
   useMainChat,
   useChatWindowsChanger,
-} from "../chat_hooks";
+} from "../hooks/chat";
 import { useSocketInit } from "../hooks";
 import {
   ChatList,
   ChatBody,
   ChatListHeader,
   AdminChatListHeader,
-} from "../chat_components";
+} from "../components/chat";
 import { ChatContext, MainContext } from "../contexts";
 import NoChats from "./NoChats";
 import { randomString } from "../utils";
@@ -22,7 +22,9 @@ import {
   getAdminChats,
   selectChat as selectChatRequest,
   getChatMessages,
+  getUsersChat,
 } from "../requests";
+import { Layout } from "../components";
 
 const Chat = () => {
   const { accountId } = useParams();
@@ -72,6 +74,7 @@ const Chat = () => {
     selectChatRequest,
     getChatMessages,
     onMessageViewed: messageViewed,
+    getChatMessagesByUserId: getUsersChat,
   });
 
   const onEditMessage = (id, content) => {
@@ -139,44 +142,52 @@ const Chat = () => {
   if (chatList.length < 1 && !activeChat) return <NoChats />;
 
   return (
-    <div id="chatPage" className="row" ref={bodyRef}>
-      <ChatContext.Provider
-        value={{
-          onGetNewChat,
-          appendUsers,
-          chatUsers,
-          chatInfo,
-          activeChatId: activeChat?.chatId,
-          selectChat,
-          setChatListSearch,
-          getMoreChats,
-          handleSendTextMessage,
-          handleStartTyping,
-          handleEndTyping,
-          editor,
-          showMoreMessages,
-          emojiPopup,
-          messages,
-          activeChat,
-          setListWindow,
-          setChatWindow,
-          activeWindow,
-          onEditMessage,
-          onDeleteMessage,
-          handleSendMedia,
-          stopSendMedia,
-          chatType: activeChat.chatType,
-          leftChat,
-          kickUser,
-          getUsersToJoin,
-        }}
-      >
-        <ChatList chatList={chatList}>
-          {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
-        </ChatList>
-        <ChatBody />
-      </ChatContext.Provider>
-    </div>
+    <Layout pageClassName="default-view-page table-page">
+      <div className="page-content">
+        <div className={`card`} style={{ marginBottom: 0 }}>
+          <div className={`card-body`} style={{ padding: "0" }}>
+            <div id="chatPage" className="row" ref={bodyRef}>
+              <ChatContext.Provider
+                value={{
+                  onGetNewChat,
+                  appendUsers,
+                  chatUsers,
+                  chatInfo,
+                  activeChatId: activeChat?.chatId,
+                  selectChat,
+                  setChatListSearch,
+                  getMoreChats,
+                  handleSendTextMessage,
+                  handleStartTyping,
+                  handleEndTyping,
+                  editor,
+                  showMoreMessages,
+                  emojiPopup,
+                  messages,
+                  activeChat,
+                  setListWindow,
+                  setChatWindow,
+                  activeWindow,
+                  onEditMessage,
+                  onDeleteMessage,
+                  handleSendMedia,
+                  stopSendMedia,
+                  chatType: activeChat.chatType,
+                  leftChat,
+                  kickUser,
+                  getUsersToJoin,
+                }}
+              >
+                <ChatList chatList={chatList}>
+                  {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
+                </ChatList>
+                <ChatBody />
+              </ChatContext.Provider>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 };
 

@@ -74,7 +74,9 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/users"
                       className={`${
-                        window.location.pathname.includes("/users") ? "active" : ""
+                        window.location.pathname.includes("/users")
+                          ? "active"
+                          : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -88,7 +90,9 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/jobs"
                       className={`${
-                        window.location.pathname.includes("/jobs") ? "active" : ""
+                        window.location.pathname.includes("/jobs")
+                          ? "active"
+                          : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -102,7 +106,9 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/disputes"
                       className={`${
-                        window.location.pathname.includes("/disputes") ? "active" : ""
+                        window.location.pathname.includes("/disputes")
+                          ? "active"
+                          : ""
                       }`}
                     >
                       <div className="parent-icon">
@@ -148,7 +154,9 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/server-transactions"
                       className={`${
-                        window.location.pathname.includes("/server-transactions")
+                        window.location.pathname.includes(
+                          "/server-transactions"
+                        )
                           ? "active"
                           : ""
                       }`}
@@ -164,7 +172,7 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                     <a
                       href="/system"
                       className={`${
-                        window.location.pathname.includes("/system") ? "active" : ""
+                        window.location.pathname == "/system" ? "active" : ""
                       }`}
                     >
                       <div className="parent-icon">

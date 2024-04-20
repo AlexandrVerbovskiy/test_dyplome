@@ -63,7 +63,7 @@ const config = {
       value: "Rejected",
     },
     completed: {
-      color: "sucess",
+      color: "success",
       text: "Completed",
       value: "Completed",
     },

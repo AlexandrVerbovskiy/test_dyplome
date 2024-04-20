@@ -20,11 +20,19 @@ const useAdminUserEdit = ({ baseData }) => {
   useEffect(() => {
     if (!baseData) return;
 
-    coords.change({ lat: baseData.lat ?? 0, lng: baseData.lng ?? 0 });
-    address.change(baseData.address ?? "");
+    coords.set({ lat: baseData.lat ?? 0, lng: baseData.lng ?? 0 });
+    address.set(baseData.address ?? "");
     changeEmail(baseData.email ?? "");
     changeNick(baseData.nick ?? "");
     changeBalance(baseData.balance ?? 0);
+    changeBiography(baseData.biography ?? "");
+    changeInstagramUrl(baseData.instagramUrl ?? "");
+    changeLinkedinUrl(baseData.linkedinUrl ?? "");
+    changePhone(baseData.phone ?? "");
+    
+    setAdmin({ value: baseData.admin ?? false, error: null });
+    setAuthorized({ value: baseData.profileAuthorized ?? false, error: null });
+
     setActivityRadius(baseData.activityRadius ?? config.RADIUS_DEFAULT);
 
     if (baseData.avatar) changeImg(baseData.avatar);
@@ -59,15 +67,15 @@ const useAdminUserEdit = ({ baseData }) => {
   };
 
   const changeBiography = (biography) => {
-    setPhone({ value: biography, error: null });
+    setBiography({ value: biography, error: null });
   };
 
   const changeLinkedinUrl = (linkedinUrl) => {
-    setPhone({ value: linkedinUrl, error: null });
+    setLinkedinUrl({ value: linkedinUrl, error: null });
   };
 
   const changeInstagramUrl = (instagramUrl) => {
-    setPhone({ value: instagramUrl, error: null });
+    setInstagramUrl({ value: instagramUrl, error: null });
   };
 
   const validateProfileEdit = () => {

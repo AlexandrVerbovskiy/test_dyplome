@@ -33,3 +33,5 @@ export { default as getQueryParams } from "./getQueryParams";
 export * from "./dateHelpers";
 
 export * from "./notification";
+
+export { default as indicateMediaTypeByExtension } from "./indicateMediaTypeByExtension";

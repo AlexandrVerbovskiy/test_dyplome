@@ -1,7 +1,11 @@
 import React from "react";
-import { Layout } from "../components";
-import { AuthorJobCard, MainFilter, CardWrapper } from "../job_components";
-import { UploadTrigger } from "../components";
+import {
+  Layout,
+  AuthorJobCard,
+  JobMainFilter,
+  JobCardWrapper,
+  UploadTrigger,
+} from "../components";
 import { useMyJobs } from "../hooks";
 
 const MyJobs = () => {
@@ -10,16 +14,16 @@ const MyJobs = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <CardWrapper>
-        <MainFilter value={jobsFilter} onClick={jobsFilterChange} />
-      </CardWrapper>
+      <JobCardWrapper>
+        <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
+      </JobCardWrapper>
 
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
         {jobsIds.map((id) => (
           <AuthorJobCard key={id} {...jobs[id]} />
         ))}
         <UploadTrigger onTriggerShown={getMoreJobs} />
-      </CardWrapper>
+      </JobCardWrapper>
     </Layout>
   );
 };

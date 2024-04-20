@@ -254,7 +254,7 @@ class Chat extends Model {
     const chatInfos = {};
 
     chatIds.forEach((chatId) => {
-      res[chatId] = "";
+      res[chatId] = { where: [], active: false };
       chatInfos[chatId] = { where: [], active: false };
     });
 
@@ -772,6 +772,18 @@ class Chat extends Model {
         )`;
 
       await this.dbQueryAsync(query, [chatId]);
+    });
+
+  getUserSystemChatInfo = async (userId) =>
+    await this.errorWrapper(async () => {
+      const res = await this.dbQueryAsync(
+        `SELECT chats.id as id FROM chats 
+      JOIN chats_users ON chats_users.chat_id = chats.id
+      WHERE chats.type = 'system' AND user_id = ?`,
+        [userId]
+      );
+
+      return res[0]?.id;
     });
 }
 

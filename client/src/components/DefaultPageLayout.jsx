@@ -1,7 +1,6 @@
 import React from "react";
 import { useNotifications, useSocketInit } from "../hooks";
-import { NewNotificationList } from "../notification_components";
-import { Navbar } from "../components";
+import { Navbar, NewNotificationList } from "../components";
 
 const DefaultPageLayout = ({ children, pageClassName = "" }) => {
   const { socketIo: io } = useSocketInit();

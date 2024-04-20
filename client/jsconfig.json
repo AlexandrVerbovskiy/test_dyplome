@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"$pages": ["src/pages/index.jsx"],
+			"$pages/*": ["src/pages/*.jsx"]
+		}
+	},
+	"include": ["src/**/*.js", "src/**/*.jsx"]
+}

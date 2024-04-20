@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { CommentCard, Layout } from "../components";
 import { LineChart } from "../charts";
 import { useProfileStatisticInfo, useComments } from "../hooks";
-import { UserProfileStatisticInfo } from "../profile_components";
+import { UserProfileStatisticInfo } from "../components";
 import config from "../config";
 
 const sellerType = config.COMMENT_TYPES.employee;

@@ -121,6 +121,7 @@ function route(app, db, io) {
     chatController.selectSystemChatByAdmin
   );
   app.post("/get-users-chat", isAuth, chatController.getUsersChat);
+  app.post("/get-user-system-chat", isAuth, chatController.getUserSystemChatMessages);
 
   app.get("/get-job/:id", isAuth, jobController.getById);
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);

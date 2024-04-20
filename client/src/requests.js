@@ -65,10 +65,11 @@ export const getAdminChats = {
 
 export const getAdminUserSystemChats = {
   url: () => "admin-user-system-chats",
-  convertData: (lastChatId, limit, searchString) => ({
+  convertData: ({ lastChatId, lastUserId, limit, searchString }) => ({
     lastChatId,
     limit,
     searchString,
+    lastUserId,
   }),
   type: "post",
   convertRes: (res) => res.data.chats,
@@ -169,6 +170,13 @@ export const getJobsByLocation = {
 
 export const getUsersChat = {
   url: () => `get-users-chat`,
+  type: "post",
+  convertData: (userId) => ({ userId }),
+  convertRes: (res) => res.data ?? {},
+};
+
+export const getUserSystemChat = {
+  url: () => `get-user-system-chat`,
   type: "post",
   convertData: (userId) => ({ userId }),
   convertRes: (res) => res.data ?? {},

@@ -1,7 +1,11 @@
 import React from "react";
-import { Layout } from "../components";
-import { ProposalCard, MainFilter, CardWrapper } from "../job_components";
-import { UploadTrigger } from "../components";
+import {
+  Layout,
+  ProposalCard,
+  JobMainFilter,
+  JobCardWrapper,
+  UploadTrigger,
+} from "../components";
 import { useMyProposals } from "../hooks";
 
 const MyProposals = () => {
@@ -15,11 +19,14 @@ const MyProposals = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <CardWrapper>
-        <MainFilter value={proposalsFilter} onClick={proposalsFilterChange} />
-      </CardWrapper>
+      <JobCardWrapper>
+        <JobMainFilter
+          value={proposalsFilter}
+          onClick={proposalsFilterChange}
+        />
+      </JobCardWrapper>
 
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
         {proposalsIds.map((id) => (
           <ProposalCard
             key={id}
@@ -28,7 +35,7 @@ const MyProposals = () => {
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreProposals} />
-      </CardWrapper>
+      </JobCardWrapper>
     </Layout>
   );
 };

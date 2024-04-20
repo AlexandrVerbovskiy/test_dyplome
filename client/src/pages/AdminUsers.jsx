@@ -9,7 +9,7 @@ import {
 } from "../requests";
 import { MainContext } from "../contexts";
 import { CreateLink, SearchFilter, YesNoSpan } from "../components";
-import { Eye, Pencil, Plus } from "react-bootstrap-icons";
+import { Eye, Pencil, Plus, ChatText } from "react-bootstrap-icons";
 import { generateFullUserImgPath } from "../utils";
 
 const headers = [
@@ -113,9 +113,14 @@ const UserRow = ({
                 <Eye size="20px" />
               </a>
             </div>
-            <div className="cursor-pointer action-icon secondary-action">
+            <div className="cursor-pointer action-icon success-action">
               <a href={`/user-edit/${id}`}>
                 <Pencil size="20px" />
+              </a>
+            </div>
+            <div className="cursor-pointer action-icon secondary-action">
+              <a href={`/system-chat/${id}`}>
+                <ChatText size="20px" />
               </a>
             </div>
           </div>

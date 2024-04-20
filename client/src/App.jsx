@@ -1,9 +1,9 @@
 import React from "react";
-import { useSystemMessage } from "./chat_hooks";
+import { useSystemMessage } from "./hooks/chat";
 import { useAuth, useAjaxRequest } from "./hooks";
 import { MainRouter, SignRouter, AdminRouter } from "./routes";
 import { MainContext } from "./contexts";
-import { Message } from "./chat_components";
+import { Message } from "./components/chat";
 
 function App() {
   const { setSuccess, setError, systemMessage, clearMessage } =

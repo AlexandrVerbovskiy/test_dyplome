@@ -10,7 +10,7 @@ import {
 import { useChangeUserPassword, useAdminUserEdit } from "../hooks";
 import { MainContext } from "../contexts";
 
-const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
+const AdminUserEditForm = ({ baseData, onSave, hasId }) => {  
   const {
     coords,
     address,

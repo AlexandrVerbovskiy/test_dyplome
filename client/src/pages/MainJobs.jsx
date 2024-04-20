@@ -7,13 +7,17 @@ import {
   Layout,
   UploadTrigger,
   PopupWrapper,
+  JobCard,
+  JobMainFilter,
+  JobCardWrapper,
 } from "../components";
-import { JobCard, MainFilter, CardWrapper } from "../job_components";
 import { useGetJobs, usePopupController } from "../hooks";
 import config from "../config";
 
 const MainPage = () => {
   const { setSuccess, setError, sessionUser } = useContext(MainContext);
+  console.log(sessionUser);
+
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
     useGetJobs();
   const { jobProposalFormState } = usePopupController({
@@ -44,7 +48,7 @@ const MainPage = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <CardWrapper bodyClass="jobs-map">
+      <JobCardWrapper bodyClass="jobs-map">
         <Map>
           <MapMarker
             title="Your position"
@@ -60,13 +64,13 @@ const MainPage = () => {
             <MapMarker key={id} {...jobs[id]} />
           ))}
         </Map>
-      </CardWrapper>
+      </JobCardWrapper>
 
-      <CardWrapper>
-        <MainFilter value={jobsFilter} onClick={jobsFilterChange} />
-      </CardWrapper>
+      <JobCardWrapper>
+        <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
+      </JobCardWrapper>
 
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
         {jobsIds.map((id) => (
           <JobCard
             key={id}
@@ -75,7 +79,7 @@ const MainPage = () => {
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreJobs} />
-      </CardWrapper>
+      </JobCardWrapper>
 
       <PopupWrapper
         onClose={jobProposalFormState.hide}
