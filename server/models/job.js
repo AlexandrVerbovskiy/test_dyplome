@@ -25,7 +25,7 @@ class Job extends Model {
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
         "UPDATE jobs SET title = ?, price = ?, `address` = ?, `description` = ?, lat = ?, lng = ?, author_id = ? WHERE id = ?",
-        [title, price, address, description, lat, lng, jobId, userId]
+        [title, price, address, description, lat, lng, userId, jobId]
       );
     });
 

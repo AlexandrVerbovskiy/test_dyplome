@@ -4,5 +4,6 @@ CREATE TABLE users_actions (
     user_id INTEGER NOT NULL,
     `type` TEXT NOT NULL,
     `data` TEXT,
-    `key` TEXT
+    `key` TEXT,
+    FOREIGN KEY (user_id) REFERENCES users (id),
 );

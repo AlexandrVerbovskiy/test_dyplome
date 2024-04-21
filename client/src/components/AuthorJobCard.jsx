@@ -36,56 +36,60 @@ const AuthorJobCard = ({
   };
 
   return (
-    <div className="job-card">
+    <div className="job-card d-flex flex-column justify-content-between">
       <div className="job-title">
         {title} {id}
       </div>
-      <div className="job-body">
-        <div className="job-main-info">
-          <div className="job-address">
-            <b>Address: </b>
-            {address}
-          </div>
+      <div>
+        <div className="job-body">
+          <div className="job-main-info">
+            <div className="job-address">
+              <b>Address: </b>
+              {address}
+            </div>
 
-          <div className="job-price">
-            <b>Price: ${price}</b>
-          </div>
+            <div className="job-price">
+              <b>Price: ${price}</b>
+            </div>
 
-          <div className="job-created-time">
-            <b>Created at:</b> {timeNormalConverter(timeCreated)}
+            <div className="job-created-time">
+              <b>Created at:</b> {timeNormalConverter(timeCreated)}
+            </div>
+          </div>
+          <div className="job-dop-info">
+            <p className="job-description" style={{ marginBottom: "0" }}>
+              {description.slice(0, maxCharLimit)}
+              {isLongText && (
+                <>
+                  ...
+                  <button className="show-more-job-description">
+                    Show More
+                  </button>
+                </>
+              )}
+            </p>
           </div>
         </div>
-        <div className="job-dop-info">
-          <p className="job-description" style={{ marginBottom: "0" }}>
-            {description.slice(0, maxCharLimit)}
-            {isLongText && (
-              <>
-                ...
-                <button className="show-more-job-description">Show More</button>
-              </>
-            )}
-          </p>
-        </div>
-      </div>
-      <div className="job-actions">
-        <div className="product-actions d-flex flex-column flex-md-row">
-          <Link to={`/job-view/${id}`} className="btn btn-primary w-md-50">
-            View job
-          </Link>
+        <div className="job-actions">
+          <div className="product-actions d-flex flex-column flex-md-row">
+            <Link to={`/job-view/${id}`} className="btn btn-primary w-md-50">
+              View job
+            </Link>
 
-          <Link to={`/job-edit/${id}`} className="btn btn-success w-md-50">
-            Edit job
-          </Link>
-        </div>
+            <Link to={`/job-edit/${id}`} className="btn btn-success w-md-50">
+              Edit job
+            </Link>
+          </div>
 
-        <div className="product-actions d-flex flex-column flex-md-row mt-2">
-          <button
-            type="button"
-            className={`w-md-50 btn btn-${active ? "danger" : "success"}`}
-            onClick={handleChangeActive}
-          >
-            {active ? "Deactivate" : "Activate"}
-          </button>
+          <div className="product-actions d-flex flex-column flex-md-row mt-2">
+            <button
+              type="button"
+              className={`w-md-50 btn btn-${active ? "danger" : "success"}`}
+              onClick={handleChangeActive}
+            >
+              {active ? "Deactivate" : "Activate"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

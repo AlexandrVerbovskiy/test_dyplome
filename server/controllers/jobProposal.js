@@ -87,8 +87,27 @@ class JobProposal extends Controller {
   accept = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.accept(proposalId);
+      const jobAuthorId = proposal.authorId;
+      const pricePerHour = proposal.price;
+      const hours = proposal.executionTime;
+
+      const newBalance = await this.userModel.rejectBalance(
+        jobAuthorId,
+        Number(pricePerHour * hours).toFixed(2)
+      );
+
+      const performance = await this.userModel.getFullUserInfo(proposal.userId);
+
+      await this.paymentTransactionModel.withdrawalForJobOffer(
+        jobAuthorId,
+        Number(amount).toFixed(2),
+        proposal.title,
+        performance.nick ?? performance.email
+      );
+
       return this.sendResponseSuccess(res, "Proposal accepted success", {
         proposal,
+        newUserBalance: newBalance,
       });
     });
 
@@ -133,6 +152,25 @@ class JobProposal extends Controller {
   acceptCompleted = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
+
+      const userId = proposal.userId;
+      const pricePerHour = proposal.price;
+      const hours = proposal.executionTime;
+
+      await this.userModel.addBalance(
+        userId,
+        Number(pricePerHour * hours).toFixed(2)
+      );
+
+      const author = await this.userModel.getFullUserInfo(proposal.authorId);
+
+      await this.paymentTransactionModel.doneJobOffer(
+        userId,
+        Number(amount).toFixed(2),
+        proposal.title,
+        author.nick ?? author.email
+      );
+
       return this.sendResponseSuccess(res, "Contract closed success", {
         proposal,
       });

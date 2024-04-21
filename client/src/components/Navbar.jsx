@@ -95,6 +95,20 @@ const Navbar = ({
             <li className="nav-item">
               <a
                 className={`nav-link ${
+                  window.location.pathname == "/proposals-on-my-jobs"
+                    ? "active"
+                    : ""
+                }`}
+                href="/proposals-on-my-jobs"
+              >
+                <i className="bx bx-task me-1" />
+                My Jobs Offers
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a
+                className={`nav-link ${
                   window.location.pathname == "/chat" ? "active" : ""
                 }`}
                 href="/chat"

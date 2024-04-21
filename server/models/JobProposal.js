@@ -16,7 +16,7 @@ class JobProposal extends Model {
   job_requests.price, job_requests.execution_time as executionTime, job_requests.status, 
   job_requests.time_created as timeCreated`;
 
-  __fullJobRequestInfo = `disputes.id as disputeId, disputes.status as disputeStatus, jobs.title, jobs.price, jobs.address, 
+  __fullJobRequestInfo = `disputes.id as disputeId, disputes.status as disputeStatus, jobs.title, jobs.address, 
     jobs.description, jobs.lat, jobs.lng, jobs.author_id as authorId, job_requests.id,
     job_requests.job_id as jobId, job_requests.user_id as userId, job_requests.price, 
     job_requests.execution_time as executionTime, job_requests.status, job_requests.time_created as timeCreated
@@ -35,9 +35,12 @@ class JobProposal extends Model {
       return null;
     });
 
-  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+  getForProposalAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
+      let query = `SELECT authors.nick as authorNick, authors.email as authorEmail,
+      ${this.__fullJobRequestInfo}
+      JOIN users as authors ON authors.id = jobs.author_id 
+      WHERE job_requests.user_id = ?`;
       const params = [userId];
 
       if (skippedIds.length > 0) {
@@ -56,9 +59,12 @@ class JobProposal extends Model {
       return requests;
     });
 
-  getForProposalAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
+      let query = `SELECT authors.nick as authorNick, authors.email as authorEmail,
+      ${this.__fullJobRequestInfo}
+      JOIN users as authors ON authors.id = job_requests.user_id 
+      WHERE jobs.author_id = ?`;
 
       const params = [userId];
 
@@ -72,6 +78,7 @@ class JobProposal extends Model {
       }
 
       query += ` LIMIT ?`;
+
       params.push(limit);
       const requests = await this.dbQueryAsync(query, params);
       return requests;

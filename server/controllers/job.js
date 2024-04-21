@@ -2,20 +2,20 @@ const Controller = require("./controller");
 
 class Job extends Controller {
   __validateEdit = (res, title, price, description, lat, lng) => {
-    if (!title || title.length <= 2)
+    if (!title || title.length < 2)
       return this.sendResponseValidationError(
         res,
-        "Title should be at least 3 characters long"
+        "Title should be at least 2 characters long"
       );
     if (!price || price <= 0)
       return this.sendResponseValidationError(
         res,
         "Price should be greater than zero"
       );
-    if (description.length < 80)
+    if (description.length < 20)
       return this.sendResponseValidationError(
         res,
-        "Description should be at least 80 characters long"
+        "Description should be at least 20 characters long"
       );
     if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng)))
       return this.sendResponseValidationError(
@@ -27,7 +27,8 @@ class Job extends Controller {
 
   __create = (req, res, currentUserOwner = true) =>
     this.errorWrapper(res, async () => {
-      const { title, price, address, description, lat, lng, userId } = req.body;
+      const { title, price, address, description, lat, lng } = req.body;
+      let userId = req.body.userId;
 
       if (currentUserOwner) {
         userId = req.userData.userId;
@@ -59,8 +60,8 @@ class Job extends Controller {
 
   __edit = (req, res, currentUserOwner = true) =>
     this.errorWrapper(res, async () => {
-      const { jobId, title, price, address, description, lat, lng, userId } =
-        req.body;
+      const { jobId, title, price, address, description, lat, lng } = req.body;
+      let userId = req.body.userId;
 
       if (currentUserOwner) {
         userId = req.userData.userId;

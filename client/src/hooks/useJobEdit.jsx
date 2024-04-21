@@ -24,8 +24,8 @@ const useJobEdit = ({ id = null }) => {
 
         if (!res) return;
 
-        coords.change({ lat: res.lat, lng: res.lng });
-        address.change(res.address);
+        coords.set({ lat: res.lat, lng: res.lng });
+        address.set(res.address);
 
         changePrice(res.price);
         changeTitle(res.title);

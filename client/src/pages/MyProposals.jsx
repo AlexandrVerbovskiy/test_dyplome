@@ -34,6 +34,7 @@ const MyProposals = () => {
               key={id}
               {...proposals[id]}
               userId={proposals[id].authorId}
+              author={proposals[id].authorNick ?? proposals[id].authorEmail}
             />
           ))}
           <UploadTrigger onTriggerShown={getMoreProposals} />

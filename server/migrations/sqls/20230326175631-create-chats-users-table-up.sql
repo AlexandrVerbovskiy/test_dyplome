@@ -5,4 +5,6 @@ CREATE TABLE chats_users (
     user_id INTEGER NOT NULL,
     time_created timestamp DEFAULT CURRENT_TIMESTAMP
     typing BOOLEAN DEFAULT false,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (chat_id) REFERENCES chats (id)
 );

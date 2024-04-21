@@ -47,6 +47,29 @@ const JobProposalForm = ({ send, price, time, setTime, setPrice }) => {
             />
           </div>
         </div>
+        <div className="col-12">
+          <label htmlFor="time" className="form-label">
+            Total, $
+          </label>
+          <div className="input-group">
+            {" "}
+            <span
+              className="input-group-text text-primary"
+              style={{ background: "#e9ecef" }}
+            >
+              <i className="bx bx-dollar-circle me-1 font-22"></i>
+            </span>
+            <input
+              value={time * price}
+              onInput={handleInputTime}
+              type="number"
+              className="form-control border-start-0"
+              id="total"
+              placeholder="0"
+              readOnly={true}
+            />
+          </div>
+        </div>
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-primary px-5" onClick={send}>
