@@ -39,6 +39,12 @@ const Chat = () => {
   };
 
   const getRequest = isAdmin ? getAdminChats : getUsersToChatting;
+
+  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
+    useChatWindowsChanger();
+
+  console.log(setListWindow, setChatWindow);
+
   const {
     chatInfo,
     selectChat,
@@ -75,14 +81,14 @@ const Chat = () => {
     getChatMessages,
     onMessageViewed: messageViewed,
     getChatMessagesByUserId: getUsersChat,
+    setListWindow,
+    setChatWindow,
   });
 
   const onEditMessage = (id, content) => {
     setEditMessage(id, content);
   };
 
-  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
-    useChatWindowsChanger();
   const {
     createChat,
     sendMessage,

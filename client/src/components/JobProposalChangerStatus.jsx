@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { MainContext } from "contexts";
+import { YesNoPopup } from "../components";
 
 import {
   acceptJobProposal,
@@ -16,43 +17,58 @@ const JobProposalChangerStatus = ({
   setProposal,
   proposalId,
   actualStatus,
-  isSeller = false,
-  isBuyer = false,
+  isJobOwner = false,
+  isProposalOwner = false,
   setSuccessMessage,
   setErrorMessage,
+  userBalance,
+  offerPrice,
 }) => {
   let nextStatus = null;
   let changeStatusReq = null;
   const jobStatus = config["JOB_STATUSES"];
   const main = useContext(MainContext);
+  const [activeAcceptChangePopup, setActiveAcceptChangePopup] = useState(false);
+  const [acceptChangePopupProps, setAcceptChangePopupProps] = useState(null);
 
-  if (isSeller) {
-    if (actualStatus == jobStatus["pending"]["value"]) {
-      nextStatus = "In Progress";
+  if (isJobOwner) {
+    if (
+      actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
+    ) {
+      nextStatus = "inProgress";
       changeStatusReq = acceptJobProposal;
     }
 
-    if (actualStatus == jobStatus["awaitingExecutionConfirmation"]["value"]) {
-      nextStatus = "Completed";
+    if (
+      actualStatus.toLowerCase() ==
+      jobStatus["awaitingExecutionConfirmation"]["value"].toLowerCase()
+    ) {
+      nextStatus = "completed";
       changeStatusReq = acceptCompleteJobProposal;
     }
   }
 
-  if (isBuyer) {
-    if (actualStatus == jobStatus["inProgress"]["value"]) {
-      nextStatus = "Awaiting Execution Confirmation";
+  if (isProposalOwner) {
+    if (
+      actualStatus.toLowerCase() ==
+      jobStatus["inProgress"]["value"].toLowerCase()
+    ) {
+      nextStatus = "awaitingExecutionConfirmation";
       changeStatusReq = completeJobProposal;
     }
 
-    if (actualStatus == jobStatus["pending"]["value"]) {
-      nextStatus = "Cancelled";
+    if (
+      actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
+    ) {
+      nextStatus = "cancelled";
       changeStatusReq = acceptCancelJobProposal;
     }
 
     if (
-      actualStatus == jobStatus["awaitingCancellationConfirmation"]["value"]
+      actualStatus.toLowerCase() ==
+      jobStatus["awaitingCancellationConfirmation"]["value"].toLowerCase()
     ) {
-      nextStatus = "Rejected";
+      nextStatus = "awaitingCancellationConfirmation";
       changeStatusReq = rejectJobProposal;
     }
   }
@@ -69,44 +85,79 @@ const JobProposalChangerStatus = ({
     setSuccessMessage(res.message);
   };
 
-  const handleChangeClick = async () => {
+  const handleAcceptChangeStatusPopup = async () => {
     const res = await main.request({
-      url: changeStatusReq.url(),
-      type: changeStatusReq.type,
-      data: changeStatusReq.convertData(proposalId),
-      convertRes: changeStatusReq.convertRes,
+      url: acceptChangePopupProps?.request.url(),
+      type: acceptChangePopupProps?.request.type,
+      data: acceptChangePopupProps?.request.convertData(proposalId),
+      convertRes: acceptChangePopupProps?.request.convertRes,
     });
 
     onSuccessChangeStatus(res);
+    onCloseChangeStatusPopup();
+  };
+
+  const handleChangeClick = async () => {
+    if (nextStatus == "inProgress") {
+      if (userBalance < offerPrice) {
+        setErrorMessage(
+          "You cannot start a contract because the money in your balance is less than the value of the contract"
+        );
+        return;
+      }
+    }
+
+    setActiveAcceptChangePopup(true);
+    setAcceptChangePopupProps({
+      shortTitle: `Are you sure you want set new offer status '${nextStatusInfo["text"]}'?`,
+      request: changeStatusReq,
+    });
+  };
+
+  const handleCancelClick = async () => {
+    setActiveAcceptChangePopup(true);
+    setAcceptChangePopupProps({
+      title: "If the offer is canceled, the funds will be returned",
+      shortTitle: "Are you sure you want to cancel the offer?",
+      request: cancelJobProposal,
+    });
+  };
+
+  const onCloseChangeStatusPopup = () => {
+    setActiveAcceptChangePopup(false);
+    setAcceptChangePopupProps(null);
   };
 
   return (
-    <div className="status-changer-row">
+    <div className="status-changer-row w-100">
       {nextStatusInfo && (
         <button
           type="button"
-          className={`btn btn-${nextStatusInfo["color"]} px-5`}
+          className={`btn btn-${nextStatusInfo["color"]} px-3 py-1 w-100`}
           onClick={handleChangeClick}
         >
           Make "{nextStatusInfo["text"]}"
         </button>
       )}
 
-      {actualStatus && isSeller && (
+      {actualStatus && isJobOwner && (
         <button
           type="button"
-          onClick={() =>
-            cancelJobProposal(
-              proposalId,
-              onSuccessChangeStatus,
-              setErrorMessage
-            )
-          }
-          className={`btn btn-${rejectStatusInfo["color"]} px-5`}
+          onClick={handleCancelClick}
+          className={`btn btn-${rejectStatusInfo["color"]} px-3 py-1 w-100`}
         >
           Make "{rejectStatusInfo["text"]}"
         </button>
       )}
+
+      <YesNoPopup
+        shortTitle={acceptChangePopupProps?.shortTitle}
+        title={acceptChangePopupProps?.title}
+        trigger={activeAcceptChangePopup}
+        onAccept={handleAcceptChangeStatusPopup}
+        onClose={onCloseChangeStatusPopup}
+        acceptText="Accept"
+      />
     </div>
   );
 };

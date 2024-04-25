@@ -6,10 +6,15 @@ const DisputeBtn = ({ actualStatus, onClick }) => {
 
   let canShowDispute = true;
   if (
-    actualStatus == jobStatus["pending"]["value"] ||
-    actualStatus == jobStatus["rejected"]["value"] ||
-    actualStatus == jobStatus["completed"]["value"] ||
-    actualStatus == jobStatus["cancelled"]["value"]
+    actualStatus &&
+    (actualStatus.toLowerCase() ==
+      jobStatus["pending"]["value"].toLowerCase() ||
+      actualStatus.toLowerCase() ==
+        jobStatus["rejected"]["value"].toLowerCase() ||
+      actualStatus.toLowerCase() ==
+        jobStatus["completed"]["value"].toLowerCase() ||
+      actualStatus.toLowerCase() ==
+        jobStatus["cancelled"]["value"].toLowerCase())
   ) {
     canShowDispute = false;
   }
@@ -17,7 +22,7 @@ const DisputeBtn = ({ actualStatus, onClick }) => {
   if (!canShowDispute) return;
 
   return (
-    <button onClick={onClick} type="button" className="btn btn-danger">
+    <button onClick={onClick} type="button" className="btn btn-danger w-100">
       Send dispute
     </button>
   );

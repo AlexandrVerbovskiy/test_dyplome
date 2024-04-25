@@ -3908,3 +3908,35 @@ hr:has(+ .balance-payment-type-select) {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+
+.job-view-actions,
+.admin-job-view-actions,
+.job-proposal-view-actions {
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .job-view-actions:has(*:nth-child(3)),
+  .admin-job-view-actions:has(*:nth-child(3)),
+  .job-proposal-view-actions:has(*:nth-child(3)) {
+    width: 47%;
+  }
+
+  .job-view-actions:not(:has(*:nth-child(3))):has(*:nth-child(2)),
+  .admin-job-view-actions:not(:has(*:nth-child(3))):has(*:nth-child(2)),
+  .job-proposal-view-actions:not(:has(*:nth-child(3))):has(*:nth-child(2)) {
+    width: 29%;
+  }
+
+  .job-view-actions:not(:has(*:nth-child(3))):not(:has(*:nth-child(2))):has(
+      *:nth-child(1)
+    ),
+  .admin-job-view-actions:not(:has(*:nth-child(3))):not(
+      :has(*:nth-child(2))
+    ):has(*:nth-child(1)),
+  .job-proposal-view-actions:not(:has(*:nth-child(3))):not(
+      :has(*:nth-child(2))
+    ):has(*:nth-child(1)) {
+    width: 14%;
+  }
+}

@@ -102,7 +102,7 @@ const Navbar = ({
                 href="/proposals-on-my-jobs"
               >
                 <i className="bx bx-task me-1" />
-                My Jobs Offers
+                Offers For My Jobs
               </a>
             </li>
 

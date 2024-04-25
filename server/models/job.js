@@ -49,9 +49,12 @@ class Job extends Model {
     longitude,
     skippedIds = [],
     filter = "",
-    limit = 20
+    limit = 20,
+    ignoreUserIds = []
   ) =>
     await this.errorWrapper(async () => {
+      console.log("filter: ", filter);
+
       const generateDistanceRow = `SQRT(POW(${this.__latitudeLongitudeToKilometers} * (jobs.lat - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - jobs.lng) * COS(jobs.lat / ${this.__degreesToRadians}), 2))`;
       let query = `SELECT ${this.__selectAllFields}, users.nick as authorNick, users.email as authorEmail, 
                       ${generateDistanceRow} AS distanceFromCenter FROM jobs join users on users.id = jobs.author_id`;
@@ -74,6 +77,11 @@ class Job extends Model {
         if (filter && filter.length > 0) {
           query += ` AND ${jobFilterRequest}`;
         }
+      }
+
+      if (ignoreUserIds.length > 0) {
+        query += ` AND jobs.author_id NOT IN (?)`;
+        params.push(ignoreUserIds);
       }
 
       //HAVING distanceFromCenter <= ?

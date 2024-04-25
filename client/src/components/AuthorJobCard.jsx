@@ -38,7 +38,7 @@ const AuthorJobCard = ({
   return (
     <div className="job-card d-flex flex-column justify-content-between">
       <div className="job-title">
-        {title} {id}
+        {title}
       </div>
       <div>
         <div className="job-body">

@@ -3,7 +3,7 @@ import PopupWrapper from "./PopupWrapper";
 
 const YesNoPopup = ({
   shortTitle,
-  title,
+  title = null,
   trigger,
   onAccept,
   onClose,
@@ -17,13 +17,16 @@ const YesNoPopup = ({
       onClose={onClose}
     >
       <div className="modal-body">
-        <h5
-          style={{
-            textWrap: "wrap",
-          }}
-        >
-          {title}
-        </h5>
+        {title && (
+          <h6
+            style={{
+              textWrap: "wrap",
+              fontWeight: 400,
+            }}
+          >
+            {title}
+          </h6>
+        )}
         <div className="d-flex justify-content-between mt-3">
           <button className="btn btn-primary" onClick={onClose}>
             Close

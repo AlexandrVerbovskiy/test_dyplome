@@ -15,6 +15,8 @@ const useMainChat = ({
   getChatMessages,
   onMessageViewed,
   getChatMessagesByUserId,
+  setListWindow,
+  setChatWindow,
 }) => {
   const defaultStatistic = {
     all: 0,
@@ -64,6 +66,8 @@ const useMainChat = ({
             setMessages([]);
           }
 
+          setChatWindow();
+
           setStatistic(defaultStatistic);
           setChatUsers([]);
         } else {
@@ -111,6 +115,8 @@ const useMainChat = ({
       (chat.userId && chat.userId == activeChat.current.userId)
     )
       return;
+
+    setChatWindow();
 
     if (!chatId) {
       activeChat.current = chat;

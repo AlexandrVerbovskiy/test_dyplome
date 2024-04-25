@@ -23,6 +23,10 @@ import { Layout } from "components";
 const SystemChat = () => {
   const { accountId } = useParams();
   const { socketIo } = useSocketInit();
+
+  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
+    useChatWindowsChanger();
+
   const {
     chatInfo,
     selectChat,
@@ -57,6 +61,8 @@ const SystemChat = () => {
     selectChatRequest: selectSystemChatByAdmin,
     getChatMessages: getAdminChatMessages,
     getChatMessagesByUserId: getUserSystemChat,
+    setListWindow,
+    setChatWindow,
   });
 
   const { sessionUser } = useContext(MainContext);
@@ -64,8 +70,6 @@ const SystemChat = () => {
     setEditMessage(id, content);
   };
 
-  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
-    useChatWindowsChanger();
   const {
     createChat,
     sendMessage,

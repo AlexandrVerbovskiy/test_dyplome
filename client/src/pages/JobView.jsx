@@ -88,23 +88,40 @@ const JobView = () => {
 
             <hr />
 
-            {main.sessionUser.id != job.authorId && (
+            {!main.sessionUser.admin && main.sessionUser.id != job.authorId ? (
               <div className="d-flex align-items-center">
                 <div className="dropdown job-proposal-statuses-change">
-                  <div>
+                  <div className="job-view-actions">
                     <a
                       href={"/chat/personal/" + job.authorId}
-                      className="btn btn-primary"
+                      className="btn btn-primary w-100"
                     >
                       Write to author
                     </a>
 
                     <button
-                      className="btn btn-success"
+                      className="btn btn-success mt-2 mt-md-0 w-100"
                       onClick={() => jobProposalFormState.setJobId(id)}
                     >
                       Send proposal
                     </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {main.sessionUser.admin && (
+              <div className="d-flex align-items-center">
+                <div className="dropdown job-proposal-statuses-change">
+                  <div className="admin-job-view-actions">
+                    <a
+                      href={"/system-chat/" + job.authorId}
+                      className="btn btn-primary w-100"
+                    >
+                      Write to job author
+                    </a>
                   </div>
                 </div>
               </div>

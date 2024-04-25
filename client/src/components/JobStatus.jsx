@@ -12,7 +12,7 @@ const StatusElement = ({
   const btn = (
     <button
       type="button"
-      className={`status-view btn btn-${statusColor} px-5 radius-5`}
+      className={`status-view btn btn-${statusColor} px-3 py-1 radius-5`}
       disabled
     >
       {statusText}

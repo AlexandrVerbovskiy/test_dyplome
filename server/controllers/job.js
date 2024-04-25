@@ -134,7 +134,8 @@ class Job extends Controller {
         lng,
         skippedIds,
         filter,
-        needCountJobs
+        needCountJobs,
+        [userId]
       );
 
       return this.sendResponseSuccess(res, "The job was get successfully", {
