@@ -1,4 +1,4 @@
-import { calculateFee } from "../utils";
+import { calculateFee } from "utils";
 
 const FeeCalculate = ({ feeInfo, enterPrice }) => {
   const fee = calculateFee(feeInfo, enterPrice);

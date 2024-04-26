@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
-import { getCursorPosition } from "../utils";
-import { ChatContext } from "../contexts";
+import { getCursorPosition } from "utils";
+import { ChatContext } from "contexts";
 
 const TextInput = ({ textRef }) => {
   const { editor, handleStartTyping, handleEndTyping } =

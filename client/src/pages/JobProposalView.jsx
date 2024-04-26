@@ -1,23 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import {
   JobProposalChangerStatus,
   DisputeBtn,
   AcceptPopup,
-} from "../components";
-import { getJobProposalInfo } from "../requests";
-import { usePopupController } from "../hooks";
-import { createDispute } from "../requests";
-import { BaseJobEntityTemplate } from "../job_components";
+  BaseJobEntityTemplate,
+} from "components";
+import { getJobProposalInfo } from "requests";
+import { usePopupController } from "hooks";
+import { createDispute } from "requests";
 
 const JobProposalView = () => {
-  const isSeller = true;
-  const isBuyer = true;
-  let { proposalId } = useParams();
+  const [isJobOwner, setIsJobOwner] = useState(true);
+  const [isProposalOwner, setIsProposalOwner] = useState(true);
   const [proposal, setProposal] = useState(null);
+  let { proposalId } = useParams();
 
-  const { setSuccess, setError, request } = useContext(MainContext);
+  const { setSuccess, setError, request, sessionUser } =
+    useContext(MainContext);
 
   useEffect(() => {
     (async () => {
@@ -31,12 +32,19 @@ const JobProposalView = () => {
         setProposal({
           ...res,
           status: res.status.toLocaleLowerCase(),
-          disputeId: res.dispute_id,
-          disputeStatus: res.dispute_status,
+          disputeId: res.disputeId,
+          disputeStatus: res.disputeStatus,
         });
       } catch (e) {}
     })();
   }, [proposalId]);
+
+  useEffect(() => {
+    if (proposal && sessionUser) {
+      setIsJobOwner(proposal.authorId == sessionUser.id);
+      setIsProposalOwner(proposal.userId == sessionUser.id);
+    }
+  }, [proposal, sessionUser]);
 
   const { acceptJobDisputeForm } = usePopupController({
     onSuccess: setSuccess,
@@ -69,14 +77,17 @@ const JobProposalView = () => {
   if (!proposal) return;
 
   let disputeText = "";
-  if (proposal.disputeStatus == "Pending")
-    disputeText = `Offer suspended due to dispute. Please wait for an administrator to review your issue!`;
 
-  if (proposal.disputeStatus == "In Progress")
-    disputeText = `Offer suspended due to dispute. Wait for the administrator's decision on the situation!`;
+  if (proposal.disputeStatus) {
+    if (proposal.disputeStatus.toLowerCase() == "pending")
+      disputeText = `Offer suspended due to dispute. Please wait for an administrator to review your issue!`;
 
-  if (proposal.disputeStatus == "Resolved")
-    disputeText = `Offer suspended due to dispute. The administrator has already completed reviewing the issue and resolved it`;
+    if (proposal.disputeStatus.toLowerCase() == "in progress")
+      disputeText = `Offer suspended due to dispute. Wait for the administrator's decision on the situation!`;
+
+    if (proposal.disputeStatus.toLowerCase() == "resolved")
+      disputeText = `Offer suspended due to dispute. The administrator has already completed reviewing the issue and resolved it`;
+  }
 
   return (
     <BaseJobEntityTemplate
@@ -94,37 +105,66 @@ const JobProposalView = () => {
 
       <div className="d-flex align-items-center">
         <div className="dropdown job-proposal-statuses-change">
-          <div className="d-block d-md-flex">
+          <div className="d-flex flex-column flex-md-row job-proposal-view-actions">
             {proposal.disputeId && (
               <div className="dispute-proposal-notification text-danger d-flex align-items-center">
                 {disputeText}
               </div>
             )}
 
-            {!proposal.disputeId && (
+            {!sessionUser.admin && !proposal.disputeId ? (
               <DisputeBtn
                 onClick={() => acceptJobDisputeForm.setProposalId(proposalId)}
                 actualStatus={proposal.status}
               />
+            ) : (
+              <></>
             )}
 
-            <a
-              href={"/chat/personal/" + proposal.author_id}
-              className="btn btn-primary mt-2 mt-md-0"
-            >
-              Write to author
-            </a>
+            {!sessionUser.admin && proposal.userId == sessionUser.id ? (
+              <a
+                href={"/chat/personal/" + proposal.authorId}
+                className="btn btn-primary mt-2 mt-md-0 w-100"
+              >
+                Write to author
+              </a>
+            ) : (
+              <></>
+            )}
 
-            {!proposal.disputeId && (
+            {sessionUser.admin ? (
+              <>
+                <a
+                  href={"/system-chat/" + proposal.authorId}
+                  className="btn btn-primary w-100"
+                >
+                  Write to job author
+                </a>
+                <a
+                  href={"/system-chat/" + proposal.userId}
+                  className="btn btn-primary w-100 mt-2 mt-md-0"
+                >
+                  Write to proposal author
+                </a>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {!sessionUser.admin && !proposal.disputeId ? (
               <JobProposalChangerStatus
                 setProposal={setProposal}
                 proposalId={proposalId}
                 actualStatus={proposal.status}
                 setSuccessMessage={setSuccess}
                 setErrorMessage={setError}
-                isSeller={isSeller}
-                isBuyer={isBuyer}
+                isProposalOwner={isProposalOwner}
+                isJobOwner={isJobOwner}
+                offerPrice={proposal.price}
+                userBalance={sessionUser.balance}
               />
+            ) : (
+              <></>
             )}
           </div>
         </div>
@@ -150,7 +190,7 @@ const JobProposalView = () => {
         <span className="dispute-warning mt-2">
           Do you really want the administrators to help you resolve the dispute?
           by clicking "Accept", you provide access to your chat with the{" "}
-          {isSeller ? "buyer" : "seller"}
+          {isJobOwner ? "job author" : "proposal author"}
         </span>
       </AcceptPopup>
     </BaseJobEntityTemplate>

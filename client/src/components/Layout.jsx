@@ -1,6 +1,6 @@
 import DefaultPageLayout from "./DefaultPageLayout";
 import DefaultAdminPageLayout from "./DefaultAdminPageLayout";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import { useContext } from "react";
 
 const Layout = ({ children, pageClassName }) => {

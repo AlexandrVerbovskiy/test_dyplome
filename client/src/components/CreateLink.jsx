@@ -5,7 +5,7 @@ const CreateLink = ({ link }) => {
     <a
       className="btn btn-primary"
       href={link}
-      style={{ display: "flex", alignItems: "flex-end" }}
+      style={{ display: "flex", alignItems: "flex-end", lineHeight: "23px" }}
     >
       Create <Plus size="20px" />
     </a>

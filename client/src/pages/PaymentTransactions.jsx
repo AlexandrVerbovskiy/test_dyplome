@@ -1,5 +1,5 @@
-import { getPaymentTransactions } from "../requests";
-import BaseTransactionsTable from "../components/BaseTransactionsTable";
+import { getPaymentTransactions } from "requests";
+import BaseTransactionsTable from "components/BaseTransactionsTable";
 
 const PaymentTransactions = () => (
   <BaseTransactionsTable listRequest={getPaymentTransactions} title="Transactions" />

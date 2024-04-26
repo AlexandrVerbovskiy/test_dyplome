@@ -1,16 +1,16 @@
 import { useContext, useState } from "react";
-import { usePagination } from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
+import { usePagination } from "hooks";
+import BaseAdminTableLayoutPage from "components/BaseAdminTableLayoutPage";
 import {
   adminDeleteUser,
   adminUpdateUserAdmin,
   adminUpdateUserAuthorized,
   getFullUsers,
-} from "../requests";
-import { MainContext } from "../contexts";
-import { CreateLink, SearchFilter, YesNoSpan } from "../components";
-import { Eye, Pencil, Plus } from "react-bootstrap-icons";
-import { generateFullUserImgPath } from "../utils";
+} from "requests";
+import { MainContext } from "contexts";
+import { CreateLink, SearchFilter, YesNoSpan } from "components";
+import { Eye, Pencil, Plus, ChatText } from "react-bootstrap-icons";
+import { generateFullUserImgPath } from "utils";
 
 const headers = [
   {
@@ -62,7 +62,7 @@ const headers = [
 const UserRow = ({
   id,
   avatar,
-  profile_authorized,
+  profileAuthorized,
   nick,
   email,
   balance,
@@ -71,7 +71,6 @@ const UserRow = ({
   authorizedChange,
   adminChange,
 }) => {
-  const [activeDelete, setActiveDelete] = useState(false);
   const main = useContext(MainContext);
   const isCurrentUser = main.sessionUser.id === id;
 
@@ -96,7 +95,7 @@ const UserRow = ({
       <td className="fw-bolder">${balance}</td>
       <td>
         <YesNoSpan
-          active={profile_authorized}
+          active={profileAuthorized}
           onClick={isCurrentUser ? null : () => authorizedChange(id)}
         />
       </td>
@@ -110,13 +109,18 @@ const UserRow = ({
         {!isCurrentUser && (
           <div className="fast-actions">
             <div className="cursor-pointer action-icon primary-action">
-              <a href={`/user-view/${id}`}>
+              <a href={`/users/${id}`}>
                 <Eye size="20px" />
               </a>
             </div>
-            <div className="cursor-pointer action-icon secondary-action">
+            <div className="cursor-pointer action-icon success-action">
               <a href={`/user-edit/${id}`}>
                 <Pencil size="20px" />
+              </a>
+            </div>
+            <div className="cursor-pointer action-icon secondary-action">
+              <a href={`/system-chat/${id}`}>
+                <ChatText size="20px" />
               </a>
             </div>
           </div>
@@ -194,7 +198,7 @@ const AdminUsers = () => {
       convertRes: adminUpdateUserAuthorized.convertRes,
     });
 
-    setItemFields({ profile_authorized: authorized }, id);
+    setItemFields({ profileAuthorized: authorized }, id);
   };
 
   return (

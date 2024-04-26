@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { Layout, Select, Input } from "../components";
-import { MainContext } from "../contexts";
-import { getFeeInfo, setFeeInfo } from "../requests";
+import { Layout, Select, Input } from "components";
+import { MainContext } from "contexts";
+import { getFeeInfo, setFeeInfo } from "requests";
 
 const feeTypeOptions = [
   { value: "percent", label: "By percent of withdraw" },
@@ -30,10 +30,10 @@ const SystemOptions = () => {
   };
 
   const updateStates = (body) => {
-    const { fee_type, fixed_fee, percent_fee } = body;
-    setFeeType(fee_type);
-    setFeeFixedValue(fixed_fee);
-    setFeePercentValue(percent_fee);
+    const { feeType, fixedFee, percentFee } = body;
+    setFeeType(feeType);
+    setFeeFixedValue(fixedFee);
+    setFeePercentValue(percentFee);
   };
 
   const init = async () => {

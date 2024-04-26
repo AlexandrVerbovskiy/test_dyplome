@@ -1,4 +1,4 @@
-import { generatePagination } from "../utils";
+import { generatePagination } from "utils";
 import { ArrowLeft, ArrowRight } from "react-bootstrap-icons";
 
 const Pagination = ({ move, canNext, canPrev, page, countPages }) => {

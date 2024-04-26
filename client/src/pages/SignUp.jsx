@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-import { Activator, Input, PasswordInput, SignForm } from "../components";
-import { MainContext } from "../contexts";
-import { registration } from "../requests";
+import { Activator, Input, PasswordInput, SignForm } from "components";
+import { MainContext } from "contexts";
+import { registration } from "requests";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");

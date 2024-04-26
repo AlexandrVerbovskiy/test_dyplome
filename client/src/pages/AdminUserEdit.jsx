@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { updateUser, getFullUserInfo } from "../requests";
-import { MainContext } from "../contexts";
+import { updateUser, getFullUserInfo } from "requests";
+import { MainContext } from "contexts";
 import { useParams } from "react-router-dom";
-import AdminUserEditForm from "../components/AdminUserEditForm";
+import AdminUserEditForm from "components/AdminUserEditForm";
 
 const AdminUserEdit = () => {
   const main = useContext(MainContext);

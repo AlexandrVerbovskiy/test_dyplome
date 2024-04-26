@@ -7,12 +7,12 @@ import {
   PaypalPaymentForm,
   StripePaymentForm,
   TabHeader,
-} from "../components";
+} from "components";
 import { Paypal, Stripe } from "react-bootstrap-icons";
-import { MainContext } from "../contexts";
-import { getFeeInfo, getPaymentTransactions } from "../requests";
-import { usePagination } from "../hooks";
-import { fullTimeFormat } from "../utils";
+import { MainContext } from "contexts";
+import { getFeeInfo, getPaymentTransactions } from "requests";
+import { usePagination } from "hooks";
+import { fullTimeFormat } from "utils";
 
 const paypalType = "paypal";
 const stripeType = "stripe";

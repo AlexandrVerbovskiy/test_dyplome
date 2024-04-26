@@ -5,10 +5,11 @@ import {
   Layout,
   PasswordInput,
   SingleMarkMap,
-} from "../components";
-import { useChangePassword, useProfileEdit } from "../hooks";
-import { updateProfile } from "../requests";
-import { MainContext } from "../contexts";
+  Textarea,
+} from "components";
+import { useChangePassword, useProfileEdit } from "hooks";
+import { updateProfile } from "requests";
+import { MainContext } from "contexts";
 
 const ProfileEdit = () => {
   const main = useContext(MainContext);
@@ -19,6 +20,10 @@ const ProfileEdit = () => {
     email,
     nick,
     profileImg,
+    phone,
+    biography,
+    instagramUrl,
+    linkedinUrl,
     activityRadius,
     validateProfileEdit,
   } = useProfileEdit();
@@ -52,6 +57,10 @@ const ProfileEdit = () => {
     formData.append("lat", coords.value.lat);
     formData.append("lng", coords.value.lng);
     formData.append("activityRadius", activityRadius.value);
+    formData.append("phone", phone.value);
+    formData.append("biography", biography.value);
+    formData.append("linkedinUrl", linkedinUrl.value);
+    formData.append("instagramUrl", instagramUrl.value);
 
     try {
       const res = await main.request({
@@ -64,7 +73,6 @@ const ProfileEdit = () => {
       main.setSessionUser((prev) => ({
         ...prev,
         address: res.address,
-        admin: res.admin,
         avatar: res.avatar,
         nick: res.nick,
         email: res.email,
@@ -134,8 +142,49 @@ const ProfileEdit = () => {
                   onChange={(img) => profileImg.change(img)}
                   error={profileImg.error}
                 />
+
+                <Input
+                  type="text"
+                  label="Phone"
+                  placeholder="+380676666666"
+                  value={phone.value}
+                  error={phone.error}
+                  onChange={(e) => phone.change(e.target.value)}
+                />
+
+                <Input
+                  type="text"
+                  label="Linkedin"
+                  placeholder="https://linkedin.com/"
+                  value={linkedinUrl.value}
+                  error={linkedinUrl.error}
+                  onChange={(e) => linkedinUrl.change(e.target.value)}
+                />
+
+                <Input
+                  type="text"
+                  label="https://www.instagram.com/"
+                  placeholder="+380676666666"
+                  value={instagramUrl.value}
+                  error={instagramUrl.error}
+                  onChange={(e) => instagramUrl.change(e.target.value)}
+                />
               </div>
             </div>
+
+            <div className="row mt-2">
+              <div className="col-12">
+                <Textarea
+                  title="Biography"
+                  value={biography.value}
+                  onChange={(e) => biography.change(e.target.value)}
+                  error={biography.error}
+                  placeholder="Some description about user"
+                  rows={8}
+                />
+              </div>
+            </div>
+
             <hr />
             <div className="d-flex align-items-center">
               <div className="dropdown ms-auto">

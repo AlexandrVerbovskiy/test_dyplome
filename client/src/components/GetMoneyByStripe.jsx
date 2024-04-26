@@ -1,10 +1,10 @@
 import Input from "./Input";
 import YesNoPopup from "./YesNoPopup";
 import { useContext, useState } from "react";
-import { MainContext } from "../contexts";
-import { stripeGetMoneyToBankId } from "../requests";
+import { MainContext } from "contexts";
+import { stripeGetMoneyToBankId } from "requests";
 import FeeCalculate from "./FeeCalculate";
-import { calculateFee } from "../utils";
+import { calculateFee } from "utils";
 
 const GetMoneyByStripe = ({ feeInfo, onComplete }) => {
   const [bankId, setBankId] = useState("");

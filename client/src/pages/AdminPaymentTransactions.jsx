@@ -1,8 +1,8 @@
-import { getAllUsersPaymentTransactions } from "../requests";
+import { getAllUsersPaymentTransactions } from "requests";
 import { useContext } from "react";
-import { usePagination } from "../hooks";
-import BaseAdminTableLayoutPage from "../components/BaseAdminTableLayoutPage";
-import { MainContext } from "../contexts";
+import { usePagination } from "hooks";
+import BaseAdminTableLayoutPage from "components/BaseAdminTableLayoutPage";
+import { MainContext } from "contexts";
 
 const headers = [
   {

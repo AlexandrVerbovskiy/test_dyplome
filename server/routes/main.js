@@ -14,7 +14,8 @@ const {
   Transaction,
   Payment,
   Main,
-  GetMoneyRequest
+  GetMoneyRequest,
+  Socket,
 } = require("../controllers");
 
 const {
@@ -61,7 +62,10 @@ function route(app, db, io) {
   const mainController = new Main(db);
   const getMoneyRequestController = new GetMoneyRequest(db);
 
-  chatController.setIo(io);
+  const socketController = new Socket(db, io);
+
+  chatController.setIo(socketController);
+  mainController.setIo(socketController);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();
@@ -121,11 +125,23 @@ function route(app, db, io) {
     chatController.selectSystemChatByAdmin
   );
   app.post("/get-users-chat", isAuth, chatController.getUsersChat);
+  app.post(
+    "/get-user-system-chat",
+    isAuth,
+    chatController.getUserSystemChatMessages
+  );
 
   app.get("/get-job/:id", isAuth, jobController.getById);
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);
   app.post("/edit-job", isAuth, jobController.edit);
   app.post("/admin-edit-job", isAuth, jobController.editByAdmin);
+
+  app.post("/job-change-active", isAuth, jobController.changeActivate);
+  app.post(
+    "/admin-job-change-active",
+    isAuth,
+    jobController.changeActivateByAdmin
+  );
 
   app.post(
     "/get-my-proposals",
@@ -133,11 +149,7 @@ function route(app, db, io) {
     jobProposalController.getForProposalAuthor
   );
 
-  app.post(
-    "/get-my-jobs",
-    isAuth,
-    jobController.getForAuthor
-  );
+  app.post("/get-my-jobs", isAuth, jobController.getForAuthor);
 
   app.post(
     "/get-proposals-for-me",
@@ -267,7 +279,11 @@ function route(app, db, io) {
 
   app.post("/admin-dispute-list", isAdmin, disputeController.getAllDisputes);
 
-  app.post("/stripe-charge", isAuth, paymentController.stripeBalanceReplenishment);
+  app.post(
+    "/stripe-charge",
+    isAuth,
+    paymentController.stripeBalanceReplenishment
+  );
 
   app.post(
     "/stripe-get-money-to-bank-id",
@@ -275,11 +291,19 @@ function route(app, db, io) {
     paymentController.stripeGetMoneyToBankId
   );
 
-  app.post("/paypal-get-money-to-user", isAuth, paymentController.paypalGetMoneyToUser);
+  app.post(
+    "/paypal-get-money-to-user",
+    isAuth,
+    paymentController.paypalGetMoneyToUser
+  );
 
   app.post("/paypal-create-order", isAuth, paymentController.paypalCreateOrder);
 
-  app.post("/paypal-capture-order", isAuth, paymentController.paypalBalanceReplenishment);
+  app.post(
+    "/paypal-capture-order",
+    isAuth,
+    paymentController.paypalBalanceReplenishment
+  );
 
   app.get("/fee-info", isAuth, mainController.getFeeInfo);
 
@@ -287,10 +311,22 @@ function route(app, db, io) {
 
   app.post("/update-fee-info", isAdmin, mainController.setFeeInfo);
 
-  app.get("/get-money-request/:id", isAdmin, getMoneyRequestController.getOneById);
+  app.get(
+    "/get-money-request/:id",
+    isAdmin,
+    getMoneyRequestController.getOneById
+  );
 
-  app.post("/get-money-request-accept", isAdmin, getMoneyRequestController.accept);
+  app.post(
+    "/get-money-request-accept",
+    isAdmin,
+    getMoneyRequestController.accept
+  );
 
-  app.post("/get-money-request-list", isAdmin, getMoneyRequestController.getRequestList);
+  app.post(
+    "/get-money-request-list",
+    isAdmin,
+    getMoneyRequestController.getRequestList
+  );
 }
 module.exports = route;

@@ -4,13 +4,13 @@ const Model = require("./model");
 class Notification extends Model {
   __selectAllFields = `id, \`type\`, user_id as userId, body as body, created_at as createdAt`;
 
-  create = async ({ type, user_id, body = "" }) =>
+  create = async ({ type, userId, body = "" }) =>
     await this.errorWrapper(async () => {
       const insertChatRes = await this.dbQueryAsync(
         "INSERT INTO notifications (type, user_id, body) VALUES (?, ?, ?)",
-        [type, user_id, body]
+        [type, userId, body]
       );
-      return insertChatRes.insertId;
+      return { id: insertChatRes.insertId, userId, type, body };
     });
 
   baseGetMany = (props) => {
@@ -70,15 +70,15 @@ class Notification extends Model {
     const body = JSON.stringify({ message });
     return this.create({
       type: "system",
-      user_id: userId,
+      userId,
       body,
     });
   };
 
-  createRegistrationNotification = (userId) =>
+  createRegistration = (userId) =>
     this.createSystemNotifications(userId, "Account created");
 
-  createLoginNotification = (userId) =>
+  createLogin = (userId) =>
     this.createSystemNotifications(userId, "Login is complete");
 
   resetPasswordRequest = (userId) =>
@@ -109,7 +109,7 @@ class Notification extends Model {
 
     return this.create({
       type: "proposal",
-      user_id: userId,
+      userId,
       body,
     });
   };
@@ -132,7 +132,7 @@ class Notification extends Model {
 
     return this.create({
       type: "dispute",
-      user_id: userId,
+      userId,
       body,
     });
   };
@@ -148,14 +148,14 @@ class Notification extends Model {
 
     return this.create({
       type: "dispute",
-      user_id: userId,
+      userId,
       body,
     });
   };
 
   sentComment = (
     { senderId, senderNick, senderEmail },
-    { parentType, parentId },
+    { commentType, parentId },
     userId,
     commentBody
   ) => {
@@ -163,14 +163,14 @@ class Notification extends Model {
       senderId,
       senderNick,
       senderEmail,
-      parentType,
+      commentType,
       parentId,
       commentBody,
     });
 
     return this.create({
       type: "comment",
-      user_id: userId,
+      userId,
       body,
     });
   };
@@ -189,7 +189,7 @@ class Notification extends Model {
 
     return this.create({
       type: "message",
-      user_id: userId,
+      userId,
       body,
     });
   };

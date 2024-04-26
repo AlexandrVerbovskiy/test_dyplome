@@ -6,23 +6,25 @@ import {
   useChatTextEditor,
   useMainChat,
   useChatWindowsChanger,
-} from "../chat_hooks";
-import { useSocketInit } from "../hooks";
+} from "hooks/chat";
+import { useSocketInit } from "hooks";
 import {
   ChatList,
   ChatBody,
   ChatListHeader,
   AdminChatListHeader,
-} from "../chat_components";
-import { ChatContext, MainContext } from "../contexts";
+} from "components/chat";
+import { ChatContext, MainContext } from "contexts";
 import NoChats from "./NoChats";
-import { randomString } from "../utils";
+import { randomString } from "utils";
 import {
   getUsersToChatting,
   getAdminChats,
   selectChat as selectChatRequest,
   getChatMessages,
-} from "../requests";
+  getUsersChat,
+} from "requests";
+import { Layout } from "components";
 
 const Chat = () => {
   const { accountId } = useParams();
@@ -37,6 +39,12 @@ const Chat = () => {
   };
 
   const getRequest = isAdmin ? getAdminChats : getUsersToChatting;
+
+  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
+    useChatWindowsChanger();
+
+  console.log(setListWindow, setChatWindow);
+
   const {
     chatInfo,
     selectChat,
@@ -72,14 +80,15 @@ const Chat = () => {
     selectChatRequest,
     getChatMessages,
     onMessageViewed: messageViewed,
+    getChatMessagesByUserId: getUsersChat,
+    setListWindow,
+    setChatWindow,
   });
 
   const onEditMessage = (id, content) => {
     setEditMessage(id, content);
   };
 
-  const { bodyRef, setListWindow, setChatWindow, activeWindow } =
-    useChatWindowsChanger();
   const {
     createChat,
     sendMessage,
@@ -108,9 +117,9 @@ const Chat = () => {
   const editor = useChatTextEditor();
   const emojiPopup = useChatEmojiPopup();
 
-  const handleStartTyping = () => startTyping(activeChat.chat_id);
+  const handleStartTyping = () => startTyping(activeChat.chatId);
 
-  const handleEndTyping = () => endTyping(activeChat.chat_id);
+  const handleEndTyping = () => endTyping(activeChat.chatId);
 
   const handleSendMedia = (data, dataType, filetype, dop, filename) => {
     sendMedia(data, dataType, filetype, dop, filename);
@@ -124,65 +133,67 @@ const Chat = () => {
       unsetEditMessage();
     } else {
       const dop = {
-        temp_key: randomString(),
+        tempKey: randomString(),
       };
 
-      if (activeChat.chat_type == "personal") {
-        dop["chatId"] = activeChat?.chat_id;
-        dop["getter_id"] = activeChat.user_id;
+      if (activeChat.chatType == "personal") {
+        dop["chatId"] = activeChat?.chatId;
+        dop["getterId"] = activeChat.userId;
       }
 
-      sendMessage(
-        activeChat.chat_id,
-        "text",
-        message,
-        activeChat.chat_type,
-        dop
-      );
+      sendMessage(activeChat.chatId, "text", message, activeChat.chatType, dop);
     }
   };
 
   if (chatList.length < 1 && !activeChat) return <NoChats />;
 
   return (
-    <div id="chatPage" className="row" ref={bodyRef}>
-      <ChatContext.Provider
-        value={{
-          onGetNewChat,
-          appendUsers,
-          chatUsers,
-          chatInfo,
-          activeChatId: activeChat?.chat_id,
-          selectChat,
-          setChatListSearch,
-          getMoreChats,
-          handleSendTextMessage,
-          handleStartTyping,
-          handleEndTyping,
-          editor,
-          showMoreMessages,
-          emojiPopup,
-          messages,
-          activeChat,
-          setListWindow,
-          setChatWindow,
-          activeWindow,
-          onEditMessage,
-          onDeleteMessage,
-          handleSendMedia,
-          stopSendMedia,
-          chatType: activeChat.chat_type,
-          leftChat,
-          kickUser,
-          getUsersToJoin,
-        }}
-      >
-        <ChatList chatList={chatList}>
-          {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
-        </ChatList>
-        <ChatBody />
-      </ChatContext.Provider>
-    </div>
+    <Layout pageClassName="default-view-page table-page">
+      <div className="page-content">
+        <div className={`card`} style={{ marginBottom: 0 }}>
+          <div className={`card-body`} style={{ padding: "0" }}>
+            <div id="chatPage" className="row" ref={bodyRef}>
+              <ChatContext.Provider
+                value={{
+                  onGetNewChat,
+                  appendUsers,
+                  chatUsers,
+                  chatInfo,
+                  activeChatId: activeChat?.chatId,
+                  selectChat,
+                  setChatListSearch,
+                  getMoreChats,
+                  handleSendTextMessage,
+                  handleStartTyping,
+                  handleEndTyping,
+                  editor,
+                  showMoreMessages,
+                  emojiPopup,
+                  messages,
+                  activeChat,
+                  setListWindow,
+                  setChatWindow,
+                  activeWindow,
+                  onEditMessage,
+                  onDeleteMessage,
+                  handleSendMedia,
+                  stopSendMedia,
+                  chatType: activeChat.chatType,
+                  leftChat,
+                  kickUser,
+                  getUsersToJoin,
+                }}
+              >
+                <ChatList chatList={chatList}>
+                  {isAdmin ? <AdminChatListHeader /> : <ChatListHeader />}
+                </ChatList>
+                <ChatBody />
+              </ChatContext.Provider>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 };
 

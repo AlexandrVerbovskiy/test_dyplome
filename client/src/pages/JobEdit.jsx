@@ -6,11 +6,11 @@ import {
   Layout,
   SingleMarkMap,
   MapMarker,
-} from "../components";
-import { useJobEdit } from "../hooks";
-import { updateJob } from "../requests";
-import { MainContext } from "../contexts";
-import config from "../config";
+} from "components";
+import { useJobEdit } from "hooks";
+import { updateJob } from "requests";
+import { MainContext } from "contexts";
+import config from "config";
 
 const JobEdit = () => {
   let { id = null } = useParams();

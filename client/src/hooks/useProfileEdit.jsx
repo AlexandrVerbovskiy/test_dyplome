@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getProfileInfo } from "../requests";
-import { MainContext } from "../contexts";
-import config from "../config";
+import { getProfileInfo } from "requests";
+import { MainContext } from "contexts";
+import config from "config";
 
 const useProfileEdit = () => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [email, setEmail] = useState({ value: "", error: null });
+  const [phone, setPhone] = useState({ value: "", error: null });
+  const [biography, setBiography] = useState({ value: "", error: null });
+  const [instagramUrl, setInstagramUrl] = useState({ value: "", error: null });
+  const [linkedinUrl, setLinkedinUrl] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const [activityRadius, setActivityRadius] = useState(config.RADIUS_DEFAULT);
   const { coords, address, addressCoordsValidate } = useAddressCoordsRelation();
@@ -25,7 +29,11 @@ const useProfileEdit = () => {
 
         changeEmail(res.email ?? "");
         changeNick(res.nick ?? "");
-        setActivityRadius(res.activity_radius ?? config.RADIUS_DEFAULT);
+        setActivityRadius(res.activityRadius ?? config.RADIUS_DEFAULT);
+        changeBiography(res.biography ?? "");
+        changeInstagramUrl(res.instagramUrl ?? "");
+        changeLinkedinUrl(res.linkedinUrl ?? "");
+        changePhone(res.phone ?? "");
 
         if (res.lat === null && res.lng === null) {
           navigator.geolocation.getCurrentPosition(
@@ -34,7 +42,7 @@ const useProfileEdit = () => {
               coords.change({ lat: latitude, lng: longitude });
             },
             (error) => {
-              coords.change(config.MAP_DEFAULT.center);
+              coords.set(config.MAP_DEFAULT.center);
             }
           );
 
@@ -44,17 +52,17 @@ const useProfileEdit = () => {
                 const { latitude, longitude } = position.coords;
                 coords.change({ lat: latitude, lng: longitude });
               },
-              (error) => coords.change(config.MAP_DEFAULT.center)
+              (error) => coords.set(config.MAP_DEFAULT.center)
             );
           } else {
-            coords.change(config.MAP_DEFAULT.center);
+            coords.set(config.MAP_DEFAULT.center);
           }
         } else {
-          coords.change({
+          coords.set({
             lat: res.lat ?? config.MAP_DEFAULT.center.lat,
             lng: res.lng ?? config.MAP_DEFAULT.center.lng,
           });
-          address.change(res.address ?? "");
+          address.set(res.address ?? "");
         }
 
         if (res.avatar) changeImg(res.avatar);
@@ -72,6 +80,22 @@ const useProfileEdit = () => {
 
   const changeImg = (img) => {
     setProfileImg({ value: img, error: null });
+  };
+
+  const changePhone = (phone) => {
+    setPhone({ value: phone, error: null });
+  };
+
+  const changeBiography = (biography) => {
+    setBiography({ value: biography, error: null });
+  };
+
+  const changeLinkedinUrl = (linkedinUrl) => {
+    setLinkedinUrl({ value: linkedinUrl, error: null });
+  };
+
+  const changeInstagramUrl = (instagramUrl) => {
+    setInstagramUrl({ value: instagramUrl, error: null });
   };
 
   const validateProfileEdit = () => {
@@ -115,6 +139,10 @@ const useProfileEdit = () => {
     profileImg: { ...profileImg, change: changeImg },
     validateProfileEdit,
     activityRadius: { value: activityRadius, change: setActivityRadius },
+    biography: { ...biography, change: changeBiography },
+    phone: { ...phone, change: changePhone },
+    instagramUrl: { ...instagramUrl, change: changeInstagramUrl },
+    linkedinUrl: { ...linkedinUrl, change: changeLinkedinUrl },
   };
 };
 

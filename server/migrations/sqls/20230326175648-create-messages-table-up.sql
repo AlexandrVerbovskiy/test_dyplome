@@ -5,5 +5,7 @@ CREATE TABLE messages (
     sender_id INTEGER DEFAULT NULL,
     hidden BOOLEAN NOT NULL DEFAULT FALSE,
     type VARCHAR(255) NOT NULL,
-    time_created timestamp DEFAULT CURRENT_TIMESTAMP
+    time_created timestamp DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users (id),
+    FOREIGN KEY (chat_id) REFERENCES chats (id)
 );

@@ -190,6 +190,30 @@ class PaymentTransaction extends Model {
       const res = await this.dbQueryAsync(query, params);
       return res;
     });
+
+  withdrawalForJobOffer = (senderId, money, jobName, performance) => {
+    return this.create({
+      senderId,
+      balanceChangeType: "reduced",
+      money,
+      operationType: "withdrawal_for_job_offer",
+      transactionData: {
+        description: `$${money} was deducted from your balance for the period of time the '${performance}' user completes the task '${jobName}'`,
+      },
+    });
+  };
+
+  doneJobOffer = (userId, money, jobName, jobAuthor) => {
+    return this.create({
+      userId,
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "done_job_offer",
+      transactionData: {
+        description: `$${money} was added to your balance by the user '${jobAuthor}' for completing the task '${jobName}'`,
+      },
+    });
+  };
 }
 
 module.exports = PaymentTransaction;

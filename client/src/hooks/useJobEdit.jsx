@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import { getJobInfo } from "../requests";
-import { MainContext } from "../contexts";
+import { getJobInfo } from "requests";
+import { MainContext } from "contexts";
 
 const useJobEdit = ({ id = null }) => {
   const [jobId, setJobId] = useState(id);
@@ -24,8 +24,8 @@ const useJobEdit = ({ id = null }) => {
 
         if (!res) return;
 
-        coords.change({ lat: res.lat, lng: res.lng });
-        address.change(res.address);
+        coords.set({ lat: res.lat, lng: res.lng });
+        address.set(res.address);
 
         changePrice(res.price);
         changeTitle(res.title);

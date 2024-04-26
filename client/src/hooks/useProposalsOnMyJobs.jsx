@@ -1,6 +1,6 @@
 import React from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
-import { getProposalsOnMyJobs } from "../requests";
+import { getProposalsOnMyJobs } from "requests";
 
 const useProposalsOnMyJobs = () => {
   const {

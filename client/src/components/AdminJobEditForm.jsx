@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { useAdminJobEdit } from "../hooks";
-import { MainContext } from "../contexts";
+import { useAdminJobEdit } from "hooks";
+import { MainContext } from "contexts";
 import Layout from "./Layout";
 import SingleMarkMap from "./SingleMarkMap";
 import Input from "./Input";

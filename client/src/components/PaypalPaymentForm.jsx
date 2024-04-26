@@ -1,8 +1,8 @@
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import config from "../config";
-import { MainContext } from "../contexts";
 import { useContext, useState } from "react";
-import { paypalApproveOrder, paypalCreateOrder } from "../requests";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import config from "config";
+import { MainContext } from "contexts";
+import { paypalApproveOrder, paypalCreateOrder } from "requests";
 import Input from "./Input";
 
 const PaypalPaymentForm = ({ onComplete }) => {
@@ -61,6 +61,7 @@ const PaypalPaymentForm = ({ onComplete }) => {
             "client-id": config.PAYPAL_CLIENT_ID,
             currency: "USD",
             intent: "capture",
+            locale: "en_US",
           }}
         >
           <PayPalButtons

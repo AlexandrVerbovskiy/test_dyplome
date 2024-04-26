@@ -10,7 +10,7 @@ class BaseComment extends Model {
   __baseFieldSelect = "*";
 
   __fullCommentSelect =
-    () => `SELECT ${this.__fieldSelect}, users.nick as senderNick, users.email as senderEmail,
+    () => `SELECT users.nick as senderNick, users.email as senderEmail,
   users.avatar as senderAvatar, users.id as senderId FROM ${this.__table}
   JOIN users ON ${this.__table}.sender_id = users.id`;
 

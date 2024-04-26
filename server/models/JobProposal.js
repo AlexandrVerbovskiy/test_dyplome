@@ -12,8 +12,17 @@ class JobProposal extends Model {
     awaitingCancellationConfirmation: "Awaiting Cancellation Confirmation",
   };
 
-  __fullJobRequestInfo =
-    "disputes.id as dispute_id, disputes.status as dispute_status, job_requests.*, jobs.title, jobs.price, jobs.address, jobs.description, jobs.lat, jobs.lng, jobs.author_id FROM job_requests JOIN jobs ON job_requests.job_id = jobs.id LEFT JOIN disputes ON job_requests.id = disputes.job_request_id";
+  __selectAllFields = `job_requests.id, job_requests.job_id as jobId, job_requests.user_id as userId, 
+  job_requests.price, job_requests.execution_time as executionTime, job_requests.status, 
+  job_requests.time_created as timeCreated`;
+
+  __fullJobRequestInfo = `disputes.id as disputeId, disputes.status as disputeStatus, jobs.title, jobs.address, 
+    jobs.description, jobs.lat, jobs.lng, jobs.author_id as authorId, job_requests.id,
+    job_requests.job_id as jobId, job_requests.user_id as userId, job_requests.price, 
+    job_requests.execution_time as executionTime, job_requests.status, job_requests.time_created as timeCreated
+    FROM job_requests 
+    JOIN jobs ON job_requests.job_id = jobs.id 
+    LEFT JOIN disputes ON job_requests.id = disputes.job_request_id`;
 
   getById = async (proposalId) =>
     await this.errorWrapper(async () => {
@@ -26,9 +35,12 @@ class JobProposal extends Model {
       return null;
     });
 
-  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+  getForProposalAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.user_id = ?`;
+      let query = `SELECT authors.nick as authorNick, authors.email as authorEmail,
+      ${this.__fullJobRequestInfo}
+      JOIN users as authors ON authors.id = jobs.author_id 
+      WHERE job_requests.user_id = ?`;
       const params = [userId];
 
       if (skippedIds.length > 0) {
@@ -47,9 +59,12 @@ class JobProposal extends Model {
       return requests;
     });
 
-  getForProposalAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
+  getForJobAuthor = async (userId, skippedIds, filter = "", limit = 8) =>
     await this.errorWrapper(async () => {
-      let query = `SELECT ${this.__fullJobRequestInfo} WHERE jobs.author_id = ?`;
+      let query = `SELECT authors.nick as authorNick, authors.email as authorEmail,
+      ${this.__fullJobRequestInfo}
+      JOIN users as authors ON authors.id = job_requests.user_id 
+      WHERE jobs.author_id = ?`;
 
       const params = [userId];
 
@@ -63,6 +78,7 @@ class JobProposal extends Model {
       }
 
       query += ` LIMIT ?`;
+
       params.push(limit);
       const requests = await this.dbQueryAsync(query, params);
       return requests;
@@ -115,26 +131,36 @@ class JobProposal extends Model {
 
   exists = async (proposalId) =>
     await this.errorWrapper(async () => {
-      const proposals = await this.dbQueryAsync(
-        `SELECT * FROM job_requests WHERE id = ?`,
+      const result = await this.dbQueryAsync(
+        `SELECT count(*) as count FROM job_requests WHERE id = ?`,
         [proposalId]
       );
-      return proposals.length;
+      return result[0].count;
     });
 
   checkOwner = async (proposalId, userId) =>
     await this.errorWrapper(async () => {
-      const proposals = await this.dbQueryAsync(
-        `SELECT * FROM job_requests WHERE id = ? AND user_id = ?`,
+      const result = await this.dbQueryAsync(
+        `SELECT count(*) as count FROM job_requests WHERE id = ? AND user_id = ?`,
         [proposalId, userId]
       );
-      return proposals.length;
+      return result[0].count;
+    });
+
+  checkJobHasProposals = async (jobId) =>
+    await this.errorWrapper(async () => {
+      const result = await this.dbQueryAsync(
+        `SELECT count(*) as count FROM job_requests WHERE job_id = ? AND status != 'Completed' AND status != 'Cancelled' AND status != 'Rejected'`,
+        [jobId]
+      );
+      return result[0].count;
     });
 
   checkJobOwner = async (proposalId, userId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(
-        `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND jobs.author_id = ?`,
+        `SELECT ${this.__selectAllFields} FROM job_requests 
+        join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND jobs.author_id = ?`,
         [proposalId, userId]
       );
       return proposals.length;
@@ -142,7 +168,7 @@ class JobProposal extends Model {
 
   __getAllStatusesFromUserBase = async (userId, where = "", params = []) =>
     await this.errorWrapper(async () => {
-      let request = `SELECT job_requests.* FROM job_requests WHERE job_requests.user_id = ?`;
+      let request = `SELECT ${this.__selectAllFields} FROM job_requests WHERE job_requests.user_id = ?`;
       if (where.length > 0) request += ` AND ${where}`;
       const proposals = await this.dbQueryAsync(request, [userId, ...params]);
       return proposals;
@@ -150,7 +176,8 @@ class JobProposal extends Model {
 
   __getAllStatusesForUserBase = async (userId, where = "", params = []) =>
     await this.errorWrapper(async () => {
-      let request = `SELECT job_requests.* FROM job_requests join jobs on jobs.id = job_requests.job_id AND jobs.author_id = ?`;
+      let request = `SELECT ${this.__selectAllFields} FROM job_requests 
+      join jobs on jobs.id = job_requests.job_id AND jobs.author_id = ?`;
       if (where.length > 0) request += ` WHERE ${where}`;
       const proposals = await this.dbQueryAsync(request, [userId, ...params]);
       return proposals;

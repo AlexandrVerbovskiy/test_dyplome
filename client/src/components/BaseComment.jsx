@@ -1,5 +1,5 @@
 import React from "react";
-import { fullTimeFormat, generateFullUserImgPath } from "../utils";
+import { fullTimeFormat, generateFullUserImgPath } from "utils";
 import StarRatingView from "./StarRatingView";
 
 const BaseComment = ({

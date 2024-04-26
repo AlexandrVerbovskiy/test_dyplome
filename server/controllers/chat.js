@@ -7,7 +7,6 @@ const path = require("path");
 class Chat extends Controller {
   __message_folder = "files/messages";
   __chat_folder = "files/chat-avatars";
-  __socketController = null;
 
   __checkIsBodyHasKeys(req, keys) {
     for (let i = 0; i < keys.length; i++) {
@@ -49,10 +48,10 @@ class Chat extends Controller {
         for (let i = 0; i < foundChats.length; i++) {
           const chat = foundChats[i];
 
-          chat["count_unread_messages"] =
+          chat["countUnreadMessages"] =
             await this.chatModel.getUnreadChatMessagesCount(
-              chat["chat_id"],
-              chat["current_last_viewed_message_id"],
+              chat["chatId"],
+              chat["currentLastViewedMessageId"],
               searcherId
             );
 
@@ -124,9 +123,9 @@ class Chat extends Controller {
       return await this.chatModel.getMessageById(messageId);
     };
 
-    if (data["chat_type"] == "personal") {
+    if (data["chatType"] == "personal") {
       const hasPersonalChat = await this.chatModel.hasPersonal(
-        data["getter_id"],
+        data["getterId"],
         userId
       );
 
@@ -135,13 +134,13 @@ class Chat extends Controller {
       } else {
         const chatId = await this.chatModel.create("personal");
         const users = [
-          { id: data["getter_id"], role: "member" },
+          { id: data["getterId"], role: "member" },
           { id: userId, role: "member" },
         ];
         await this.chatModel.addManyUsers(chatId, users);
         return await localSend(chatId, userId);
       }
-    } else if (data["chat_type"] == "system") {
+    } else if (data["chatType"] == "system") {
       const chatId = data["chatId"];
       const userInfo = await this.userModel.getUserInfo(userId);
       const hasUserAccess = await this.chatModel.hasUserAccess(chatId, userId);
@@ -163,7 +162,7 @@ class Chat extends Controller {
   __updateMessage = async (data, userId) => {
     const message = await this.chatModel.getMessageById(data.messageId);
     if (!message) return "No message found!";
-    if (message["user_id"] != userId) return "Not the author of the message!";
+    if (message["userId"] != userId) return "Not the author of the message!";
     await this.chatModel.addContentToMessage(data.messageId, data.content);
     return null;
   };
@@ -171,7 +170,7 @@ class Chat extends Controller {
   __hideMessage = async (data, userId) => {
     const message = await this.chatModel.getMessageById(data.messageId);
     if (!message) return "No message found!";
-    if (message["user_id"] != userId) return "Not the author of the message!";
+    if (message["userId"] != userId) return "Not the author of the message!";
     await this.chatModel.hideMessage(data.messageId);
     return message;
   };
@@ -230,7 +229,7 @@ class Chat extends Controller {
         const resFullMessageInfo = messages[i];
         resFullMessageInfo["story"] =
           await this.chatModel.getAllMessageContents(
-            resFullMessageInfo["message_id"]
+            resFullMessageInfo["messageId"]
           );
         resMessages.push(resFullMessageInfo);
       }
@@ -243,6 +242,16 @@ class Chat extends Controller {
   getChatMessages = (req, res) => this.__getChatMessages(req, res);
   getSystemChatMessages = (req, res) =>
     this.__getChatMessages(req, res, false, true, false);
+
+  getUserSystemChatMessages = async (req, res) => {
+    req.body["chatId"] = await this.chatModel.getUserSystemChatInfo(
+      req.body.userId
+    );
+    req.body["lastId"] = 0;
+    req.body["count"] = 20;
+
+    return await this.__getChatMessages(req, res, false, true, false);
+  };
 
   getChatMessagesFullContents = (req, res) =>
     this.__getChatMessages(req, res, false, true);
@@ -280,12 +289,12 @@ class Chat extends Controller {
       const chatId = await this.chatModel.hasPersonal(companionId, userId);
 
       const companionInfo = await this.userModel.getUserInfo(companionId);
-      companionInfo["chat_type"] = "personal";
-      companionInfo["user_email"] = companionInfo["email"];
-      companionInfo["user_id"] = companionInfo["id"];
+      companionInfo["chatType"] = "personal";
+      companionInfo["userEmail"] = companionInfo["email"];
+      companionInfo["userId"] = companionInfo["id"];
 
       if (chatId) {
-        companionInfo["chat_id"] = chatId;
+        companionInfo["chatId"] = chatId;
         const resSelect = await this.chatModel.selectChat(userId, chatId);
 
         companionInfo["messages"] = resSelect["messages"];
@@ -293,8 +302,8 @@ class Chat extends Controller {
 
         if (companionInfo["messages"].length) {
           companionInfo["content"] = companionInfo["messages"][0]["content"];
-          companionInfo["time_sended"] =
-            companionInfo["messages"][0]["time_sended"];
+          companionInfo["timeSended"] =
+            companionInfo["messages"][0]["timeSended"];
           companionInfo["type"] = companionInfo["messages"][0]["type"];
         }
       }
@@ -378,8 +387,8 @@ class Chat extends Controller {
     const userIds = [];
 
     users.forEach((user) => {
-      if (ignoreIds.includes(user["user_id"])) return;
-      userIds.push(user["user_id"]);
+      if (ignoreIds.includes(user["userId"])) return;
+      userIds.push(user["userId"]);
     });
 
     return this.__socketController.sendSocketMessageToUsers(
@@ -397,10 +406,6 @@ class Chat extends Controller {
         users,
       });
     });
-
-  setIo(io) {
-    this.__socketController = new SocketController(this.__db, io);
-  }
 
   __createSystemMessage = async (chatId, message) => {
     const messageId = await this.chatModel.createMessage(

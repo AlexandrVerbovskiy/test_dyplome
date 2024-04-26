@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 
 const useAsyncInfinityUpload = (functionToGetMore, count = 8) => {
   const [elements, setElements] = useState({});

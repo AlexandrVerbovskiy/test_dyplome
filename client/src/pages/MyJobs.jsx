@@ -1,8 +1,14 @@
 import React from "react";
-import { Layout } from "../components";
-import { AuthorJobCard, MainFilter, CardWrapper } from "../job_components";
-import { UploadTrigger } from "../components";
-import { useMyJobs } from "../hooks";
+import {
+  Layout,
+  AuthorJobCard,
+  JobMainFilter,
+  JobCardWrapper,
+  UploadTrigger,
+  CreateLink,
+  EmptyList,
+} from "components";
+import { useMyJobs } from "hooks";
 
 const MyJobs = () => {
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
@@ -10,16 +16,28 @@ const MyJobs = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <CardWrapper>
-        <MainFilter value={jobsFilter} onClick={jobsFilterChange} />
-      </CardWrapper>
+      <JobCardWrapper cardClass="m-0">
+        <JobMainFilter value={jobsFilter} onClick={jobsFilterChange}>
+          <div className="ms-2">
+            <CreateLink link="job-create" />
+          </div>
+        </JobMainFilter>
+      </JobCardWrapper>
 
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
-        {jobsIds.map((id) => (
-          <AuthorJobCard key={id} {...jobs[id]} />
-        ))}
-        <UploadTrigger onTriggerShown={getMoreJobs} />
-      </CardWrapper>
+      {jobsIds.length > 0 && (
+        <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+          {jobsIds.map((id) => (
+            <AuthorJobCard key={id} {...jobs[id]} />
+          ))}
+          <UploadTrigger onTriggerShown={getMoreJobs} />
+        </JobCardWrapper>
+      )}
+
+      {jobsIds.length < 1 && (
+        <JobCardWrapper cardClass="jobs-card-section mb-0" bodyClass="job-list px-0">
+          <EmptyList text="No jobs found" />
+        </JobCardWrapper>
+      )}
     </Layout>
   );
 };

@@ -3,5 +3,6 @@ CREATE TABLE messages_contents (
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     message_id INTEGER NOT NULL,
     content TEXT NOT NULL,
-    time_edited timestamp DEFAULT CURRENT_TIMESTAMP
+    time_edited timestamp DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES messages (id),
 );

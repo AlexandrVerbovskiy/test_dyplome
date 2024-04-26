@@ -3,10 +3,10 @@ import Select from "./AdaptiveSelect";
 import YesNoPopup from "./YesNoPopup";
 import { useState } from "react";
 import { useContext } from "react";
-import { MainContext } from "../contexts";
-import { paypalGetMoneyToBankId } from "../requests";
+import { MainContext } from "contexts";
+import { paypalGetMoneyToBankId } from "requests";
 import FeeCalculate from "./FeeCalculate";
-import { calculateFee } from "../utils";
+import { calculateFee } from "utils";
 
 const paymentOptions = [
   { value: "EMAIL", label: "Your Email" },

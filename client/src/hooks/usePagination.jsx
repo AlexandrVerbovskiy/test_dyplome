@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useDebugValue } from "react";
-import { getQueryParams } from "../utils";
+import { getQueryParams } from "utils";
 
 const usePagination = ({
   getItemsFunc,

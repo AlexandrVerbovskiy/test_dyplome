@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useAsyncInfinityUpload from "./useAsyncInfinityUpload";
-import { getNotifications } from "../requests";
+import { getNotifications } from "requests";
 
-const useNotifications = ({ io, onGetNotification }) => {
+const useNotifications = ({ io, onGetNotification = null }) => {
   const [newNotifications, setNewNotifications] = useState([]);
 
   const { elements, getMoreElements, prependElement } = useAsyncInfinityUpload(
@@ -14,6 +14,7 @@ const useNotifications = ({ io, onGetNotification }) => {
     if (!io) return;
 
     io.on("get-notification", (notification) => {
+      console.log(notification);
       prependElement(notification);
 
       setNewNotifications((prev) => {
@@ -21,7 +22,9 @@ const useNotifications = ({ io, onGetNotification }) => {
         return prev;
       });
 
-      onGetNotification(notification);
+      if (onGetNotification) {
+        onGetNotification(notification);
+      }
     });
   }, [io]);
 

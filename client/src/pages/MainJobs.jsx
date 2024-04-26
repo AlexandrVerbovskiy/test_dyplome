@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 import {
   Map,
   MapMarker,
@@ -7,13 +7,17 @@ import {
   Layout,
   UploadTrigger,
   PopupWrapper,
-} from "../components";
-import { JobCard, MainFilter, CardWrapper } from "../job_components";
-import { useGetJobs, usePopupController } from "../hooks";
-import config from "../config";
+  JobCard,
+  JobMainFilter,
+  JobCardWrapper,
+} from "components";
+import { useGetJobs, usePopupController } from "hooks";
+import config from "config";
 
 const MainPage = () => {
   const { setSuccess, setError, sessionUser } = useContext(MainContext);
+  console.log(sessionUser);
+
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
     useGetJobs();
   const { jobProposalFormState } = usePopupController({
@@ -44,7 +48,7 @@ const MainPage = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <CardWrapper bodyClass="jobs-map">
+      <JobCardWrapper bodyClass="jobs-map">
         <Map>
           <MapMarker
             title="Your position"
@@ -52,7 +56,7 @@ const MainPage = () => {
             lng={currentLocation.lng}
             main={true}
             needCircle={true}
-            radius={sessionUser.activity_radius}
+            radius={sessionUser.activityRadius}
             circleEditable={false}
           />
 
@@ -60,13 +64,13 @@ const MainPage = () => {
             <MapMarker key={id} {...jobs[id]} />
           ))}
         </Map>
-      </CardWrapper>
+      </JobCardWrapper>
 
-      <CardWrapper>
-        <MainFilter value={jobsFilter} onClick={jobsFilterChange} />
-      </CardWrapper>
+      <JobCardWrapper>
+        <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
+      </JobCardWrapper>
 
-      <CardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
+      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
         {jobsIds.map((id) => (
           <JobCard
             key={id}
@@ -75,7 +79,7 @@ const MainPage = () => {
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreJobs} />
-      </CardWrapper>
+      </JobCardWrapper>
 
       <PopupWrapper
         onClose={jobProposalFormState.hide}

@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CommentCard, Layout } from "../components";
-import { LineChart } from "../charts";
-import { useProfileStatisticInfo, useComments } from "../hooks";
-import { UserProfileStatisticInfo } from "../profile_components";
-import config from "../config";
+import { CommentCard, Layout, UserProfileStatisticInfo } from "components";
+import { useProfileStatisticInfo, useComments } from "hooks";
+import config from "config";
 
 const sellerType = config.COMMENT_TYPES.employee;
 const workerType = config.COMMENT_TYPES.worker;

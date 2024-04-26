@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { sendJobProposal } from "../requests";
-import { MainContext } from "../contexts";
+import { sendJobProposal } from "requests";
+import { MainContext } from "contexts";
 
 const usePopupController = ({ onSuccess, onError }) => {
   const main = useContext(MainContext);

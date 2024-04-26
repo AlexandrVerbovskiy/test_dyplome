@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { usePagination } from "../hooks";
+import { usePagination } from "hooks";
 import BaseAdminTableLayoutPage from "./BaseAdminTableLayoutPage";
-import { MainContext } from "../contexts";
+import { MainContext } from "contexts";
 
 const headers = [
   {

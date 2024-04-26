@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { getChatMessagesByAdmin } from "../requests";
-import { MainContext } from "../contexts";
-import config from "../config";
+import { getChatMessagesByAdmin } from "requests";
+import { MainContext } from "contexts";
+import config from "config";
 
 const useAdminChatMessages = ({ chatId }) => {
   const main = useContext(MainContext);
@@ -29,7 +29,7 @@ const useAdminChatMessages = ({ chatId }) => {
       setMessages((prev) => [...res, ...prev]);
       const count = res.length;
       if (count < MESSAGES_UPLOAD_COUNT) canShowMore.current = false;
-      lastMessageId.current = res[0]["message_id"];
+      lastMessageId.current = res[0]["messageId"];
     } catch (e) {}
   };
 

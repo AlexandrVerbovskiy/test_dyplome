@@ -59,7 +59,8 @@ class JobProposal extends Controller {
       userId
     );
     if (!proposalExists)
-      return this.sendResponseNoFoundError(res, 
+      return this.sendResponseNoFoundError(
+        res,
         "Proposal not found or you are not the owner"
       );
     return false;
@@ -67,7 +68,7 @@ class JobProposal extends Controller {
 
   __changeStatus = async (req, res, validationType, validationCallback) =>
     this.errorWrapper(res, async () => {
-      const { proposal_id: proposalId } = req.body;
+      const { proposalId } = req.body;
 
       const job = await this.jobProposalModel.getById(proposalId);
       const jobId = job.id;
@@ -86,13 +87,36 @@ class JobProposal extends Controller {
   accept = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.accept(proposalId);
-      return this.sendResponseSuccess(res, "Proposal accepted success", { proposal });
+      const jobAuthorId = proposal.authorId;
+      const pricePerHour = proposal.price;
+      const hours = proposal.executionTime;
+
+      const newBalance = await this.userModel.rejectBalance(
+        jobAuthorId,
+        Number(pricePerHour * hours).toFixed(2)
+      );
+
+      const performance = await this.userModel.getFullUserInfo(proposal.userId);
+
+      await this.paymentTransactionModel.withdrawalForJobOffer(
+        jobAuthorId,
+        Number(amount).toFixed(2),
+        proposal.title,
+        performance.nick ?? performance.email
+      );
+
+      return this.sendResponseSuccess(res, "Proposal accepted success", {
+        proposal,
+        newUserBalance: newBalance,
+      });
     });
 
   reject = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.reject(proposalId);
-      return this.sendResponseSuccess(res, "Proposal rejected success", { proposal });
+      return this.sendResponseSuccess(res, "Proposal rejected success", {
+        proposal,
+      });
     });
 
   requestToCancel = async (req, res) =>
@@ -108,7 +132,9 @@ class JobProposal extends Controller {
   acceptCancelled = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCancelled(proposalId);
-      return this.sendResponseSuccess(res, "Job cancelled success", { proposal });
+      return this.sendResponseSuccess(res, "Job cancelled success", {
+        proposal,
+      });
     });
 
   requestToComplete = async (req, res) =>
@@ -126,7 +152,28 @@ class JobProposal extends Controller {
   acceptCompleted = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
-      return this.sendResponseSuccess(res, "Contract closed success", { proposal });
+
+      const userId = proposal.userId;
+      const pricePerHour = proposal.price;
+      const hours = proposal.executionTime;
+
+      await this.userModel.addBalance(
+        userId,
+        Number(pricePerHour * hours).toFixed(2)
+      );
+
+      const author = await this.userModel.getFullUserInfo(proposal.authorId);
+
+      await this.paymentTransactionModel.doneJobOffer(
+        userId,
+        Number(amount).toFixed(2),
+        proposal.title,
+        author.nick ?? author.email
+      );
+
+      return this.sendResponseSuccess(res, "Contract closed success", {
+        proposal,
+      });
     });
 
   getById = async (req, res) => {

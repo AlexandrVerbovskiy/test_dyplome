@@ -5,11 +5,12 @@ import {
   Input,
   Layout,
   SingleMarkMap,
+  Textarea,
 } from ".";
-import { useChangeUserPassword, useAdminUserEdit } from "../hooks";
-import { MainContext } from "../contexts";
+import { useChangeUserPassword, useAdminUserEdit } from "hooks";
+import { MainContext } from "contexts";
 
-const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
+const AdminUserEditForm = ({ baseData, onSave, hasId }) => {  
   const {
     coords,
     address,
@@ -21,6 +22,10 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     validateProfileEdit,
     activityRadius,
     balance,
+    phone,
+    biography,
+    instagramUrl,
+    linkedinUrl,
   } = useAdminUserEdit({ baseData });
 
   const main = useContext(MainContext);
@@ -51,6 +56,10 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
     formData.append("lng", coords.value.lng);
     formData.append("activityRadius", activityRadius.value);
     formData.append("balance", balance.value);
+    formData.append("phone", phone.value);
+    formData.append("biography", biography.value);
+    formData.append("linkedinUrl", linkedinUrl.value);
+    formData.append("instagramUrl", instagramUrl.value);
 
     if (admin.value) {
       formData.append("admin", admin.value);
@@ -136,11 +145,47 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
 
                 <Input
                   type="text"
+                  label="Phone"
+                  placeholder="+380676666666"
+                  value={phone.value}
+                  error={phone.error}
+                  onChange={(e) => phone.change(e.target.value)}
+                />
+
+                <Input
+                  type="text"
+                  label="Linkedin"
+                  placeholder="https://linkedin.com/"
+                  value={linkedinUrl.value}
+                  error={linkedinUrl.error}
+                  onChange={(e) => linkedinUrl.change(e.target.value)}
+                />
+
+                <Input
+                  type="text"
+                  label="https://www.instagram.com/"
+                  placeholder="+380676666666"
+                  value={instagramUrl.value}
+                  error={instagramUrl.error}
+                  onChange={(e) => instagramUrl.change(e.target.value)}
+                />
+
+                <Input
+                  type="text"
                   label="Balance"
                   placeholder="12.23"
                   value={balance.value}
                   error={balance.error}
                   onChange={(e) => balance.change(e.target.value)}
+                />
+
+                <Textarea
+                  title="Biography"
+                  value={biography.value}
+                  onChange={(e) => biography.change(e.target.value)}
+                  error={biography.error}
+                  placeholder="Some description about user"
+                  rows={8}
                 />
 
                 <Activator

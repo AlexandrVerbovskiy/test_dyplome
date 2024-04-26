@@ -65,10 +65,11 @@ export const getAdminChats = {
 
 export const getAdminUserSystemChats = {
   url: () => "admin-user-system-chats",
-  convertData: (lastChatId, limit, searchString) => ({
+  convertData: ({ lastChatId, lastUserId, limit, searchString }) => ({
     lastChatId,
     limit,
     searchString,
+    lastUserId,
   }),
   type: "post",
   convertRes: (res) => res.data.chats,
@@ -174,6 +175,13 @@ export const getUsersChat = {
   convertRes: (res) => res.data ?? {},
 };
 
+export const getUserSystemChat = {
+  url: () => `get-user-system-chat`,
+  type: "post",
+  convertData: (userId) => ({ userId }),
+  convertRes: (res) => res.data ?? {},
+};
+
 export const sendJobProposal = {
   url: () => `send-job-proposal`,
   type: "post",
@@ -255,6 +263,20 @@ export const createComment = {
   convertRes: (res) => res.data ?? {},
 };
 
+export const jobChangeActive = {
+  url: () => `job-change-active`,
+  type: "post",
+  convertData: (id) => ({ id }),
+  convertRes: (res) => res.data ?? {},
+};
+
+export const jobChangeActiveByAdmin = {
+  url: () => `admin-job-change-active`,
+  type: "post",
+  convertData: (id) => ({ id }),
+  convertRes: (res) => res.data.active ?? false,
+};
+
 export const getComments = {
   url: (type) => `get-comments-by-entity/${type}`,
   type: "post",
@@ -270,7 +292,7 @@ export const getNotifications = {
 const __changeProposalStatus = (url) => ({
   url: () => url,
   type: "post",
-  convertData: (proposalId) => ({ id: proposalId }),
+  convertData: (proposalId) => ({ proposalId }),
   convertRes: (res) => res.data ?? {},
 });
 
@@ -289,11 +311,6 @@ export const completeJobProposal = __changeProposalStatus("proposal-complete");
 export const acceptCompleteJobProposal = __changeProposalStatus(
   "proposal-accept-complete"
 );
-
-export const test = {
-  url: () => "test",
-  type: "post",
-};
 
 export const getUsersToNewGroup = {
   url: () => `get-users-to-new-group`,

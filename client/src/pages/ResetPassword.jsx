@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
-import { Input, PasswordInput, SignForm } from "../components";
+import { Input, PasswordInput, SignForm } from "components";
 import { redirect, useParams } from "react-router-dom";
-import { resetPassword } from "../requests";
-import { MainContext } from "../contexts";
+import { resetPassword } from "requests";
+import { MainContext } from "contexts";
 
 const ResetPassword = () => {
   const { token } = useParams();

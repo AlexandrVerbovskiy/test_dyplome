@@ -1,8 +1,8 @@
 #chat_list,
 #chat_body {
   margin-bottom: 0;
-  min-height: 100vh;
-  max-height: 100vh;
+  min-height: calc(100vh - 114px - 2.2rem);
+  max-height: calc(100vh - 114px - 2.2rem);
   overflow-y: auto;
 }
 
@@ -92,7 +92,7 @@
   justify-content: center;
   margin-bottom: 0;
   flex-direction: row;
-  padding: 0 1rem 0 0.5rem;
+  padding: 0 1rem 4px 0.5rem;
 }
 
 html.dark-theme #chatMessagePanel {
@@ -236,13 +236,13 @@ html.dark-theme #sendButton:hover {
 
 #sendButton {
   margin: 5px 5px 10px !important;
-  font-size: 28px;
+  font-size: 24px;
 }
 
 #fileButton,
 #recordMediaButton {
   margin: 5px 0 10px !important;
-  font-size: 28px;
+  font-size: 24px;
 }
 
 #emojiButton {
@@ -294,7 +294,7 @@ html.dark-theme #sendButton:hover {
 }
 
 #chat_header {
-  padding: 15px;
+  padding: 10px 15px;
   justify-content: start !important;
   flex-direction: row !important;
   border-left: 1px solid rgba(0, 0, 0, 0.125);
@@ -633,6 +633,10 @@ html.dark-theme #chat_body .message-action .card-body:hover {
   display: flex;
 }
 
+#chat_info {
+  padding-top: 80px;
+}
+
 .chat-info-row {
   display: flex;
   font-size: 18px;
@@ -695,7 +699,7 @@ html.dark-theme #chat_body .message-action .card-body:hover {
 }
 
 #chatMessagePanel.inactive {
-  padding: 17.5px 0;
+  padding: 17.5px 0 21.5px;
   display: flex;
   align-items: center;
   color: rgb(150, 149, 149);
@@ -752,4 +756,8 @@ html.dark-theme #chat_body .message-action .card-body:hover {
 
 .card .message-action .card-body {
   cursor: pointer;
+}
+
+.zero-index {
+  z-index: 0 !important;
 }

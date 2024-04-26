@@ -1,6 +1,6 @@
 import React from "react";
-import { axios } from "../utils";
-import config from "../config";
+import { axios } from "utils";
+import config from "config";
 
 const useAjaxRequest = ({ onError }) => {
   return async function ({

@@ -28,13 +28,12 @@ import {
   AdminJobEdit,
   ResetPassword,
   ForgotPassword,
-  AdminStatusesDisputes,
   SystemOptions,
   AdminGetMoneyRequests,
   AdminGetMoneyRequest,
   Notifications,
   MyJobs,
-} from "./pages";
+} from "pages";
 
 const mainRouter = createBrowserRouter([
   {
@@ -163,18 +162,6 @@ const adminRouter = createBrowserRouter([
   {
     path: "/disputes",
     element: <AdminDisputes />,
-  },
-  {
-    path: "/disputes/pending",
-    element: <AdminStatusesDisputes status="pending" />,
-  },
-  {
-    path: "/disputes/in-progress",
-    element: <AdminStatusesDisputes status="in-progress" />,
-  },
-  {
-    path: "/disputes/resolved",
-    element: <AdminStatusesDisputes status="resolved" />,
   },
   {
     path: "/dispute/:disputeId",

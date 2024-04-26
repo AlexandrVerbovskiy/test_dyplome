@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import useAddressCoordsRelation from "./useAddressCoordsRelation";
-import config from "../config";
+import config from "config";
 
 const useAdminUserEdit = ({ baseData }) => {
   const [nick, setNick] = useState({ value: "", error: null });
   const [balance, setBalance] = useState({ value: 0, error: null });
   const [email, setEmail] = useState({ value: "", error: null });
+  const [phone, setPhone] = useState({ value: "", error: null });
+  const [biography, setBiography] = useState({ value: "", error: null });
+  const [instagramUrl, setInstagramUrl] = useState({ value: "", error: null });
+  const [linkedinUrl, setLinkedinUrl] = useState({ value: "", error: null });
   const [profileImg, setProfileImg] = useState({ value: null, error: null });
   const [admin, setAdmin] = useState({ value: false, error: null });
   const [authorized, setAuthorized] = useState({ value: false, error: null });
@@ -16,12 +20,20 @@ const useAdminUserEdit = ({ baseData }) => {
   useEffect(() => {
     if (!baseData) return;
 
-    coords.change({ lat: baseData.lat ?? 0, lng: baseData.lng ?? 0 });
-    address.change(baseData.address ?? "");
+    coords.set({ lat: baseData.lat ?? 0, lng: baseData.lng ?? 0 });
+    address.set(baseData.address ?? "");
     changeEmail(baseData.email ?? "");
     changeNick(baseData.nick ?? "");
     changeBalance(baseData.balance ?? 0);
-    setActivityRadius(baseData.activity_radius ?? config.RADIUS_DEFAULT);
+    changeBiography(baseData.biography ?? "");
+    changeInstagramUrl(baseData.instagramUrl ?? "");
+    changeLinkedinUrl(baseData.linkedinUrl ?? "");
+    changePhone(baseData.phone ?? "");
+    
+    setAdmin({ value: baseData.admin ?? false, error: null });
+    setAuthorized({ value: baseData.profileAuthorized ?? false, error: null });
+
+    setActivityRadius(baseData.activityRadius ?? config.RADIUS_DEFAULT);
 
     if (baseData.avatar) changeImg(baseData.avatar);
   }, [baseData]);
@@ -48,6 +60,22 @@ const useAdminUserEdit = ({ baseData }) => {
 
   const changeImg = (img) => {
     setProfileImg({ value: img, error: null });
+  };
+
+  const changePhone = (phone) => {
+    setPhone({ value: phone, error: null });
+  };
+
+  const changeBiography = (biography) => {
+    setBiography({ value: biography, error: null });
+  };
+
+  const changeLinkedinUrl = (linkedinUrl) => {
+    setLinkedinUrl({ value: linkedinUrl, error: null });
+  };
+
+  const changeInstagramUrl = (instagramUrl) => {
+    setInstagramUrl({ value: instagramUrl, error: null });
   };
 
   const validateProfileEdit = () => {
@@ -102,6 +130,10 @@ const useAdminUserEdit = ({ baseData }) => {
     authorized: { ...authorized, change: changeAuthorized },
     activityRadius: { value: activityRadius, change: setActivityRadius },
     balance: { ...balance, change: changeBalance },
+    biography: { ...biography, change: changeBiography },
+    phone: { ...phone, change: changePhone },
+    instagramUrl: { ...instagramUrl, change: changeInstagramUrl },
+    linkedinUrl: { ...linkedinUrl, change: changeLinkedinUrl },
   };
 };
 

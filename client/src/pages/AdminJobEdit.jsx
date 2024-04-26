@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { adminUpdateJob, getJobInfo } from "../requests";
-import { MainContext } from "../contexts";
-import AdminJobEditForm from "../components/AdminJobEditForm";
+import { adminUpdateJob, getJobInfo } from "requests";
+import { MainContext } from "contexts";
+import {AdminJobEditForm} from "components";
 import { useParams } from "react-router-dom";
 
 const AdminJobEdit = () => {

@@ -107,6 +107,10 @@ class User extends Controller {
     authorized = null,
     activityRadius,
     balance = null,
+    biography = "",
+    instagramUrl = null,
+    linkedinUrl = null,
+    phone = null,
   }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!nick || !email)
@@ -158,6 +162,24 @@ class User extends Controller {
       fs.renameSync(filePath, avatar);
     }
 
+    let result = {
+      nick,
+      address,
+      avatar,
+      lat,
+      lng,
+      admin,
+      authorized,
+      email,
+      activityRadius,
+      biography,
+      instagramUrl,
+      linkedinUrl,
+      phone,
+    };
+
+    console.log(result);
+
     if (userId) {
       await this.userModel.updateUserProfile(userId, {
         nick,
@@ -170,7 +192,14 @@ class User extends Controller {
         email,
         activityRadius,
         balance,
+        biography,
+        instagramUrl,
+        linkedinUrl,
+        phone,
       });
+
+      result["balance"] = balance;
+      result["userId"] = userId;
     } else {
       userId = await this.userModel.createFull({
         nick,
@@ -182,25 +211,33 @@ class User extends Controller {
         email,
         authorized,
         activityRadius,
+        biography,
+        instagramUrl,
+        linkedinUrl,
+        phone,
       });
+
+      result["balance"] = 0;
+      result["userId"] = userId;
     }
 
-    return {
-      email,
-      nick,
-      address,
-      avatar,
-      lat,
-      lng,
-      userId,
-      admin,
-      authorized,
-    };
+    return result;
   };
 
   updateUserProfile = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { email, nick, address, lat, lng, activityRadius } = req.body;
+      const {
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        activityRadius,
+        biography = "",
+        instagramUrl = null,
+        linkedinUrl = null,
+        phone = null,
+      } = req.body;
       const userId = req.userData.userId;
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
@@ -217,6 +254,10 @@ class User extends Controller {
         admin: null,
         authorized: true,
         activityRadius,
+        biography,
+        instagramUrl,
+        linkedinUrl,
+        phone,
         res,
       });
 
@@ -229,7 +270,22 @@ class User extends Controller {
 
   adminUpdateUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { userId, email, nick, address, lat, lng, balance = 0 } = req.body;
+      const {
+        userId,
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        balance = 0,
+        biography = "",
+        instagramUrl = null,
+        linkedinUrl = null,
+        phone = null,
+        admin = null,
+        authorized = true,
+      } = req.body;
+
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
 
@@ -243,8 +299,12 @@ class User extends Controller {
         lat,
         lng,
         balance,
-        admin: null,
-        authorized: true,
+        admin: admin === "true",
+        authorized: authorized === "true",
+        biography,
+        instagramUrl,
+        linkedinUrl,
+        phone,
         res,
       });
 
@@ -257,7 +317,20 @@ class User extends Controller {
 
   adminCreateUser = async (req, res) =>
     this.errorWrapper(res, async () => {
-      const { email, nick, address, lat, lng, balance = 0 } = req.body;
+      const {
+        email,
+        nick,
+        address,
+        lat,
+        lng,
+        balance = 0,
+        biography = "",
+        instagramUrl = null,
+        linkedinUrl = null,
+        phone = null,
+        admin = null,
+        authorized = true,
+      } = req.body;
       const avatarFile = req.file;
       const avatar = req.body.avatar ? req.body.avatar : null;
 
@@ -269,9 +342,13 @@ class User extends Controller {
         address,
         lat,
         lng,
-        admin: null,
-        authorized: true,
+        admin: admin === "true",
+        authorized: authorized === "true",
         balance,
+        biography,
+        instagramUrl,
+        linkedinUrl,
+        phone,
         res,
       });
 
@@ -423,11 +500,12 @@ class User extends Controller {
       const count = req.body.count ?? 20;
       const lastId = req.body.lastId ?? 0;
 
-      const notifications = await this.notificationModel.getUserNotificationsInfinity(
-        userId,
-        lastId,
-        count
-      );
+      const notifications =
+        await this.notificationModel.getUserNotificationsInfinity(
+          userId,
+          lastId,
+          count
+        );
 
       return this.sendResponseSuccess(res, "User notifications got success", {
         notifications,
@@ -558,7 +636,9 @@ class User extends Controller {
       const token = await this.userModel.generateResetPasswordTokenByEmail(
         email
       );
+
       this.sendPasswordResetMail(user["email"], user["email"], token);
+      this.resetPasswordRequestCreatedNotification(user["id"]);
 
       return this.sendResponseSuccess(res, "Letter sent successfully");
     });
@@ -566,12 +646,19 @@ class User extends Controller {
   resetPassword = (req, res) =>
     this.baseWrapper(req, res, async () => {
       const { email, password, token } = req.body;
+      const user = await this.userModel.findByEmail(email);
+
+      if (!user) {
+        return this.sendResponseError(res, "No user found");
+      }
 
       const success = await this.userModel.setPasswordByEmailAndToken(
         email,
         password,
         token
       );
+
+      this.passwordResetNotification(user["id"]);
 
       if (success) {
         this.sendResponseSuccess(res, "Password reset successfully");
