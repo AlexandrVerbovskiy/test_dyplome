@@ -111,7 +111,7 @@ class User extends Controller {
     instagramUrl = null,
     linkedinUrl = null,
     phone = null,
-  }) => {    
+  }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!nick || !email)
       return this.sendResponseValidationError(res, "All fields are required");
@@ -636,7 +636,9 @@ class User extends Controller {
       const token = await this.userModel.generateResetPasswordTokenByEmail(
         email
       );
+
       this.sendPasswordResetMail(user["email"], user["email"], token);
+      this.resetPasswordRequestCreatedNotification(user["id"]);
 
       return this.sendResponseSuccess(res, "Letter sent successfully");
     });
@@ -644,12 +646,19 @@ class User extends Controller {
   resetPassword = (req, res) =>
     this.baseWrapper(req, res, async () => {
       const { email, password, token } = req.body;
+      const user = await this.userModel.findByEmail(email);
+
+      if (!user) {
+        return this.sendResponseError(res, "No user found");
+      }
 
       const success = await this.userModel.setPasswordByEmailAndToken(
         email,
         password,
         token
       );
+
+      this.passwordResetNotification(user["id"]);
 
       if (success) {
         this.sendResponseSuccess(res, "Password reset successfully");

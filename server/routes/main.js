@@ -15,6 +15,7 @@ const {
   Payment,
   Main,
   GetMoneyRequest,
+  Socket,
 } = require("../controllers");
 
 const {
@@ -61,7 +62,10 @@ function route(app, db, io) {
   const mainController = new Main(db);
   const getMoneyRequestController = new GetMoneyRequest(db);
 
-  chatController.setIo(io);
+  const socketController = new Socket(db, io);
+
+  chatController.setIo(socketController);
+  mainController.setIo(socketController);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();
@@ -121,7 +125,11 @@ function route(app, db, io) {
     chatController.selectSystemChatByAdmin
   );
   app.post("/get-users-chat", isAuth, chatController.getUsersChat);
-  app.post("/get-user-system-chat", isAuth, chatController.getUserSystemChatMessages);
+  app.post(
+    "/get-user-system-chat",
+    isAuth,
+    chatController.getUserSystemChatMessages
+  );
 
   app.get("/get-job/:id", isAuth, jobController.getById);
   app.post("/get-jobs-by-location", isAuth, jobController.getByDistance);

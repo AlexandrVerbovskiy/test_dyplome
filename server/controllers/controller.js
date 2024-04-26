@@ -24,6 +24,7 @@ const {
   SystemOption: SystemOptionModel,
   GetMoneyRequest: GetMoneyRequestModel,
 } = require("../models");
+
 const {
   getDateByCurrentAdd,
   timeConverter,
@@ -35,8 +36,8 @@ const {
 class Controller {
   __db = null;
   __temp_folder = "files/temp";
-
   __mailTransporter = null;
+  __socketController = null;
 
   sendResponseSuccess = (res, message, data = {}, status = 200) => {
     return res.status(status).json({
@@ -96,6 +97,10 @@ class Controller {
     );
 
     return Controller.instance;
+  }
+
+  setIo(socketController) {
+    this.__socketController = socketController;
   }
 
   errorWrapper = async (res, func) => {
@@ -209,6 +214,158 @@ class Controller {
     );
 
     return { fromDate, serverFromDate, toDate, serverToDate };
+  };
+
+  sendMessageNotification = async (
+    { type, authorNick, authorId, authorEmail, messageBody },
+    userId
+  ) => {
+    const notification = await this.notificationModel.sentMessage(
+      {
+        type,
+        authorNick,
+        authorId,
+        authorEmail,
+        messageBody,
+      },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  sendCommentNotification = async (
+    { senderId, senderNick, senderEmail },
+    { commentType, commentParentId, commentBody },
+    userId
+  ) => {
+    const notification = await this.notificationModel.sentComment(
+      {
+        senderId,
+        senderNick,
+        senderEmail,
+        commentType,
+        commentParentId,
+        commentBody,
+      },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  sendProposalNotification = async (
+    { senderId, senderNick, senderEmail },
+    { jobId, jobTitle },
+    pricePerHour,
+    needHours,
+    userId
+  ) => {
+    const notification = await this.notificationModel.sentProposal(
+      { senderId, senderNick, senderEmail },
+      { jobId, jobTitle },
+      pricePerHour,
+      needHours,
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  createdDisputeNotification = async (
+    { senderId, senderNick, senderEmail },
+    { jobId, jobTitle },
+    message,
+    userId
+  ) => {
+    const notification = await this.notificationModel.createdDispute(
+      { senderId, senderNick, senderEmail },
+      { jobId, jobTitle },
+      message,
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  resolvedDisputeNotification = async (
+    { jobId, jobTitle },
+    userId,
+    getMoney,
+    message
+  ) => {
+    const notification = await this.notificationModel.resolvedDispute(
+      { jobId, jobTitle },
+      userId,
+      getMoney,
+      message
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  passwordResetNotification = async (userId) => {
+    const notification = await this.notificationModel.passwordResetSuccess(
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  resetPasswordRequestCreatedNotification = async (userId) => {
+    const notification = await this.notificationModel.resetPasswordRequest(
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  createLoginNotification = async (userId) => {
+    const notification = await this.notificationModel.createLogin(userId);
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  createRegistrationNotification = async (userId) => {
+    const notification = await this.notificationModel.createRegistration(userId);
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
   };
 }
 

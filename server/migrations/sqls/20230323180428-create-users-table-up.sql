@@ -15,6 +15,7 @@ CREATE TABLE users (
     online BOOLEAN DEFAULT false,
     `admin` BOOLEAN DEFAULT false,
     time_created timestamp DEFAULT CURRENT_TIMESTAMP,
+    time_updated timestamp DEFAULT CURRENT_TIMESTAMP,
     balance double DEFAULT 0,
     biography text,
 );

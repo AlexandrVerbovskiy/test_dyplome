@@ -4,8 +4,7 @@ const Model = require("./model");
 const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
-  __visibleFields =
-    `id, email, address, lat, lng, nick, avatar, admin, activity_radius as activityRadius, balance, phone,
+  __visibleFields = `id, email, address, lat, lng, nick, avatar, admin, activity_radius as activityRadius, balance, phone,
     instagram_url as instagramUrl, linkedin_url as linkedinUrl, biography`;
 
   strFilterFields = ["email", "address", "nick"];
@@ -328,10 +327,10 @@ class User extends Model {
     });
 
   updateOnline = async (userId, typing) => {
-    await this.dbQueryAsync("UPDATE users SET online = ? WHERE id = ?", [
-      typing,
-      userId,
-    ]);
+    await this.dbQueryAsync(
+      "UPDATE users SET online = ?, time_updated=CURRENT_TIMESTAMP WHERE id = ?",
+      [typing, userId]
+    );
   };
 
   baseGetMany = (props) => {
@@ -457,6 +456,16 @@ class User extends Model {
 
       const userBalance = userInfo[0]["balance"];
       return Number(userBalance);
+    });
+
+  getActiveUsers = async () =>
+    await this.errorWrapper(async () => {
+      const users = await this.dbQueryAsync(
+        `SELECT id FROM users WHERE online = ?`,
+        [true]
+      );
+
+      return users.map((user) => user.id);
     });
 }
 

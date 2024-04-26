@@ -7,7 +7,6 @@ const path = require("path");
 class Chat extends Controller {
   __message_folder = "files/messages";
   __chat_folder = "files/chat-avatars";
-  __socketController = null;
 
   __checkIsBodyHasKeys(req, keys) {
     for (let i = 0; i < keys.length; i++) {
@@ -407,10 +406,6 @@ class Chat extends Controller {
         users,
       });
     });
-
-  setIo(io) {
-    this.__socketController = new SocketController(this.__db, io);
-  }
 
   __createSystemMessage = async (chatId, message) => {
     const messageId = await this.chatModel.createMessage(
