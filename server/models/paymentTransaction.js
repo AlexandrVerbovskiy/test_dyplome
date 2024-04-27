@@ -214,6 +214,18 @@ class PaymentTransaction extends Model {
       },
     });
   };
+
+  cancelledJobOffer = (userId, money, jobName, performance) => {
+    return this.create({
+      userId,
+      balanceChangeType: "topped_up",
+      money,
+      operationType: "close_job_offer",
+      transactionData: {
+        description: `The contract ${jobName} with the ${performance} cancelled, you received $${money} back`,
+      },
+    });
+  };
 }
 
 module.exports = PaymentTransaction;

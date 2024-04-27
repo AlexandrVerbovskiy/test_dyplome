@@ -9,6 +9,11 @@ class Comment extends Controller {
       if (!body) return this.sendResponseError(res, "No comment body", 400);
       const userId = req.userData.userId;
 
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      let notificationGetterId = null;
+      let notificationRedirectUrl = null;
+
       if (commentType == "employee") {
         const employeeId = req.body.entityId;
         const rating = req.body.rating;
@@ -24,6 +29,9 @@ class Comment extends Controller {
           rating,
           body,
         });
+
+        notificationGetterId = employeeId;
+        notificationRedirectUrl = "/users/" + employeeId;
       } else if (commentType == "worker") {
         const workerId = req.body.entityId;
         const rating = req.body.rating;
@@ -39,28 +47,63 @@ class Comment extends Controller {
           rating,
           body,
         });
+
+        notificationGetterId = workerId;
+        notificationRedirectUrl = "/users/" + workerId;
       } else if (commentType == "job") {
         const jobId = req.body.entityId;
         if (!jobId) return this.sendResponseError(res, "No comment job", 400);
+
+        const job = await this.jobModel.getById(jobId);
 
         comment = await this.jobCommentModel.create({
           senderId: userId,
           jobId,
           body,
         });
+
+        notificationGetterId = job.authorId;
+        notificationRedirectUrl = "/job-view/" + jobId;
       } else {
-        const parentId = req.body.entityId;
-        const parentType = req.body.parentType;
+        const entityId = req.body.entityId;
+        const replyCommentType = req.body.parentType;
         const replyCommentId = req.body.replyCommentId;
 
         comment = await this.replyCommentModel.create({
           senderId: userId,
-          parentId,
-          parentType,
+          parentId: entityId,
+          parentType: replyCommentType,
           body,
           replyCommentId,
         });
+
+        if (replyCommentType == "job") {
+          const job = await this.jobModel.getById(entityId);
+          notificationGetterId = job.authorId;
+          notificationRedirectUrl = "/job-view/" + entityId;
+        }
+
+        if (replyCommentType == "employee") {
+          notificationGetterId = entityId;
+          notificationRedirectUrl = "/users/" + entityId;
+        }
+
+        if (replyCommentType == "worker") {
+          notificationGetterId = entityId;
+          notificationRedirectUrl = "/users/" + entityId;
+        }
       }
+
+      this.sentCommentNotification(
+        {
+          senderNick: user.nick,
+          senderEmail: user.email,
+          commentType: commentType,
+          commentBody: body,
+          redirectLink: notificationRedirectUrl,
+        },
+        notificationGetterId
+      );
 
       return this.sendResponseSuccess(res, "Comment sended success", comment);
     });

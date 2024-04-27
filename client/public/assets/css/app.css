@@ -3940,3 +3940,7 @@ hr:has(+ .balance-payment-type-select) {
     width: 14%;
   }
 }
+
+.main-notification-list{
+  flex-direction: column;
+}

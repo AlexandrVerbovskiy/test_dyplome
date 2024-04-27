@@ -7,13 +7,14 @@ class Dispute extends Controller {
 
       const userId = req.userData.userId;
 
-      let proposalExists = await this.jobProposalModel.checkOwner(
-        jobRequestId,
-        userId
-      );
+      let proposal = await this.jobProposalModel.getById(jobRequestId);
 
-      if (!proposalExists)
+      if (
+        !proposal ||
+        (proposal.authorId != userId && proposal.userId != userId)
+      ) {
         return this.this.sendResponseNoFoundError(res, "Proposal not found");
+      }
 
       const proposalHasDispute =
         await this.disputeModel.checkProposalHasDispute(jobRequestId);
@@ -25,10 +26,26 @@ class Dispute extends Controller {
           409
         );
 
+      const user = await this.userModel.getFullUserInfo(userId);
+
       const dispute = await this.disputeModel.create(
         jobRequestId,
         userId,
         description
+      );
+
+      const notificationGetterId =
+        proposal.authorId == userId ? proposal.userId : proposal.authorId;
+
+      this.createdDisputeNotification(
+        {
+          senderNick: user.nick,
+          senderEmail: user.name,
+          proposalId: proposal.id,
+          message: description,
+          jobTitle: proposal.title,
+        },
+        notificationGetterId
       );
 
       return this.sendResponseSuccess(res, "Dispute sended success", {

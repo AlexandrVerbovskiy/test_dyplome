@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  getNotificationMainColor,
-  getNotificationIcon,
-  getNotificationBodyByType,
-  getNotificationTitleByType,
-  close,
-} from "utils";
+import { getNotificationMainColor, getNotificationIcon, close } from "utils";
 
-const NewNotification = ({ id, type, body, close }) => {
-  body = JSON.parse(body);
+const NewNotification = ({ id, type, title, body, close }) => {
   const iconClass = getNotificationIcon(type);
   const mainNotificationColor = getNotificationMainColor(type);
 
@@ -26,7 +19,7 @@ const NewNotification = ({ id, type, body, close }) => {
           </div>
           <div>
             <p className="mb-0 text-secondary fw-bold">
-              {getNotificationTitleByType(type, body)}
+              {title}
               <a
                 className="new-notification-close"
                 href="#"
@@ -38,9 +31,7 @@ const NewNotification = ({ id, type, body, close }) => {
                 &times;
               </a>
             </p>
-            <p className="mb-0 font-13">
-              {getNotificationBodyByType(type, body)}
-            </p>
+            <p className="mb-0 font-13">{body}</p>
           </div>
         </div>
       </div>

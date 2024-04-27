@@ -47,6 +47,15 @@ class Chat extends Model {
       return result[0].count;
     });
 
+  getById = async (chatId) =>
+    await this.errorWrapper(async () => {
+      const result = await this.dbQueryAsync(
+        "SELECT id, chats.avatar, chats.name FROM chats WHERE chat_id = ?",
+        [chatId]
+      );
+      return result[0];
+    });
+
   lastReadMessageIdByUser = async (chatId, userId) =>
     await this.errorWrapper(async () => {
       const relations = await this.dbQueryAsync(

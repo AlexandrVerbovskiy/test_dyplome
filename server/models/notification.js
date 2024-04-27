@@ -2,15 +2,15 @@ require("dotenv").config();
 const Model = require("./model");
 
 class Notification extends Model {
-  __selectAllFields = `id, \`type\`, user_id as userId, body as body, created_at as createdAt`;
+  __selectAllFields = `id, \`type\`, user_id as userId, body as body, created_at as createdAt, link, title`;
 
-  create = async ({ type, userId, body = "" }) =>
+  create = async ({ type, userId, title, body, link = null }) =>
     await this.errorWrapper(async () => {
       const insertChatRes = await this.dbQueryAsync(
-        "INSERT INTO notifications (type, user_id, body) VALUES (?, ?, ?)",
-        [type, userId, body]
+        "INSERT INTO notifications (type, user_id, body, link, title) VALUES (?, ?, ?, ?, ?)",
+        [type, userId, body, link]
       );
-      return { id: insertChatRes.insertId, userId, type, body };
+      return { id: insertChatRes.insertId, userId, type, body, link, title };
     });
 
   baseGetMany = (props) => {
@@ -57,6 +57,8 @@ class Notification extends Model {
         params.push(lastId);
       }
 
+      query += " ORDER BY notifications.id DESC";
+
       if (count) {
         query += " LIMIT ?";
         params.push(count);
@@ -72,6 +74,7 @@ class Notification extends Model {
       type: "system",
       userId,
       body,
+      title: "System message",
     });
   };
 
@@ -90,107 +93,267 @@ class Notification extends Model {
   passwordResetSuccess = (userId) =>
     this.createSystemNotifications(userId, "Password reset successfully");
 
-  sentProposal = (
-    { senderId, senderNick, senderEmail },
-    { jobId, jobTitle },
-    pricePerHour,
-    needHours,
-    userId
-  ) => {
-    const body = JSON.stringify({
-      senderId,
-      senderNick,
-      senderEmail,
-      jobId,
-      jobTitle,
-      pricePerHour,
-      needHours,
-    });
-
-    return this.create({
-      type: "proposal",
-      userId,
-      body,
-    });
-  };
-
   createdDispute = (
-    { senderId, senderNick, senderEmail },
-    { jobId, jobTitle },
-    message,
+    { senderNick, senderEmail, proposalId, message, jobTitle },
     userId
   ) => {
-    const body = JSON.stringify({
-      senderId,
-      senderNick,
-      senderEmail,
-      jobId,
-      jobTitle,
-      message,
-      type: "created",
-    });
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has created a dispute for job ${jobTitle}`;
+    const body = message;
 
     return this.create({
       type: "dispute",
       userId,
       body,
-    });
-  };
-
-  resolvedDispute = ({ jobId, jobTitle }, userId, getMoney, message) => {
-    const body = JSON.stringify({
-      jobId,
-      jobTitle,
-      message,
-      getMoney,
-      type: "resolved",
-    });
-
-    return this.create({
-      type: "dispute",
-      userId,
-      body,
-    });
-  };
-
-  sentComment = (
-    { senderId, senderNick, senderEmail },
-    { commentType, parentId },
-    userId,
-    commentBody
-  ) => {
-    const body = JSON.stringify({
-      senderId,
-      senderNick,
-      senderEmail,
-      commentType,
-      parentId,
-      commentBody,
-    });
-
-    return this.create({
-      type: "comment",
-      userId,
-      body,
+      title,
+      link: `job-proposal/${proposalId}`,
     });
   };
 
   sentMessage = (
-    { type, authorNick, authorId, authorEmail, messageBody = null },
-    userId
-  ) => {
-    const body = JSON.stringify({
-      type,
+    {
       authorNick,
-      authorId,
+      messageType,
       authorEmail,
       messageBody,
-    });
+      chatId,
+      chatName,
+      chatType,
+    },
+    userId
+  ) => {
+    let title = `The user ${authorNick ?? authorEmail} has sent a new message`;
+
+    if (chatType == "personal") {
+      title + " for you";
+    }
+
+    if (chatType == "personal") {
+      title + ` in group ${chatName}`;
+    }
+
+    let body = "";
+
+    if (messageType == "video") {
+      body = "Video message";
+    } else if (messageType == "audio") {
+      body = "Voice message";
+    } else if (messageType == "file") {
+      body = "File message";
+    } else {
+      body = messageBody;
+    }
+
+    const link = `/chat/${chatType}/${chatId}`;
 
     return this.create({
       type: "message",
       userId,
       body,
+      link,
+      title,
+    });
+  };
+
+  sentProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle, pricePerHour, needHours },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has sent a new proposal for ${jobTitle}`;
+
+    const body = `User need ${pricePerHour} per hour and he need ${needHours}. Total: ${
+      pricePerHour * needHours
+    }`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  acceptJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has accepted your proposal for ${jobTitle}`;
+
+    const body = `Complete the task diligently, it will allow users to interact with you with more trust in the future`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  doneJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has done job for ${jobTitle}`;
+
+    const body = `Job finished. Confirm successful execution to complete the contract`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  acceptDoneJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle, pricePerHour, needHours },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has accepted your job result for ${jobTitle}`;
+
+    const body = `Job finished successfully. Your balance replenished by $${
+      pricePerHour * needHours
+    }`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  rejectJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } has rejected your job result for ${jobTitle}`;
+
+    const body = `Do not get upset and look for new tasks that will be interesting for you`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  cancelJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } want to cancel offer for ${jobTitle}`;
+
+    const body = `Confirm to complete the offer`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  acceptedCancelJobProposal = (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const title = `The user ${
+      senderNick ?? senderEmail
+    } accepted cancellation offer for ${jobTitle}`;
+
+    const body = `Offer canceled successfully.`;
+
+    return this.create({
+      type: "proposal",
+      userId,
+      body,
+      title,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  resolvedEmployeeDispute = (
+    { proposalId, jobTitle, getMoney, win },
+    userId
+  ) => {
+    let body = `The dispute has been resolved in your favor. Your balance has been replenished by $${getMoney}`;
+
+    if (!win) {
+      body =
+        "We are sorry, but the administration has decided that your opponent is right";
+    }
+
+    return this.create({
+      type: "dispute",
+      userId,
+      body,
+      title: `The dispute for job ${jobTitle} is resolved`,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  resolvedWorkerDispute = ({ proposalId, jobTitle, getMoney, win }, userId) => {
+    let body = `The dispute has been resolved in your favor. Funds in the amount $${getMoney} returned to your balance`;
+
+    if (!win) {
+      body =
+        "We are sorry, but the administration has decided that your opponent is right";
+    }
+
+    return this.create({
+      type: "dispute",
+      userId,
+      body,
+      title: `The dispute for job ${jobTitle} is resolved`,
+      link: `job-proposal/${proposalId}`,
+    });
+  };
+
+  sentComment = (
+    { senderNick, senderEmail, commentType, commentBody, redirectLink },
+    userId
+  ) => {
+    let title = `The user ${authorNick ?? authorEmail} has sent a new comment`;
+    const body = commentBody;
+
+    if (commentType == "job") {
+      title += " on your job";
+    } else if (commentType == "employee") {
+      title += " on your employee profile";
+    } else if (commentType == "worker") {
+      title += " on your worker profile";
+    } else {
+      title = `The user ${
+        senderNick ?? senderEmail
+      } has replied on your comment`;
+    }
+
+    return this.create({
+      type: "comment",
+      userId,
+      body,
+      link: redirectLink,
     });
   };
 }

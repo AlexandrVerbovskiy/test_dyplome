@@ -31,6 +31,22 @@ class JobProposal extends Controller {
         price,
         time
       );
+
+      const user = await this.userModel.getFullUserInfo(userId);
+      const job = await this.jobModel.getById(jobId);
+
+      this.sentProposalNotification(
+        {
+          proposalId: createdRequest.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: job.title,
+          pricePerHour: price,
+          needHours: time,
+        },
+        job.authorId
+      );
+
       return this.sendResponseSuccess(res, "Request created successfully", {
         requestId: createdRequest.id,
       });
@@ -100,9 +116,22 @@ class JobProposal extends Controller {
 
       await this.paymentTransactionModel.withdrawalForJobOffer(
         jobAuthorId,
-        Number(amount).toFixed(2),
+        Number(pricePerHour * hours).toFixed(2),
         proposal.title,
         performance.nick ?? performance.email
+      );
+
+      const userId = req.userData.userId;
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      this.acceptJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.userId
       );
 
       return this.sendResponseSuccess(res, "Proposal accepted success", {
@@ -114,6 +143,20 @@ class JobProposal extends Controller {
   reject = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.reject(proposalId);
+
+      const userId = req.userData.userId;
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      this.rejectJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.userId
+      );
+
       return this.sendResponseSuccess(res, "Proposal rejected success", {
         proposal,
       });
@@ -122,6 +165,20 @@ class JobProposal extends Controller {
   requestToCancel = async (req, res) =>
     this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.requestToCancel(proposalId);
+
+      const userId = req.userData.userId;
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      this.cancelJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.userId
+      );
+
       return this.sendResponseSuccess(
         res,
         "Request to cancel contract was sended success",
@@ -132,6 +189,34 @@ class JobProposal extends Controller {
   acceptCancelled = async (req, res) =>
     this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCancelled(proposalId);
+
+      const userId = req.userData.userId;
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      await this.userModel.addBalance(
+        proposal.authorId,
+        Number(proposal.price * proposal.executionTime).toFixed(2)
+      );
+
+      this.acceptedCancelJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.userId
+      );
+
+      const performance = await this.userModel.getFullUserInfo(proposal.userId);
+
+      await this.cancelledJobOffer(
+        proposal.authorId,
+        Number(proposal.price * proposal.executionTime).toFixed(2),
+        proposal.title,
+        performance.nick ?? performance.email
+      );
+
       return this.sendResponseSuccess(res, "Job cancelled success", {
         proposal,
       });
@@ -142,6 +227,20 @@ class JobProposal extends Controller {
       const proposal = await this.jobProposalModel.requestToComplete(
         proposalId
       );
+
+      const userId = req.userData.userId;
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      this.doneJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.authorId
+      );
+
       return this.sendResponseSuccess(
         res,
         "Request to close contract was sended success",
@@ -166,9 +265,21 @@ class JobProposal extends Controller {
 
       await this.paymentTransactionModel.doneJobOffer(
         userId,
-        Number(amount).toFixed(2),
+        Number(pricePerHour * hours).toFixed(2),
         proposal.title,
         author.nick ?? author.email
+      );
+
+      const user = await this.userModel.getFullUserInfo(userId);
+
+      this.doneJobProposal(
+        {
+          proposalId: proposal.id,
+          senderNick: user.nick,
+          senderEmail: user.email,
+          jobTitle: proposal.title,
+        },
+        proposal.userId
       );
 
       return this.sendResponseSuccess(res, "Contract closed success", {

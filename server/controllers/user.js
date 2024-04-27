@@ -14,6 +14,8 @@ class User extends Controller {
       const { email, password } = req.body;
 
       const userId = await this.userModel.create(email, password);
+      this.createRegistrationNotification(userId);
+
       await this.chatModel.createSystemChat({ id: userId });
       return this.sendResponseSuccess(
         res,
@@ -33,6 +35,7 @@ class User extends Controller {
 
       const user = await this.userModel.findByPasswordAndEmail(email, password);
       const userId = user.id;
+      this.createLoginNotification(userId);
 
       const token = jwt.sign(
         {

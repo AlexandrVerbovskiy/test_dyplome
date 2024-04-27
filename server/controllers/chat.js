@@ -124,15 +124,12 @@ class Chat extends Controller {
     };
 
     if (data["chatType"] == "personal") {
-      const hasPersonalChat = await this.chatModel.hasPersonal(
-        data["getterId"],
-        userId
-      );
+      let chatId = await this.chatModel.hasPersonal(data["getterId"], userId);
 
-      if (hasPersonalChat) {
-        return await localSend(hasPersonalChat, userId);
+      if (chatId) {
+        return await localSend(chatId, userId);
       } else {
-        const chatId = await this.chatModel.create("personal");
+        chatId = await this.chatModel.create("personal");
         const users = [
           { id: data["getterId"], role: "member" },
           { id: userId, role: "member" },

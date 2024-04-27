@@ -9,9 +9,7 @@ import {
 import { getNotificationsPaginationVersion } from "requests";
 import {
   getNotificationIcon,
-  getNotificationBodyByType,
   getNotificationMainColor,
-  getNotificationTitleByType,
   shortTimeFormat,
 } from "utils";
 
@@ -85,32 +83,34 @@ const Notifications = () => {
 
             <div className="main-notification-list d-flex">
               {notifications.map((notification) => {
-                const { id, type, body, createdAt } = notification;
+                const { id, type, body, title, createdAt, link } = notification;
                 const iconClass = getNotificationIcon(type);
                 const mainNotificationColor = getNotificationMainColor(type);
 
                 return (
                   <div
-                    className={`main-notification card b-light-${mainNotificationColor}`}
+                    className={`main-notification card b-light-${mainNotificationColor} ${
+                      link ? "cursor-pointer" : ""
+                    }`}
                     key={id}
+                    onClick={() => (window.location.href = link)}
                   >
                     <div className="card-body">
                       <div className="d-flex align-items-center">
                         <div
-                          className={`d-flex widgets-icons-2 rounded-circle bx bg-light-${mainNotificationColor} text-${mainNotificationColor} ms-auto`}
+                          className={`d-flex widgets-icons-2 rounded-circle bx bg-light-${mainNotificationColor} text-${mainNotificationColor}`}
+                          style={{ marginRight: "10px" }}
                         >
                           <i className={`notify ${iconClass}`}></i>
                         </div>
-                        <div>
+                        <div style={{ width: "100%" }}>
                           <h6 className="msg-name">
-                            {getNotificationTitleByType(type, body)}
+                            {title}
                             <span className="msg-time float-end">
                               {shortTimeFormat(createdAt)}
                             </span>
                           </h6>
-                          <p className="mb-0 font-13">
-                            {getNotificationBodyByType(type, body)}
-                          </p>
+                          <p className="mb-0 font-13">{body}</p>
                         </div>
                       </div>
                     </div>

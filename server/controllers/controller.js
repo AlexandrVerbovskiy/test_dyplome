@@ -216,64 +216,19 @@ class Controller {
     return { fromDate, serverFromDate, toDate, serverToDate };
   };
 
-  sendMessageNotification = async (
-    { type, authorNick, authorId, authorEmail, messageBody },
-    userId
-  ) => {
-    const notification = await this.notificationModel.sentMessage(
-      {
-        type,
-        authorNick,
-        authorId,
-        authorEmail,
-        messageBody,
-      },
-      userId
-    );
-
-    this.__socketController.sendSocketMessageToUser(
-      userId,
-      "get-notification",
-      notification
-    );
-  };
-
-  sendCommentNotification = async (
-    { senderId, senderNick, senderEmail },
-    { commentType, commentParentId, commentBody },
-    userId
-  ) => {
-    const notification = await this.notificationModel.sentComment(
-      {
-        senderId,
-        senderNick,
-        senderEmail,
-        commentType,
-        commentParentId,
-        commentBody,
-      },
-      userId
-    );
-
-    this.__socketController.sendSocketMessageToUser(
-      userId,
-      "get-notification",
-      notification
-    );
-  };
-
-  sendProposalNotification = async (
-    { senderId, senderNick, senderEmail },
-    { jobId, jobTitle },
-    pricePerHour,
-    needHours,
+  sentProposalNotification = async (
+    { proposalId, senderNick, senderEmail, jobTitle, pricePerHour, needHours },
     userId
   ) => {
     const notification = await this.notificationModel.sentProposal(
-      { senderId, senderNick, senderEmail },
-      { jobId, jobTitle },
-      pricePerHour,
-      needHours,
+      {
+        proposalId,
+        senderNick,
+        senderEmail,
+        jobTitle,
+        pricePerHour,
+        needHours,
+      },
       userId
     );
 
@@ -284,16 +239,12 @@ class Controller {
     );
   };
 
-  createdDisputeNotification = async (
-    { senderId, senderNick, senderEmail },
-    { jobId, jobTitle },
-    message,
+  acceptJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
     userId
   ) => {
-    const notification = await this.notificationModel.createdDispute(
-      { senderId, senderNick, senderEmail },
-      { jobId, jobTitle },
-      message,
+    const notification = await this.notificationModel.acceptJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
       userId
     );
 
@@ -304,17 +255,13 @@ class Controller {
     );
   };
 
-  resolvedDisputeNotification = async (
-    { jobId, jobTitle },
-    userId,
-    getMoney,
-    message
+  rejectJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
   ) => {
-    const notification = await this.notificationModel.resolvedDispute(
-      { jobId, jobTitle },
-      userId,
-      getMoney,
-      message
+    const notification = await this.notificationModel.rejectJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
+      userId
     );
 
     this.__socketController.sendSocketMessageToUser(
@@ -323,6 +270,129 @@ class Controller {
       notification
     );
   };
+
+  doneJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const notification = await this.notificationModel.doneJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  acceptDoneJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle, pricePerHour, needHours },
+    userId
+  ) => {
+    const notification = await this.notificationModel.acceptDoneJobProposal(
+      {
+        proposalId,
+        senderNick,
+        senderEmail,
+        jobTitle,
+        pricePerHour,
+        needHours,
+      },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  doneJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const notification = await this.notificationModel.doneJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  cancelJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const notification = await this.notificationModel.cancelJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  acceptedCancelJobProposal = async (
+    { proposalId, senderNick, senderEmail, jobTitle },
+    userId
+  ) => {
+    const notification = await this.notificationModel.acceptedCancelJobProposal(
+      { proposalId, senderNick, senderEmail, jobTitle },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  /*------------------------------------------ */
+
+  resolvedEmployeeDisputeNotification = async (
+    { proposalId, jobTitle, getMoney, win },
+    userId
+  ) => {
+    const notification = await this.notificationModel.resolvedEmployeeDispute(
+      { proposalId, jobTitle, getMoney, win },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  resolvedWorkerDisputeNotification = async (
+    { proposalId, jobTitle, getMoney, win },
+    userId
+  ) => {
+    const notification = await this.notificationModel.resolvedWorkerDispute(
+      { proposalId, jobTitle, getMoney, win },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  /*------------------------------------------ */
 
   passwordResetNotification = async (userId) => {
     const notification = await this.notificationModel.passwordResetSuccess(
@@ -359,7 +429,73 @@ class Controller {
   };
 
   createRegistrationNotification = async (userId) => {
-    const notification = await this.notificationModel.createRegistration(userId);
+    const notification = await this.notificationModel.createRegistration(
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  sentMessageNotification = async (
+    {
+      chatId,
+      chatType,
+      chatName,
+      authorNick,
+      authorEmail,
+      messageType,
+      messageBody = null,
+    },
+    userId
+  ) => {
+    const notification = await this.notificationModel.sentMessage(
+      {
+        authorNick,
+        messageType,
+        authorEmail,
+        messageBody,
+        chatId,
+        chatType,
+        chatName,
+      },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  sentCommentNotification = async (
+    { senderNick, senderEmail, commentType, commentBody, redirectLink },
+    userId
+  ) => {
+    const notification = await this.notificationModel.sentComment(
+      { senderNick, senderEmail, commentType, commentBody, redirectLink },
+      userId
+    );
+
+    this.__socketController.sendSocketMessageToUser(
+      userId,
+      "get-notification",
+      notification
+    );
+  };
+
+  createdDisputeNotification = async (
+    { senderNick, senderEmail, proposalId, message, jobTitle },
+    userId
+  ) => {
+    const notification = await this.notificationModel.createdDispute(
+      { senderNick, senderEmail, proposalId, message, jobTitle },
+      userId
+    );
 
     this.__socketController.sendSocketMessageToUser(
       userId,

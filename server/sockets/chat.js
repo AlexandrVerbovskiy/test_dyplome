@@ -103,8 +103,15 @@ class Chat {
     const message = await this.chatController.__createMessage(data, userId);
 
     if (data.chatType == "personal") {
-      if (!data.chatId)
+      let chatId = data.chatId;
+
+      if (!data.chatId) {
         await this.__onCreateNewPersonalChat(message, data, userId);
+        chatId = await this.chatController.chatModel.hasPersonal(
+          data["getterId"],
+          userId
+        );
+      }
 
       this.socketController.sendSocketMessageToUsers(
         [data.getterId],
@@ -113,6 +120,19 @@ class Chat {
           message,
           sender,
         }
+      );
+
+      this.chatController.sentMessageNotification(
+        {
+          chatId,
+          chatType: data["chatType"],
+          chatName: null,
+          authorNick: sender.nick,
+          authorEmail: sender.email,
+          messageType: data.typeMessage,
+          messageBody: data.content,
+        },
+        data["getterId"]
       );
     }
 
@@ -130,6 +150,31 @@ class Chat {
             sender,
           }
         );
+
+        const chat = await this.chatController.chatModel.getById(data.chatId);
+
+        const relations = await this.chatController.chatModel.getChatRelations(
+          data.chatId
+        );
+
+        relations.forEach((relation) => {
+          if (relation.userId == userId) {
+            return;
+          }
+
+          this.chatController.sentMessageNotification(
+            {
+              chatId: data.chatId,
+              chatType: data["chatType"],
+              chatName: chat.name,
+              authorNick: sender.nick,
+              authorEmail: sender.email,
+              messageType: data.typeMessage,
+              messageBody: data.content,
+            },
+            relation.userId
+          );
+        });
       } else if (data.chatType == "system") {
         this.socketController.sendSocketMessageToAdmins("get-message", userId, {
           message,

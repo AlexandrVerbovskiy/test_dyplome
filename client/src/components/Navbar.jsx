@@ -23,7 +23,7 @@ const Navbar = ({
   }, [countNewNotifications]);
 
   const handleActivateNotificationsPopup = () => {
-    if (countNewNotifications === 0) return;
+    if (notifications.length === 0) return;
     setNotificationPopupActive(true);
     resetCountNewNotifications();
   };

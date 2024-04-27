@@ -26,14 +26,18 @@ const SmallNotificationList = ({ notifications, active, onClose }) => {
           <p className="msg-header-title">Notifications</p>
         </div>
         <div className="header-notifications-list transparent-scrollbar">
-          {Object.keys(notifications).map((notification) => (
-            <NotificationElem
-              key={notification.id}
-              type={notification.type}
-              body={notification.body}
-              createdAt={notification.createdAt}
-            />
-          ))}
+          {Object.keys(notifications)
+            .sort((a, b) => b - a)
+            .map((notificationId) => (
+              <NotificationElem
+                key={notificationId}
+                type={notifications[notificationId].type}
+                title={notifications[notificationId].title}
+                body={notifications[notificationId].body}
+                link={notifications[notificationId].link}
+                createdAt={notifications[notificationId].createdAt}
+              />
+            ))}
         </div>
         <Link to="/notifications">
           <div className="text-center msg-footer">View All Notifications</div>
