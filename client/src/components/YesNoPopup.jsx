@@ -8,6 +8,7 @@ const YesNoPopup = ({
   onAccept,
   onClose,
   acceptText,
+  acceptType = "danger",
 }) => {
   return (
     <PopupWrapper
@@ -27,11 +28,13 @@ const YesNoPopup = ({
             {title}
           </h6>
         )}
-        <div className="d-flex justify-content-between mt-3">
+        <div
+          className={`d-flex justify-content-between ${title ? "mt-3" : ""}`}
+        >
           <button className="btn btn-primary" onClick={onClose}>
             Close
           </button>
-          <button className="btn btn-danger" onClick={onAccept}>
+          <button className={`btn btn-${acceptType}`} onClick={onAccept}>
             {acceptText}
           </button>
         </div>

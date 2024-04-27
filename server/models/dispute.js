@@ -6,6 +6,7 @@ class Dispute extends Model {
      disputes.created_at as createdAt, disputes.id as id, disputes.*,
      disputes.job_request_id as jobRequestId, disputes.admin_id as adminId,
      disputes.user_id as userId, disputes.updated_at as updatedAt,
+     disputes.right_user_id as rightUserId,
      job_requests.status as jobStatus, jobs.description as jobDescription, jobs.title, job_requests.price, 
      job_requests.user_id as workerId, job_requests.execution_time as executionTime,
      jobs.address, jobs.lat, jobs.lng, jobs.author_id as jobAuthorId FROM disputes
@@ -155,6 +156,22 @@ class Dispute extends Model {
 
   getCountWhereUserAccused = (userId) =>
     this.__getCountFromSelectRequest(this.getWhereUserAccused, [userId]);
+
+  workerRight = async (disputeId, workerId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved' WHERE id = ?",
+        [workerId, disputeId]
+      );
+    });
+
+  employeeRight = async (disputeId, employeeId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved' WHERE id = ?",
+        [employeeId, disputeId]
+      );
+    });
 
   baseGetMany = (props) => {
     const { filter } = props;

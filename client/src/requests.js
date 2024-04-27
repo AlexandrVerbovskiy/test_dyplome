@@ -566,3 +566,21 @@ export const getNotificationsPaginationVersion = {
     countItems: res.data.countItems,
   }),
 };
+
+export const disputeMarkEmployeeRight = {
+  url: () => `dispute-employee-right`,
+  type: "post",
+  convertData: (disputeId) => ({
+    disputeId,
+  }),
+  convertRes: (res) => res.data,
+};
+
+export const disputeMarkWorkerRight = {
+  url: () => `dispute-worker-right`,
+  type: "post",
+  convertData: (disputeId) => ({
+    disputeId,
+  }),
+  convertRes: (res) => res.data,
+};

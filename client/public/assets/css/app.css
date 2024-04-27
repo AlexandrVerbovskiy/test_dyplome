@@ -3939,8 +3939,12 @@ hr:has(+ .balance-payment-type-select) {
     ):has(*:nth-child(1)) {
     width: 14%;
   }
+
+  .w-md-auto {
+    width: auto !important;
+  }
 }
 
-.main-notification-list{
+.main-notification-list {
   flex-direction: column;
 }

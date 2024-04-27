@@ -328,5 +328,13 @@ function route(app, db, io) {
     isAdmin,
     getMoneyRequestController.getRequestList
   );
+
+  app.post(
+    "/dispute-employee-right",
+    isAdmin,
+    disputeController.markEmployeeRight
+  );
+
+  app.post("/dispute-worker-right", isAdmin, disputeController.markWorkerRight);
 }
 module.exports = route;

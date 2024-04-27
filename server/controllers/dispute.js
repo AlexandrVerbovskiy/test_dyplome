@@ -130,6 +130,66 @@ class Dispute extends Controller {
         countItems,
       });
     });
+
+  markWorkerRight = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { disputeId } = req.body;
+      const dispute = await this.disputeModel.getById(disputeId);
+      await this.disputeModel.workerRight(dispute.id, dispute.workerId);
+
+      const totalPrice = Number(dispute.executionTime * dispute.price).toFixed(
+        2
+      );
+
+      await this.userModel.addBalance(dispute.workerId, totalPrice);
+      await this.jobProposalModel.acceptCancelled(proposalId);
+
+      this.resolvedWorkerDisputeNotification({
+        proposalId: dispute.jobRequestId,
+        jobTitle: dispute.title,
+        getMoney: totalPrice,
+        win: true,
+      });
+
+      this.resolvedEmployeeDisputeNotification({
+        proposalId: dispute.jobRequestId,
+        jobTitle: dispute.title,
+        getMoney: totalPrice,
+        win: false,
+      });
+
+      return this.sendResponseSuccess(res, "Status changes success");
+    });
+
+  markEmployeeRight = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { disputeId } = req.body;
+      const dispute = await this.disputeModel.getById(disputeId);
+      await this.disputeModel.employeeRight(dispute.id, dispute.jobAuthorId);
+
+      const totalPrice = Number(dispute.executionTime * dispute.price).toFixed(
+        2
+      );
+
+      await this.userModel.addBalance(dispute.jobAuthorId, totalPrice);
+      await this.jobProposalModel.acceptCancelled(proposalId);
+
+      this.resolvedWorkerDisputeNotification({
+        proposalId: dispute.jobRequestId,
+        jobTitle: dispute.title,
+        getMoney: totalPrice,
+        win: false,
+      });
+
+      this.resolvedEmployeeDisputeNotification({
+        proposalId: dispute.jobRequestId,
+        jobTitle: dispute.title,
+        getMoney: totalPrice,
+        win: true,
+      });
+
+      return this.sendResponseSuccess(res, "Status changes success");
+    });
 }
 
 module.exports = Dispute;
