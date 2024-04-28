@@ -7,10 +7,17 @@ import {
   getGroupedUsersInfo,
   getJobDisputeInfo,
 } from "requests";
+import { LineChart } from "charts";
 
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
 const currentMonth = currentDate.getMonth() + 1;
+
+const convertDataArrayToObject = (array) => {
+  const obj = {};
+  array.forEach((data) => (obj[data.date] = data.count));
+  return obj;
+};
 
 const AdminIndex = () => {
   const main = useContext(MainContext);
@@ -127,11 +134,43 @@ const AdminIndex = () => {
     init();
   }, []);
 
-  useEffect(() => {
-    console.log(userInfos);
-  }, [userInfos]);
+  return (
+    <Layout>
+      <div className="page-content">
+        {userInfos.newUsers && (
+          <LineChart
+            info={{
+              "New Users": {
+                color: { r: "0", g: "255", b: "70" },
+                data: convertDataArrayToObject(userInfos.newUsers),
+              },
+            }}
+            title="Joined Users"
+            keys={userInfos.newUsers.map((userInfo) => userInfo.date)}
+            beginAtZero={true}
+            step={1}
+            defaultMax={10}
+          />
+        )}
 
-  return <Layout></Layout>;
+        {userInfos.visitedUsers && (
+          <LineChart
+            info={{
+              "Visited Users": {
+                color: { r: "0", g: "255", b: "255" },
+                data: convertDataArrayToObject(userInfos.visitedUsers),
+              },
+            }}
+            title="Visited Users"
+            keys={userInfos.visitedUsers.map((userInfo) => userInfo.date)}
+            beginAtZero={true}
+            step={1}
+            defaultMax={10}
+          />
+        )}
+      </div>
+    </Layout>
+  );
 };
 
 export default AdminIndex;

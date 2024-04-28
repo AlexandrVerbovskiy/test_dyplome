@@ -472,7 +472,13 @@ class User extends Model {
     this.autoGenerateGroupedCountSelect(type, "time_created", "users", params);
 
   groupedCountVisitedUsersByDuration = (type, params) =>
-    this.autoGenerateGroupedCountSelect(type, "time_updated", "users", params);
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "time_updated",
+      "users",
+      params,
+      true
+    );
 }
 
 module.exports = User;

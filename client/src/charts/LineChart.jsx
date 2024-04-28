@@ -1,5 +1,25 @@
 import React from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const options = {
   responsive: true,
@@ -11,10 +31,45 @@ const options = {
       display: true,
     },
   },
+  scales: {
+    y: {
+      ticks: {},
+    },
+  },
 };
 
-const LineChart = ({ info, title, keys }) => {
+const LineChart = ({
+  info,
+  title,
+  keys,
+  beginAtZero = false,
+  step = 0.1,
+  defaultMax = null,
+}) => {
   const datasets = [];
+
+  options.scales.y["beginAtZero"] = beginAtZero;
+  options.scales.y.ticks["stepSize"] = step;
+
+  let hasValue = true;
+
+  Object.keys(info).forEach((name) => {
+    let maxValue = 0;
+
+    Object.keys(info[name]["data"]).forEach((key) => {
+      if (maxValue < info[name]["data"][key]) {
+        maxValue = info[name]["data"][key];
+      }
+    });
+
+    if (defaultMax && maxValue < defaultMax) {
+      hasValue = false;
+    }
+  });
+
+  if (!hasValue) {
+    options.scales.y["max"] = defaultMax;
+  }
 
   Object.keys(info).forEach((name) => {
     const color =
@@ -27,13 +82,9 @@ const LineChart = ({ info, title, keys }) => {
     const whiteColor = `rgba(${color},0.4)`;
     const fullCOlor = `rgba(${color},1)`;
 
-    let total = 0;
     const values = [];
 
-    keys.forEach((key) => {
-      total += info[name]["data"][key] ?? 0;
-      values.push(total);
-    });
+    keys.forEach((key) => values.push(info[name]["data"][key] ?? 0));
 
     datasets.push({
       label: name,

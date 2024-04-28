@@ -207,7 +207,8 @@ class Model {
     type,
     keyField,
     table,
-    params = null
+    params = null,
+    resetEachPeriod = false
   ) =>
     await this.errorWrapper(async () => {
       let query = "";
@@ -289,7 +290,11 @@ class Model {
       }
 
       const mergedResult = Object.entries(dateMap).map(([date, count]) => {
-        baseCount += result.find((row) => row.date === date)?.count ?? 0;
+        if (resetEachPeriod) {
+          baseCount = result.find((row) => row.date === date)?.count ?? 0;
+        } else {
+          baseCount += result.find((row) => row.date === date)?.count ?? 0;
+        }
 
         return {
           date,
