@@ -299,6 +299,38 @@ class JobProposal extends Model {
 
   getCountAllCompletedFromUser = (userId) =>
     this.__getCountFromSelectRequest(this.getAllCompletedFromUser, [userId]);
+
+  groupedCountNewProposalsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "time_created",
+      "job_requests",
+      params
+    );
+
+  groupedCountFinishedProposalsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "time_completed",
+      "job_requests",
+      params
+    );
+
+  groupedCountRejectedProposalsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "time_rejected",
+      "job_requests",
+      params
+    );
+
+  groupedCountCancelledProposalsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "time_cancelled",
+      "job_requests",
+      params
+    );
 }
 
 module.exports = JobProposal;

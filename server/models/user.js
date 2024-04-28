@@ -467,6 +467,12 @@ class User extends Model {
 
       return users.map((user) => user.id);
     });
+
+  groupedCountNewUsersByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(type, "time_created", "users", params);
+
+  groupedCountVisitedUsersByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(type, "time_updated", "users", params);
 }
 
 module.exports = User;

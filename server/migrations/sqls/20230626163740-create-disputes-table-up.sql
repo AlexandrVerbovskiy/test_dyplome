@@ -9,6 +9,7 @@ CREATE TABLE disputes (
     status ENUM('Pending', 'In Progress', 'Resolved') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (job_request_id) REFERENCES job_requests(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (admin_id) REFERENCES users(id),

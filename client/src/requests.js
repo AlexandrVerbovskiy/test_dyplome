@@ -584,3 +584,31 @@ export const disputeMarkWorkerRight = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getGroupedUsersInfo = {
+  url: () => `grouped-users-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};
+export const getGroupedDisputesInfo = {
+  url: () => `grouped-disputes-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};
+export const getGroupedJobRequestsInfo = {
+  url: () => `grouped-job-requests-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};

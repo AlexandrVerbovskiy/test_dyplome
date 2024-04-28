@@ -51,7 +51,7 @@ const clientServerHoursDifference = (clientTime) => {
 const adaptTimeByHoursDiff = (dateStr, hoursDiff, dopTime = null) => {
   const datePart = dateStr.split(" ")[0];
   const [month, day, year] = datePart.split("/").map(Number);
-  
+
   let date = new Date(
     year,
     month - 1,
@@ -77,6 +77,13 @@ const adaptClientTimeToServer = (
   dopTime = null
 ) => adaptTimeByHoursDiff(clientDateStr, clientServerHoursDiff, dopTime);
 
+const dateToString = (date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 module.exports = {
   timeConverter,
   getOneHourAgo,
@@ -86,4 +93,5 @@ module.exports = {
   adaptServerTimeToClient,
   getDateByCurrentAdd,
   getDateByCurrentReject,
+  dateToString,
 };

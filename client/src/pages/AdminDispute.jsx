@@ -52,7 +52,7 @@ const AdminDispute = () => {
   };
 
   const acceptEmployeeRight = async () => {
-    await main.request({
+    await request({
       url: disputeMarkEmployeeRight.url(),
       type: disputeMarkEmployeeRight.type,
       convertRes: disputeMarkEmployeeRight.convertRes,
@@ -70,7 +70,7 @@ const AdminDispute = () => {
   };
 
   const acceptWorkerRight = async () => {
-    await main.request({
+    await request({
       url: disputeMarkWorkerRight.url(),
       type: disputeMarkWorkerRight.type,
       convertRes: disputeMarkWorkerRight.convertRes,

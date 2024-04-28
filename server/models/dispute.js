@@ -212,5 +212,16 @@ class Dispute extends Model {
 
       return await this.dbQueryAsync(query, params);
     });
+
+  groupedCountNewDisputesByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(type, "created_at", "disputes", params);
+
+  groupedCountFinishedDisputesByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "completed_at",
+      "disputes",
+      params
+    );
 }
 module.exports = Dispute;
