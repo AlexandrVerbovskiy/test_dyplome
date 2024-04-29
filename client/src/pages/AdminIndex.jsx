@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Layout } from "components";
+import { Layout, Select } from "components";
 import { MainContext } from "contexts";
 import {
   getGroupedDisputesInfo,
@@ -7,13 +7,124 @@ import {
   getGroupedNewUsersInfo,
   getGroupedUsersInfo,
   getGroupedVisitedUsersInfo,
-  getJobDisputeInfo,
 } from "requests";
 import { LineChart } from "charts";
 
 const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
+const currentYear = +currentDate.getFullYear();
 const currentMonth = currentDate.getMonth() + 1;
+
+const typeOptions = [
+  { value: "one-month", label: "Month Statistic" },
+  { value: "one-year", label: "Year Statistic" },
+  { value: "between-years", label: "Year Duration" },
+  { value: "between-months", label: "Month Duration" },
+];
+
+const monthOptions = [
+  { value: 1, label: "January" },
+  { value: 2, label: "February" },
+  { value: 3, label: "March" },
+  { value: 4, label: "April" },
+  { value: 5, label: "May" },
+  { value: 6, label: "June" },
+  { value: 7, label: "July" },
+  { value: 8, label: "August" },
+  { value: 9, label: "September" },
+  { value: 10, label: "October" },
+  { value: 11, label: "November" },
+  { value: 12, label: "December" },
+];
+
+const startYear = 2000;
+
+const yearOptions = [];
+
+let temp = startYear;
+while (temp <= currentYear) {
+  yearOptions.push({ value: temp, label: temp });
+  temp++;
+}
+
+const ChartFilter = ({
+  type,
+  changeType,
+  startMonth,
+  changeStartMonth,
+  endMonth,
+  changeEndMonth,
+  startYear,
+  changeStartYear,
+  endYear,
+  changeEndYear,
+}) => {
+  return (
+    <div style={{ fontSize: "12px", display: "flex", gap: "1em" }}>
+      {type == "between-months" && (
+        <Select
+          value={startMonth}
+          onChange={(event) => changeStartMonth(event.value)}
+          options={monthOptions}
+          label="From Month"
+          columnCounts={0}
+          errorHidden={true}
+          absoluteLabel={true}
+          className="w-100"
+        />
+      )}
+
+      {(type == "between-years" || type == "between-months") && (
+        <Select
+          value={startYear}
+          onChange={(event) => changeStartYear(event.value)}
+          options={yearOptions}
+          label="From Year"
+          columnCounts={0}
+          errorHidden={true}
+          absoluteLabel={true}
+          className="w-100"
+        />
+      )}
+
+      {type == "between-months" && (
+        <Select
+          value={endMonth}
+          onChange={(event) => changeEndMonth(event.value)}
+          options={monthOptions}
+          label="To Month"
+          columnCounts={0}
+          errorHidden={true}
+          absoluteLabel={true}
+          className="w-100"
+        />
+      )}
+
+      {(type == "between-years" || type == "between-months") && (
+        <Select
+          value={endYear}
+          onChange={(event) => changeEndYear(event.value)}
+          options={yearOptions}
+          label="To Year"
+          columnCounts={0}
+          errorHidden={true}
+          absoluteLabel={true}
+          className="w-100"
+        />
+      )}
+
+      <Select
+        value={type}
+        onChange={(event) => changeType(event.value)}
+        options={typeOptions}
+        label="Chart Type"
+        columnCounts={0}
+        errorHidden={true}
+        absoluteLabel={true}
+        className="w-100"
+      />
+    </div>
+  );
+};
 
 const convertDataArrayToObject = (array) => {
   const obj = {};
@@ -124,6 +235,44 @@ const AdminIndex = () => {
     setJobProposalInfos(jobProposalInfos);
   };
 
+  const updateNewUserInfo = async (
+    type,
+    { startYear, startMonth, endYear, endMonth }
+  ) => {
+    const userInfos = await main.request({
+      url: getGroupedUsersInfo.url(),
+      type: getGroupedUsersInfo.type,
+      convertRes: getGroupedUsersInfo.convertRes,
+      data: getGroupedUsersInfo.convertData(type, {
+        startYear,
+        startMonth,
+        endYear,
+        endMonth,
+      }),
+    });
+
+    setNewUserInfos(userInfos);
+  };
+
+  const updateVisitedUserInfo = async (
+    type,
+    { startYear, startMonth, endYear, endMonth }
+  ) => {
+    const userInfos = await main.request({
+      url: getGroupedUsersInfo.url(),
+      type: getGroupedUsersInfo.type,
+      convertRes: getGroupedUsersInfo.convertRes,
+      data: getGroupedUsersInfo.convertData(type, {
+        startYear,
+        startMonth,
+        endYear,
+        endMonth,
+      }),
+    });
+
+    setVisitedUserInfos(userInfos);
+  };
+
   const init = async () => {
     await Promise.all([
       updateUserInfo(newUserGroupType, {
@@ -151,75 +300,65 @@ const AdminIndex = () => {
     init();
   }, []);
 
-  const handleNewUsersChangeType = async (type) => {
-    const gotInfos = await main.request({
-      url: getGroupedNewUsersInfo.url(),
-      type: getGroupedNewUsersInfo.type,
-      convertRes: getGroupedNewUsersInfo.convertRes,
-      data: getGroupedNewUsersInfo.convertData(type, {
-        startYear: newUserGroupStartYear,
-        startMonth: newUserGroupStartMonth,
-        endYear: newUserGroupEndYear,
-        endMonth: newUserGroupEndMonth,
-      }),
+  useEffect(() => {
+    updateVisitedUserInfo(visitedUserGroupType, {
+      startYear: visitedUserGroupStartYear,
+      startMonth: visitedUserGroupStartMonth,
+      endYear: visitedUserGroupEndYear,
+      endMonth: visitedUserGroupEndMonth,
     });
+  }, [
+    visitedUserGroupType,
+    visitedUserGroupStartYear,
+    visitedUserGroupStartMonth,
+    visitedUserGroupEndYear,
+    visitedUserGroupEndMonth,
+  ]);
 
-    setNewUserGroupType(type);
-    setNewUserInfos(gotInfos);
-  };
-
-  const handleVisitedUsersChangeType = async (type) => {
-    const gotInfos = await main.request({
-      url: getGroupedVisitedUsersInfo.url(),
-      type: getGroupedVisitedUsersInfo.type,
-      convertRes: getGroupedVisitedUsersInfo.convertRes,
-      data: getGroupedVisitedUsersInfo.convertData(type, {
-        startYear: visitedUserGroupStartYear,
-        startMonth: visitedUserGroupStartMonth,
-        endYear: visitedUserGroupEndYear,
-        endMonth: visitedUserGroupEndMonth,
-      }),
+  useEffect(() => {
+    updateNewUserInfo(newUserGroupType, {
+      startYear: newUserGroupStartYear,
+      startMonth: newUserGroupStartMonth,
+      endYear: newUserGroupEndYear,
+      endMonth: newUserGroupEndMonth,
     });
+  }, [
+    newUserGroupType,
+    newUserGroupStartYear,
+    newUserGroupStartMonth,
+    newUserGroupEndYear,
+    newUserGroupEndMonth,
+  ]);
 
-    setVisitedUserGroupType(type);
-    setVisitedUserInfos(gotInfos);
-  };
-
-  const handleJobProposalChangeType = async (type) => {
-    const gotInfos = await main.request({
-      url: getGroupedJobRequestsInfo.url(),
-      type: getGroupedJobRequestsInfo.type,
-      convertRes: getGroupedJobRequestsInfo.convertRes,
-      data: getGroupedJobRequestsInfo.convertData(type, {
-        startYear: jobProposalGroupStartYear,
-        startMonth: jobProposalGroupStartMonth,
-        endYear: jobProposalGroupEndYear,
-        endMonth: jobProposalGroupStartMonth,
-      }),
+  useEffect(() => {
+    updateJobRequestInfo(jobProposalGroupType, {
+      startYear: jobProposalGroupStartYear,
+      startMonth: jobProposalGroupStartMonth,
+      endYear: jobProposalGroupEndYear,
+      endMonth: jobProposalGroupEndMonth,
     });
+  }, [
+    jobProposalGroupType,
+    jobProposalGroupStartYear,
+    jobProposalGroupStartMonth,
+    jobProposalGroupEndYear,
+    jobProposalGroupEndMonth,
+  ]);
 
-    setJobProposalGroupType(type);
-    setJobProposalInfos(gotInfos);
-  };
-
-  const handleDisputeChangeType = async (type) => {
-    const gotInfos = await main.request({
-      url: getGroupedDisputesInfo.url(),
-      type: getGroupedDisputesInfo.type,
-      convertRes: getGroupedDisputesInfo.convertRes,
-      data: getGroupedDisputesInfo.convertData(type, {
-        startYear: disputeGroupStartYear,
-        startMonth: disputeGroupStartMonth,
-        endYear: disputeGroupEndYear,
-        endMonth: disputeGroupStartMonth,
-      }),
+  useEffect(() => {
+    updateDisputeInfo(disputeGroupType, {
+      startYear: disputeGroupStartYear,
+      startMonth: disputeGroupStartMonth,
+      endYear: disputeGroupEndYear,
+      endMonth: disputeGroupEndMonth,
     });
-
-    setDisputeGroupType(type);
-    setDisputeInfos(gotInfos);
-  };
-
-  console.log("visitedUserInfos: ", visitedUserInfos);
+  }, [
+    disputeGroupType,
+    disputeGroupStartYear,
+    disputeGroupStartMonth,
+    disputeGroupEndYear,
+    disputeGroupEndMonth,
+  ]);
 
   return (
     <Layout>
@@ -237,6 +376,20 @@ const AdminIndex = () => {
             beginAtZero={true}
             step={1}
             defaultMax={10}
+            Filter={() => (
+              <ChartFilter
+                type={newUserGroupType}
+                changeType={setNewUserGroupType}
+                startMonth={newUserGroupStartMonth}
+                changeStartMonth={setNewUserGroupStartMonth}
+                endMonth={newUserGroupEndMonth}
+                changeEndMonth={setNewUserGroupEndMonth}
+                startYear={newUserGroupStartYear}
+                changeStartYear={setNewUserGroupStartYear}
+                endYear={newUserGroupEndYear}
+                changeEndYear={setNewUserGroupEndYear}
+              />
+            )}
           />
         )}
 
@@ -253,6 +406,20 @@ const AdminIndex = () => {
             beginAtZero={true}
             step={1}
             defaultMax={10}
+            Filter={() => (
+              <ChartFilter
+                type={visitedUserGroupType}
+                changeType={setVisitedUserGroupType}
+                startMonth={visitedUserGroupStartMonth}
+                changeStartMonth={setVisitedUserGroupStartMonth}
+                endMonth={visitedUserGroupEndMonth}
+                changeEndMonth={setVisitedUserGroupEndMonth}
+                startYear={visitedUserGroupStartYear}
+                changeStartYear={setVisitedUserGroupStartYear}
+                endYear={visitedUserGroupEndYear}
+                changeEndYear={setVisitedUserGroupEndYear}
+              />
+            )}
           />
         )}
 
@@ -289,6 +456,20 @@ const AdminIndex = () => {
             beginAtZero={true}
             step={1}
             defaultMax={10}
+            Filter={() => (
+              <ChartFilter
+                type={jobProposalGroupType}
+                changeType={setJobProposalGroupType}
+                startMonth={jobProposalGroupStartMonth}
+                changeStartMonth={setJobProposalGroupStartMonth}
+                endMonth={jobProposalGroupEndMonth}
+                changeEndMonth={setJobProposalGroupEndMonth}
+                startYear={jobProposalGroupStartYear}
+                changeStartYear={setJobProposalGroupStartYear}
+                endYear={jobProposalGroupEndYear}
+                changeEndYear={setJobProposalGroupEndYear}
+              />
+            )}
           />
         )}
 
@@ -311,6 +492,20 @@ const AdminIndex = () => {
             beginAtZero={true}
             step={1}
             defaultMax={10}
+            Filter={() => (
+              <ChartFilter
+                type={disputeGroupType}
+                changeType={setDisputeGroupType}
+                startMonth={disputeGroupStartMonth}
+                changeStartMonth={setDisputeGroupStartMonth}
+                endMonth={disputeGroupEndMonth}
+                changeEndMonth={setDisputeGroupEndMonth}
+                startYear={disputeGroupStartYear}
+                changeStartYear={setDisputeGroupStartYear}
+                endYear={disputeGroupEndYear}
+                changeEndYear={setDisputeGroupEndYear}
+              />
+            )}
           />
         )}
       </div>

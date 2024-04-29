@@ -45,6 +45,7 @@ const LineChart = ({
   beginAtZero = false,
   step = 0.1,
   defaultMax = null,
+  Filter = null,
 }) => {
   const datasets = [];
 
@@ -117,7 +118,13 @@ const LineChart = ({
   return (
     <div className="card">
       <div className="card-body">
-        <h6 className="text-uppercase">{title}</h6>
+        <h6
+          className="text-uppercase d-flex"
+          style={{ justifyContent: "space-between", alignItems: "end" }}
+        >
+          <div>{title}</div>
+          {Filter && <Filter />}
+        </h6>
         <hr />
         <div className="canvas-parent">
           <Line options={options} data={data} />
