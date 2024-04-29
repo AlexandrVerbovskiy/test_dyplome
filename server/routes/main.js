@@ -339,8 +339,28 @@ function route(app, db, io) {
 
   app.post("/grouped-users-info", isAdmin, mainController.getGroupedUsersInfo);
 
-  app.post("/grouped-disputes-info", isAdmin, mainController.getGroupedDisputesInfo);
+  app.post(
+    "/grouped-new-users-info",
+    isAdmin,
+    mainController.getGroupedNewUsersInfo
+  );
 
-  app.post("/grouped-job-requests-info", isAdmin, mainController.getGroupedJobRequestsInfo);
+  app.post(
+    "/grouped-visited-users-info",
+    isAdmin,
+    mainController.getGroupedVisitedUsersInfo
+  );
+
+  app.post(
+    "/grouped-disputes-info",
+    isAdmin,
+    mainController.getGroupedDisputesInfo
+  );
+
+  app.post(
+    "/grouped-job-requests-info",
+    isAdmin,
+    mainController.getGroupedJobRequestsInfo
+  );
 }
 module.exports = route;

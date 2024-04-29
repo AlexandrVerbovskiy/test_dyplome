@@ -34,6 +34,30 @@ class Main extends Controller {
       });
     });
 
+  getGroupedNewUsersInfo = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const type = req.body.type;
+      const params = req.body.params ?? {};
+      const newUsers = await this.userModel.groupedCountNewUsersByDuration(
+        type,
+        params
+      );
+      this.sendResponseSuccess(res, "Got data successfully", {
+        newUsers,
+      });
+    });
+
+  getGroupedVisitedUsersInfo = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const type = req.body.type;
+      const params = req.body.params ?? {};
+      const visitedUsers =
+        await this.userModel.groupedCountVisitedUsersByDuration(type, params);
+      this.sendResponseSuccess(res, "Got data successfully", {
+        visitedUsers,
+      });
+    });
+
   getGroupedDisputesInfo = (req, res) =>
     this.errorWrapper(res, async () => {
       const type = req.body.type;

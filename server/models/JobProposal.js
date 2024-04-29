@@ -115,19 +115,57 @@ class JobProposal extends Model {
 
   accept = (proposalId) =>
     this.changeStatus(proposalId, this.statuses.inProgress);
-  reject = (proposalId) =>
-    this.changeStatus(proposalId, this.statuses.rejected);
+
+  reject = async (proposalId) => {
+    const proposal = await this.changeStatus(
+      proposalId,
+      this.statuses.rejected
+    );
+
+    await this.dbQueryAsync(
+      `UPDATE job_requests SET time_rejected = CURRENT_TIMESTAMP WHERE id = ?`,
+      [proposalId]
+    );
+
+    return proposal;
+  };
+
   requestToCancel = (proposalId) =>
     this.changeStatus(
       proposalId,
       this.statuses.awaitingCancellationConfirmation
     );
-  acceptCancelled = (proposalId) =>
-    this.changeStatus(proposalId, this.statuses.cancelled);
+
+  acceptCancelled = async (proposalId) => {
+    const proposal = await this.changeStatus(
+      proposalId,
+      this.statuses.cancelled
+    );
+
+    await this.dbQueryAsync(
+      `UPDATE job_requests SET time_cancelled = CURRENT_TIMESTAMP WHERE id = ?`,
+      [proposalId]
+    );
+
+    return proposal;
+  };
+
   requestToComplete = (proposalId) =>
     this.changeStatus(proposalId, this.statuses.awaitingExecutionConfirmation);
-  acceptCompleted = (proposalId) =>
-    this.changeStatus(proposalId, this.statuses.completed);
+
+  acceptCompleted = async (proposalId) => {
+    const proposal = await this.changeStatus(
+      proposalId,
+      this.statuses.completed
+    );
+
+    await this.dbQueryAsync(
+      `UPDATE job_requests SET time_completed = CURRENT_TIMESTAMP WHERE id = ?`,
+      [proposalId]
+    );
+
+    return proposal;
+  };
 
   exists = async (proposalId) =>
     await this.errorWrapper(async () => {

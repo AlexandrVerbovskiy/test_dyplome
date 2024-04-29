@@ -594,6 +594,27 @@ export const getGroupedUsersInfo = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getGroupedNewUsersInfo = {
+  url: () => `grouped-new-users-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};
+
+export const getGroupedVisitedUsersInfo = {
+  url: () => `grouped-visited-users-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};
+
 export const getGroupedDisputesInfo = {
   url: () => `grouped-disputes-info`,
   type: "post",
@@ -603,6 +624,7 @@ export const getGroupedDisputesInfo = {
   }),
   convertRes: (res) => res.data,
 };
+
 export const getGroupedJobRequestsInfo = {
   url: () => `grouped-job-requests-info`,
   type: "post",

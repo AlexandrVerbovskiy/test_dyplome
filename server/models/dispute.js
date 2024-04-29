@@ -160,7 +160,7 @@ class Dispute extends Model {
   workerRight = async (disputeId, workerId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE disputes SET right_user_id = ?, status = 'Resolved' WHERE id = ?",
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
         [workerId, disputeId]
       );
     });
@@ -168,7 +168,7 @@ class Dispute extends Model {
   employeeRight = async (disputeId, employeeId) =>
     await this.errorWrapper(async () => {
       await this.dbQueryAsync(
-        "UPDATE disputes SET right_user_id = ?, status = 'Resolved' WHERE id = ?",
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
         [employeeId, disputeId]
       );
     });
