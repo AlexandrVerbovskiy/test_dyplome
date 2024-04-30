@@ -20,12 +20,15 @@ class PaymentTransaction extends Model {
     money,
     operationType,
     transactionData,
+    finishedCurrent = true,
   }) =>
     await this.errorWrapper(async () => {
       const insertRes = await this.dbQueryAsync(
         `INSERT INTO payment_transactions 
-        (balance_change_type, money, operation_type, transaction_data, user_id)
-         VALUES (?, ?, ?, ?, ?)`,
+        (balance_change_type, money, operation_type, transaction_data, user_id, finished_at)
+         VALUES (?, ?, ?, ?, ?, ${
+           finishedCurrent ? "CURRENT_TIMESTAMP" : "?"
+         })`,
         [
           balanceChangeType,
           money,
@@ -76,6 +79,7 @@ class PaymentTransaction extends Model {
         description: `The balance was reduced by $${money} through PayPal. The withdrawal fee is $${fee}`,
         status,
       },
+      finishedCurrent: !waitingStatus,
     });
   };
 
@@ -89,7 +93,7 @@ class PaymentTransaction extends Model {
       const paymentTransactions = JSON.parse(info[0].transactionData);
 
       await this.dbQueryAsync(
-        `UPDATE payment_transactions SET transaction_data = ? WHERE id = ?`,
+        `UPDATE payment_transactions SET transaction_data = ?, finished_at = CURRENT_TIMESTAMP WHERE id = ?`,
         [
           JSON.stringify({
             description: paymentTransactions.description,
@@ -226,6 +230,28 @@ class PaymentTransaction extends Model {
       },
     });
   };
+
+  groupedGotSumPaymentsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "finished_at",
+      "payment_transactions",
+      params,
+      true,
+      "sum",
+      "balance_change_type = 'topped_up'"
+    );
+
+  groupedSpentSumPaymentsByDuration = (type, params) =>
+    this.autoGenerateGroupedCountSelect(
+      type,
+      "finished_at",
+      "payment_transactions",
+      params,
+      true,
+      "sum",
+      "balance_change_type = 'reduced'"
+    );
 }
 
 module.exports = PaymentTransaction;

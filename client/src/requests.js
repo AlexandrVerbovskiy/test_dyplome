@@ -634,3 +634,13 @@ export const getGroupedJobRequestsInfo = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getGroupedPaymentsInfo = {
+  url: () => `grouped-payments-info`,
+  type: "post",
+  convertData: (type, params) => ({
+    type,
+    params,
+  }),
+  convertRes: (res) => res.data,
+};

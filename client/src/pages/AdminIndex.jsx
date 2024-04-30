@@ -5,6 +5,7 @@ import {
   getGroupedDisputesInfo,
   getGroupedJobRequestsInfo,
   getGroupedNewUsersInfo,
+  getGroupedPaymentsInfo,
   getGroupedUsersInfo,
   getGroupedVisitedUsersInfo,
 } from "requests";
@@ -126,9 +127,9 @@ const ChartFilter = ({
   );
 };
 
-const convertDataArrayToObject = (array) => {
+const convertDataArrayToObject = (array, key = "count") => {
   const obj = {};
-  array.forEach((data) => (obj[data.date] = data.count));
+  array.forEach((data) => (obj[data.date] = data[key]));
   return obj;
 };
 
@@ -155,6 +156,16 @@ const AdminIndex = () => {
   const [visitedUserGroupEndMonth, setVisitedUserGroupEndMonth] =
     useState(currentMonth);
   const [visitedUserInfos, setVisitedUserInfos] = useState([]);
+
+  const [paymentGroupType, setPaymentGroupType] = useState("one-month");
+  const [paymentGroupStartYear, setPaymentGroupStartYear] =
+    useState(currentYear);
+  const [paymentGroupEndYear, setPaymentGroupEndYear] = useState(currentYear);
+  const [paymentGroupStartMonth, setPaymentGroupStartMonth] =
+    useState(currentMonth);
+  const [paymentGroupEndMonth, setPaymentGroupEndMonth] =
+    useState(currentMonth);
+  const [paymentInfos, setPaymentInfos] = useState({});
 
   const [disputeGroupType, setDisputeGroupType] = useState("one-month");
   const [disputeGroupStartYear, setDisputeGroupStartYear] =
@@ -235,6 +246,25 @@ const AdminIndex = () => {
     setJobProposalInfos(jobProposalInfos);
   };
 
+  const updatePaymentInfo = async (
+    type,
+    { startYear, startMonth, endYear, endMonth }
+  ) => {
+    const newPaymentInfos = await main.request({
+      url: getGroupedPaymentsInfo.url(),
+      type: getGroupedPaymentsInfo.type,
+      convertRes: getGroupedPaymentsInfo.convertRes,
+      data: getGroupedPaymentsInfo.convertData(type, {
+        startYear,
+        startMonth,
+        endYear,
+        endMonth,
+      }),
+    });
+
+    setPaymentInfos(newPaymentInfos);
+  };
+
   const updateNewUserInfo = async (
     type,
     { startYear, startMonth, endYear, endMonth }
@@ -251,7 +281,7 @@ const AdminIndex = () => {
       }),
     });
 
-    setNewUserInfos(userInfos);
+    setNewUserInfos(userInfos.newUsers);
   };
 
   const updateVisitedUserInfo = async (
@@ -270,7 +300,7 @@ const AdminIndex = () => {
       }),
     });
 
-    setVisitedUserInfos(userInfos);
+    setVisitedUserInfos(userInfos.visitedUsers);
   };
 
   const init = async () => {
@@ -292,6 +322,12 @@ const AdminIndex = () => {
         startMonth: jobProposalGroupStartMonth,
         endYear: jobProposalGroupEndYear,
         endMonth: jobProposalGroupEndMonth,
+      }),
+      updatePaymentInfo(paymentGroupType, {
+        startYear: paymentGroupStartYear,
+        startMonth: paymentGroupStartMonth,
+        endYear: paymentGroupEndYear,
+        endMonth: paymentGroupEndMonth,
       }),
     ]);
   };
@@ -343,6 +379,21 @@ const AdminIndex = () => {
     jobProposalGroupStartMonth,
     jobProposalGroupEndYear,
     jobProposalGroupEndMonth,
+  ]);
+
+  useEffect(() => {
+    updatePaymentInfo(paymentGroupType, {
+      startYear: paymentGroupStartYear,
+      startMonth: paymentGroupStartMonth,
+      endYear: paymentGroupEndYear,
+      endMonth: paymentGroupEndMonth,
+    });
+  }, [
+    paymentGroupType,
+    paymentGroupStartYear,
+    paymentGroupStartMonth,
+    paymentGroupEndYear,
+    paymentGroupEndMonth,
   ]);
 
   useEffect(() => {
@@ -418,6 +469,40 @@ const AdminIndex = () => {
                 changeStartYear={setVisitedUserGroupStartYear}
                 endYear={visitedUserGroupEndYear}
                 changeEndYear={setVisitedUserGroupEndYear}
+              />
+            )}
+          />
+        )}
+
+        {paymentInfos.gotSum && (
+          <LineChart
+            info={{
+              "Funds Received": {
+                color: { r: "255", g: "0", b: "0" },
+                data: convertDataArrayToObject(paymentInfos.gotSum, "sum"),
+              },
+              "Funds Withdrawn": {
+                color: { r: "0", g: "255", b: "0" },
+                data: convertDataArrayToObject(paymentInfos.spentSum, "sum"),
+              },
+            }}
+            title="Payments"
+            keys={paymentInfos.gotSum.map((sum) => sum.date)}
+            beginAtZero={true}
+            step={1}
+            defaultMax={1000}
+            Filter={() => (
+              <ChartFilter
+                type={paymentGroupType}
+                changeType={setPaymentGroupType}
+                startMonth={paymentGroupStartMonth}
+                changeStartMonth={setPaymentGroupStartMonth}
+                endMonth={paymentGroupEndMonth}
+                changeEndMonth={setPaymentGroupEndMonth}
+                startYear={paymentGroupStartYear}
+                changeStartYear={setPaymentGroupStartYear}
+                endYear={paymentGroupEndYear}
+                changeEndYear={setPaymentGroupEndYear}
               />
             )}
           />

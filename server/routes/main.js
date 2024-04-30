@@ -362,5 +362,11 @@ function route(app, db, io) {
     isAdmin,
     mainController.getGroupedJobRequestsInfo
   );
+
+  app.post(
+    "/grouped-payments-info",
+    isAdmin,
+    mainController.getGroupedPaymentsInfo
+  );
 }
 module.exports = route;

@@ -93,87 +93,155 @@ class Model {
     return { query, params };
   };
 
-  __groupedCountSelectPartByPeriod = (
+  __groupedTypeSelectPartByPeriod = (
     keyField,
     table,
     interval = "1 MONTH",
-    dateFormat = "%Y-%m-%d"
+    dateFormat = "%Y-%m-%d",
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
   ) => {
-    const result = `SELECT DATE_FORMAT(${keyField}, '${dateFormat}') AS date, COUNT(*) AS count
+    const result = `SELECT DATE_FORMAT(${keyField}, '${dateFormat}') AS date, ${valueSelect}
   FROM ${table}
-  WHERE (${keyField} IS NOT NULL AND ${keyField} >= DATE_SUB(CURRENT_DATE(), INTERVAL ${interval}))
+  WHERE (${keyField} IS NOT NULL AND ${keyField} >= DATE_SUB(CURRENT_DATE(), INTERVAL ${interval})) ${
+      dopWhere ? ` AND ${dopWhere}` : ""
+    }
   GROUP BY DATE_FORMAT(${keyField}, '${dateFormat}')
   ORDER BY date`;
 
     return result;
   };
 
-  __groupedCountSelectPartByDuration = (
+  __groupedTypeSelectPartByDuration = (
     keyField,
     table,
     startDate,
     endDate,
-    dateFormat = "%Y-%m-%d"
+    dateFormat = "%Y-%m-%d",
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
   ) => {
-    const result = `SELECT DATE_FORMAT(${keyField}, '${dateFormat}') AS date, COUNT(*) AS count
+    const result = `SELECT DATE_FORMAT(${keyField}, '${dateFormat}') AS date, ${valueSelect}
   FROM ${table}
-  WHERE  (${keyField} IS NOT NULL AND ${keyField} >= '${startDate}' AND ${keyField} <= '${endDate}')
+  WHERE  (${keyField} IS NOT NULL AND ${keyField} >= '${startDate}' AND ${keyField} <= '${endDate}') ${
+      dopWhere ? ` AND ${dopWhere}` : ""
+    }
   GROUP BY DATE_FORMAT(${keyField}, '${dateFormat}')
   ORDER BY date`;
     return result;
   };
 
-  groupedCountSelectPartByOneMonth = (keyField, table) =>
-    this.__groupedCountSelectPartByPeriod(
+  getBaseCountBeforeDate = async (
+    table,
+    keyField,
+    date,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) => {
+    const query = `SELECT ${valueSelect}
+      FROM ${table}
+      WHERE (${keyField} IS NOT NULL AND ${keyField} < '${date}') ${
+      dopWhere ? ` AND ${dopWhere}` : ""
+    }`;
+
+    const result = await this.dbQueryAsync(query);
+    return result[0].count;
+  };
+
+  groupedCountSelectPartByOneMonth = (
+    keyField,
+    table,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) =>
+    this.__groupedTypeSelectPartByPeriod(
       keyField,
       table,
       "1 MONTH",
-      "%Y-%m-%d"
+      "%Y-%m-%d",
+      valueSelect,
+      dopWhere
     );
 
-  groupedCountSelectPartByOneYear = (keyField, table) =>
-    this.__groupedCountSelectPartByPeriod(
+  groupedCountSelectPartByOneYear = (
+    keyField,
+    table,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) =>
+    this.__groupedTypeSelectPartByPeriod(
       keyField,
       table,
       "1 YEAR",
-      "%Y-%m-01"
+      "%Y-%m-01",
+      valueSelect,
+      dopWhere
     );
 
-  groupedCountSelectPartByMonths = (keyField, table, months) =>
-    this.__groupedCountSelectPartByPeriod(
+  groupedCountSelectPartByMonths = (
+    keyField,
+    table,
+    months,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) =>
+    this.__groupedTypeSelectPartByPeriod(
       keyField,
       table,
       `${months} MONTH`,
-      "%Y-%m-%d"
+      "%Y-%m-%d",
+      valueSelect,
+      dopWhere
     );
 
-  groupedCountSelectPartByYears = (keyField, table, years) =>
-    this.__groupedCountSelectPartByPeriod(
+  groupedCountSelectPartByYears = (
+    keyField,
+    table,
+    years,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) =>
+    this.__groupedTypeSelectPartByPeriod(
       keyField,
       table,
       `${years} YEAR`,
-      "%Y-%m-01"
+      "%Y-%m-01",
+      valueSelect,
+      dopWhere
     );
 
-  groupedCountSelectPartByDates = (keyField, table, dates) =>
-    this.__groupedCountSelectPartByPeriod(
+  groupedCountSelectPartByDates = (
+    keyField,
+    table,
+    dates,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
+  ) =>
+    this.__groupedTypeSelectPartByPeriod(
       keyField,
       table,
       `${dates} DAY`,
-      "%Y-%m-%d"
+      "%Y-%m-%d",
+      valueSelect,
+      dopWhere
     );
 
   groupedCountSelectPartByYearDuration = (
     keyField,
     table,
     startYear,
-    endYear
+    endYear,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
   ) =>
-    this.__groupedCountSelectPartByDuration(
+    this.__groupedTypeSelectPartByDuration(
       keyField,
       table,
       `${startYear}-01-01`,
-      `${endYear}-12-31`
+      `${endYear}-12-31`,
+      "%Y-%m-%d",
+      valueSelect,
+      dopWhere
     );
 
   groupedCountSelectPartByMonthDuration = (
@@ -182,25 +250,21 @@ class Model {
     startYear,
     startMonth,
     endYear,
-    endMonth
+    endMonth,
+    valueSelect = "COUNT(*) AS count",
+    dopWhere = null
   ) => {
     const lastDayOfMonth = new Date(endYear, endMonth, 0).getDate();
 
-    return this.__groupedCountSelectPartByDuration(
+    return this.__groupedTypeSelectPartByDuration(
       keyField,
       table,
       `${startYear}-${startMonth}-01`,
-      `${endYear}-${endMonth}-${lastDayOfMonth}`
+      `${endYear}-${endMonth}-${lastDayOfMonth}`,
+      "%Y-%m-%d",
+      valueSelect,
+      dopWhere
     );
-  };
-
-  getBaseCountBeforeDate = async (table, keyField, date) => {
-    const query = `SELECT COUNT(*) AS count
-      FROM ${table}
-      WHERE (${keyField} IS NOT NULL AND ${keyField} < '${date}')`;
-
-    const result = await this.dbQueryAsync(query);
-    return result[0].count;
   };
 
   autoGenerateGroupedCountSelect = async (
@@ -208,10 +272,17 @@ class Model {
     keyField,
     table,
     params = null,
-    resetEachPeriod = false
+    resetEachPeriod = false,
+    orderType = "count",
+    dopWhere = null
   ) =>
     await this.errorWrapper(async () => {
       let query = "";
+      let valueSelect = "COUNT(*) AS count";
+
+      if (orderType == "sum") {
+        valueSelect = "SUM(money) AS sum";
+      }
 
       let startDate = params.startDate ?? "";
       let endDate = params.endDate ?? "";
@@ -224,7 +295,12 @@ class Model {
         startDate = dateToString(startDate);
         endDate = dateToString(endDate);
 
-        query = this.groupedCountSelectPartByOneYear(keyField, table);
+        query = this.groupedCountSelectPartByOneYear(
+          keyField,
+          table,
+          valueSelect,
+          dopWhere
+        );
       }
 
       if (type === "one-month") {
@@ -235,7 +311,12 @@ class Model {
         startDate = dateToString(startDate);
         endDate = dateToString(endDate);
 
-        query = this.groupedCountSelectPartByOneMonth(keyField, table);
+        query = this.groupedCountSelectPartByOneMonth(
+          keyField,
+          table,
+          valueSelect,
+          dopWhere
+        );
       }
 
       if (type === "between-years") {
@@ -245,7 +326,9 @@ class Model {
           keyField,
           table,
           params.startYear,
-          params.endYear
+          params.endYear,
+          valueSelect,
+          dopWhere
         );
       }
 
@@ -258,24 +341,30 @@ class Model {
           params.startYear,
           params.startMonth,
           params.endYear,
-          params.endMonth
+          params.endMonth,
+          valueSelect,
+          dopWhere
         );
       }
 
       if (type === "between-dates") {
-        query = this.__groupedCountSelectPartByDuration(
+        query = this.__groupedTypeSelectPartByDuration(
           keyField,
           table,
           params.startDate,
           params.endDate,
-          params.dateFormat
+          params.dateFormat,
+          valueSelect,
+          dopWhere
         );
       }
 
-      let baseCount = await this.getBaseCountBeforeDate(
+      let base = await this.getBaseCountBeforeDate(
         table,
         keyField,
-        startDate
+        startDate,
+        valueSelect,
+        dopWhere
       );
 
       const result = await this.dbQueryAsync(query);
@@ -289,17 +378,20 @@ class Model {
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      const mergedResult = Object.entries(dateMap).map(([date, count]) => {
+      const groupField = orderType == "sum" ? "sum" : "count";
+
+      const mergedResult = Object.entries(dateMap).map(([date]) => {
+        const resFind = result.find((row) => row.date === date);
+
         if (resetEachPeriod) {
-          baseCount = result.find((row) => row.date === date)?.count ?? 0;
+          base = resFind ? resFind[groupField] : 0;
         } else {
-          baseCount += result.find((row) => row.date === date)?.count ?? 0;
+          base += resFind ? resFind[groupField] : 0;
         }
 
-        return {
-          date,
-          count: baseCount,
-        };
+        const merged = { date };
+        merged[groupField] = base;
+        return merged;
       });
 
       return mergedResult;

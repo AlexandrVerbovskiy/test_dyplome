@@ -75,6 +75,23 @@ class Main extends Controller {
       });
     });
 
+  getGroupedPaymentsInfo = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const type = req.body.type;
+      const params = req.body.params ?? {};
+      const gotSum =
+        await this.paymentTransactionModel.groupedGotSumPaymentsByDuration(
+          type,
+          params
+        );
+      const spentSum =
+        await this.paymentTransactionModel.groupedSpentSumPaymentsByDuration(type, params);
+      this.sendResponseSuccess(res, "Got data successfully", {
+        gotSum,
+        spentSum,
+      });
+    });
+
   getGroupedJobRequestsInfo = (req, res) =>
     this.errorWrapper(res, async () => {
       const type = req.body.type;

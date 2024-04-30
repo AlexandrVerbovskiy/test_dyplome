@@ -7,5 +7,6 @@ CREATE TABLE payment_transactions (
     balance_change_type VARCHAR(255) NOT NULL,
     transaction_data JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

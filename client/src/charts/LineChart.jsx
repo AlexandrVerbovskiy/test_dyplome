@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { randomString } from "utils";
 
 ChartJS.register(
   CategoryScale,
@@ -21,7 +22,7 @@ ChartJS.register(
   Legend
 );
 
-const options = {
+const baseOptions = {
   responsive: true,
   plugins: {
     legend: {
@@ -48,28 +49,30 @@ const LineChart = ({
   Filter = null,
 }) => {
   const datasets = [];
+  const options = JSON.parse(JSON.stringify(baseOptions));
 
   options.scales.y["beginAtZero"] = beginAtZero;
   options.scales.y.ticks["stepSize"] = step;
 
-  let hasValue = true;
+  let hasValue = false;
 
+  let maxValue = 0;
   Object.keys(info).forEach((name) => {
-    let maxValue = 0;
-
     Object.keys(info[name]["data"]).forEach((key) => {
       if (maxValue < info[name]["data"][key]) {
         maxValue = info[name]["data"][key];
       }
     });
 
-    if (defaultMax && maxValue < defaultMax) {
-      hasValue = false;
+    if (!defaultMax || maxValue >= defaultMax) {
+      hasValue = true;
     }
   });
 
   if (!hasValue) {
     options.scales.y["max"] = defaultMax;
+  } else {
+    options.scales.y["max"] = maxValue;
   }
 
   Object.keys(info).forEach((name) => {
@@ -127,7 +130,7 @@ const LineChart = ({
         </h6>
         <hr />
         <div className="canvas-parent">
-          <Line options={options} data={data} />
+          <Line options={options} data={data} id={randomString()} />
         </div>
       </div>
     </div>
