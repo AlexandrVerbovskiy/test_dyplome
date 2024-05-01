@@ -333,6 +333,8 @@ class Model {
       }
 
       if (type === "between-months") {
+        const lastDayOfMonth = new Date(params.endYear, params.endMonth, 0).getDate();
+
         startDate = `${params.startYear}-${params.startMonth}-01`;
         endDate = `${params.endYear}-${params.endMonth}-${lastDayOfMonth}`;
         query = this.groupedCountSelectPartByMonthDuration(

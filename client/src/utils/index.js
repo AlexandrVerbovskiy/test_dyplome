@@ -35,3 +35,5 @@ export * from "./dateHelpers";
 export * from "./notification";
 
 export { default as indicateMediaTypeByExtension } from "./indicateMediaTypeByExtension";
+
+export { default as chartHelpers } from "./chartHelpers";
