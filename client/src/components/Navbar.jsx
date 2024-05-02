@@ -11,7 +11,7 @@ const Navbar = ({
   const [notificationClassName, setNotificationClassName] = useState("");
   const [notificationPopupActive, setNotificationPopupActive] = useState(false);
   const [burgerActive, setBurgerActive] = useState(false);
-  const { sessionUser } = useContext(MainContext);
+  const { sessionUser, logout } = useContext(MainContext);
 
   useEffect(() => {
     let notificationClassName =
@@ -118,7 +118,7 @@ const Navbar = ({
               </a>
             </li>
           </ul>
-          <ul className="navbar-nav ms-auto align-items-center icons-menu notification-level">
+          <ul className="navbar-nav ms-auto icons-menu notification-level">
             <li className="nav-item dropdown dropdown-large">
               <a
                 className={`${notificationClassName} normal-notification`}
@@ -173,7 +173,7 @@ const Navbar = ({
                   <p className="designattion mb-0">${sessionUser.balance}</p>
                 </div>
               </a>
-              <ul className="dropdown-menu dropdown-menu-end">
+              <ul className="dropdown-menu dropdown-menu-end dropdown-menu-user-options">
                 <li>
                   <a
                     className={`dropdown-item ${
@@ -206,13 +206,11 @@ const Navbar = ({
                     className="dropdown-item d-flex align-items-center"
                     onClick={(e) => {
                       e.preventDefault();
-                      e.target.closest("form").submit();
+                      logout();
                     }}
                   >
                     <i className="bx bx-log-out-circle"></i>
-                    <form method="POST" action="/">
-                      <div className="menu-title">Logout</div>
-                    </form>
+                    Logout
                   </a>
                 </li>
               </ul>

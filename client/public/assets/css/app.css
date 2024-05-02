@@ -2641,7 +2641,7 @@ input.search-control-2::placeholder {
   }
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 992px) {
   .section-authentication-signin {
     height: 100%;
     margin-top: 6rem;
@@ -2668,10 +2668,6 @@ input.search-control-2::placeholder {
 }
 
 @media screen and (max-width: 767px) {
-  .user-box .user-info {
-    display: none;
-  }
-
   .authentication-forgot {
     height: auto;
     padding: 2.5rem 1rem;
@@ -2930,7 +2926,7 @@ body:has(.navbar) .alert {
   width: 50%;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 576px) {
   .product-actions {
     margin-right: 0;
     margin-left: 0;
@@ -3560,7 +3556,7 @@ body:has(.navbar) .alert {
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 992px) {
   .notification-level {
     align-items: end !important;
     font-size: 14px !important;
@@ -3584,7 +3580,7 @@ body:has(.navbar) .alert {
   }
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   .notification-level-layout {
     display: none !important;
   }
@@ -3805,7 +3801,7 @@ body:has(.navbar) .alert {
   align-items: center;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 992px) {
   .navbar .icons-menu.notification-level {
     border-right: 0 !important;
   }
@@ -3947,4 +3943,54 @@ hr:has(+ .balance-payment-type-select) {
 
 .main-notification-list {
   flex-direction: column;
+}
+
+@media screen and (max-width: 799px) {
+  .default-view-page {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .page-wrapper {
+    margin-top: 50px;
+    margin-bottom: 0;
+  }
+  #chat_list,
+  #chat_body {
+    margin-bottom: 0;
+    min-height: calc(100vh - 54px) !important;
+    max-height: calc(100vh - 54px) !important;
+    overflow-y: auto;
+  }
+
+  .page-content {
+    padding: 0 !important;
+  }
+}
+
+.notification-level {
+  align-items: center;
+}
+
+@media screen and (max-width: 992px) {
+  .navbar-nav:has(> .user-box) {
+    flex-direction: column !important;
+  }
+
+  .dropdown-menu-user-options {
+    position: absolute !important;
+    bottom: 0 !important;
+    height: min-content !important;
+  }
+
+  .user-box {
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+  }
+
+  .navbar .icons-menu,
+  .notification-level {
+    align-items: flex-end !important;
+    border-right: 0 !important;
+  }
 }

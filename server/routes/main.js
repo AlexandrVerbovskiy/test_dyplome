@@ -66,6 +66,14 @@ function route(app, db, io) {
 
   chatController.setIo(socketController);
   mainController.setIo(socketController);
+  userController.setIo(socketController);
+  jobController.setIo(socketController);
+  jobProposalController.setIo(socketController);
+  disputeController.setIo(socketController);
+  commentController.setIo(socketController);
+  transactionsController.setIo(socketController);
+  paymentController.setIo(socketController);
+  getMoneyRequestController.setIo(socketController);
 
   const isAdmin = generateIsAdmin(db);
   const isAuth = generateIsAuth();

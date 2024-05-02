@@ -8,7 +8,7 @@ class Notification extends Model {
     await this.errorWrapper(async () => {
       const insertChatRes = await this.dbQueryAsync(
         "INSERT INTO notifications (type, user_id, body, link, title) VALUES (?, ?, ?, ?, ?)",
-        [type, userId, body, link]
+        [type, userId, body, link, title]
       );
       return { id: insertChatRes.insertId, userId, type, body, link, title };
     });
@@ -69,11 +69,10 @@ class Notification extends Model {
     });
 
   createSystemNotifications = (userId, message) => {
-    const body = JSON.stringify({ message });
     return this.create({
       type: "system",
       userId,
-      body,
+      body: message,
       title: "System message",
     });
   };

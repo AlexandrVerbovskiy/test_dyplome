@@ -1,6 +1,9 @@
-import React from "react";
+import { MainContext } from "contexts";
+import React, { useContext } from "react";
 
 const AdminNavbar = ({ setHovered, setActive }) => {
+  const { sessionUser, logout } = useContext(MainContext);
+
   return (
     <div className={`sidebar-wrapper`} data-simplebar="init">
       <div
@@ -187,15 +190,14 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                       href="/"
                       onClick={(e) => {
                         e.preventDefault();
-                        e.target.closest("form").submit();
+                        logout();
                       }}
                     >
                       <div className="parent-icon">
                         <i className="bx bx-log-out-circle"></i>
                       </div>
-                      <form method="POST" action="/">
-                        <div className="menu-title">Logout</div>
-                      </form>
+
+                      <div className="menu-title">Logout</div>
                     </a>
                   </li>
                 </ul>

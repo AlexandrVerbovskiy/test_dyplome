@@ -14,7 +14,7 @@ const SignUp = () => {
     e.preventDefault();
     if (!readTerms)
       return main.setError(
-        "You must agree to the Terms &amp; Conditions for registering on the site"
+        "You must agree to the Terms & Conditions for registering on the site"
       );
 
     try {
