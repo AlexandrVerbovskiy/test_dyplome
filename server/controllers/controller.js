@@ -449,6 +449,7 @@ class Controller {
       authorEmail,
       messageType,
       messageBody = null,
+      isAdmin = false,
     },
     userId
   ) => {
@@ -461,6 +462,7 @@ class Controller {
         chatId,
         chatType,
         chatName,
+        isAdmin,
       },
       userId
     );

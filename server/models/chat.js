@@ -50,7 +50,7 @@ class Chat extends Model {
   getById = async (chatId) =>
     await this.errorWrapper(async () => {
       const result = await this.dbQueryAsync(
-        "SELECT id, chats.avatar, chats.name FROM chats WHERE chat_id = ?",
+        "SELECT id, chats.avatar, chats.name FROM chats WHERE id = ?",
         [chatId]
       );
       return result[0];
@@ -152,6 +152,7 @@ class Chat extends Model {
 
   addContentToMessage = async (messageId, content) =>
     await this.errorWrapper(async () => {
+      console.log(content);
       const insertContentRes = await this.dbQueryAsync(
         "INSERT INTO messages_contents (message_id, content) VALUES (?, ?)",
         [messageId, content]
@@ -345,6 +346,7 @@ class Chat extends Model {
                   cu.delete_time as delete_time, cu.last_viewed_message_id
                   FROM chats_users cu
               ) AS cu2 ON cu2.chat_user_id = cu1.chat_user_id
+              WHERE m1.hidden = 0
               GROUP BY chats.id, cu1.last_viewed_message_id, cu2.last_viewed_message_id
               HAVING (MAX(cu2.delete_time) IS NULL OR (MAX(m1.time_created) <= MAX(cu2.delete_time))) AND MAX(m1.time_created) >= MAX(cu2.time_created)
             ) AS chat_info ON chat_info.id = chats.id

@@ -36,16 +36,17 @@ const NewNotificationList = ({ notifications, setNotifications }) => {
       .classList.add("hidden");
 
   useEffect(() => {
+    const deletedNotifications = [];
+
     while (notifications.length > maxNotificationCount) {
-      let deletedNotification = null;
-
-      setNotifications((prev) => {
-        deletedNotification = prev.shift();
-        return prev;
-      });
-
-      clearNotificationTimeouts(deletedNotification.id);
+      deletedNotifications.push(notifications.shift());
     }
+
+    deletedNotifications.forEach((notification) => {
+      clearNotificationTimeouts(notification.id);
+    });
+
+    setNotifications(notifications);
 
     notifications.forEach((notification) => {
       const id = notification.id;
@@ -76,9 +77,14 @@ const NewNotificationList = ({ notifications, setNotifications }) => {
     }, 400);
   };
 
+  const slicedNotifications =
+    notifications.length > 3
+      ? notifications.slice(notifications.length - 3, notifications.length)
+      : notifications;
+
   return (
     <div className="new-notifications-list">
-      {notifications.map((notification) => (
+      {slicedNotifications.map((notification) => (
         <NewNotification
           key={notification.id}
           {...notification}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNotifications, useSocketInit } from "hooks";
 import { Navbar, NewNotificationList } from "components";
 

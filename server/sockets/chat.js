@@ -14,6 +14,9 @@ class Chat {
     this.socketController = new SocketController(db, io);
     this.userController = new UserController(db);
     this.onInit();
+
+    this.chatController.setIo(this.socketController);
+    this.userController.setIo(this.socketController);
   }
 
   onInit = async () => {
@@ -131,6 +134,7 @@ class Chat {
           authorEmail: sender.email,
           messageType: data.typeMessage,
           messageBody: data.content,
+          isAdmin: sender.admin,
         },
         data["getterId"]
       );
@@ -171,6 +175,7 @@ class Chat {
               authorEmail: sender.email,
               messageType: data.typeMessage,
               messageBody: data.content,
+              isAdmin: sender.admin,
             },
             relation.userId
           );
@@ -252,8 +257,6 @@ class Chat {
         "success-updated-message",
         dataToSend
       );
-
-      console.log(sockets);
 
       sockets.forEach((socket) =>
         this.io.to(socket["socket"]).emit("updated-message", dataToSend)

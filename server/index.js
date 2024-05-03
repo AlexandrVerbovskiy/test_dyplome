@@ -29,6 +29,7 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "dyplome",
+  charset: "utf8mb4",
 });
 
 db.connect((err) => {

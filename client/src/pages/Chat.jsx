@@ -43,8 +43,6 @@ const Chat = () => {
   const { bodyRef, setListWindow, setChatWindow, activeWindow } =
     useChatWindowsChanger();
 
-  console.log(setListWindow, setChatWindow);
-
   const {
     chatInfo,
     selectChat,

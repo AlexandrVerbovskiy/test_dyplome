@@ -371,7 +371,7 @@ html.dark-theme #sendButton:hover {
 }
 
 #chatPage #chat_list .chat-sidebar-header + ul {
-  max-height: calc(100vh - 62px);
+ /* max-height: calc(100vh - 62px);*/
   overflow-y: auto;
 }
 

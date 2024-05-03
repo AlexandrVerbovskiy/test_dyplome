@@ -107,7 +107,7 @@ class Chat extends Controller {
       data.content,
       userId
     );
-    const message = await this.chatModel.getMessageInfo(messageId);
+    const message = await this.chatModel.getMessageById(messageId);
     return message;
   };
 
@@ -135,7 +135,13 @@ class Chat extends Controller {
           { id: userId, role: "member" },
         ];
         await this.chatModel.addManyUsers(chatId, users);
-        return await localSend(chatId, userId);
+        const message = await localSend(chatId, userId);
+
+        message["getterInfo"] = await this.userModel.getUserInfo(
+          data["getterId"]
+        );
+
+        return message;
       }
     } else if (data["chatType"] == "system") {
       const chatId = data["chatId"];

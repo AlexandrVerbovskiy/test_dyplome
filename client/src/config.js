@@ -38,7 +38,7 @@ const config = {
     "tiff",
     "webp",
   ],
-  BLOB_CHUNK_SIZE: 1 * 1024,
+  BLOB_CHUNK_SIZE: 200 * 1024,
   UNBLOB_CHUNK_SIZE: 1024 * 1024,
   MAP_DEFAULT: {
     center: {

@@ -119,10 +119,15 @@ class Notification extends Model {
       chatId,
       chatName,
       chatType,
+      isAdmin = false,
     },
     userId
   ) => {
     let title = `The user ${authorNick ?? authorEmail} has sent a new message`;
+
+    if (isAdmin && chatType == "system") {
+      title = `System has sent a new message`;
+    }
 
     if (chatType == "personal") {
       title + " for you";

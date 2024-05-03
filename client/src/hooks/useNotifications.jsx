@@ -16,9 +16,20 @@ const useNotifications = ({ io, onGetNotification = null }) => {
     io.on("get-notification", (notification) => {
       prependElement(notification);
 
+      if (notification.type == "message") {
+        if (
+          window.location.pathname.includes("/chat") ||
+          window.location.pathname.includes("/system-chat") ||
+          window.location.pathname.includes("/admin-client-chat-view")
+        ) {
+          return;
+        }
+      }
+
       setNewNotifications((prev) => {
-        prev.push(notification);
-        return prev;
+        const res = JSON.parse(JSON.stringify(prev));
+        res.push(notification);
+        return res;
       });
 
       if (onGetNotification) {

@@ -60,7 +60,6 @@ const JobRow = ({
   activeChange,
   processRequests,
 }) => {
-  console.log(processRequests);
   return (
     <tr>
       <td className="fw-bolder">#{id}</td>
@@ -141,7 +140,6 @@ const AdminJobs = () => {
 
     setItemFields({ active }, id);
   };
-  console.log(jobs);
 
   return (
     <BaseAdminTableLayoutPage

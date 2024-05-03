@@ -35,8 +35,6 @@ const convertDataArrayToObject = (
         }
       }
     });
-
-    console.log(result);
   } else if (periodType == "between-years") {
     const yearInfo = {};
 

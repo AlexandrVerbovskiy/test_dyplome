@@ -81,19 +81,22 @@ const useChatList = ({ onInit, getRequest }) => {
   };
 
   const onChatUpdate = (chat) => {
-    if (!chat) return;
-
     setChatList((prev) => {
+      prev = prev.filter(
+        (elem) => !(elem.userId == chat.userId && !elem.chatId)
+      );
+
       const prevDataChat = prev.find((elem) => elem.chatId == chat.chatId);
 
       if (
-        prevDataChat &&
-        ((!chat.timeSended && chat.messageId == prevDataChat.messageId) ||
-          new Date(prevDataChat.timeSended) <= new Date(chat.timeSended))
+        (prevDataChat &&
+          ((!chat.timeSended && chat.messageId == prevDataChat.lastMessageId) ||
+            new Date(prevDataChat.timeSended) <= new Date(chat.timeSended))) ||
+        !prevDataChat.lastMessageId
       ) {
         const partToUpdate = {
           content: chat.content,
-          messageId: chat.messageId,
+          lastMessageId: chat.messageId,
         };
 
         if (chat.timeSended) {
@@ -106,7 +109,9 @@ const useChatList = ({ onInit, getRequest }) => {
 
         let countUnreadMessages = prevDataChat.countUnreadMessages;
 
-        if (prevDataChat.currentLastViewedMessageId < partToUpdate.messageId) {
+        if (
+          prevDataChat.currentLastViewedMessageId < partToUpdate.lastMessageId
+        ) {
           countUnreadMessages++;
         }
 
@@ -166,7 +171,13 @@ const useChatList = ({ onInit, getRequest }) => {
 
   const onGetChat = (chat) => {
     setChatList((prev) => {
-      prev = prev.filter((elem) => elem.chatId != chat.chatId);
+      prev = prev.filter(
+        (elem) =>
+          !(
+            (elem.userId == chat.userId && !elem.chatId) ||
+            elem.chatId != chat.chatId
+          )
+      );
       return [chat, ...prev];
     });
   };
@@ -174,7 +185,8 @@ const useChatList = ({ onInit, getRequest }) => {
   const onChatMessageDelete = (chatId, deletedMessageId, message) => {
     setChatList((prev) => {
       const prevDataChat = prev.find((elem) => elem.chatId == chatId);
-      if (prevDataChat && prevDataChat.messageId == deletedMessageId) {
+
+      if (prevDataChat && prevDataChat.lastMessageId == deletedMessageId) {
         let chats = prev.filter((elem) => elem.chatId != chatId);
         if (!message) return chats;
 

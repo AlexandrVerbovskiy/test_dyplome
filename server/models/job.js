@@ -53,8 +53,6 @@ class Job extends Model {
     ignoreUserIds = []
   ) =>
     await this.errorWrapper(async () => {
-      console.log("filter: ", filter);
-
       const generateDistanceRow = `SQRT(POW(${this.__latitudeLongitudeToKilometers} * (jobs.lat - ?), 2) + POW(${this.__latitudeLongitudeToKilometers} * (? - jobs.lng) * COS(jobs.lat / ${this.__degreesToRadians}), 2))`;
       let query = `SELECT ${this.__selectAllFields}, users.nick as authorNick, users.email as authorEmail, 
                       ${generateDistanceRow} AS distanceFromCenter FROM jobs join users on users.id = jobs.author_id`;

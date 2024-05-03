@@ -16,7 +16,6 @@ import config from "config";
 
 const MainPage = () => {
   const { setSuccess, setError, sessionUser } = useContext(MainContext);
-  console.log(sessionUser);
 
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
     useGetJobs();

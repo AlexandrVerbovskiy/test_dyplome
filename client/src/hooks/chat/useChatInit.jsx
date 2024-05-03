@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import useMediaActions from "./useMediaActions";
-import {indicateMediaTypeByExtension} from "utils";
+import { indicateMediaTypeByExtension } from "utils";
 
 const useChatInit = ({
   sessionUser,
@@ -42,9 +42,9 @@ const useChatInit = ({
       if (data.message) message = data.message;
     });
 
-    io.on("success-sended-message", (data) =>
-      onGetMessageForSockets(data.message)
-    );
+    io.on("success-sended-message", (data) => {
+      onGetMessageForSockets(data.message);
+    });
 
     io.on("get-message", (data) => onGetMessageForSockets(data.message));
     io.on("get-message-list", (data) =>
@@ -75,7 +75,7 @@ const useChatInit = ({
       }
 
       onUpdateMessagePercent({ tempKey, percent: nextPartData["percent"] });
-      setTimeout(() => io.emit("file-part-upload", { ...nextPartData }), 1000);
+      setTimeout(() => io.emit("file-part-upload", { ...nextPartData }), 1);
     });
 
     io.on("message-cancelled", async ({ tempKey }) =>

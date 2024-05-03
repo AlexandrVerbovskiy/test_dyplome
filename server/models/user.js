@@ -4,8 +4,8 @@ const Model = require("./model");
 const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
-  __visibleFields = `id, email, address, lat, lng, nick, avatar, admin, activity_radius as activityRadius, balance, phone,
-    instagram_url as instagramUrl, linkedin_url as linkedinUrl, biography`;
+  __visibleFields = `id, email, address, lat, lng, nick, avatar, admin, activity_radius as activityRadius, 
+  balance, phone, online, instagram_url as instagramUrl, linkedin_url as linkedinUrl, biography`;
 
   strFilterFields = ["email", "address", "nick"];
 

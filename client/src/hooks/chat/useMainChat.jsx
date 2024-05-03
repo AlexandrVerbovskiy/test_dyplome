@@ -258,8 +258,6 @@ const useMainChat = ({
       }
 
       if (message.messageId) {
-        setLastMessageId(message.messageId);
-
         setStatistic((prev) => {
           prev["all"] = prev["all"] + 1;
           prev[message.type] = prev[message.type] + 1;
@@ -378,10 +376,20 @@ const useMainChat = ({
   };
 
   const onGetNewChat = (data) => {
-    onGetChat(data);
+    const newData = JSON.parse(JSON.stringify(data));
 
-    if (data.chatId === activeChat.current.chatId) {
-      activeChat.current = { ...data };
+    if (newData.getterInfo) {
+      newData["userAvatar"] = newData.getterInfo["avatar"];
+      newData["userEmail"] = newData.getterInfo["email"];
+      newData["userId"] = newData.getterInfo["id"];
+      newData["userNick"] = newData.getterInfo["nick"];
+      newData["userOnline"] = newData.getterInfo["online"];
+    }
+
+    onGetChat(newData);
+
+    if (newData.chatId === activeChat.current.chatId) {
+      activeChat.current = { ...newData };
     }
   };
 

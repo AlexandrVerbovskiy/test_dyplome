@@ -61,10 +61,6 @@ const StripePaymentForm = ({ onComplete }) => {
     setAmount("");
   };
 
-  useEffect(() => {
-    console.log(document.querySelector(".ElementsApp"));
-  }, []);
-
   return (
     <div className="row stripe-payment-form mb-3">
       <div className="col-12">
