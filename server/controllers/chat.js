@@ -257,7 +257,7 @@ class Chat extends Controller {
   };
 
   getChatMessagesFullContents = (req, res) =>
-    this.__getChatMessages(req, res, false, true);
+    this.__getChatMessages(req, res, false, true, false);
 
   selectChat = (req, res) =>
     this.errorWrapper(res, async () => {

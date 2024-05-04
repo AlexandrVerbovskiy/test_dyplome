@@ -22,7 +22,11 @@ const useAdminChatMessages = ({ chatId }) => {
       const res = await main.request({
         url: getChatMessagesByAdmin.url(),
         type: getChatMessagesByAdmin.type,
-        data: getChatMessagesByAdmin.convertData(chatId, lastMessageId.current, MESSAGES_UPLOAD_COUNT),
+        data: getChatMessagesByAdmin.convertData(
+          chatId,
+          lastMessageId.current,
+          MESSAGES_UPLOAD_COUNT
+        ),
         convertRes: getChatMessagesByAdmin.convertRes,
       });
 
@@ -30,7 +34,9 @@ const useAdminChatMessages = ({ chatId }) => {
       const count = res.length;
       if (count < MESSAGES_UPLOAD_COUNT) canShowMore.current = false;
       lastMessageId.current = res[0]["messageId"];
-    } catch (e) {}
+    } catch (e) {
+      console.log("error: ", e);
+    }
   };
 
   return {

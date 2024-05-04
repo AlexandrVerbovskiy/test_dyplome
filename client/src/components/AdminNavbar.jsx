@@ -75,6 +75,22 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/chat"
+                      className={`${
+                        window.location.pathname.includes("/chat")
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bx-message-alt-detail"></i>
+                      </div>
+                      <div className="menu-title">Chat</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/users"
                       className={`${
                         window.location.pathname.includes("/users")

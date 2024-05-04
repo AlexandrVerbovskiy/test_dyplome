@@ -3,19 +3,18 @@ import { useParams } from "react-router-dom";
 import { getChatInfoByAdmin } from "requests";
 import { DefaultPageLayout, UploadTrigger } from "components";
 import { useAdminChatMessages } from "hooks";
-import { shortTimeFormat } from "utils";
+import { generateFullUserImgPath, shortTimeFormat } from "utils";
 import { MainContext } from "contexts";
 import config from "config";
+import DefaultAdminPageLayout from "components/DefaultAdminPageLayout";
 const { API_URL } = config;
 
 const UserProfileLink = ({ userId, userEmail, userAvatar }) => {
-  if (!userAvatar) userAvatar = "/assets/images/avatars/avatar-1.png";
-
   return (
     <div className="admin-chat-user-profile">
       <a href={"#" + userId}>
         <img
-          src={userAvatar}
+          src={generateFullUserImgPath(userAvatar)}
           width="30"
           height="30"
           className="rounded-circle"
@@ -54,7 +53,11 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
   return (
     <div
       className="mb-0 chat-time"
-      style={{ textAlign, justifyContent: `flex-${textAlign}` }}
+      style={{
+        textAlign,
+        justifyContent: `flex-${textAlign}`,
+        marginRight: textAlign == "end" ? "-54px" : "0",
+      }}
     >
       {shortTimeFormat(timeSended)}
       <div className="edited-message-label">
@@ -102,8 +105,6 @@ const Message = ({
   hidden = false,
   story = [],
 }) => {
-  if (!userAvatar) userAvatar = "/assets/images/avatars/avatar-3.png";
-
   const timeTextAlign = senderIndex === 0 ? "start" : "end";
   let contentCardClass =
     senderIndex === 0 ? "chat-left-msg card" : "chat-right-msg card";
@@ -112,7 +113,14 @@ const Message = ({
     senderIndex === 0 ? "chat-content-leftside" : "chat-content-rightside";
 
   let nearTimeMessage = (
-    <div className="mb-0 chat-time" style={{ timeTextAlign }}>
+    <div
+      className="mb-0 chat-time"
+      style={{
+        textAlign: timeTextAlign,
+        justifyContent: `flex-${timeTextAlign}`,
+        marginRight: timeTextAlign == "end" ? "-54px" : "0",
+      }}
+    >
       {shortTimeFormat(timeSended)}
     </div>
   );
@@ -149,21 +157,34 @@ const Message = ({
 
   return (
     <div className={"d-flex admin-chat-views " + mainCardClass}>
-      <img
-        src={userAvatar}
-        width="46"
-        height="46"
-        className="sender-message-avatar rounded-circle"
-        alt={userId}
-        title={userId}
-        style={{ width: "46px", height: "46px" }}
-      />
-      <div className="flex-grow-1 ms-2">
+      {senderIndex === 0 && (
+        <img
+          src={generateFullUserImgPath(userAvatar)}
+          width="46"
+          height="46"
+          className="sender-message-avatar rounded-circle"
+          alt={userId}
+          title={userId}
+          style={{ width: "46px", height: "46px" }}
+        />
+      )}
+      <div className="flex-grow-1 mx-2">
         {nearTimeMessage}
         <div className={contentCardClass}>
           <MessageContent type={type} content={content} />
         </div>
       </div>
+      {senderIndex !== 0 && (
+        <img
+          src={generateFullUserImgPath(userAvatar)}
+          width="46"
+          height="46"
+          className="sender-message-avatar rounded-circle"
+          alt={userId}
+          title={userId}
+          style={{ width: "46px", height: "46px" }}
+        />
+      )}
     </div>
   );
 };
@@ -200,7 +221,7 @@ const AdminClientChatView = () => {
   if (!users.length) return;
 
   return (
-    <DefaultPageLayout pageClassName="base-main-page">
+    <DefaultAdminPageLayout pageClassName="base-main-page">
       <div className="page-content">
         <div className="card">
           <div className="card-header admin-view-chat-header">
@@ -208,8 +229,15 @@ const AdminClientChatView = () => {
             <span>&</span>
             <UserProfileLink {...users[1]} />
           </div>
-          <div className="card-body">
-            <div className="admin-view-chat-body" ref={bodyMessagesRef}>
+          <div
+            className="card-body"
+            style={{ paddingLeft: 0, paddingRight: 0 }}
+          >
+            <div
+              className="admin-view-chat-body"
+              style={{ padding: "0 1rem" }}
+              ref={bodyMessagesRef}
+            >
               <UploadTrigger onTriggerShown={loadMore} />
               <div>
                 {messages.map((message) => (
@@ -226,7 +254,7 @@ const AdminClientChatView = () => {
           </div>
         </div>
       </div>
-    </DefaultPageLayout>
+    </DefaultAdminPageLayout>
   );
 };
 

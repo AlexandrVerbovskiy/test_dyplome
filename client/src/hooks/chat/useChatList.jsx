@@ -109,9 +109,9 @@ const useChatList = ({ onInit, getRequest }) => {
 
         let countUnreadMessages = prevDataChat.countUnreadMessages;
 
-        if (
-          prevDataChat.currentLastViewedMessageId < partToUpdate.lastMessageId
-        ) {
+        console.log(prevDataChat.chatId, chat.chatId);
+
+        if (prevDataChat.chatId != chat.chatId) {
           countUnreadMessages++;
         }
 

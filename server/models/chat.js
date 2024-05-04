@@ -540,6 +540,7 @@ class Chat extends Model {
 
   __getChatStatistic = (where = "") => {
     where = where.length > 0 ? ` AND ${where}` : "";
+
     return `
       SELECT COUNT(*) as total, 'text' as messageType FROM messages WHERE chat_id=? AND type = 'text' AND hidden = 0${where}
         UNION
@@ -576,8 +577,8 @@ class Chat extends Model {
       const props = [];
       const query = this.__getChatStatistic(where);
 
-      for (let i = 0; i < 5; i++) {
-        props.push(chatId, userId);
+      for (let i = 0; i < 6; i++) {
+        props.push(chatId);
       }
 
       const statistic = await this.dbQueryAsync(query, props);

@@ -13,7 +13,7 @@ class Dispute extends Controller {
         !proposal ||
         (proposal.authorId != userId && proposal.userId != userId)
       ) {
-        return this.this.sendResponseNoFoundError(res, "Proposal not found");
+        return this.sendResponseNoFoundError(res, "Proposal not found");
       }
 
       const proposalHasDispute =
@@ -57,9 +57,10 @@ class Dispute extends Controller {
   getById = async (req, res) =>
     this.errorWrapper(res, async () => {
       const { disputeId } = req.params;
+
       const dispute = await this.disputeModel.getById(disputeId);
       if (!dispute)
-        return this.this.sendResponseNoFoundError(res, "Dispute not found");
+        return this.sendResponseNoFoundError(res, "Dispute not found");
       return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
@@ -69,7 +70,7 @@ class Dispute extends Controller {
 
       const dispute = await this.disputeModel.getByJobId(jobId);
       if (!dispute)
-        return this.this.sendResponseNoFoundError(res, "Dispute not found");
+        return this.sendResponseNoFoundError(res, "Dispute not found");
       return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
@@ -101,7 +102,7 @@ class Dispute extends Controller {
       if (status == "resolved") getFunc = this.disputeModel.getAllResolved;
 
       if (!getFunc)
-        return this.this.sendResponseNoFoundError(
+        return this.sendResponseNoFoundError(
           res,
           "Dispute status not found"
         );

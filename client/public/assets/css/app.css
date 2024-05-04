@@ -4019,3 +4019,14 @@ hr:has(+ .balance-payment-type-select) {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@media (min-width: 576px) {
+  .modal-dialog {
+      max-width: 500px;
+      margin: 4.5rem auto;
+  }
+}
+
+.default-admin-page #chat_info{
+  padding-top: 0;
+}

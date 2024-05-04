@@ -136,7 +136,6 @@ const DopFilterElem = ({
   handleChangeDateFilter,
 }) => (
   <div style={{ display: "flex", alignItems: "center", gridColumnGap: "10px" }}>
-    <CreateLink link="dispute-create" />
     <DatePicker value={[fromDate, toDate]} onChange={handleChangeDateFilter} />
     <SearchFilter filter={filter} changeFilter={changeFilter} />
   </div>

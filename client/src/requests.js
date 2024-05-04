@@ -242,12 +242,17 @@ export const getJobDisputeInfo = {
 export const getChatMessagesByAdmin = {
   url: () => `get-full-chat-messages`,
   type: "post",
+  convertData: (chatId, lastId, count) => ({
+    chatId,
+    lastId,
+    count,
+  }),
   convertRes: (res) => res.data.messages ?? [],
 };
 
 export const getChatInfoByAdmin = {
   url: (id) => `get-chat-user-infos/${id}`,
-  type: "post",
+  type: "get",
   convertRes: (res) => res.data.users ?? [],
 };
 
