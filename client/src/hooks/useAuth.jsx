@@ -4,6 +4,7 @@ import { redirect } from "react-router-dom";
 
 const useAuth = (request) => {
   const [sessionUser, setSessionUser] = useState(null);
+  const [sessionUserLoading, setSessionUserLoading] = useState(false);
 
   const init = async () => {
     const token = localStorage.getItem("token");
@@ -14,6 +15,7 @@ const useAuth = (request) => {
     }
 
     try {
+      setSessionUserLoading(true);
       const res = await request({
         url: validateToken.url(),
         data: validateToken.convertData(token),
@@ -29,7 +31,10 @@ const useAuth = (request) => {
 
       localStorage.setItem("token", res.token);
       setSessionUser(res.user);
-    } catch (e) {}
+    } catch (e) {
+    } finally {
+      setSessionUserLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -42,7 +47,7 @@ const useAuth = (request) => {
     redirect("/");
   };
 
-  return { logout, sessionUser, setSessionUser };
+  return { logout, sessionUser, setSessionUser, sessionUserLoading };
 };
 
 export default useAuth;

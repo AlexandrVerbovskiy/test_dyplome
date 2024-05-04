@@ -20,7 +20,7 @@ class ServerTransaction extends Model {
       await this.dbQueryAsync(
         `INSERT INTO server_transactions 
         (balance_change_type, money, operation_type, transaction_data)
-         VALUES (?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?)`,
         [
           balanceChangeType,
           money,
@@ -30,7 +30,7 @@ class ServerTransaction extends Model {
       );
     });
 
-  createReplenishmentByPaypalFee = ({ senderId, money }) =>
+  createReplenishmentByPaypalFee = (senderId, money) =>
     this.create({
       balanceChangeType: "topped_up",
       money,
@@ -41,7 +41,7 @@ class ServerTransaction extends Model {
       },
     });
 
-  createReplenishmentByStripeFee = ({ senderId, money }) =>
+  createReplenishmentByStripeFee = (senderId, money) =>
     this.create({
       balanceChangeType: "topped_up",
       money,

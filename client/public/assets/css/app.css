@@ -3994,3 +3994,28 @@ hr:has(+ .balance-payment-type-select) {
     border-right: 0 !important;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .balance-info {
+    font-size: 30px;
+  }
+}
+
+.header-notifications-list div:has(> .msg-name) {
+  width: 250px;
+}
+
+.header-notifications-list .msg-name {
+  display: flex;
+}
+
+.header-notifications-list .msg-name>span:nth-child(1){
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
+.msg-info{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

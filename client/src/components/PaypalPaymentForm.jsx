@@ -6,7 +6,7 @@ import { paypalApproveOrder, paypalCreateOrder } from "requests";
 import Input from "./Input";
 
 const PaypalPaymentForm = ({ onComplete }) => {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(0);
   const [amountError, setAmountError] = useState(null);
 
   const main = useContext(MainContext);

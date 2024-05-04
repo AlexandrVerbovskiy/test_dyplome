@@ -52,6 +52,7 @@ const StripePaymentForm = ({ onComplete }) => {
       url: stripeCharge.url(),
       type: stripeCharge.type,
       data: stripeCharge.convertData(amount, token),
+      convertRes: stripeCharge.convertRes,
     });
 
     setSuccess("Operation successful");

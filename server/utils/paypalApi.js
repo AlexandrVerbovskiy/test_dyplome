@@ -115,7 +115,7 @@ async function sendMoneyToUser(type, getter, amount, currency) {
     },
     items: [
       {
-        recipient_type: type,
+        recipient_type: type.toLowerCase(),
         amount: {
           value: amount,
           currency: currency,
@@ -140,6 +140,7 @@ async function sendMoneyToUser(type, getter, amount, currency) {
   const data = await response.json();
 
   if (data.message) {
+    console.log("details: ", data);
     return { error: data.message, details: data.details };
   } else {
     return { error: false };

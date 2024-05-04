@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { usePagination } from "hooks";
 import BaseAdminTableLayoutPage from "components/BaseAdminTableLayoutPage";
 import { MainContext } from "contexts";
+import { fullTimeFormat } from "utils";
 
 const headers = [
   {
@@ -14,18 +15,12 @@ const headers = [
   {
     value: "users.email",
     title: "User",
-    width: "15%",
+    width: "25%",
     canChange: true,
   },
   {
     value: "operation_type",
-    title: "Status",
-    width: "15%",
-    canChange: true,
-  },
-  {
-    value: "balance_change_type",
-    title: "Type",
+    title: "Operation Type",
     width: "15%",
     canChange: true,
   },
@@ -37,7 +32,7 @@ const headers = [
   {
     value: "created_at",
     title: "Date",
-    width: "20%",
+    width: "25%",
     canChange: true,
   },
 ];
@@ -48,35 +43,47 @@ const TransactionRow = ({
   operationType,
   balanceChangeType,
   createdAt,
-  userName,
+  userNick,
+  userEmail,
 }) => {
   return (
     <tr>
       <td className="fw-bolder">#{id}</td>
-      <td>{operationType}</td>
-      <td className="fw-bolder">{userName}</td>
+      <td className="fw-bolder">{userNick ?? userEmail}</td>
       <td>
-        {balanceChangeType == "replenished" && (
-          <span className="badge bg-gradient-quepal text-white shadow-sm w-100">
-            Replenished
+        {operationType == "replenishment_by_stripe" && (
+          <span className="badge bg-gradient-quepal text-white shadow-sm px-3">
+            Replenishment by Stripe
           </span>
         )}
 
-        {balanceChangeType == "spent" && (
-          <span className="badge bg-gradient-bloody text-white shadow-sm w-100">
-            Spent
+        {operationType == "replenishment_by_paypal" && (
+          <span className="badge bg-gradient-quepal text-white shadow-sm px-3">
+            Replenishment by Paypal
+          </span>
+        )}
+
+        {operationType == "withdrawal_by_stripe" && (
+          <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
+            Withdrawal by Stripe
+          </span>
+        )}
+
+        {operationType == "withdrawal_by_paypal" && (
+          <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
+            Withdrawal by Paypal
           </span>
         )}
       </td>
       <td>
-        {balanceChangeType == "replenished" && (
+        {balanceChangeType == "topped_up" && (
           <span className="font-weight-bold text-success">+${money}</span>
         )}
-        {balanceChangeType == "spent" && (
+        {balanceChangeType == "reduced" && (
           <span className="font-weight-bold text-danger">-${money}</span>
         )}
       </td>
-      <td className="fw-bolder">{createdAt}</td>
+      <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
     </tr>
   );
 };
@@ -111,6 +118,8 @@ const PaymentTransactions = () => {
         convertRes: getAllUsersPaymentTransactions.convertRes,
       }),
   });
+
+  console.log(transactions);
 
   return (
     <BaseAdminTableLayoutPage

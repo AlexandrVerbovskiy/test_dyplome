@@ -10,7 +10,8 @@ function App() {
     useSystemMessage();
 
   const request = useAjaxRequest({ onError: setError });
-  const { logout, sessionUser, setSessionUser } = useAuth(request);
+  const { logout, sessionUser, setSessionUser, sessionUserLoading } =
+    useAuth(request);
 
   let routeBody = <SignRouter />;
   let isAdmin = false;
@@ -18,6 +19,10 @@ function App() {
   if (sessionUser) {
     routeBody = sessionUser.admin ? <AdminRouter /> : <MainRouter />;
     isAdmin = sessionUser.admin;
+  }
+
+  if (sessionUserLoading) {
+    return;
   }
 
   return (

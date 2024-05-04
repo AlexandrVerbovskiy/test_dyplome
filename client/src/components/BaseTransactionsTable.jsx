@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { usePagination } from "hooks";
 import BaseAdminTableLayoutPage from "./BaseAdminTableLayoutPage";
 import { MainContext } from "contexts";
+import { fullTimeFormat } from "utils";
 
 const headers = [
   {
@@ -67,7 +68,7 @@ const TransactionRow = ({
           <span className="font-weight-bold text-danger">-${money}</span>
         )}
       </td>
-      <td className="fw-bolder">{createdAt}</td>
+      <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
     </tr>
   );
 };
@@ -102,6 +103,8 @@ const BaseTransactionsTable = ({ listRequest, title }) => {
         convertRes: listRequest.convertRes,
       }),
   });
+
+  console.log(transactions);
 
   return (
     <BaseAdminTableLayoutPage

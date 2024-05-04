@@ -183,14 +183,14 @@ const PaymentForm = () => {
       <div className="page-content">
         <div className="card">
           <div className="card-body balance-tabs">
-            <div class="d-flex justify-content-between align-items-center">
-              <h6 class="text-uppercase mb-0">Balance</h6>
+            <div className="d-flex justify-content-between align-items-center">
+              <h6 className="text-uppercase mb-0">Balance</h6>
             </div>
 
             <hr />
 
             <div className="balance-tabs-body">
-              <ul class="nav nav-tabs nav-primary" role="tablist">
+              <ul className="nav nav-tabs nav-primary" role="tablist">
                 <TabHeader
                   title="Current Balance"
                   id="balance"
@@ -199,9 +199,9 @@ const PaymentForm = () => {
                 <TabHeader title="Replenishment" id="replenishment" />
                 <TabHeader title="Withdrawal" id="withdrawal" />
               </ul>
-              <div class="tab-content">
+              <div className="tab-content">
                 <div
-                  class="tab-pane fade active show"
+                  className="tab-pane fade active show"
                   id="balance"
                   role="tabpanel"
                 >
@@ -211,14 +211,14 @@ const PaymentForm = () => {
                         <div className="balance-info">
                           ${main.sessionUser.balance}
                         </div>
-                        <div className="balance-info-icon bx bx-money"></div>
+                        <div className="d-none d-sm-block balance-info-icon bx bx-money"></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div
-                  class="tab-pane fade card-header-type-select"
+                  className="tab-pane fade card-header-type-select"
                   id="replenishment"
                   role="tabpanel"
                 >
@@ -237,7 +237,7 @@ const PaymentForm = () => {
                 </div>
 
                 <div
-                  class="tab-pane fade card-header-type-select"
+                  className="tab-pane fade card-header-type-select"
                   id="withdrawal"
                   role="tabpanel"
                 >

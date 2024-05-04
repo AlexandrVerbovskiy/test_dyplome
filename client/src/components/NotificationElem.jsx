@@ -20,7 +20,7 @@ const NotificationElem = ({ type, title, link, body, createdAt }) => {
 
         <div className="flex-grow-1">
           <h6 className="msg-name">
-            {title}
+            <span>{title}</span>
             <span className="msg-time float-end">
               {shortTimeFormat(createdAt)}
             </span>

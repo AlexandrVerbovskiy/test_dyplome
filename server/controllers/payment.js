@@ -23,7 +23,7 @@ class Payment extends Controller {
 
       await this.paymentTransactionModel.createReplenishmentByStripe(
         userId,
-        Number(body.money).toFixed(2)
+        Number(amount).toFixed(2)
       );
 
       return this.sendResponseSuccess(res, "Balance updated successfully", {

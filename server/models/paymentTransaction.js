@@ -23,20 +23,22 @@ class PaymentTransaction extends Model {
     finishedCurrent = true,
   }) =>
     await this.errorWrapper(async () => {
-      const insertRes = await this.dbQueryAsync(
-        `INSERT INTO payment_transactions 
-        (balance_change_type, money, operation_type, transaction_data, user_id, finished_at)
-         VALUES (?, ?, ?, ?, ?, ${
-           finishedCurrent ? "CURRENT_TIMESTAMP" : "?"
-         })`,
-        [
-          balanceChangeType,
-          money,
-          operationType,
-          JSON.stringify(transactionData),
-          senderId,
-        ]
-      );
+      const query = `INSERT INTO payment_transactions 
+      (balance_change_type, money, operation_type, transaction_data, user_id, finished_at)
+       VALUES (?, ?, ?, ?, ?, ${finishedCurrent ? "CURRENT_TIMESTAMP" : "?"})`;
+      const params = [
+        balanceChangeType,
+        money,
+        operationType,
+        JSON.stringify(transactionData),
+        senderId,
+      ];
+
+      if (!finishedCurrent) {
+        params.push(null);
+      }
+
+      const insertRes = await this.dbQueryAsync(query, params);
 
       return insertRes.insertId;
     });

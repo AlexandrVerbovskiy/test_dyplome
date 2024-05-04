@@ -8,7 +8,12 @@ import { MainContext } from "contexts";
 import { getAllDisputes } from "requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
 import { fullTimeFormat } from "utils";
-import { CreateLink, DatePicker, SearchFilter, BaseAdminTableLayoutPage } from "components";
+import {
+  CreateLink,
+  DatePicker,
+  SearchFilter,
+  BaseAdminTableLayoutPage,
+} from "components";
 
 const headers = [
   {
@@ -90,7 +95,25 @@ const DisputeRow = ({
       </td>
       <td>{price}</td>
       <td>{executionTime}</td>
-      <td>{status}</td>
+      <td>
+        {status == "Resolved" && (
+          <span className="badge bg-gradient-quepal text-white shadow-sm px-3">
+            Resolved
+          </span>
+        )}
+
+        {status == "Pending" && (
+          <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
+            Pending
+          </span>
+        )}
+
+        {status == "In Progress" && (
+          <span className="badge bg-gradient-blooker text-white shadow-sm px-3">
+            In Progress
+          </span>
+        )}
+      </td>
       <td>{fullTimeFormat(createdAt)}</td>
       <td>
         <div className="fast-actions">
