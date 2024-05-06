@@ -117,9 +117,11 @@ class Job extends Model {
 
   checkAuthor = async (jobId, authorId) =>
     await this.errorWrapper(async () => {
-      const result =
-        (`SELECT count(*) as count FROM jobs WHERE id = ? AND author_id = ?`,
-        [jobId, authorId]);
+      const result = await this.dbQueryAsync(
+        `SELECT count(*) as count FROM jobs WHERE id = ? AND author_id = ?`,
+        [jobId, authorId]
+      );
+
       return result[0].count;
     });
 

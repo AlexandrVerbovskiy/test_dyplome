@@ -287,11 +287,27 @@ class Chat extends Controller {
   getUsersChat = (req, res) =>
     this.errorWrapper(res, async () => {
       const { userId: companionId } = req.body;
+      const searcherId = req.userData.userId;
 
       const userId = req.userData.userId;
       const chatId = await this.chatModel.hasPersonal(companionId, userId);
 
-      const companionInfo = await this.userModel.getUserInfo(companionId);
+      let companionInfo = await this.userModel.getUserInfo(companionId);
+
+      if (!companionInfo) {
+        const chat = await this.chatModel.getById(companionId);
+
+        if (chat && chat.type == "personal") {
+          const chatUsers = await this.chatModel.getChatUsers(companionId);
+          const chatUserIds = chatUsers.map((user) => user.userId);
+
+          if (chatUserIds.includes(searcherId)) {
+            const companionUserId = chatUserIds.find((id) => id != searcherId);
+            companionInfo = await this.userModel.getUserInfo(companionUserId);
+          }
+        }
+      }
+
       companionInfo["chatType"] = "personal";
       companionInfo["userEmail"] = companionInfo["email"];
       companionInfo["userId"] = companionInfo["id"];

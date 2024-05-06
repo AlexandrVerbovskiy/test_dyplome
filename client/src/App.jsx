@@ -10,8 +10,13 @@ function App() {
     useSystemMessage();
 
   const request = useAjaxRequest({ onError: setError });
-  const { logout, sessionUser, setSessionUser, sessionUserLoading } =
-    useAuth(request);
+  const {
+    logout,
+    sessionUser,
+    setSessionUser,
+    sessionUserLoading,
+    autoUpdateSessionInfo,
+  } = useAuth(request);
 
   let routeBody = <SignRouter />;
   let isAdmin = false;
@@ -35,6 +40,7 @@ function App() {
         sessionUser,
         setSessionUser,
         isAdmin,
+        autoUpdateSessionInfo,
       }}
     >
       {systemMessage && (

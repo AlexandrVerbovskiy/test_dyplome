@@ -50,7 +50,7 @@ const TransactionRow = ({
     <tr>
       <td className="fw-bolder">#{id}</td>
       <td className="fw-bolder">{userNick ?? userEmail}</td>
-      <td>
+      <td className="ignore-response">
         {operationType == "replenishment_by_stripe" && (
           <span className="badge bg-gradient-quepal text-white shadow-sm px-3">
             Replenishment by Stripe
@@ -72,6 +72,18 @@ const TransactionRow = ({
         {operationType == "withdrawal_by_paypal" && (
           <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
             Withdrawal by Paypal
+          </span>
+        )}
+
+        {operationType == "done_job_offer" && (
+          <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
+            Finished Offer
+          </span>
+        )}
+
+        {operationType == "withdrawal_for_job_offer" && (
+          <span className="badge bg-gradient-bloody text-white shadow-sm px-3">
+            Withdrawal for Job Offer{" "}
           </span>
         )}
       </td>

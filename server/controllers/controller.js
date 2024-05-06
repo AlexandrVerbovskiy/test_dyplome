@@ -346,6 +346,8 @@ class Controller {
     { proposalId, senderNick, senderEmail, jobTitle },
     userId
   ) => {
+    console.log({ proposalId, senderNick, senderEmail, jobTitle }, userId);
+
     const notification = await this.notificationModel.acceptedCancelJobProposal(
       { proposalId, senderNick, senderEmail, jobTitle },
       userId

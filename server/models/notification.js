@@ -10,7 +10,13 @@ class Notification extends Model {
         "INSERT INTO notifications (type, user_id, body, link, title) VALUES (?, ?, ?, ?, ?)",
         [type, userId, body, link, title]
       );
-      return { id: insertChatRes.insertId, userId, type, body, link, title };
+
+      const createNotification = await this.dbQueryAsync(
+        `SELECT ${this.__selectAllFields} FROM notifications WHERE id = ?`,
+        insertChatRes.insertId
+      );
+
+      return createNotification[0];
     });
 
   baseGetMany = (props) => {
@@ -106,7 +112,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -177,7 +183,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -196,7 +202,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -215,7 +221,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -236,7 +242,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -255,7 +261,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -274,7 +280,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -293,7 +299,7 @@ class Notification extends Model {
       userId,
       body,
       title,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -313,7 +319,7 @@ class Notification extends Model {
       userId,
       body,
       title: `The dispute for job ${jobTitle} is resolved`,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 
@@ -330,7 +336,7 @@ class Notification extends Model {
       userId,
       body,
       title: `The dispute for job ${jobTitle} is resolved`,
-      link: `job-proposal/${proposalId}`,
+      link: `/job-proposal/${proposalId}`,
     });
   };
 

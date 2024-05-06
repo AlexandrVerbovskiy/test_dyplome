@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  MapMarker,
-  Map,
-  ViewInput,
-  JobStatus,
-  Layout
-} from ".";
+import { MapMarker, Map, ViewInput, JobStatus, Layout } from ".";
 
 const BaseJobEntityTemplate = ({
   pageTitle,
@@ -19,8 +13,10 @@ const BaseJobEntityTemplate = ({
   disputeStatus = null,
   children = null,
   needShowAllStatus = false,
+  isProposal = false,
+  pricePerHour = null,
+  priceExecutionTime = null,
 }) => {
-
   return (
     <Layout pageClassName="job-view-page">
       <div className="page-content">
@@ -43,7 +39,29 @@ const BaseJobEntityTemplate = ({
                   actualStatus={proposalStatus}
                   disputeStatus={disputeStatus}
                 />
-                <ViewInput label="Proposal price" value={proposalPrice} />
+                {isProposal ? (
+                  <>
+                    <ViewInput label="Price per hour, $" value={pricePerHour.toFixed(2)} />
+
+                    <ViewInput
+                      label="Working needed time, h"
+                      value={priceExecutionTime}
+                    />
+
+                    <ViewInput
+                      label="Total proposal price, $"
+                      value={proposalPrice.toFixed(2)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ViewInput
+                      label="Proposal price, $"
+                      value={proposalPrice.toFixed(2)}
+                    />
+                  </>
+                )}
+
                 <ViewInput label="Job address" value={jobAddress} />
                 <ViewInput
                   label="Job description"

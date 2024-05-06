@@ -211,7 +211,7 @@ class PaymentTransaction extends Model {
 
   doneJobOffer = (userId, money, jobName, jobAuthor) => {
     return this.create({
-      userId,
+      senderId: userId,
       balanceChangeType: "topped_up",
       money,
       operationType: "done_job_offer",
@@ -223,7 +223,7 @@ class PaymentTransaction extends Model {
 
   cancelledJobOffer = (userId, money, jobName, performance) => {
     return this.create({
-      userId,
+      senderId: userId,
       balanceChangeType: "topped_up",
       money,
       operationType: "close_job_offer",

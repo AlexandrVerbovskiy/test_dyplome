@@ -16,7 +16,7 @@ const MyJobs = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <JobCardWrapper cardClass="m-0">
+      <JobCardWrapper cardClass="m-0" contentClass="mt-3 mt-md-0">
         <JobMainFilter value={jobsFilter} onClick={jobsFilterChange}>
           <div className="ms-2">
             <CreateLink link="job-create" />
@@ -34,7 +34,10 @@ const MyJobs = () => {
       )}
 
       {jobsIds.length < 1 && (
-        <JobCardWrapper cardClass="jobs-card-section mb-0" bodyClass="job-list px-0">
+        <JobCardWrapper
+          cardClass="jobs-card-section mb-0"
+          bodyClass="job-list px-0"
+        >
           <EmptyList text="No jobs found" />
         </JobCardWrapper>
       )}

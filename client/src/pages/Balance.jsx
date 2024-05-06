@@ -88,7 +88,7 @@ const TransactionRow = ({
           <span className="font-weight-bold text-danger">-${money}</span>
         )}
       </td>
-      <td>{description}</td>
+      <td><div style={{textWrap:"wrap"}}>{description}</div></td>
       <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
     </tr>
   );

@@ -104,8 +104,6 @@ const BaseTransactionsTable = ({ listRequest, title }) => {
       }),
   });
 
-  console.log(transactions);
-
   return (
     <BaseAdminTableLayoutPage
       changeOrder={handleChangeOrder}

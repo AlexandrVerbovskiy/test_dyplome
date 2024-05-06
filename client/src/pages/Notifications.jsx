@@ -8,6 +8,7 @@ import {
 } from "hooks";
 import { getNotificationsPaginationVersion } from "requests";
 import {
+  fullTimeFormat,
   getNotificationIcon,
   getNotificationMainColor,
   shortTimeFormat,
@@ -103,14 +104,17 @@ const Notifications = () => {
                         >
                           <i className={`notify ${iconClass}`}></i>
                         </div>
-                        <div style={{ width: "100%" }}>
+                        <div style={{ width: "calc(100% - 66px)" }}>
                           <h6 className="msg-name">
                             {title}
                             <span className="msg-time float-end">
-                              {shortTimeFormat(createdAt)}
+                              {fullTimeFormat(createdAt)}
                             </span>
                           </h6>
-                          <p className="mb-0 font-13">{body}</p>
+                          <p
+                            className="mb-0 font-13"
+                            dangerouslySetInnerHTML={{ __html: body }}
+                          ></p>
                         </div>
                       </div>
                     </div>

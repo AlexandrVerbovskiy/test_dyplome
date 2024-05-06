@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import JobProposalViewStatus from "./JobProposalViewStatus";
-import { timeNormalConverter } from "utils";
+import { fullTimeFormat, timeNormalConverter } from "utils";
 
 const ProposalCard = ({
   description,
@@ -15,15 +15,14 @@ const ProposalCard = ({
   userId,
   userType = "Author",
   writeBtnText = "Write to author",
+  executionTime,
 }) => {
   const maxCharLimit = 250;
   const isLongText = description.length > maxCharLimit;
 
   return (
     <div className="job-card d-flex flex-column justify-content-between">
-      <div className="job-title">
-        {title}
-      </div>
+      <div className="job-title">{title}</div>
       <div>
         <div className="job-body">
           <div className="job-main-info">
@@ -40,10 +39,16 @@ const ProposalCard = ({
               <JobProposalViewStatus status={status} />
             </div>
             <div className="job-price">
-              <b>Price:</b> ${price}
+              <b>Price per hour:</b> ${price.toFixed(2)}
+            </div>
+            <div className="job-price">
+              <b>Need time:</b> {executionTime}
+            </div>
+            <div className="job-price">
+              <b>Total price:</b> ${(price * executionTime).toFixed(2)}
             </div>
             <div className="job-created-time">
-              <b>Offer started at:</b> {timeNormalConverter(timeCreated)}
+              <b>Offer started at:</b> {fullTimeFormat(timeCreated)}
             </div>
           </div>
           <div className="job-dop-info">

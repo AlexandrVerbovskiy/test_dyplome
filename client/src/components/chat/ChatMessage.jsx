@@ -92,7 +92,7 @@ const ChatMessage = ({
         />
         <div className="flex-grow-1 ms-2">
           <p
-            className="mb-0 chat-time"
+            className="chat-time"
             style={{
               textAlign: timeAlign,
               justifyContent: `flex-${timeAlign}`,

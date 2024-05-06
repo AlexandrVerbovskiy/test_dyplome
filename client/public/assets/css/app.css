@@ -451,6 +451,10 @@ a {
   border-radius: 10px;
 }
 
+.widgets-icons-2 + div{
+  width: calc(100% - 66px);
+}
+
 #geographic-map {
   width: 100%;
   height: 440px;
@@ -1258,11 +1262,12 @@ a {
 .chat-time {
   font-size: 13px;
   color: #6c757d;
+  margin-bottom: 5px;
 }
 
 #chat_list .chat-time {
   justify-content: flex-end;
-  width: 80px;
+  width: 100px;
 }
 
 .chat-list {
@@ -2993,7 +2998,10 @@ body:has(.navbar) .alert {
 
 .status-changer-row {
   display: flex;
-  grid-column-gap: 10px;
+}
+
+.status-changer-row>button:nth-of-type(2){
+  margin-left: 10px;
 }
 
 .job-proposal-statuses-change > div {
@@ -3747,7 +3755,7 @@ body:has(.navbar) .alert {
   table-layout: fixed !important;
 }
 
-.table-responsive td {
+.table-responsive td:not(.ignore-response) {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -3911,7 +3919,7 @@ hr:has(+ .balance-payment-type-select) {
   width: 100%;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 768px) {
   .job-view-actions:has(*:nth-child(3)),
   .admin-job-view-actions:has(*:nth-child(3)),
   .job-proposal-view-actions:has(*:nth-child(3)) {
@@ -3952,9 +3960,14 @@ hr:has(+ .balance-payment-type-select) {
   }
 
   .page-wrapper {
-    margin-top: 50px;
+    margin-top: 55px;
     margin-bottom: 0;
   }
+
+  .page-content > .card {
+    margin-bottom: 0 !important;
+  }
+
   #chat_list,
   #chat_body {
     margin-bottom: 0;
@@ -4001,6 +4014,12 @@ hr:has(+ .balance-payment-type-select) {
   }
 }
 
+@media screen and (max-width: 992px) {
+  .navbar-notifications-list {
+    display: none !important;
+  }
+}
+
 .header-notifications-list div:has(> .msg-name) {
   width: 250px;
 }
@@ -4009,24 +4028,29 @@ hr:has(+ .balance-payment-type-select) {
   display: flex;
 }
 
-.header-notifications-list .msg-name>span:nth-child(1){
+.header-notifications-list .msg-name > span:nth-child(1) {
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: nowrap;
 }
 
-.msg-info{
+.msg-info {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 @media (min-width: 576px) {
   .modal-dialog {
-      max-width: 500px;
-      margin: 4.5rem auto;
+    max-width: 500px;
+    margin: 4.5rem auto;
   }
 }
 
-.default-admin-page #chat_info{
+.default-admin-page #chat_info {
   padding-top: 0;
+}
+
+.notify,
+.notify i {
+  font-style: normal !important;
 }

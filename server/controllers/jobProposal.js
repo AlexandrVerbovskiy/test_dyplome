@@ -54,6 +54,7 @@ class JobProposal extends Controller {
 
   __jobOwnerCheck = async (res, proposalId, jobId, userId) => {
     const jobExists = await this.jobModel.checkAuthor(jobId, userId);
+
     if (!jobExists)
       return this.sendResponseNoFoundError(
         res,
@@ -68,6 +69,7 @@ class JobProposal extends Controller {
 
   __proposalOwnerCheck = async (res, proposalId, jobId, userId) => {
     const jobExists = await this.jobModel.exists(jobId);
+
     if (!jobExists) return this.sendResponseNoFoundError(res, "Job not found");
 
     const proposalExists = await this.jobProposalModel.checkOwner(
@@ -86,8 +88,8 @@ class JobProposal extends Controller {
     this.errorWrapper(res, async () => {
       const { proposalId } = req.body;
 
-      const job = await this.jobProposalModel.getById(proposalId);
-      const jobId = job.id;
+      const proposal = await this.jobProposalModel.getById(proposalId);
+      const jobId = proposal.jobId;
 
       const userId = req.userData.userId;
       const validation =
@@ -198,6 +200,15 @@ class JobProposal extends Controller {
         Number(proposal.price * proposal.executionTime).toFixed(2)
       );
 
+      const performance = await this.userModel.getFullUserInfo(proposal.userId);
+
+      await this.paymentTransactionModel.cancelledJobOffer(
+        proposal.authorId,
+        Number(proposal.price * proposal.executionTime).toFixed(2),
+        proposal.title,
+        performance.nick ?? performance.email
+      );
+
       this.acceptedCancelJobProposal(
         {
           proposalId: proposal.id,
@@ -205,16 +216,7 @@ class JobProposal extends Controller {
           senderEmail: user.email,
           jobTitle: proposal.title,
         },
-        proposal.userId
-      );
-
-      const performance = await this.userModel.getFullUserInfo(proposal.userId);
-
-      await this.cancelledJobOffer(
-        proposal.authorId,
-        Number(proposal.price * proposal.executionTime).toFixed(2),
-        proposal.title,
-        performance.nick ?? performance.email
+        proposal.authorId
       );
 
       return this.sendResponseSuccess(res, "Job cancelled success", {
@@ -223,7 +225,7 @@ class JobProposal extends Controller {
     });
 
   requestToComplete = async (req, res) =>
-    this.__changeStatus(req, res, "job-owner", async (proposalId) => {
+    this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.requestToComplete(
         proposalId
       );
@@ -249,7 +251,7 @@ class JobProposal extends Controller {
     });
 
   acceptCompleted = async (req, res) =>
-    this.__changeStatus(req, res, "proposal-owner", async (proposalId) => {
+    this.__changeStatus(req, res, "job-owner", async (proposalId) => {
       const proposal = await this.jobProposalModel.acceptCompleted(proposalId);
 
       const userId = proposal.userId;

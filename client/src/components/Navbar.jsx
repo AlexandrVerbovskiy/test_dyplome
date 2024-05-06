@@ -53,7 +53,7 @@ const Navbar = ({
           className={`collapse navbar-collapse ${burgerActive ? "show" : ""}`}
           id="navbarSupportedContent1"
         >
-          <ul className="navbar-nav mb-2 mb-lg-0">
+          <ul className="navbar-nav">
             <li className="nav-item">
               <a
                 className={`nav-link ${
@@ -136,7 +136,6 @@ const Navbar = ({
                 className={`${notificationClassName} small-notification`}
                 href="/notifications"
                 role="button"
-                onClick={handleActivateNotificationsPopup}
               >
                 {true && (
                   <span className="alert-count">{countNewNotifications}</span>
@@ -152,7 +151,7 @@ const Navbar = ({
             </li>
           </ul>
 
-          <ul className="navbar-nav mb-2 mb-lg-0">
+          <ul className="navbar-nav">
             <div className="user-box dropdown">
               <a
                 className="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret"

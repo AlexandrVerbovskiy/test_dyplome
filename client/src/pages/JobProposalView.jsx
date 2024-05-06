@@ -99,7 +99,10 @@ const JobProposalView = () => {
       disputeStatus={proposal.disputeStatus}
       jobAddress={proposal.address}
       jobDescription={proposal.description}
-      proposalPrice={proposal.price}
+      proposalPrice={proposal.price * proposal.executionTime}
+      isProposal={true}
+      pricePerHour={proposal.price}
+      priceExecutionTime={proposal.executionTime}
     >
       <hr />
 
@@ -112,43 +115,39 @@ const JobProposalView = () => {
               </div>
             )}
 
-            {!sessionUser.admin && !proposal.disputeId ? (
-              <DisputeBtn
-                onClick={() => acceptJobDisputeForm.setProposalId(proposalId)}
-                actualStatus={proposal.status}
-              />
-            ) : (
-              <></>
-            )}
-
-            {!sessionUser.admin && proposal.userId == sessionUser.id ? (
-              <a
-                href={"/chat/personal/" + proposal.authorId}
-                className="btn btn-primary mt-2 mt-md-0 w-100"
-              >
-                Write to author
-              </a>
-            ) : (
-              <></>
-            )}
-
             {sessionUser.admin ? (
               <>
                 <a
                   href={"/system-chat/" + proposal.authorId}
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
                 >
                   Write to job author
                 </a>
                 <a
                   href={"/system-chat/" + proposal.userId}
-                  className="btn btn-primary w-100 mt-2 mt-md-0"
+                  className="btn btn-primary w-100 mt-2 mt-md-0 d-flex justify-content-center align-items-center"
                 >
                   Write to proposal author
                 </a>
               </>
             ) : (
-              <></>
+              <>
+                {proposal.userId == sessionUser.id ? (
+                  <a
+                    href={"/chat/personal/" + proposal.authorId}
+                    className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+                  >
+                    Write to owner
+                  </a>
+                ) : (
+                  <a
+                    href={"/chat/personal/" + proposal.authorId}
+                    className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+                  >
+                    Write to worker
+                  </a>
+                )}
+              </>
             )}
 
             {!sessionUser.admin && !proposal.disputeId ? (
@@ -162,6 +161,15 @@ const JobProposalView = () => {
                 isJobOwner={isJobOwner}
                 offerPrice={proposal.price}
                 userBalance={sessionUser.balance}
+              />
+            ) : (
+              <></>
+            )}
+
+            {!sessionUser.admin && !proposal.disputeId ? (
+              <DisputeBtn
+                onClick={() => acceptJobDisputeForm.setProposalId(proposalId)}
+                actualStatus={proposal.status}
               />
             ) : (
               <></>

@@ -50,7 +50,7 @@ class Chat extends Model {
   getById = async (chatId) =>
     await this.errorWrapper(async () => {
       const result = await this.dbQueryAsync(
-        "SELECT id, chats.avatar, chats.name FROM chats WHERE id = ?",
+        "SELECT id, chats.type, chats.avatar, chats.name FROM chats WHERE id = ?",
         [chatId]
       );
       return result[0];

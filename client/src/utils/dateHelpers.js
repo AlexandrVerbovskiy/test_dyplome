@@ -4,7 +4,7 @@ export const fullTimeFormat = (dateString) => {
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const day = date.getDate();
-  const month = date.toLocaleString("default", {
+  const month = date.toLocaleString("en-US", {
     month: "short",
   });
   const year = date.getFullYear();
@@ -12,15 +12,20 @@ export const fullTimeFormat = (dateString) => {
   let formattedTime = "";
   const currentTime = new Date();
 
+  const timeInfo = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+
   if (currentTime - date < 86400000) {
-    formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
+    formattedTime = timeInfo;
   } else {
     formattedTime = `${day} ${month}`;
+
     if (year !== currentTime.getFullYear()) {
       formattedTime += ` ${year}`;
     }
+
+    formattedTime += ` ${timeInfo}`;
   }
 
   return formattedTime;

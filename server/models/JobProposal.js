@@ -185,11 +185,11 @@ class JobProposal extends Model {
       return result[0].count;
     });
 
-  checkJobOwner = async (proposalId, userId) =>
+  checkOwner = async (proposalId, userId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(
         `SELECT ${this.__selectAllFields} FROM job_requests 
-        join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND jobs.author_id = ?`,
+        join jobs on jobs.id = job_requests.job_id WHERE job_requests.id = ? AND job_requests.user_id = ?`,
         [proposalId, userId]
       );
       return proposals.length;

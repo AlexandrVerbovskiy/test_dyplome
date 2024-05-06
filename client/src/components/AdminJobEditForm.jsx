@@ -63,7 +63,7 @@ const AdminJobEditForm = ({ baseData, onSave, hasId }) => {
 
                 <Input
                   type="number"
-                  label="Job price"
+                  label="Job total price"
                   placeholder="12.00"
                   value={price.value}
                   onChange={(e) => price.change(e.target.value)}

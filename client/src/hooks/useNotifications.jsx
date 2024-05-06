@@ -14,6 +14,8 @@ const useNotifications = ({ io, onGetNotification = null }) => {
     if (!io) return;
 
     io.on("get-notification", (notification) => {
+      console.log(notification);
+
       prependElement(notification);
 
       if (notification.type == "message") {

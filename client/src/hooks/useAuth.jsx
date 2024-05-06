@@ -4,18 +4,18 @@ import { redirect } from "react-router-dom";
 
 const useAuth = (request) => {
   const [sessionUser, setSessionUser] = useState(null);
-  const [sessionUserLoading, setSessionUserLoading] = useState(false);
+  const [sessionUserLoading, setSessionUserLoading] = useState(true);
 
   const init = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
       setSessionUser(null);
+      setSessionUserLoading(false);
       return;
     }
 
     try {
-      setSessionUserLoading(true);
       const res = await request({
         url: validateToken.url(),
         data: validateToken.convertData(token),
@@ -47,7 +47,13 @@ const useAuth = (request) => {
     redirect("/");
   };
 
-  return { logout, sessionUser, setSessionUser, sessionUserLoading };
+  return {
+    logout,
+    sessionUser,
+    setSessionUser,
+    sessionUserLoading,
+    autoUpdateSessionInfo: init,
+  };
 };
 
 export default useAuth;

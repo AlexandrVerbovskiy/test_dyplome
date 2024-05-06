@@ -30,10 +30,17 @@ const NewNotificationList = ({ notifications, setNotifications }) => {
     clearNotificationTimeouts(id);
   };
 
-  const addHiddenClass = (id) =>
+  const addHiddenClass = (id) => {
+    if (
+      !document.querySelector(`.new-notifications-list .card[data-key='${id}']`)
+    ) {
+      return;
+    }
+
     document
       .querySelector(`.new-notifications-list .card[data-key='${id}']`)
       .classList.add("hidden");
+  };
 
   useEffect(() => {
     const deletedNotifications = [];

@@ -52,7 +52,7 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
 
   return (
     <div
-      className="mb-0 chat-time"
+      className="chat-time"
       style={{
         textAlign,
         justifyContent: `flex-${textAlign}`,
@@ -76,7 +76,7 @@ const TimeRow = ({ text, story, timeSended, textAlign }) => {
               <div className="card-body">
                 {story.map((elem) => (
                   <div key={elem["id"]} className="flex-grow-1">
-                    <p className="mb-0 chat-time">
+                    <p className="chat-time">
                       {shortTimeFormat(elem["timeEdited"])}
                     </p>
                     <div className="chat-base-msg card">
@@ -114,7 +114,7 @@ const Message = ({
 
   let nearTimeMessage = (
     <div
-      className="mb-0 chat-time"
+      className="chat-time"
       style={{
         textAlign: timeTextAlign,
         justifyContent: `flex-${timeTextAlign}`,
@@ -137,7 +137,7 @@ const Message = ({
     contentCardClass += " bg-light-danger";
   } else if (hidden) {
     nearTimeMessage = (
-      <div className="mb-0 chat-time" style={{ timeTextAlign }}>
+      <div className="chat-time" style={{ timeTextAlign }}>
         {shortTimeFormat(timeSended)}
         <div className="deleted-message-label">(deleted)</div>
       </div>

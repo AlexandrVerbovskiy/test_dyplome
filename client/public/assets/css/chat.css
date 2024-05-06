@@ -759,5 +759,5 @@ html.dark-theme #chat_body .message-action .card-body:hover {
 }
 
 .zero-index {
-  z-index: 0 !important;
+  z-index: 1 !important;
 }

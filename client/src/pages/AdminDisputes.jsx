@@ -19,13 +19,13 @@ const headers = [
   {
     value: "id",
     title: "Id",
-    width: "10%",
+    width: "8%",
     canChange: true,
   },
   {
     value: "jobs.title",
     title: "Job",
-    width: "20%",
+    width: "17%",
     canChange: true,
   },
   {
@@ -60,7 +60,7 @@ const headers = [
   {
     value: "disputes.created_at",
     title: "createdAt",
-    width: "10%",
+    width: "15%",
     canChange: true,
   },
   {
@@ -114,7 +114,7 @@ const DisputeRow = ({
           </span>
         )}
       </td>
-      <td>{fullTimeFormat(createdAt)}</td>
+      <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
       <td>
         <div className="fast-actions">
           <div className="cursor-pointer action-icon primary-action">

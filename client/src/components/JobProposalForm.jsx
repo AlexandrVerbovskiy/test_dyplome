@@ -9,7 +9,7 @@ const JobProposalForm = ({ send, price, time, setTime, setPrice }) => {
       <div className="modal-body row g-3">
         <div className="col-12">
           <label htmlFor="price" className="form-label">
-            Price, $
+            Price per hour, $
           </label>
           <div className="input-group">
             {" "}
@@ -29,7 +29,7 @@ const JobProposalForm = ({ send, price, time, setTime, setPrice }) => {
         </div>
         <div className="col-12">
           <label htmlFor="time" className="form-label">
-            Time, h
+            Working needed time, h
           </label>
           <div className="input-group">
             {" "}

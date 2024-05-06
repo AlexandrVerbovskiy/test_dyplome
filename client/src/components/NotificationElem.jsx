@@ -3,6 +3,7 @@ import {
   shortTimeFormat,
   getNotificationMainColor,
   getNotificationIcon,
+  fullTimeFormat,
 } from "utils";
 
 const NotificationElem = ({ type, title, link, body, createdAt }) => {
@@ -22,7 +23,7 @@ const NotificationElem = ({ type, title, link, body, createdAt }) => {
           <h6 className="msg-name">
             <span>{title}</span>
             <span className="msg-time float-end">
-              {shortTimeFormat(createdAt)}
+              {fullTimeFormat(createdAt)}
             </span>
           </h6>
           <p className="msg-info">{body}</p>

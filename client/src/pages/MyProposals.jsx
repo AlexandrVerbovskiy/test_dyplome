@@ -20,7 +20,7 @@ const MyProposals = () => {
 
   return (
     <Layout pageClassName="default-view-page">
-      <JobCardWrapper cardClass="m-0">
+      <JobCardWrapper cardClass="m-0" contentClass="mt-3 mt-md-0">
         <JobMainFilter
           value={proposalsFilter}
           onClick={proposalsFilterChange}

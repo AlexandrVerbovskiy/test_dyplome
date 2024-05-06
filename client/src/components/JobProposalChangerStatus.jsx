@@ -58,25 +58,29 @@ const JobProposalChangerStatus = ({
     }
 
     if (
-      actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
-    ) {
-      nextStatus = "cancelled";
-      changeStatusReq = acceptCancelJobProposal;
-    }
-
-    if (
       actualStatus.toLowerCase() ==
       jobStatus["awaitingCancellationConfirmation"]["value"].toLowerCase()
     ) {
-      nextStatus = "awaitingCancellationConfirmation";
-      changeStatusReq = rejectJobProposal;
+      nextStatus = "cancelled";
+      changeStatusReq = acceptCancelJobProposal;
     }
   }
 
   if (!nextStatus) return;
 
+  const canCancel =
+    isJobOwner &&
+    (actualStatus.toLowerCase() ==
+      jobStatus["inProgress"]["value"].toLowerCase() ||
+      actualStatus.toLowerCase() ==
+        jobStatus["awaitingExecutionConfirmation"]["value"].toLowerCase());
+
   const nextStatusInfo = jobStatus[nextStatus];
-  const rejectStatusInfo = jobStatus["awaitingCancellationConfirmation"];
+  const rejectStatusInfo =
+    isJobOwner &&
+    actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
+      ? jobStatus["rejected"]
+      : jobStatus["awaitingCancellationConfirmation"];
 
   const onSuccessChangeStatus = (res) => {
     const proposal = res.proposal;
@@ -95,6 +99,7 @@ const JobProposalChangerStatus = ({
 
     onSuccessChangeStatus(res);
     onCloseChangeStatusPopup();
+    main.autoUpdateSessionInfo();
   };
 
   const handleChangeClick = async () => {
@@ -115,11 +120,16 @@ const JobProposalChangerStatus = ({
   };
 
   const handleCancelClick = async () => {
+    const cancelReq =
+      actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
+        ? rejectJobProposal
+        : cancelJobProposal;
+
     setActiveAcceptChangePopup(true);
     setAcceptChangePopupProps({
       title: "If the offer is canceled, the funds will be returned",
       shortTitle: "Are you sure you want to cancel the offer?",
-      request: cancelJobProposal,
+      request: cancelReq,
     });
   };
 
@@ -129,22 +139,22 @@ const JobProposalChangerStatus = ({
   };
 
   return (
-    <div className="status-changer-row w-100">
+    <div className="mt-2 mt-md-0 status-changer-row w-100 d-flex flex-column flex-md-row">
       {nextStatusInfo && (
         <button
           type="button"
-          className={`btn btn-${nextStatusInfo["color"]} px-3 py-1 w-100`}
+          className={`btn btn-${nextStatusInfo["color"]} px-3 py-1 w-100 d-flex justify-content-center align-items-center`}
           onClick={handleChangeClick}
         >
           Make "{nextStatusInfo["text"]}"
         </button>
       )}
 
-      {actualStatus && isJobOwner && (
+      {canCancel && (
         <button
           type="button"
           onClick={handleCancelClick}
-          className={`btn btn-${rejectStatusInfo["color"]} px-3 py-1 w-100`}
+          className={`btn btn-${rejectStatusInfo["color"]} px-3 py-1 w-100 d-flex justify-content-center align-items-center mt-2 mt-md-0`}
         >
           Make "{rejectStatusInfo["text"]}"
         </button>

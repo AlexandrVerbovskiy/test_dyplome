@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { TextInput } from "components"
+import { TextInput } from "components";
 import { ChatContext } from "contexts";
 import { EmojiSmile } from "react-bootstrap-icons";
 import EmojiPopup from "./EmojiPopup";
@@ -43,7 +43,25 @@ const Panel = ({ textRef, activeEmojiPopup, changeActivationEmojiPopup }) => {
   }, []);
 
   const handleSendClick = () => {
-    handleSendTextMessage(textRef.current.innerHTML);
+    let messageContent = textRef.current.innerHTML;
+    let prevLength = 0;
+
+    do {
+      prevLength = messageContent.length;
+      messageContent = messageContent
+        .trim()
+        .replace(/^(\s*<div>(?:&nbsp;|<br>|<br\/>|\s)*<\/div>\s*)*/, "")
+        .replace(/(\s*<div>(?:&nbsp;|<br>|<br\/>|\s)*<\/div>\s*)*$/, "")
+        .replace(/^(\s*&nbsp;\s*)*/, "")
+        .replace(/(\s*&nbsp;\s*)*$/, "")
+        .trim();
+    } while (prevLength > messageContent.length);
+
+    if (!messageContent.length) {
+      return;
+    }
+
+    handleSendTextMessage(messageContent);
     textRef.current.innerHTML = "";
   };
 

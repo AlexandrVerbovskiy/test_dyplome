@@ -76,7 +76,7 @@ const JobView = () => {
 
               <div className="col-12 col-md-6 job-edit-inputs">
                 <ViewInput label="Job title" value={job.title} />
-                <ViewInput label="Job price" value={job.price} />
+                <ViewInput label="Job total price" value={job.price} />
                 <ViewInput label="Job address" value={job.address} />
                 <ViewInput
                   label="Job description"
@@ -112,7 +112,7 @@ const JobView = () => {
               <></>
             )}
 
-            {main.sessionUser.admin && (
+            {main.sessionUser.admin ? (
               <div className="d-flex align-items-center">
                 <div className="dropdown job-proposal-statuses-change">
                   <div className="admin-job-view-actions">
@@ -125,6 +125,8 @@ const JobView = () => {
                   </div>
                 </div>
               </div>
+            ) : (
+              <></>
             )}
           </div>
         </div>

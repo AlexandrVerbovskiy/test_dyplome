@@ -59,22 +59,6 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
-                      href="/profile-edit"
-                      className={`${
-                        window.location.pathname.includes("/profile-edit")
-                          ? "active"
-                          : ""
-                      }`}
-                    >
-                      <div className="parent-icon">
-                        <i className="bx bx-edit"></i>
-                      </div>
-                      <div className="menu-title">Profile edit</div>
-                    </a>
-                  </li>
-
-                  <li style={{ height: "43px" }}>
-                    <a
                       href="/chat"
                       className={`${
                         window.location.pathname.includes("/chat")
@@ -198,6 +182,22 @@ const AdminNavbar = ({ setHovered, setActive }) => {
                         <i className="bx bx-server"></i>
                       </div>
                       <div className="menu-title">System Options</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/profile-edit"
+                      className={`${
+                        window.location.pathname.includes("/profile-edit")
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bx-edit"></i>
+                      </div>
+                      <div className="menu-title">Profile edit</div>
                     </a>
                   </li>
 

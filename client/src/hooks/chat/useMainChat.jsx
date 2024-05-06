@@ -45,7 +45,8 @@ const useMainChat = ({
     if (accountId) {
       try {
         let foundChatElem = chatList.find(
-          (chatElem) => chatElem.userId == accountId
+          (chatElem) =>
+            chatElem.userId == accountId || chatElem.chatId == accountId
         );
 
         if (!foundChatElem) {

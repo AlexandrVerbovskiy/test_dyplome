@@ -83,8 +83,8 @@ const config = {
       value: "Awaiting Execution Confirmation",
     },
     awaitingCancellationConfirmation: {
-      color: "info",
-      text: "Awaiting Cancellation Confirmation",
+      color: "secondary",
+      text: "Cancelled Confirmation",
       value: "Awaiting Cancellation Confirmation",
     },
   },

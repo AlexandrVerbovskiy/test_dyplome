@@ -125,7 +125,7 @@ const RequestRow = ({
           </span>
         )}
       </td>
-      <td>{fullTimeFormat(createdAt)}</td>
+      <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
       <td>{doneAt ? fullTimeFormat(doneAt) : "-"}</td>
       <td>
         <div className="fast-actions">

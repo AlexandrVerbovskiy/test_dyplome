@@ -42,7 +42,7 @@ const PopupWrapper = ({
   }, [activeTrigger]);
 
   return (
-    <div>
+    <div style={!activeTrigger ? { display: "none" } : {}}>
       <div
         id={id}
         className={activeTrigger ? "modal fade show" : "modal fade "}

@@ -65,7 +65,7 @@ const MainPage = () => {
         </Map>
       </JobCardWrapper>
 
-      <JobCardWrapper>
+      <JobCardWrapper contentClass="mt-3 mt-md-0">
         <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
       </JobCardWrapper>
 
