@@ -108,13 +108,13 @@ const JobProposalView = () => {
 
       <div className="d-flex align-items-center">
         <div className="dropdown job-proposal-statuses-change">
-          <div className="d-flex flex-column flex-md-row job-proposal-view-actions">
-            {proposal.disputeId && (
-              <div className="dispute-proposal-notification text-danger d-flex align-items-center">
-                {disputeText}
-              </div>
-            )}
+          {proposal.disputeId && (
+            <div className="dispute-proposal-notification text-danger d-flex align-items-center">
+              {disputeText}
+            </div>
+          )}
 
+          <div className="d-flex flex-column flex-md-row job-proposal-view-actions">
             {sessionUser.admin ? (
               <>
                 <a

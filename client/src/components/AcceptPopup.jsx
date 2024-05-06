@@ -13,15 +13,15 @@ const AcceptPopup = ({ id, formInfo, onAccept, children = null }) => {
         {children && children}
 
         <div className="modal-footer">
-          <button className="btn btn-primary" type="button" onClick={onAccept}>
-            Accept
-          </button>
           <button
             className="btn btn-danger"
             type="button"
             onClick={formInfo.hide}
           >
-            Reject
+            Cancel
+          </button>
+          <button className="btn btn-primary" type="button" onClick={onAccept}>
+            Accept
           </button>
         </div>
       </div>

@@ -143,21 +143,21 @@ class Dispute extends Controller {
       );
 
       await this.userModel.addBalance(dispute.workerId, totalPrice);
-      await this.jobProposalModel.acceptCompleted(proposalId);
+      await this.jobProposalModel.acceptCompleted(dispute.proposalId);
 
       this.resolvedWorkerDisputeNotification({
         proposalId: dispute.jobRequestId,
         jobTitle: dispute.title,
         getMoney: totalPrice,
         win: true,
-      });
+      }, dispute.workerId);
 
       this.resolvedEmployeeDisputeNotification({
         proposalId: dispute.jobRequestId,
         jobTitle: dispute.title,
         getMoney: totalPrice,
         win: false,
-      });
+      }, dispute.jobAuthorId);
 
       return this.sendResponseSuccess(res, "Status changes success");
     });
@@ -173,21 +173,21 @@ class Dispute extends Controller {
       );
 
       await this.userModel.addBalance(dispute.jobAuthorId, totalPrice);
-      await this.jobProposalModel.acceptCancelled(proposalId);
+      await this.jobProposalModel.acceptCancelled(dispute.proposalId);
 
       this.resolvedWorkerDisputeNotification({
         proposalId: dispute.jobRequestId,
         jobTitle: dispute.title,
         getMoney: totalPrice,
         win: false,
-      });
+      }, dispute.workerId);
 
       this.resolvedEmployeeDisputeNotification({
         proposalId: dispute.jobRequestId,
         jobTitle: dispute.title,
         getMoney: totalPrice,
         win: true,
-      });
+      }, dispute.jobAuthorId);
 
       return this.sendResponseSuccess(res, "Status changes success");
     });

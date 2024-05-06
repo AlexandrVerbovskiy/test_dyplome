@@ -88,10 +88,10 @@ const DisputeRow = ({
       <td className="fw-bolder">#{id}</td>
       <td>{title}</td>
       <td>
-        <a href={`/users/${senderId}`}>{senderEmail}</a>
+        {adminEmail ? <a href={`/users/${adminId}`}>{adminEmail}</a> : "-"}
       </td>
       <td>
-        {adminEmail ? <a href={`/users/${adminId}`}>{adminEmail}</a> : "-"}
+        <a href={`/users/${senderId}`}>{senderEmail}</a>
       </td>
       <td>{price}</td>
       <td>{executionTime}</td>
@@ -186,6 +186,8 @@ const AdminDisputes = () => {
     setToDate,
     rebuild,
   });
+
+  console.log(disputes);
 
   return (
     <BaseAdminTableLayoutPage

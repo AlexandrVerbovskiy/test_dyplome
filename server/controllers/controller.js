@@ -360,7 +360,6 @@ class Controller {
     );
   };
 
-  /*------------------------------------------ */
 
   resolvedEmployeeDisputeNotification = async (
     { proposalId, jobTitle, getMoney, win },
@@ -394,7 +393,6 @@ class Controller {
     );
   };
 
-  /*------------------------------------------ */
 
   passwordResetNotification = async (userId) => {
     const notification = await this.notificationModel.passwordResetSuccess(

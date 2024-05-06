@@ -324,7 +324,7 @@ class Notification extends Model {
   };
 
   resolvedWorkerDispute = ({ proposalId, jobTitle, getMoney, win }, userId) => {
-    let body = `The dispute has been resolved in your favor. Funds in the amount $${getMoney} returned to your balance`;
+    let body = `The dispute has been resolved in your favor. Funds in the amount $${getMoney} was added to your balance`;
 
     if (!win) {
       body =

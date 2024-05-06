@@ -3961,6 +3961,9 @@ hr:has(+ .balance-payment-type-select) {
 
   .page-wrapper {
     margin-top: 55px;
+  }
+
+  .page-wrapper:not(.admin-page-wrapper){
     margin-bottom: 0;
   }
 

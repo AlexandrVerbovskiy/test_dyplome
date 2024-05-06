@@ -38,17 +38,20 @@ const AdminDispute = () => {
 
   if (!dispute) return;
 
-  const handleAcceptDispute = async (id) => {
+  const handleAcceptDispute = async () => {
     try {
       await request({
         url: adminAssignDispute.url(),
         type: adminAssignDispute.type,
-        data: adminAssignDispute.convertData(id),
+        data: adminAssignDispute.convertData(disputeId),
         convertRes: adminAssignDispute.convertRes,
       });
 
       setDispute((prev) => ({ ...prev, adminId: sessionUser.id }));
-    } catch (e) {}
+
+      setSuccess("Accepted success. Decide which of the users is right. Good luck")
+    } catch (e) {
+    }
   };
 
   const acceptEmployeeRight = async () => {
@@ -67,6 +70,8 @@ const AdminDispute = () => {
     }));
 
     setEmployeeRightPopupActive(false);
+
+    setSuccess("Dispute resolved success. Good job")
   };
 
   const acceptWorkerRight = async () => {
@@ -85,6 +90,8 @@ const AdminDispute = () => {
     }));
 
     setWorkerRightPopupActive(false);
+
+    setSuccess("Dispute resolved success. Good job")
   };
 
   return (
@@ -97,8 +104,11 @@ const AdminDispute = () => {
       disputeStatus={dispute.status}
       jobAddress={dispute.address}
       jobDescription={dispute.jobDescription}
-      proposalPrice={dispute.price}
+      proposalPrice={dispute.price * dispute.executionTime}
       needShowAllStatus={true}
+      isProposal={true}
+      pricePerHour={dispute.price}
+      priceExecutionTime={dispute.executionTime}
     >
       <hr />
       <ViewInput
@@ -112,9 +122,9 @@ const AdminDispute = () => {
           <button
             onClick={handleAcceptDispute}
             type="button"
-            className="btn btn-warning"
+            className="btn btn-warning mb-2 mb-md-0 me-md-2 w-100 w-md-auto"
           >
-            Fasten dispute by you
+            Accept the dispute
           </button>
         )}
 
