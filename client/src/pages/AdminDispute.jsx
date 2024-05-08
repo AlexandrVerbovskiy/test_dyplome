@@ -6,14 +6,79 @@ import {
   disputeMarkEmployeeRight,
   disputeMarkWorkerRight,
   getJobDisputeInfo,
+  adminUnassignDispute,
 } from "requests";
 import { Link } from "react-router-dom";
 import { ViewInput, BaseJobEntityTemplate, YesNoPopup } from "components";
 import CONFIG from "../config";
+import { generateFullUserImgPath } from "utils";
+import StarRatingView from "components/StarRatingView";
+
+const UserCard = ({ user, ratingField }) => {
+  const rating = user[ratingField] ?? {};
+
+  return (
+    <div className="row">
+      <div className="col-12 d-flex justify-content-center align-items-center">
+        <div style={{ width: "250px", height: "250px" }}>
+          <img
+            src={generateFullUserImgPath(user.avatar)}
+            alt={user.email}
+            height="100%"
+            width="100%"
+          />
+        </div>
+      </div>
+      <div className="col-12 mt-4">
+        <div className="row">
+          <div className="col-12 d-flex">
+            <label className="form-label form-label-view">Email: </label>
+            <div className="input-group" style={{ marginLeft: "2px" }}>
+              <a href={`/users/${user.id}`}>{user.email ?? "-"}</a>
+            </div>
+          </div>
+          <div className="col-12 d-flex">
+            <label className="form-label form-label-view">Nick: </label>
+            <div className="input-group" style={{ marginLeft: "2px" }}>
+              <a href={`/users/${user.id}`}>{user.nick ?? "-"}</a>
+            </div>
+          </div>
+          <div className="col-12 d-flex align-items-center justify-content-center">
+            <label className="form-label form-label-view mb-0">Rating: </label>
+            <div className="input-group" style={{ marginLeft: "2px" }}>
+              <StarRatingView value={rating.averageRating ?? 0} />
+              <div
+                style={{
+                  marginTop: "15px",
+                  fontSize: "12px",
+                  lineHeight: "5px",
+                }}
+              >
+                ({rating.totalComments ?? 0})
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 d-flex mt-2 justify-content-end">
+            <a
+              className="btn btn-info mb-2 mb-md-0 me-md-2 w-100 w-md-auto"
+              href={`/system-chat/${user.id}`}
+            >
+              Send Message
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AdminDispute = () => {
   let { disputeId } = useParams();
   const [dispute, setDispute] = useState(null);
+  const [worker, setWorker] = useState(null);
+  const [jobAuthor, setJobAuthor] = useState(null);
+
   const { setSuccess, setError, request, sessionUser } =
     useContext(MainContext);
   const [workerRightPopupActive, setWorkerRightPopupActive] = useState(false);
@@ -30,8 +95,17 @@ const AdminDispute = () => {
         });
 
         setDispute({
-          ...res,
+          ...res.dispute,
         });
+        setJobAuthor({
+          ...res.jobAuthor,
+        });
+        setWorker({
+          ...res.worker,
+        });
+
+        console.log(res.jobAuthor);
+        console.log(res.worker);
       } catch (e) {}
     })();
   }, [disputeId]);
@@ -49,9 +123,27 @@ const AdminDispute = () => {
 
       setDispute((prev) => ({ ...prev, adminId: sessionUser.id }));
 
-      setSuccess("Accepted success. Decide which of the users is right. Good luck")
-    } catch (e) {
-    }
+      setSuccess(
+        "Accepted success. Decide which of the users is right. Good luck"
+      );
+    } catch (e) {}
+  };
+
+  const handleUnacceptDispute = async () => {
+    try {
+      await request({
+        url: adminUnassignDispute.url(),
+        type: adminUnassignDispute.type,
+        data: adminUnassignDispute.convertData(disputeId),
+        convertRes: adminUnassignDispute.convertRes,
+      });
+
+      setDispute((prev) => ({ ...prev, adminId: null }));
+
+      setSuccess(
+        "Accepted success. Decide which of the users is right. Good luck"
+      );
+    } catch (e) {}
   };
 
   const acceptEmployeeRight = async () => {
@@ -71,7 +163,7 @@ const AdminDispute = () => {
 
     setEmployeeRightPopupActive(false);
 
-    setSuccess("Dispute resolved success. Good job")
+    setSuccess("Dispute resolved success. Good job");
   };
 
   const acceptWorkerRight = async () => {
@@ -91,7 +183,7 @@ const AdminDispute = () => {
 
     setWorkerRightPopupActive(false);
 
-    setSuccess("Dispute resolved success. Good job")
+    setSuccess("Dispute resolved success. Good job");
   };
 
   return (
@@ -117,6 +209,31 @@ const AdminDispute = () => {
         value={dispute.description}
       />
       <hr />
+
+      <div className="row">
+        <div className="col-12 col-md-6">
+          <div className="card">
+            <div className="card-body">
+              <h6 className="text-uppercase">Worker</h6>
+              <hr />
+              <UserCard user={worker} ratingField="workerRatingInfo" />
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-6">
+          <div className="card">
+            <div className="card-body">
+              <h6 className="text-uppercase">Job Author</h6>
+              <hr />
+              <UserCard user={jobAuthor} ratingField="employeeRatingInfo" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
       <div className="d-flex justify-content-end flex-column flex-md-row">
         {!dispute.adminId && (
           <button
@@ -124,7 +241,7 @@ const AdminDispute = () => {
             type="button"
             className="btn btn-warning mb-2 mb-md-0 me-md-2 w-100 w-md-auto"
           >
-            Accept the dispute
+            Assign me
           </button>
         )}
 
@@ -142,6 +259,12 @@ const AdminDispute = () => {
                 className="btn btn-warning mb-2 mb-md-0 me-md-2 w-100 w-md-auto"
               >
                 Worker Right
+              </button>
+              <button
+                onClick={() => handleUnacceptDispute()}
+                className="btn btn-danger mb-2 mb-md-0 me-md-2 w-100 w-md-auto"
+              >
+                Unassign me
               </button>
             </>
           )}

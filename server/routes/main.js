@@ -197,6 +197,8 @@ function route(app, db, io) {
 
   app.post("/assign-dispute", isAdmin, disputeController.assignAdminToDispute);
 
+  app.post("/unassign-dispute", isAdmin, disputeController.unassignAdminToDispute);
+
   app.get("/get-job-dispute/:disputeId", isAdmin, disputeController.getById);
 
   app.get(

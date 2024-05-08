@@ -22,6 +22,8 @@ class EmployeeComment extends BaseComment {
       body,
     ]);
   };
+
+  getAverageStars = (employeeId) => this.__baseGetAverageStars(employeeId);
 }
 
 module.exports = EmployeeComment;

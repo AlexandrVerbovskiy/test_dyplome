@@ -454,46 +454,7 @@ class User extends Controller {
   getUserStatistic = (req, res) =>
     this.errorWrapper(res, async () => {
       const { userId } = req.params;
-      const user = await this.__getUserById(userId);
-
-      user["countJobs"] = await this.jobModel.getCountByAuthor(userId);
-      user["countJobProposalsFor"] =
-        await this.jobProposalModel.getCountAllForUser(userId);
-      user["countJobProposalsFrom"] =
-        await this.jobProposalModel.getCountAllFromUser(userId);
-
-      user["sendedDisputes"] = await this.disputeModel.getCountWhereUserSended(
-        userId
-      );
-
-      user["accusedDisputes"] =
-        await this.disputeModel.getCountWhereUserAccused(userId);
-
-      user["allAcceptedForUser"] =
-        await this.jobProposalModel.getCountAllAcceptedForUser(userId);
-      user["allAcceptedFromUser"] =
-        await this.jobProposalModel.getCountAllAcceptedFromUser(userId);
-
-      user["allCompletedForUser"] =
-        await this.jobProposalModel.getAllCompletedForUser(userId);
-      user["allCompletedFromUser"] =
-        await this.jobProposalModel.getAllCompletedFromUser(userId);
-
-      user["allRejectedForUser"] =
-        await this.jobProposalModel.getCountAllRejectedForUser(userId);
-      user["allRejectedFromUser"] =
-        await this.jobProposalModel.getCountAllRejectedFromUser(userId);
-
-      user["allRejectedForUser"] =
-        await this.jobProposalModel.getCountAllRejectedForUser(userId);
-      user["allRejectedFromUser"] =
-        await this.jobProposalModel.getCountAllRejectedFromUser(userId);
-
-      user["allCancelledForUser"] =
-        await this.jobProposalModel.getCountAllCancelledForUser(userId);
-      user["allCancelledFromUser"] =
-        await this.jobProposalModel.getCountAllCancelledFromUser(userId);
-
+      const user = await this.getFullUserInfoWithStatistic(userId);
       return this.sendResponseSuccess(res, "User getted success", user);
     });
 

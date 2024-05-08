@@ -63,7 +63,7 @@ const UserProfile = () => {
                   textAlign: "center",
                 }}
               >
-                Seller Comments
+                Employee Comments
               </h6>
             </div>
             <div className="col" style={{ paddingLeft: "0" }}>

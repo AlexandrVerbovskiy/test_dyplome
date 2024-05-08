@@ -360,7 +360,6 @@ class Controller {
     );
   };
 
-
   resolvedEmployeeDisputeNotification = async (
     { proposalId, jobTitle, getMoney, win },
     userId
@@ -392,7 +391,6 @@ class Controller {
       notification
     );
   };
-
 
   passwordResetNotification = async (userId) => {
     const notification = await this.notificationModel.passwordResetSuccess(
@@ -504,6 +502,58 @@ class Controller {
       "get-notification",
       notification
     );
+  };
+
+  getFullUserInfoWithStatistic = async (userId) => {
+    const user = await this.userModel.getUserInfo(userId);
+
+    user["countJobs"] = await this.jobModel.getCountByAuthor(userId);
+    user["countJobProposalsFor"] =
+      await this.jobProposalModel.getCountAllForUser(userId);
+    user["countJobProposalsFrom"] =
+      await this.jobProposalModel.getCountAllFromUser(userId);
+
+    user["sendedDisputes"] = await this.disputeModel.getCountWhereUserSended(
+      userId
+    );
+
+    user["accusedDisputes"] = await this.disputeModel.getCountWhereUserAccused(
+      userId
+    );
+
+    user["allAcceptedForUser"] =
+      await this.jobProposalModel.getCountAllAcceptedForUser(userId);
+    user["allAcceptedFromUser"] =
+      await this.jobProposalModel.getCountAllAcceptedFromUser(userId);
+
+    user["allCompletedForUser"] =
+      await this.jobProposalModel.getAllCompletedForUser(userId);
+    user["allCompletedFromUser"] =
+      await this.jobProposalModel.getAllCompletedFromUser(userId);
+
+    user["allRejectedForUser"] =
+      await this.jobProposalModel.getCountAllRejectedForUser(userId);
+    user["allRejectedFromUser"] =
+      await this.jobProposalModel.getCountAllRejectedFromUser(userId);
+
+    user["allRejectedForUser"] =
+      await this.jobProposalModel.getCountAllRejectedForUser(userId);
+    user["allRejectedFromUser"] =
+      await this.jobProposalModel.getCountAllRejectedFromUser(userId);
+
+    user["allCancelledForUser"] =
+      await this.jobProposalModel.getCountAllCancelledForUser(userId);
+    user["allCancelledFromUser"] =
+      await this.jobProposalModel.getCountAllCancelledFromUser(userId);
+
+    user["workerRatingInfo"] = await this.workerCommentModel.getAverageStars(
+      userId
+    );
+    
+    user["employeeRatingInfo"] =
+      await this.employeeCommentModel.getAverageStars(userId);
+
+    return user;
   };
 }
 

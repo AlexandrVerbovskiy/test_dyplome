@@ -59,9 +59,20 @@ class Dispute extends Controller {
       const { disputeId } = req.params;
 
       const dispute = await this.disputeModel.getById(disputeId);
+
       if (!dispute)
         return this.sendResponseNoFoundError(res, "Dispute not found");
-      return this.sendResponseSuccess(res, "Find success", { dispute });
+
+      const worker = await this.getFullUserInfoWithStatistic(dispute.workerId);
+      const jobAuthor = await this.getFullUserInfoWithStatistic(
+        dispute.jobAuthorId
+      );
+
+      return this.sendResponseSuccess(res, "Find success", {
+        dispute,
+        worker,
+        jobAuthor,
+      });
     });
 
   getByJobId = async (req, res) =>
@@ -89,6 +100,14 @@ class Dispute extends Controller {
       return this.sendResponseSuccess(res, "Dispute accepted success");
     });
 
+  unassignAdminToDispute = async (req, res) =>
+    this.errorWrapper(res, async () => {
+      const { disputeId } = req.body;
+      const adminId = req.userData.userId;
+      await this.disputeModel.unassignAdmin(disputeId, adminId);
+      return this.sendResponseSuccess(res, "Dispute accepted success");
+    });
+
   getAllByStatus = async (req, res) =>
     this.errorWrapper(res, async () => {
       const skippedIds = req.body.skippedIds ? req.body.skippedIds : [];
@@ -102,10 +121,7 @@ class Dispute extends Controller {
       if (status == "resolved") getFunc = this.disputeModel.getAllResolved;
 
       if (!getFunc)
-        return this.sendResponseNoFoundError(
-          res,
-          "Dispute status not found"
-        );
+        return this.sendResponseNoFoundError(res, "Dispute status not found");
 
       const disputes = await getFunc(skippedIds, filter, needCountJobs);
       return this.sendResponseSuccess(res, "Disputes was get successfully", {
@@ -145,19 +161,25 @@ class Dispute extends Controller {
       await this.userModel.addBalance(dispute.workerId, totalPrice);
       await this.jobProposalModel.acceptCompleted(dispute.proposalId);
 
-      this.resolvedWorkerDisputeNotification({
-        proposalId: dispute.jobRequestId,
-        jobTitle: dispute.title,
-        getMoney: totalPrice,
-        win: true,
-      }, dispute.workerId);
+      this.resolvedWorkerDisputeNotification(
+        {
+          proposalId: dispute.jobRequestId,
+          jobTitle: dispute.title,
+          getMoney: totalPrice,
+          win: true,
+        },
+        dispute.workerId
+      );
 
-      this.resolvedEmployeeDisputeNotification({
-        proposalId: dispute.jobRequestId,
-        jobTitle: dispute.title,
-        getMoney: totalPrice,
-        win: false,
-      }, dispute.jobAuthorId);
+      this.resolvedEmployeeDisputeNotification(
+        {
+          proposalId: dispute.jobRequestId,
+          jobTitle: dispute.title,
+          getMoney: totalPrice,
+          win: false,
+        },
+        dispute.jobAuthorId
+      );
 
       return this.sendResponseSuccess(res, "Status changes success");
     });
@@ -175,19 +197,25 @@ class Dispute extends Controller {
       await this.userModel.addBalance(dispute.jobAuthorId, totalPrice);
       await this.jobProposalModel.acceptCancelled(dispute.proposalId);
 
-      this.resolvedWorkerDisputeNotification({
-        proposalId: dispute.jobRequestId,
-        jobTitle: dispute.title,
-        getMoney: totalPrice,
-        win: false,
-      }, dispute.workerId);
+      this.resolvedWorkerDisputeNotification(
+        {
+          proposalId: dispute.jobRequestId,
+          jobTitle: dispute.title,
+          getMoney: totalPrice,
+          win: false,
+        },
+        dispute.workerId
+      );
 
-      this.resolvedEmployeeDisputeNotification({
-        proposalId: dispute.jobRequestId,
-        jobTitle: dispute.title,
-        getMoney: totalPrice,
-        win: true,
-      }, dispute.jobAuthorId);
+      this.resolvedEmployeeDisputeNotification(
+        {
+          proposalId: dispute.jobRequestId,
+          jobTitle: dispute.title,
+          getMoney: totalPrice,
+          win: true,
+        },
+        dispute.jobAuthorId
+      );
 
       return this.sendResponseSuccess(res, "Status changes success");
     });

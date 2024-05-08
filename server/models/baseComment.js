@@ -108,6 +108,15 @@ class BaseComment extends Model {
       const countRes = await this.dbQueryAsync(query, [entityId]);
       return countRes[0]["count"];
     });
+
+  __baseGetAverageStars = async (id) => {
+    const query = `SELECT COUNT(*) AS totalComments, AVG(rating) AS averageRating FROM ${this.__table} c1
+        WHERE c1.id = (SELECT MAX(c2.id) FROM ${this.__table} c2 WHERE c1.sender_id = c2.sender_id) 
+        AND ${this.__entityId} = ?
+        GROUP BY ${this.__entityId}`;
+    const result = await this.dbQueryAsync(query, [id]);
+    return result[0];
+  };
 }
 
 module.exports = BaseComment;

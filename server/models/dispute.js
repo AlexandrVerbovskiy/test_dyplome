@@ -87,6 +87,14 @@ class Dispute extends Model {
       );
     });
 
+  unassignAdmin = async (disputeId, adminId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE disputes SET admin_id = null, status = 'Pending' WHERE id = ? and admin_id = ?",
+        [disputeId, adminId]
+      );
+    });
+
   checkProposalHasDispute = async (proposalId) => {
     const dispute = await this.getByProposalId(proposalId);
     if (dispute) return true;

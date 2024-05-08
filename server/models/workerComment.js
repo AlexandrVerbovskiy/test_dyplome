@@ -11,7 +11,7 @@ class WorkerComment extends BaseComment {
   __mustBeUniqueParent = true;
   __baseFieldSelect = `${tableName}.id as id, ${tableName}.sender_id as senderId,
     ${tableName}.worker_id as workerId, ${tableName}.rating as rating,
-    ${tableName}.body as body, ${tableName}.created_at as createdAt`
+    ${tableName}.body as body, ${tableName}.created_at as createdAt`;
 
   create = async ({ senderId, workerId, rating, body }) => {
     await this.checkUserCommented(senderId, workerId);
@@ -23,6 +23,8 @@ class WorkerComment extends BaseComment {
       body,
     ]);
   };
+
+  getAverageStars = (workerId) => this.__baseGetAverageStars(workerId);
 }
 
 module.exports = WorkerComment;

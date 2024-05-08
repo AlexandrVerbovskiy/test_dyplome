@@ -233,10 +233,19 @@ export const adminAssignDispute = {
   convertRes: (res) => res.data ?? {},
 };
 
+export const adminUnassignDispute = {
+  url: () => `unassign-dispute`,
+  type: "post",
+  convertData: (disputeId) => ({
+    disputeId,
+  }),
+  convertRes: (res) => res.data ?? {},
+};
+
 export const getJobDisputeInfo = {
   url: (id) => `get-job-dispute/${id}`,
   type: "get",
-  convertRes: (res) => res.data.dispute ?? {},
+  convertRes: (res) => res.data ?? {},
 };
 
 export const getChatMessagesByAdmin = {
