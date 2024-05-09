@@ -14,7 +14,7 @@ class WorkerComment extends BaseComment {
     ${tableName}.body as body, ${tableName}.created_at as createdAt`;
 
   create = async ({ senderId, workerId, rating, body }) => {
-    await this.checkUserCommented(senderId, workerId);
+    //await this.checkUserCommented(senderId, workerId);
 
     return await this.__create("sender_id, worker_id, rating, body", [
       senderId,

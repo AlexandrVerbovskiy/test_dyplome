@@ -136,7 +136,9 @@ const JobView = () => {
             comments={comments}
             totalCount={totalCount}
             handleCreateComment={handleCreateComment}
-            handleCreateReplyComment={handleCreateReplyComment}
+            handleCreateReplyComment={(data, parentType) =>
+              handleCreateReplyComment(data, parentType, "job", id)
+            }
             onGetMoreCommentsClick={onGetMoreCommentsClick}
             onGetMoreReplyCommentsClick={onGetMoreReplyCommentsClick}
             needStarField={false}

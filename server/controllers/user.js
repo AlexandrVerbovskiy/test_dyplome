@@ -181,8 +181,6 @@ class User extends Controller {
       phone,
     };
 
-    console.log(result);
-
     if (userId) {
       await this.userModel.updateUserProfile(userId, {
         nick,

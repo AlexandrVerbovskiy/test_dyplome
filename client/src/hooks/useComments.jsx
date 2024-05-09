@@ -40,7 +40,7 @@ const useComments = ({ type, entityId }) => {
       } else {
         setComments((prev) => [...prev, ...newConvertedComments]);
       }
-    } catch (e) {};
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -98,9 +98,15 @@ const useComments = ({ type, entityId }) => {
     ]);
   };
 
-  const handleCreateReplyComment = async (data, commentId) => {
-    data["entityId"] = commentId;
-    data["parentType"] = "comment";
+  const handleCreateReplyComment = async (
+    data,
+    commentId,
+    parentType,
+    entityId
+  ) => {
+    data["replyCommentId"] = commentId;
+    data["parentType"] = parentType;
+    data["entityId"] = entityId;
 
     const res = await main.request({
       data,

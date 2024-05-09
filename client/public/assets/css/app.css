@@ -451,7 +451,7 @@ a {
   border-radius: 10px;
 }
 
-.widgets-icons-2 + div{
+.widgets-icons-2 + div {
   width: calc(100% - 66px);
 }
 
@@ -3000,7 +3000,7 @@ body:has(.navbar) .alert {
   display: flex;
 }
 
-.status-changer-row>button:nth-of-type(2){
+.status-changer-row > button:nth-of-type(2) {
   margin-left: 10px;
 }
 
@@ -3286,10 +3286,6 @@ body:has(.navbar) .alert {
   width: 100%;
 }
 
-.comment-send-info {
-  display: flex;
-}
-
 .comment-send-author {
   font-weight: 700;
 }
@@ -3297,7 +3293,6 @@ body:has(.navbar) .alert {
 .comment-send-time {
   color: lightgray;
   font-style: italic;
-  margin-left: 5px;
 }
 
 .view-star-container {
@@ -3348,7 +3343,6 @@ body:has(.navbar) .alert {
 
 .comment-rating {
   display: flex;
-  align-items: flex-end;
 }
 
 .comment-send-reply-section {
@@ -3399,7 +3393,6 @@ body:has(.navbar) .alert {
 
 .main-comment-info {
   display: flex;
-  flex-direction: column;
   margin-left: 10px;
 }
 
@@ -3963,7 +3956,7 @@ hr:has(+ .balance-payment-type-select) {
     margin-top: 55px;
   }
 
-  .page-wrapper:not(.admin-page-wrapper){
+  .page-wrapper:not(.admin-page-wrapper) {
     margin-bottom: 0;
   }
 
@@ -4056,4 +4049,13 @@ hr:has(+ .balance-payment-type-select) {
 .notify,
 .notify i {
   font-style: normal !important;
+}
+
+.reply-comment-section {
+  text-align: end;
+}
+
+.comment-description{
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

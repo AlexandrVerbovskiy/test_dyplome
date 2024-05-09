@@ -152,7 +152,6 @@ class Chat extends Model {
 
   addContentToMessage = async (messageId, content) =>
     await this.errorWrapper(async () => {
-      console.log(content);
       const insertContentRes = await this.dbQueryAsync(
         "INSERT INTO messages_contents (message_id, content) VALUES (?, ?)",
         [messageId, content]

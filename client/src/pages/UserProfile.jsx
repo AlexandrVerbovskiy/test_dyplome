@@ -87,7 +87,9 @@ const UserProfile = () => {
             comments={comments}
             totalCount={totalCount}
             handleCreateComment={handleCreateComment}
-            handleCreateReplyComment={handleCreateReplyComment}
+            handleCreateReplyComment={(data, replyCommentId) =>
+              handleCreateReplyComment(data, replyCommentId, type, userId)
+            }
             onGetMoreCommentsClick={onGetMoreCommentsClick}
             onGetMoreReplyCommentsClick={onGetMoreReplyCommentsClick}
             needStarField={true}

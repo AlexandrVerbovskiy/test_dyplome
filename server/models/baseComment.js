@@ -10,7 +10,7 @@ class BaseComment extends Model {
   __baseFieldSelect = "*";
 
   __fullCommentSelect =
-    () => `SELECT users.nick as senderNick, users.email as senderEmail,
+    () => `SELECT ${this.__baseFieldSelect}, users.nick as senderNick, users.email as senderEmail,
   users.avatar as senderAvatar, users.id as senderId FROM ${this.__table}
   JOIN users ON ${this.__table}.sender_id = users.id`;
 
@@ -33,7 +33,7 @@ class BaseComment extends Model {
   getById = async (commentId) =>
     await this.errorWrapper(async () => {
       const selectCommentRes = await this.dbQueryAsync(
-        `SELECT ${this.__fieldSelect} FROM ${this.__table} WHERE id = ?`,
+        `SELECT ${this.__baseFieldSelect} FROM ${this.__table} WHERE id = ?`,
         [commentId]
       );
       return selectCommentRes[0];
@@ -42,12 +42,12 @@ class BaseComment extends Model {
   checkUserCommented = async (userId, entityId) =>
     await this.errorWrapper(async () => {
       const selectCommentRes = await this.dbQueryAsync(
-        `SELECT ${this.__fieldSelect} FROM ${this.__table} WHERE ${this.__entityId} = ? AND sender_id = ?`,
+        `SELECT ${this.__baseFieldSelect} FROM ${this.__table} WHERE ${this.__entityId} = ? AND sender_id = ?`,
         [userId, entityId]
       );
 
       if (selectCommentRes.length == 0) {
-        this.throwMainError(`The comment was created earlier`);
+        throw new Error(`The comment was created earlier`);
       }
     });
 
@@ -85,14 +85,14 @@ class BaseComment extends Model {
       if (this.__needCountReply && selectComments.length > 0) {
         const ids = selectComments.map((comment) => comment.id);
         const questions = ids.map((id) => "?").join(",");
-        const replyQuery = `SELECT COUNT(*) AS count, parent_id FROM reply_comments WHERE parent_id IN (${questions}) GROUP BY parent_id`;
+        const replyQuery = `SELECT COUNT(*) AS count, reply_comment_id as replyCommentId FROM reply_comments WHERE reply_comment_id IN (${questions}) GROUP BY reply_comment_id`;
         const replyCommentsInfo = await this.dbQueryAsync(replyQuery, [...ids]);
 
         selectComments.forEach((elem, index) => {
           const id = elem.id;
           selectComments[index]["repliesCount"] = 0;
           replyCommentsInfo.forEach((replyComment) => {
-            if (replyComment.parent_id == id) {
+            if (replyComment.replyCommentId == id) {
               selectComments[index]["repliesCount"] = replyComment.count;
             }
           });

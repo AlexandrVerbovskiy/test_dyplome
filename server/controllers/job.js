@@ -210,8 +210,6 @@ class Job extends Controller {
         jobId
       );
 
-      console.log(hasProposals);
-
       if (hasProposals) {
         return this.sendResponseError(
           res,

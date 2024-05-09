@@ -41,7 +41,7 @@ const useMap = () => {
 
   const getAddressByCoords = async ({ lat, lng }) => {
     try {
-      const res = await fromLatLng(lat, lng);
+      const res = await fromLatLng(lat, lng, null, "en");
 
       const addressArray = res.results[0].address_components;
 

@@ -344,7 +344,7 @@ class Notification extends Model {
     { senderNick, senderEmail, commentType, commentBody, redirectLink },
     userId
   ) => {
-    let title = `The user ${authorNick ?? authorEmail} has sent a new comment`;
+    let title = `The user ${senderNick ?? senderEmail} has sent a new comment`;
     const body = commentBody;
 
     if (commentType == "job") {
@@ -363,6 +363,7 @@ class Notification extends Model {
       type: "comment",
       userId,
       body,
+      title,
       link: redirectLink,
     });
   };

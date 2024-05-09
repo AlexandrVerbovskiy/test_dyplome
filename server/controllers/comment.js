@@ -69,6 +69,8 @@ class Comment extends Controller {
         const replyCommentType = req.body.parentType;
         const replyCommentId = req.body.replyCommentId;
 
+        console.log(req.body);
+
         comment = await this.replyCommentModel.create({
           senderId: userId,
           parentId: entityId,
@@ -171,6 +173,9 @@ class Comment extends Controller {
       } else if (commentType == "job") {
         getComments = this.jobCommentModel.getAllByEntityId;
         getCountComments = this.jobCommentModel.getAllCountByEntityId;
+      } else if (commentType == "reply") {
+        getComments = this.replyCommentModel.getAllByEntityId;
+        getCountComments = this.replyCommentModel.getAllCountByEntityId;
       }
 
       const comments = await getComments(parentId, lastId, limit);
