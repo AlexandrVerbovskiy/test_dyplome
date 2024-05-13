@@ -101,6 +101,22 @@ class Dispute extends Model {
     return false;
   };
 
+  workerRight = async (disputeId, workerId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
+        [workerId, disputeId]
+      );
+    });
+
+  employeeRight = async (disputeId, employeeId) =>
+    await this.errorWrapper(async () => {
+      await this.dbQueryAsync(
+        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
+        [employeeId, disputeId]
+      );
+    });
+
   __getAllByStatus = async (status, skippedIds = [], filter = "", limit = 20) =>
     await this.errorWrapper(async () => {
       const params = [];
@@ -161,22 +177,6 @@ class Dispute extends Model {
 
   getCountWhereUserAccused = (userId) =>
     this.__getCountFromSelectRequest(this.getWhereUserAccused, [userId]);
-
-  workerRight = async (disputeId, workerId) =>
-    await this.errorWrapper(async () => {
-      await this.dbQueryAsync(
-        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
-        [workerId, disputeId]
-      );
-    });
-
-  employeeRight = async (disputeId, employeeId) =>
-    await this.errorWrapper(async () => {
-      await this.dbQueryAsync(
-        "UPDATE disputes SET right_user_id = ?, status = 'Resolved', completed_at = CURRENT_TIMESTAMP WHERE id = ?",
-        [employeeId, disputeId]
-      );
-    });
 
   baseGetMany = (props) => {
     const { filter } = props;

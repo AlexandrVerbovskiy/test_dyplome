@@ -26,8 +26,6 @@ class Socket extends Controller {
     await this.sendSocketMessageToUser(userId, "error", error);
   };
 
-  clearAll = () => this.socketModel.clearAll();
-
   connect = async (socket, userId) => {
     await this.socketModel.create(socket, userId);
     console.log("connected success");

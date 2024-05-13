@@ -20,7 +20,6 @@ class Chat {
   }
 
   onInit = async () => {
-    await this.socketController.clearAll();
     this.io.on("connection", this.onConnection);
   };
 

@@ -2,16 +2,16 @@ require("dotenv").config();
 const Model = require("./model");
 
 class Socket extends Model {
-  findUserSockets = async (usersIds) =>
+  findUserSockets = async (userIds) =>
     await this.errorWrapper(async () => {
-      if (usersIds.length < 1) {
+      if (userIds.length < 1) {
         return [];
       }
 
-      const placeholders = usersIds.map(() => "?").join(",");
+      const placeholders = userIds.map(() => "?").join(",");
       const sockets = await this.dbQueryAsync(
         "SELECT socket FROM sockets WHERE user_id IN (" + placeholders + ")",
-        usersIds
+        userIds
       );
       return sockets;
     });
@@ -29,11 +29,6 @@ class Socket extends Model {
       await this.dbQueryAsync("DELETE FROM sockets WHERE socket = ?", [
         socket.id,
       ]);
-    });
-
-  clearAll = async () =>
-    await this.errorWrapper(async () => {
-      await this.dbQueryAsync("TRUNCATE sockets");
     });
 }
 

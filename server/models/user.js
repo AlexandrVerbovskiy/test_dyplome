@@ -326,10 +326,10 @@ class User extends Model {
       return await this.dbQueryAsync(query, params);
     });
 
-  updateOnline = async (userId, typing) => {
+  updateOnline = async (userId, online) => {
     await this.dbQueryAsync(
       "UPDATE users SET online = ?, time_updated=CURRENT_TIMESTAMP WHERE id = ?",
-      [typing, userId]
+      [online, userId]
     );
   };
 
@@ -456,16 +456,6 @@ class User extends Model {
 
       const userBalance = userInfo[0]["balance"];
       return Number(userBalance);
-    });
-
-  getActiveUsers = async () =>
-    await this.errorWrapper(async () => {
-      const users = await this.dbQueryAsync(
-        `SELECT id FROM users WHERE online = ?`,
-        [true]
-      );
-
-      return users.map((user) => user.id);
     });
 
   groupedCountNewUsersByDuration = (type, params) =>

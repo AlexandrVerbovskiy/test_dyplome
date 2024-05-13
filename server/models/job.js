@@ -89,15 +89,6 @@ class Job extends Model {
       return jobs;
     });
 
-  getByAuthor = async (authorId) =>
-    await this.errorWrapper(async () => {
-      const jobs = await this.dbQueryAsync(
-        `SELECT ${this.__selectAllFields} FROM jobs WHERE author_id = ?`,
-        [authorId]
-      );
-      return jobs;
-    });
-
   getCountByAuthor = async (authorId) =>
     await this.errorWrapper(async () => {
       const result = await this.dbQueryAsync(
