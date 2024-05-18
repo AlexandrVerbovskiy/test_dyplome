@@ -5,14 +5,14 @@ const generateRandomString = require("../utils/randomString");
 
 class User extends Model {
   __visibleFields = `id, email, address, lat, lng, nick, avatar, admin, activity_radius as activityRadius, 
-  balance, phone, online, instagram_url as instagramUrl, linkedin_url as linkedinUrl, biography`;
+  balance, phone, online, instagram_url as instagramUrl, linkedin_url as linkedinUrl, biography, users.profile_authorized as profileAuthorized`;
 
   strFilterFields = ["email", "address", "nick"];
 
   orderFields = ["id", "email", "address", "nick"];
 
   __selectAllFields = `users.id, users.email, users.phone, users.nick, users.address, users.avatar, users.lat, users.lng, 
-  users.activity_radius as activityRadius, users.profile_authorized as profileAuthorized, users.instagram_url as instagramUrl,
+  users.activity_radius as activityRadius, users.instagram_url as instagramUrl,
   users.linkedin_url as linkedinUrl, users.biography,
   users.online, users.admin, users.time_created as timeCreated, users.balance as balance`;
 

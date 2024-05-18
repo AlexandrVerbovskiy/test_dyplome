@@ -169,7 +169,9 @@ const Navbar = ({
                   <p className="user-name mb-0">
                     {sessionUser.nick ?? sessionUser.email}
                   </p>
-                  <p className="designattion mb-0">${sessionUser.balance}</p>
+                  <p className="designattion mb-0">
+                    ${sessionUser.balance ?? 0}
+                  </p>
                 </div>
               </a>
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-user-options">

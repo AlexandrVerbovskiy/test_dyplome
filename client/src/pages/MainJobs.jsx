@@ -45,6 +45,16 @@ const MainPage = () => {
     }
   }, []);
 
+  const handleProposalCreateClick = (id) => {
+    if (sessionUser.profileAuthorized) {
+      jobProposalFormState.setJobId(id);
+    } else {
+      setError(
+        "Unverified user cannot create proposal. Update your personal data to get access to this action"
+      );
+    }
+  };
+
   return (
     <Layout pageClassName="default-view-page">
       <JobCardWrapper bodyClass="jobs-map">
@@ -74,7 +84,7 @@ const MainPage = () => {
           <JobCard
             key={id}
             {...jobs[id]}
-            activateProposalForm={() => jobProposalFormState.setJobId(id)}
+            activateProposalForm={() => handleProposalCreateClick(id)}
           />
         ))}
         <UploadTrigger onTriggerShown={getMoreJobs} />

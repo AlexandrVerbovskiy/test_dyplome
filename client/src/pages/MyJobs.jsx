@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Layout,
   AuthorJobCard,
@@ -9,17 +9,23 @@ import {
   EmptyList,
 } from "components";
 import { useMyJobs } from "hooks";
+import { MainContext } from "contexts";
 
 const MyJobs = () => {
   const { jobs, getMoreJobs, jobsIds, jobsFilter, jobsFilterChange } =
     useMyJobs();
+  const { sessionUser } = useContext(MainContext);
 
   return (
     <Layout pageClassName="default-view-page">
       <JobCardWrapper cardClass="m-0" contentClass="mt-3 mt-md-0">
         <JobMainFilter value={jobsFilter} onClick={jobsFilterChange}>
           <div className="ms-2">
-            <CreateLink link="job-create" />
+            <CreateLink
+              link="job-create"
+              access={() => sessionUser.profileAuthorized}
+              accessDeniedMessage="Unverified user cannot create proposal. Update your personal data to get access to this action"
+            />
           </div>
         </JobMainFilter>
       </JobCardWrapper>

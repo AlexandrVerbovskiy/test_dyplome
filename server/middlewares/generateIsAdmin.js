@@ -21,7 +21,7 @@ function generateIsAuthAndAdmin(db) {
   const isAuth = generateIsAuth();
   const isAdmin = __generateIsAdmin(db);
 
-  return function isAuthAndAdmin(request, response, next) {
+  return function (request, response, next) {
     isAuth(request, response, () => isAdmin(request, response, next));
   };
 }

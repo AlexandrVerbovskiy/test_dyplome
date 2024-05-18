@@ -163,8 +163,8 @@ const AdminUserEditForm = ({ baseData, onSave, hasId }) => {
 
                 <Input
                   type="text"
-                  label="https://www.instagram.com/"
-                  placeholder="+380676666666"
+                  label="Instagram"
+                  placeholder="https://www.instagram.com/"
                   value={instagramUrl.value}
                   error={instagramUrl.error}
                   onChange={(e) => instagramUrl.change(e.target.value)}

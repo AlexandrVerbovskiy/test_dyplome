@@ -1,5 +1,6 @@
 const config = {
   API_URL: "http://localhost:5000",
+  CLIENT_URL: "http://localhost:3000",
   VIDEO_EXTENSIONS: [
     "mp4",
     "avi",

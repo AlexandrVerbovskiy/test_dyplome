@@ -27,7 +27,9 @@ const SignIn = () => {
       setSuccess("Logged in successfully");
       setSessionUser(user);
       redirect("/");
-    } catch (e) {}
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   return (
