@@ -68,9 +68,6 @@ class Payment extends Controller {
     this.errorWrapper(res, async () => {
       const { userId } = req.userData;
       const { amount, type, typeValue } = req.body;
-      //const result = await sendMoneyToUser("EMAIL", "sb-rzppr23536950@personal.example.com", "10.00", "USD");
-      //const result = await sendMoneyToUser("PHONE", "+380678888888", "10.00", "USD");
-      //const result = await sendMoneyToUser("PAYPAL_ID", "QNFXGMKGF2TWY", "10.00", "USD");
 
       const feeInfo = await this.systemOptionModel.getFeeInfo();
       const fee = calculateFee(feeInfo, amount);
@@ -83,20 +80,26 @@ class Payment extends Controller {
         "USD"
       );
 
+      const payStory = async (waitingStatus = false) => {
+        const newBalance = await this.userModel.rejectBalance(userId, amount);
+
+        const createdId =
+          await this.paymentTransactionModel.createWithdrawalByPaypal(
+            userId,
+            Number(amount).toFixed(2),
+            fee,
+            waitingStatus
+          );
+
+        return { createdId, newBalance };
+      };
+
       if (result.error) {
         if (
           result.error.toLowerCase() ==
           "Sender does not have sufficient funds. Please add funds and retry.".toLowerCase()
         ) {
-          const newBalance = await this.userModel.rejectBalance(userId, amount);
-
-          const createdId =
-            await this.paymentTransactionModel.createWithdrawalByPaypal(
-              userId,
-              Number(amount).toFixed(2),
-              fee,
-              true
-            );
+          const { createdId, newBalance } = await payStory(true);
 
           await this.getMoneyRequestModel.create(
             createdId,
@@ -115,13 +118,7 @@ class Payment extends Controller {
           return this.sendResponseError(res, "Operation error", 402);
         }
       } else {
-        const newBalance = await this.userModel.rejectBalance(userId, amount);
-
-        await this.paymentTransactionModel.createWithdrawalByPaypal(
-          userId,
-          Number(amount).toFixed(2),
-          fee
-        );
+        const { newBalance } = await payStory();
 
         await this.serverTransactionModel.createReplenishmentByPaypalFee(
           userId,

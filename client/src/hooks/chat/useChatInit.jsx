@@ -35,13 +35,6 @@ const useChatInit = ({
       });
     });
 
-    io.on("error", (data) => {
-      let message =
-        "Something went wrong. Please take a screenshot of the console.log and send to the admins";
-      if (data.sqlMessage) message = data.sqlMessage;
-      if (data.message) message = data.message;
-    });
-
     io.on("success-sended-message", (data) => {
       onGetMessageForSockets(data.message);
     });
