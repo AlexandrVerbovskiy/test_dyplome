@@ -310,6 +310,7 @@ class Chat extends Controller {
 
       companionInfo["chatType"] = "personal";
       companionInfo["userEmail"] = companionInfo["email"];
+      companionInfo["userNick"] = companionInfo["nick"];
       companionInfo["userId"] = companionInfo["id"];
 
       if (chatId) {

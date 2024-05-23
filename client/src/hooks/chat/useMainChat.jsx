@@ -7,6 +7,7 @@ import {
   getUsersToGroupToJoin,
 } from "requests";
 import { MainContext } from "contexts";
+import { hasDuplicateIds, removeDuplicatesAndSort } from "utils";
 
 const useMainChat = ({
   accountId,
@@ -38,6 +39,12 @@ const useMainChat = ({
   const main = useContext(MainContext);
   const leftChatRef = useRef(null);
   const kickUserRef = useRef(null);
+
+  useEffect(() => {
+    if (hasDuplicateIds(messages, "messageId")) {
+      setMessages(removeDuplicatesAndSort(messages, "messageId"));
+    }
+  }, [messages]);
 
   const onChatListInit = async (chatList) => {
     const chatElem = chatList.length > 0 ? chatList[0] : null;

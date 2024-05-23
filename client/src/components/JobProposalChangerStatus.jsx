@@ -37,6 +37,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "inProgress";
       changeStatusReq = acceptJobProposal;
+      jobStatus[nextStatus] = "Accept";
     }
 
     if (
@@ -45,6 +46,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "completed";
       changeStatusReq = acceptCompleteJobProposal;
+      jobStatus[nextStatus] = "Accept";
     }
   }
 
@@ -55,6 +57,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "awaitingExecutionConfirmation";
       changeStatusReq = completeJobProposal;
+      jobStatus[nextStatus] = "Done";
     }
 
     if (
@@ -63,6 +66,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "cancelled";
       changeStatusReq = acceptCancelJobProposal;
+      jobStatus[nextStatus] = "Accept";
     }
   }
 
@@ -76,11 +80,16 @@ const JobProposalChangerStatus = ({
         jobStatus["awaitingExecutionConfirmation"]["value"].toLowerCase());
 
   const nextStatusInfo = jobStatus[nextStatus];
-  const rejectStatusInfo =
+  let rejectStatusInfo = jobStatus["awaitingCancellationConfirmation"];
+  rejectStatusInfo["text"] = "Cancel";
+
+  if (
     isJobOwner &&
     actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
-      ? jobStatus["rejected"]
-      : jobStatus["awaitingCancellationConfirmation"];
+  ) {
+    rejectStatusInfo = jobStatus["rejected"];
+    rejectStatusInfo["text"] = "Cancel";
+  }
 
   const onSuccessChangeStatus = (res) => {
     const proposal = res.proposal;
@@ -114,7 +123,7 @@ const JobProposalChangerStatus = ({
 
     setActiveAcceptChangePopup(true);
     setAcceptChangePopupProps({
-      shortTitle: `Are you sure you want set new offer status '${nextStatusInfo["text"]}'?`,
+      shortTitle: `Are you sure you want update offer status?`,
       request: changeStatusReq,
     });
   };

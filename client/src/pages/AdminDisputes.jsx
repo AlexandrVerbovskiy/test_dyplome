@@ -187,8 +187,6 @@ const AdminDisputes = () => {
     rebuild,
   });
 
-  console.log(disputes);
-
   return (
     <BaseAdminTableLayoutPage
       changeOrder={handleChangeOrder}

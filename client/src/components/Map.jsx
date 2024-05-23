@@ -15,7 +15,7 @@ const Map = ({
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "",
+    googleMapsApiKey: config.MAP_KEY ?? "",
   });
 
   const onLoad = (map) => {
@@ -42,6 +42,7 @@ const Map = ({
       onClick={handleMapClick}
       mapContainerStyle={{ height, width }}
       className="my-map"
+      options={{ mapTypeId: "hybrid" }}
     >
       {children ?? ""}
     </GoogleMap>

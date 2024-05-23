@@ -38,7 +38,7 @@ const ChatHeader = () => {
   }
 
   if (isPersonal || (isSystem && activeChat.userId != null)) {
-    chatName = activeChat.userEmail;
+    chatName = activeChat.userNick ?? activeChat.userEmail;
   }
 
   return (

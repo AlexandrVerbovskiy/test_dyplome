@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { MainContext } from "contexts";
+import { hasDuplicateIds, removeDuplicatesAndSort } from "utils";
 
 const useChatList = ({ onInit, getRequest }) => {
   const limit = 20;
@@ -18,6 +19,12 @@ const useChatList = ({ onInit, getRequest }) => {
     setCanSearch(true);
     setChatListSearch(value);
   };
+
+  useEffect(() => {
+    if (hasDuplicateIds(chatList, "chatId")) {
+      setChatList(removeDuplicatesAndSort(chatList, "chatId"));
+    }
+  }, [chatList]);
 
   const getLastChatId = (chats = null) => {
     let minId = 0;
@@ -89,10 +96,10 @@ const useChatList = ({ onInit, getRequest }) => {
       const prevDataChat = prev.find((elem) => elem.chatId == chat.chatId);
 
       if (
-        (prevDataChat &&
-          ((!chat.timeSended && chat.messageId == prevDataChat.lastMessageId) ||
-            new Date(prevDataChat.timeSended) <= new Date(chat.timeSended))) ||
-        !prevDataChat.lastMessageId
+        prevDataChat &&
+        ((!chat.timeSended && chat.messageId == prevDataChat.lastMessageId) ||
+          new Date(prevDataChat.timeSended) <= new Date(chat.timeSended) ||
+          !prevDataChat.lastMessageId)
       ) {
         const partToUpdate = {
           content: chat.content,
@@ -107,11 +114,9 @@ const useChatList = ({ onInit, getRequest }) => {
           partToUpdate["type"] = chat.type;
         }
 
-        let countUnreadMessages = prevDataChat.countUnreadMessages;
+        let countUnreadMessages = prevDataChat?.countUnreadMessages ?? 0;
 
-        console.log(prevDataChat.chatId, chat.chatId);
-
-        if (prevDataChat.chatId != chat.chatId) {
+        if (prevDataChat && prevDataChat.chatId != chat.chatId) {
           countUnreadMessages++;
         }
 
@@ -175,7 +180,7 @@ const useChatList = ({ onInit, getRequest }) => {
         (elem) =>
           !(
             (elem.userId == chat.userId && !elem.chatId) ||
-            elem.chatId != chat.chatId
+            elem.chatId == chat.chatId
           )
       );
       return [chat, ...prev];
@@ -190,7 +195,7 @@ const useChatList = ({ onInit, getRequest }) => {
         let chats = prev.filter((elem) => elem.chatId != chatId);
         if (!message) return chats;
 
-        let countUnreadMessages = prevDataChat.countUnreadMessages;
+        let countUnreadMessages = prevDataChat?.countUnreadMessages ?? 0;
 
         if (prevDataChat.currentLastViewedMessageId < deletedMessageId) {
           countUnreadMessages--;
@@ -215,37 +220,37 @@ const useChatList = ({ onInit, getRequest }) => {
   };
 
   const onChangeTyping = (data, typing) => {
-    setChatList((prev) =>
-      prev.map((elem) => {
+    setChatList((prev) => {
+      return prev.map((elem) => {
         if (elem.chatId == data.chatId) {
           return { ...elem, chatTyping: typing };
         }
 
         return { ...elem };
-      })
-    );
+      });
+    });
   };
 
   const onChangeOnline = (userId, online) => {
-    setChatList((prev) =>
-      prev.map((elem) => {
+    setChatList((prev) => {
+      return prev.map((elem) => {
         if (elem.userId == userId) {
           return { ...elem, userOnline: online };
         }
         return { ...elem };
-      })
-    );
+      });
+    });
   };
 
   const deactivateChatInList = (chatId, deleteTime) => {
-    setChatList((prev) =>
+    setChatList((prev) => {
       prev.map((elem) => {
         if (elem.chatId == chatId) {
           return { ...elem, deleteTime };
         }
         return { ...elem };
-      })
-    );
+      });
+    });
   };
 
   return {

@@ -131,8 +131,6 @@ const PaymentTransactions = () => {
       }),
   });
 
-  console.log(transactions);
-
   return (
     <BaseAdminTableLayoutPage
       changeOrder={handleChangeOrder}

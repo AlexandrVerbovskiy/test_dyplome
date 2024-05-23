@@ -2827,6 +2827,10 @@ body:has(.navbar) .alert {
     width: 49%;
   }
 
+  .main-view-page .job-card{
+    width: 100%;
+  }
+
   .job-list {
     grid-column-gap: 2%;
   }
@@ -2835,6 +2839,10 @@ body:has(.navbar) .alert {
 @media (min-width: 992px) {
   .job-card {
     width: 24%;
+  }
+
+  .main-view-page .job-card{
+    width: 49%;
   }
 }
 
@@ -4055,7 +4063,21 @@ hr:has(+ .balance-payment-type-select) {
   text-align: end;
 }
 
-.comment-description{
+.comment-description {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.main-map {
+  height: 400px;
+}
+
+.main-job-search-bar>.card {
+  margin-bottom: 0!important;
+}
+
+@media (min-width: 768px) {
+  .main-map {
+    height: 620px;
+  }
 }

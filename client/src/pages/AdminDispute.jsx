@@ -103,9 +103,6 @@ const AdminDispute = () => {
         setWorker({
           ...res.worker,
         });
-
-        console.log(res.jobAuthor);
-        console.log(res.worker);
       } catch (e) {}
     })();
   }, [disputeId]);

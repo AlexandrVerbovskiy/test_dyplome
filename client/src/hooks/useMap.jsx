@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { setKey, fromLatLng, fromAddress } from "react-geocode";
+import config from "config";
 
 const useMap = () => {
   useEffect(() => {
-    //setKey("AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48");
-    //setKey("AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w");
-    //setKey("AIzaSyALYcsPh3unwjOuZ1aRDtQAHcz3DXMQVm4");
+    if(config.MAP_KEY){
+      setKey(config.MAP_KEY)
+    }
   }, []);
 
   const getAddressInfo = (elem) => {

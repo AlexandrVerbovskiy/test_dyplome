@@ -24,28 +24,28 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
           <div className="col-md-6">
             <div className="row mb-2">
               <div>
-                <label className="form-label form-label-view">Email</label>
+                <label className="form-label form-label-view mb-0">Email</label>
                 <div className="input-group">{userInfo["email"]}</div>
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mb-2">
               <div>
-                <label className="form-label form-label-view">Nick</label>
+                <label className="form-label form-label-view mb-0">Nick</label>
                 <div className="input-group">{userInfo["nick"] ?? "-"}</div>
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mb-2">
               <div>
-                <label className="form-label form-label-view">Phone</label>
+                <label className="form-label form-label-view mb-0">Phone</label>
                 <div className="input-group">{userInfo["phone"] ?? "-"}</div>
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mb-2">
               <div>
-                <label className="form-label form-label-view">
+                <label className="form-label form-label-view mb-0">
                   Linkedin Url
                 </label>
                 <div className="input-group">
@@ -54,9 +54,9 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mb-2">
               <div>
-                <label className="form-label form-label-view">
+                <label className="form-label form-label-view mb-0">
                   Instagram Url
                 </label>
                 <div className="input-group">
@@ -68,10 +68,10 @@ const UserProfileStatisticInfo = ({ userInfo }) => {
         </div>
 
         {userInfo["biography"] && (
-          <div className="row mb-4">
+          <div className="row mb-2">
             <div className="col col-12">
               <div>
-                <label className="form-label form-label-view">Biography</label>
+                <label className="form-label form-label-view mb-0">Biography</label>
                 <div className="input-group">{userInfo["biography"]}</div>
               </div>
             </div>

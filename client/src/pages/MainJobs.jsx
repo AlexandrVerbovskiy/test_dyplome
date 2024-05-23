@@ -56,54 +56,63 @@ const MainPage = () => {
   };
 
   return (
-    <Layout pageClassName="default-view-page">
-      <JobCardWrapper bodyClass="jobs-map">
-        <Map>
-          <MapMarker
-            title="Your position"
-            lat={currentLocation.lat}
-            lng={currentLocation.lng}
-            main={true}
-            needCircle={true}
-            radius={sessionUser.activityRadius}
-            circleEditable={false}
-          />
+    <Layout pageClassName="default-view-page main-view-page">
+      <div className="row">
+        <div className="col-12 col-md-8">
+          <JobCardWrapper contentClass="mt-3 mt-md-0 main-job-search-bar">
+            <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
+          </JobCardWrapper>
 
-          {jobsIds.map((id) => (
-            <MapMarker key={id} {...jobs[id]} />
-          ))}
-        </Map>
-      </JobCardWrapper>
+          <JobCardWrapper
+            cardClass="jobs-card-section"
+            bodyClass="job-list row"
+          >
+            {jobsIds.map((id) => (
+              <JobCard
+                key={id}
+                {...jobs[id]}
+                activateProposalForm={() => handleProposalCreateClick(id)}
+              />
+            ))}
+            <UploadTrigger onTriggerShown={getMoreJobs} />
+          </JobCardWrapper>
 
-      <JobCardWrapper contentClass="mt-3 mt-md-0">
-        <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
-      </JobCardWrapper>
+          <PopupWrapper
+            onClose={jobProposalFormState.hide}
+            activeTrigger={jobProposalFormState.data.active}
+            title="Send proposal"
+            id="send_proposal"
+          >
+            <JobProposalForm
+              send={jobProposalFormState.sendProposal}
+              price={jobProposalFormState.data.price}
+              time={jobProposalFormState.data.time}
+              setTime={jobProposalFormState.setTime}
+              setPrice={jobProposalFormState.setPrice}
+            />
+          </PopupWrapper>
+        </div>
 
-      <JobCardWrapper cardClass="jobs-card-section" bodyClass="job-list row">
-        {jobsIds.map((id) => (
-          <JobCard
-            key={id}
-            {...jobs[id]}
-            activateProposalForm={() => handleProposalCreateClick(id)}
-          />
-        ))}
-        <UploadTrigger onTriggerShown={getMoreJobs} />
-      </JobCardWrapper>
+        <div className="col-12 col-md-4" style={{ position: "relative" }}>
+          <div className="main-map mt-3 mt-md-4">
+            <Map>
+              <MapMarker
+                title="Your position"
+                lat={currentLocation.lat}
+                lng={currentLocation.lng}
+                main={true}
+                needCircle={true}
+                radius={sessionUser.activityRadius}
+                circleEditable={false}
+              />
 
-      <PopupWrapper
-        onClose={jobProposalFormState.hide}
-        activeTrigger={jobProposalFormState.data.active}
-        title="Send proposal"
-        id="send_proposal"
-      >
-        <JobProposalForm
-          send={jobProposalFormState.sendProposal}
-          price={jobProposalFormState.data.price}
-          time={jobProposalFormState.data.time}
-          setTime={jobProposalFormState.setTime}
-          setPrice={jobProposalFormState.setPrice}
-        />
-      </PopupWrapper>
+              {jobsIds.map((id) => (
+                <MapMarker key={id} {...jobs[id]} />
+              ))}
+            </Map>
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 };

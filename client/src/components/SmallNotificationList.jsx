@@ -6,8 +6,6 @@ const SmallNotificationList = ({ notifications, active, onClose }) => {
   const [parentClassName, setParentClassName] = useState("");
   const [popupHelperClassName, setPopupHelperClassName] = useState("");
 
-  console.log(notifications);
-
   useEffect(() => {
     let newParentClassName =
       "dropdown-menu dropdown-menu-end navbar-notifications-list";
