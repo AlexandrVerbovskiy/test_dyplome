@@ -53,7 +53,7 @@ class User extends Controller {
         res,
         "User authoried successfully",
         {
-          userId,
+          user,
         },
         200
       );

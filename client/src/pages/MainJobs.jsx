@@ -59,7 +59,7 @@ const MainPage = () => {
     <Layout pageClassName="default-view-page main-view-page">
       <div className="row">
         <div className="col-12 col-md-8">
-          <JobCardWrapper contentClass="mt-3 mt-md-0 main-job-search-bar">
+          <JobCardWrapper contentClass="main-job-search-bar">
             <JobMainFilter value={jobsFilter} onClick={jobsFilterChange} />
           </JobCardWrapper>
 

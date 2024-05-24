@@ -20,7 +20,7 @@ const ChatMessage = ({
   onEdit,
   stopSendMedia,
   percent = null,
-  senderAvatar = null,
+  userAvatar = null,
 }) => {
   const main = useContext(MainContext);
   const { sessionUser } = main;
@@ -80,7 +80,7 @@ const ChatMessage = ({
       <div className="d-flex">
         <img
           src={generateFullUserImgPath(
-            senderAvatar,
+            userAvatar,
             activeChat.chatType === "system" && activeChat.userId == null
           )}
           width="48"

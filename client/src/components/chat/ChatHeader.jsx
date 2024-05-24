@@ -27,7 +27,7 @@ const ChatHeader = () => {
   const isSystem = chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? activeChat.chatAvatar : activeChat.avatar,
+    isGroup ? activeChat.chatAvatar : activeChat.userAvatar,
     isSystem && activeChat.userId == null
   );
 
@@ -40,7 +40,6 @@ const ChatHeader = () => {
   if (isPersonal || (isSystem && activeChat.userId != null)) {
     chatName = activeChat.userNick ?? activeChat.userEmail;
   }
-
   return (
     <div id="chat_header" className="card d-flex align-items-center">
       <div className="chat-toggle-btn" onClick={handleGoBackClick}>

@@ -28,15 +28,20 @@ const ChatListElem = ({
     setChatWindow();
   };
 
-  const content =
-    chat.type === "text" ? chat.content.split("<div>")[0] : chat.type;
+  let content = chat.type;
+
+  if (chat.type === "text") {
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = chat.content;
+    content = tempElement.innerText;
+  }
 
   const isGroup = chat.chatType === "group";
   const isPersonal = chat.chatType === "personal";
   const isSystem = chat.chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? chat.chatAvatar : chat.avatar,
+    isGroup ? chat.chatAvatar : chat.userAvatar,
     isSystem && chat.userId == null
   );
 
@@ -47,7 +52,7 @@ const ChatListElem = ({
   }
 
   if (isPersonal || (isSystem && chat.userId != null)) {
-    chatName = chat.userEmail;
+    chatName = chat.userNick ?? chat.userEmail;
   }
 
   const userOnlineClass =

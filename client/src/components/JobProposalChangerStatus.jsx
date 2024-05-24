@@ -26,7 +26,7 @@ const JobProposalChangerStatus = ({
 }) => {
   let nextStatus = null;
   let changeStatusReq = null;
-  const jobStatus = config["JOB_STATUSES"];
+  const jobStatus = JSON.parse(JSON.stringify(config["JOB_STATUSES"]));
   const main = useContext(MainContext);
   const [activeAcceptChangePopup, setActiveAcceptChangePopup] = useState(false);
   const [acceptChangePopupProps, setAcceptChangePopupProps] = useState(null);
@@ -37,7 +37,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "inProgress";
       changeStatusReq = acceptJobProposal;
-      jobStatus[nextStatus] = "Accept";
+      jobStatus[nextStatus]["text"] = "Accept";
     }
 
     if (
@@ -46,7 +46,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "completed";
       changeStatusReq = acceptCompleteJobProposal;
-      jobStatus[nextStatus] = "Accept";
+      jobStatus[nextStatus]["text"] = "Accept";
     }
   }
 
@@ -57,7 +57,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "awaitingExecutionConfirmation";
       changeStatusReq = completeJobProposal;
-      jobStatus[nextStatus] = "Done";
+      jobStatus[nextStatus]["text"] = "Done";
     }
 
     if (
@@ -66,7 +66,7 @@ const JobProposalChangerStatus = ({
     ) {
       nextStatus = "cancelled";
       changeStatusReq = acceptCancelJobProposal;
-      jobStatus[nextStatus] = "Accept";
+      jobStatus[nextStatus]["text"] = "Accept";
     }
   }
 
@@ -77,7 +77,10 @@ const JobProposalChangerStatus = ({
     (actualStatus.toLowerCase() ==
       jobStatus["inProgress"]["value"].toLowerCase() ||
       actualStatus.toLowerCase() ==
-        jobStatus["awaitingExecutionConfirmation"]["value"].toLowerCase());
+        jobStatus["awaitingExecutionConfirmation"]["value"].toLowerCase() ||
+      (isJobOwner &&
+        actualStatus.toLowerCase() ==
+          jobStatus["pending"]["value"].toLowerCase()));
 
   const nextStatusInfo = jobStatus[nextStatus];
   let rejectStatusInfo = jobStatus["awaitingCancellationConfirmation"];
@@ -88,7 +91,7 @@ const JobProposalChangerStatus = ({
     actualStatus.toLowerCase() == jobStatus["pending"]["value"].toLowerCase()
   ) {
     rejectStatusInfo = jobStatus["rejected"];
-    rejectStatusInfo["text"] = "Cancel";
+    rejectStatusInfo["text"] = "Reject";
   }
 
   const onSuccessChangeStatus = (res) => {
@@ -155,7 +158,7 @@ const JobProposalChangerStatus = ({
           className={`btn btn-${nextStatusInfo["color"]} px-3 py-1 w-100 d-flex justify-content-center align-items-center`}
           onClick={handleChangeClick}
         >
-          Make "{nextStatusInfo["text"]}"
+          {nextStatusInfo["text"]}
         </button>
       )}
 
@@ -165,7 +168,7 @@ const JobProposalChangerStatus = ({
           onClick={handleCancelClick}
           className={`btn btn-${rejectStatusInfo["color"]} px-3 py-1 w-100 d-flex justify-content-center align-items-center mt-2 mt-md-0`}
         >
-          Make "{rejectStatusInfo["text"]}"
+          {rejectStatusInfo["text"]}
         </button>
       )}
 

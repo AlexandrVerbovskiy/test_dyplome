@@ -28,7 +28,12 @@ const BaseJobEntityTemplate = ({
             <div className="row">
               <div className="job-edit-map col-12 col-md-6">
                 <Map>
-                  <MapMarker title={jobTitle} lat={jobLat} lng={jobLng} />
+                  <MapMarker
+                    title={jobTitle}
+                    lat={jobLat}
+                    lng={jobLng}
+                    main={true}
+                  />
                 </Map>
               </div>
 
@@ -41,7 +46,10 @@ const BaseJobEntityTemplate = ({
                 />
                 {isProposal ? (
                   <>
-                    <ViewInput label="Price per hour, $" value={pricePerHour.toFixed(2)} />
+                    <ViewInput
+                      label="Price per hour, $"
+                      value={pricePerHour.toFixed(2)}
+                    />
 
                     <ViewInput
                       label="Working needed time, h"

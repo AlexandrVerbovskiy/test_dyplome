@@ -40,7 +40,7 @@ body:has(.admin-page-wrapper) .alert,
 
 .profile-edit-map,
 .job-edit-map {
-  height: 450px;
+  height: 250px;
 }
 
 .profile-edit-inputs,
