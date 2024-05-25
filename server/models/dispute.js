@@ -180,6 +180,7 @@ class Dispute extends Model {
 
   baseGetMany = (props) => {
     const { filter } = props;
+    console.log(filter);
     const filterRes = this.baseStrFilter(filter);
     const baseQuery =
       "JOIN users ON disputes.user_id = users.id " +

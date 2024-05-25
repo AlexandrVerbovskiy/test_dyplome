@@ -7,7 +7,7 @@ CREATE TABLE jobs (
     lat double DEFAULT NULL,
     lng double DEFAULT NULL,
     author_id INTEGER NOT NULL,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT 1,
     time_created timestamp DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (author_id) REFERENCES users (id)
 );

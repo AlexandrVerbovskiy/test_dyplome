@@ -1,6 +1,6 @@
 /* Replace with your SQL commands */
 CREATE TABLE reply_comments (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     sender_id INTEGER NOT NULL,
     parent_id INTEGER NOT NULL,
     reply_comment_id INTEGER DEFAULT NULL,

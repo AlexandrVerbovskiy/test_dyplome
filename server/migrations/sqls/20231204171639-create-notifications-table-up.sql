@@ -7,5 +7,5 @@ CREATE TABLE notifications (
     link VARCHAR(255) DEFAULT NULL,
     title TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );

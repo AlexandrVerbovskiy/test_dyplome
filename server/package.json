@@ -7,7 +7,22 @@
     "client": "cd ../client & npm run start",
     "server": "node index.js",
     "dev-server": "nodemon index.js",
-    "dev": "concurrently \"npm run dev-server\" \"npm run client\""
+    "dev": "concurrently \"npm run dev-server\" \"npm run client\"",
+    "migration-create": "npx db-migrate create",
+
+    "test-iteration":"npx mocha",
+
+    "dev-migrate": "npx db-migrate up -e dev --config database.json",
+    "dev-migration-rollback": "npx db-migrate down -e dev",
+    "dev-migration-clear": "npx db-migrate down -e dev --config database.json",
+
+    "test-migrate": "npx db-migrate up -e test --config database.json",
+    "test-migration-rollback": "npx db-migrate down -e test",
+    "test-migration-clear": "npx db-migrate down -e test --config database.json",
+
+    "prod-migrate": "npx db-migrate up -e prod --config database.json",
+    "prod-migration-rollback": "npx db-migrate down -e prod",
+    "prod-migration-clear": "npx db-migrate down -e prod --config database.json"
   },
   "keywords": [],
   "author": "",

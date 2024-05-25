@@ -31,10 +31,11 @@ class GetMoneyRequest extends Model {
 
   create = async (transactionId, senderId, money, platform, body) =>
     await this.errorWrapper(async () => {
-      await this.dbQueryAsync(
+      const request = await this.dbQueryAsync(
         "INSERT INTO get_money_requests (user_transaction_id, sender_id, money, platform, body) VALUES (?, ?, ?, ?, ?)",
         [transactionId, senderId, money, platform, JSON.stringify(body)]
       );
+      return request.insertId;
     });
 
   accept = async (requestId) =>

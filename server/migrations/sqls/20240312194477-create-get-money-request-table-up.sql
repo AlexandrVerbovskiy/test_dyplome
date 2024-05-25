@@ -9,6 +9,6 @@ CREATE TABLE get_money_requests (
     status VARCHAR(255) NOT NULL DEFAULT "in_process",
     done_at TIMESTAMP DEFAULT NULL,
     body TEXT NOT NULL,
-    FOREIGN KEY (sender_id) REFERENCES users (id)
+    FOREIGN KEY (sender_id) REFERENCES users (id),
     FOREIGN KEY (user_transaction_id) REFERENCES payment_transactions (id)
 );

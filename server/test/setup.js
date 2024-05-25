@@ -3,10 +3,11 @@ const util = require("util");
 require("dotenv").config();
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.TEST_DB_HOST,
+  user: process.env.TEST_DB_USER,
+  password: process.env.TEST_DB_PASSWORD,
+  database: process.env.TEST_DB_DATABASE,
+  charset: process.env.TEST_DB_CHARSET,
 });
 
 db.connect((err) => {
@@ -16,7 +17,5 @@ db.connect((err) => {
   }
   console.log("Connected to the database as id", db.threadId);
 });
-
-db.queryAsync = util.promisify(db.query).bind(db);
 
 module.exports = db;

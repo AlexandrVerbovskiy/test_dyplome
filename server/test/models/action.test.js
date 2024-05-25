@@ -2,34 +2,40 @@ const chai = require("chai");
 const expect = chai.expect;
 const db = require("../setup");
 const Action = require("../../models/action");
+const User = require("../../models/user");
 
-describe("Action Model with Real Database", () => {
-  let action;
+describe("Action Model", () => {
+  let actionModel;
+  let user;
+  let userId;
 
-  before(() => {
-    action = new Action(db);
+  before(async () => {
+    user = new User(db);
+    actionModel = new Action(db);
+    userId = await user.create("john@example.com", "john@example.com");
   });
 
   beforeEach(async () => {
-    await db.queryAsync("DELETE FROM users_actions");
+    await actionModel.dbQueryAsync("DELETE FROM users_actions");
   });
 
-  after(() => {
+  after(async() => {
+    await actionModel.dbQueryAsync("DELETE FROM users_actions");
+    await user.dbQueryAsync("DELETE FROM users");
     db.end();
   });
 
   describe("create", () => {
     it("should insert a new action and return the insertId", async () => {
-      const userId = 1;
       const type = "test";
       const key = "testKey";
       const data = "testData";
 
-      const insertId = await action.create(userId, type, key, data);
+      const insertId = await actionModel.create(userId, type, key, data);
 
       expect(insertId).to.be.a("number");
 
-      const result = await db.queryAsync(
+      const result = await actionModel.dbQueryAsync(
         "SELECT * FROM users_actions WHERE id = ?",
         [insertId]
       );
@@ -40,15 +46,14 @@ describe("Action Model with Real Database", () => {
 
   describe("deleteById", () => {
     it("should delete an action by id and userId", async () => {
-      const userId = 1;
       const type = "test";
       const key = "testKey";
       const data = "testData";
 
-      const insertId = await action.create(userId, type, key, data);
-      await action.deleteById(userId, insertId);
+      const insertId = await actionModel.create(userId, type, key, data);
+      await actionModel.deleteById(userId, insertId);
 
-      const result = await db.queryAsync(
+      const result = await actionModel.dbQueryAsync(
         "SELECT * FROM users_actions WHERE id = ?",
         [insertId]
       );
@@ -58,15 +63,14 @@ describe("Action Model with Real Database", () => {
 
   describe("deleteByKeyAndType", () => {
     it("should delete an action by key, type, and userId", async () => {
-      const userId = 1;
       const type = "test";
       const key = "testKey";
       const data = "testData";
 
-      const insertId = await action.create(userId, type, key, data);
-      await action.deleteByKeyAndType(userId, key, type);
+      const insertId = await actionModel.create(userId, type, key, data);
+      await actionModel.deleteByKeyAndType(userId, key, type);
 
-      const result = await db.queryAsync(
+      const result = await actionModel.dbQueryAsync(
         "SELECT * FROM users_actions WHERE id = ?",
         [insertId]
       );
@@ -76,14 +80,13 @@ describe("Action Model with Real Database", () => {
 
   describe("getByKeyAndType", () => {
     it("should get an action by key, type, and userId", async () => {
-      const userId = 1;
       const type = "test";
       const key = "testKey";
       const data = "testData";
 
-      await action.create(userId, type, key, data);
+      await actionModel.create(userId, type, key, data);
 
-      const result = await action.getByKeyAndType(userId, key, type);
+      const result = await actionModel.getByKeyAndType(userId, key, type);
 
       expect(result).to.include({ data });
     });
@@ -91,14 +94,13 @@ describe("Action Model with Real Database", () => {
 
   describe("getById", () => {
     it("should get an action by id and userId", async () => {
-      const userId = 1;
       const type = "test";
       const key = "testKey";
       const data = "testData";
 
-      const insertId = await action.create(userId, type, key, data);
+      const insertId = await actionModel.create(userId, type, key, data);
 
-      const result = await action.getById(insertId, userId);
+      const result = await actionModel.getById(insertId, userId);
 
       expect(result).to.include({ data });
     });
@@ -106,14 +108,13 @@ describe("Action Model with Real Database", () => {
 
   describe("getUserActions", () => {
     it("should get all actions for a user by userId", async () => {
-      const userId = 1;
       const actionsData = [
         { type: "testType1", key: "testKey1", data: "testData1" },
         { type: "testType2", key: "testKey2", data: "testData2" },
       ];
 
       for (const actionData of actionsData) {
-        await action.create(
+        await actionModel.create(
           userId,
           actionData.type,
           actionData.key,
@@ -121,7 +122,7 @@ describe("Action Model with Real Database", () => {
         );
       }
 
-      const result = await action.getUserActions(userId);
+      const result = await actionModel.getUserActions(userId);
 
       expect(result).to.have.lengthOf(actionsData.length);
       for (const [index, actionData] of actionsData.entries()) {
