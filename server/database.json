@@ -1,9 +1,0 @@
-{
-    "dev": {
-      "driver": "mysql",
-      "user": "root",
-      "password": "",
-      "multipleStatements": true,
-      "database":"dyplome"
-    }
-  }
