@@ -182,7 +182,7 @@ const Navbar = ({
                         ? "active"
                         : ""
                     }`}
-                    href="/profile-edit"
+                    href="/profile"
                   >
                     <i className="bx bx-user" />
                     Profile
@@ -198,6 +198,20 @@ const Navbar = ({
                   >
                     <i className="bx bx-money" />
                     Balance
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    className={`dropdown-item ${
+                      window.location.pathname == "/profile-edit"
+                        ? "active"
+                        : ""
+                    }`}
+                    href="/profile-edit"
+                  >
+                    <i className="bx bx-edit-alt" />
+                    Profile Edit
                   </a>
                 </li>
 

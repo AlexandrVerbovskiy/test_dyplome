@@ -456,6 +456,13 @@ class User extends Controller {
       return this.sendResponseSuccess(res, "User getted success", user);
     });
 
+  getProfileStatistic = (req, res) =>
+    this.errorWrapper(res, async () => {
+      const userId = req.userData.userId;
+      const user = await this.getFullUserInfoWithStatistic(userId);
+      return this.sendResponseSuccess(res, "Statistic getted success", user);
+    });
+
   getPersonalNotifications = (req, res) =>
     this.errorWrapper(res, async () => {
       const userId = req.userData.userId;

@@ -34,11 +34,16 @@ import {
   Notifications,
   MyJobs,
 } from "pages";
+import CurrentUserProfile from "pages/CurrentUserProfile";
 
 const mainRouter = createBrowserRouter([
   {
     path: "/chat/:type?/:accountId?",
     element: <Chat />,
+  },
+  {
+    path: "/profile",
+    element: <CurrentUserProfile />,
   },
   {
     path: "/profile-edit",

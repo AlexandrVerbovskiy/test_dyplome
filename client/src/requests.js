@@ -271,6 +271,12 @@ export const getUserStatistic = {
   convertRes: (res) => res.data ?? {},
 };
 
+export const getProfileStatistic = {
+  url: () => `get-profile-statistic`,
+  type: "get",
+  convertRes: (res) => res.data ?? {},
+};
+
 export const createComment = {
   url: (type) => `create-comment/${type}`,
   type: "post",

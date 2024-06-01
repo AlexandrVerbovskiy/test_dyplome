@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm run dev-server\" \"npm run client\"",
     "migration-create": "npx db-migrate create",
 
-    "test-iteration":"npx mocha",
+    "test": "npx mocha",
 
     "dev-migrate": "npx db-migrate up -e dev --config database.json",
     "dev-migration-rollback": "npx db-migrate down -e dev",
@@ -18,7 +18,7 @@
 
     "test-migrate": "npx db-migrate up -e test --config database.json",
     "test-migration-rollback": "npx db-migrate down -e test",
-    "test-migration-clear": "npx db-migrate down -e test --config database.json",
+    "test-migration-clear": "npx db-migrate reset -e test",
 
     "prod-migrate": "npx db-migrate up -e prod --config database.json",
     "prod-migration-rollback": "npx db-migrate down -e prod",

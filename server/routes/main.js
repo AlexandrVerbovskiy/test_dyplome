@@ -197,7 +197,11 @@ function route(app, db, io) {
 
   app.post("/assign-dispute", isAdmin, disputeController.assignAdminToDispute);
 
-  app.post("/unassign-dispute", isAdmin, disputeController.unassignAdminToDispute);
+  app.post(
+    "/unassign-dispute",
+    isAdmin,
+    disputeController.unassignAdminToDispute
+  );
 
   app.get("/get-job-dispute/:disputeId", isAdmin, disputeController.getById);
 
@@ -220,6 +224,8 @@ function route(app, db, io) {
     isAuth,
     userController.getUserStatistic
   );
+
+  app.get("/get-profile-statistic", isAuth, userController.getProfileStatistic);
 
   app.post("/create-comment/:type?", isAuth, commentController.create);
 

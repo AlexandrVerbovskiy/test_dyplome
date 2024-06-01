@@ -27,7 +27,9 @@ class JobProposal extends Model {
   getById = async (proposalId) =>
     await this.errorWrapper(async () => {
       const proposals = await this.dbQueryAsync(
-        `SELECT ${this.__fullJobRequestInfo} WHERE job_requests.id = ?`,
+        `SELECT authors.nick as authorNick, authors.email as authorEmail, ${this.__fullJobRequestInfo} 
+        JOIN users as authors ON authors.id = jobs.author_id 
+        WHERE job_requests.id = ?`,
         [proposalId]
       );
 

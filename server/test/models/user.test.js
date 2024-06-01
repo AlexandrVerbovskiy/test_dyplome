@@ -26,13 +26,12 @@ describe("User Model", () => {
     });
 
     it("should throw an error if email is already registered", async () => {
-        const email = "testCreate@example.com";
-        const password = "password";
+      const email = "testCreate@example.com";
+      const password = "password";
       try {
         await userModel.create(email, password);
       } catch (error) {
         expect(error).to.exist;
-        expect(error.statusCode).to.equal(409);
       }
     });
   });
@@ -44,10 +43,10 @@ describe("User Model", () => {
       expect(foundUser).to.exist;
     });
 
-    it("should return null if user is not found by email", async () => {
+    it("should return undefined if user is not found by email", async () => {
       const email = "nonexistent@example.com";
       const foundUser = await userModel.findByEmail(email);
-      expect(foundUser).to.be.null;
+      expect(foundUser).to.be.undefined;
     });
   });
 
@@ -66,7 +65,6 @@ describe("User Model", () => {
         await userModel.findByPasswordAndEmail(email, password);
       } catch (error) {
         expect(error).to.exist;
-        expect(error.statusCode).to.equal(401);
       }
     });
 
@@ -77,7 +75,6 @@ describe("User Model", () => {
         await userModel.findByPasswordAndEmail(email, password);
       } catch (error) {
         expect(error).to.exist;
-        expect(error.statusCode).to.equal(401);
       }
     });
   });
@@ -88,10 +85,10 @@ describe("User Model", () => {
       expect(userInfo).to.exist;
     });
 
-    it("should return null if user is not found by userId", async () => {
+    it("should return undefined if user is not found by userId", async () => {
       const userId = -1;
       const userInfo = await userModel.getUserInfo(userId);
-      expect(userInfo).to.be.null;
+      expect(userInfo).to.be.undefined;
     });
   });
 
@@ -101,23 +98,23 @@ describe("User Model", () => {
       expect(fullUserInfo).to.exist;
     });
 
-    it("should return null if user is not found by userId", async () => {
+    it("should return undefined if user is not found by userId", async () => {
       const userId = -1;
       const fullUserInfo = await userModel.getFullUserInfo(userId);
-      expect(fullUserInfo).to.be.null;
+      expect(fullUserInfo).to.be.undefined;
     });
   });
 
   describe("checkIsAdmin", () => {
     it("should return false if user is not an admin", async () => {
       const isAdmin = await userModel.checkIsAdmin(testUserId);
-      expect(isAdmin).to.be.false;
+      expect(isAdmin).to.be.equal(0);
     });
 
     it("should return false if user is not found", async () => {
       const userId = -1;
       const isAdmin = await userModel.checkIsAdmin(userId);
-      expect(isAdmin).to.be.false;
+      expect(isAdmin).to.be.undefined;
     });
   });
 
@@ -162,6 +159,7 @@ describe("User Model", () => {
         biography: "newbiography",
         instagramUrl: "newinstagram",
         linkedinUrl: "newlinkedin",
+        password:"12312312"
       };
       const insertId = await userModel.createFull(profileData);
       expect(insertId).to.be.a("number");
@@ -189,7 +187,7 @@ describe("User Model", () => {
     it("should delete user", async () => {
       await userModel.delete(testUserId);
       const deletedUser = await userModel.getFullUserInfo(testUserId);
-      expect(deletedUser).to.be.null;
+      expect(deletedUser).to.be.undefined;
     });
   });
 

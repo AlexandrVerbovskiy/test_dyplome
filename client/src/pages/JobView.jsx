@@ -59,6 +59,8 @@ const JobView = () => {
     handleGetMoreReplyComments(parentCommentId);
   };
 
+  console.log(job);
+
   return (
     <Layout pageClassName="job-view-page">
       <div className="page-content">
@@ -75,6 +77,15 @@ const JobView = () => {
               </div>
 
               <div className="col-12 col-md-6 job-edit-inputs">
+                <div>
+                  <label className="form-label">Job Author</label>
+                  <div className="input-group">
+                    <div className="form-control">
+                      <a href={`/users/${job.authorId}`}>{job.authorNick ?? job.authorEmail}</a>
+                    </div>
+                  </div>
+                </div>
+
                 <ViewInput label="Job title" value={job.title} />
                 <ViewInput label="Job total price" value={job.price} />
                 <ViewInput label="Job address" value={job.address} />

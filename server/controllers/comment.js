@@ -69,8 +69,6 @@ class Comment extends Controller {
         const replyCommentType = req.body.parentType;
         const replyCommentId = req.body.replyCommentId;
 
-        console.log(req.body);
-
         comment = await this.replyCommentModel.create({
           senderId: userId,
           parentId: entityId,
@@ -79,33 +77,46 @@ class Comment extends Controller {
           replyCommentId,
         });
 
-        if (replyCommentType == "job") {
-          const job = await this.jobModel.getById(entityId);
-          notificationGetterId = job.authorId;
-          notificationRedirectUrl = "/job-view/" + entityId;
-        }
+        if (notificationGetterId != userId) {
+          if (replyCommentType == "job") {
+            const repliedComment = await this.jobCommentModel.getById(
+              replyCommentId
+            );
 
-        if (replyCommentType == "employee") {
-          notificationGetterId = entityId;
-          notificationRedirectUrl = "/users/" + entityId;
-        }
+            notificationGetterId = repliedComment.senderId;
+            notificationRedirectUrl = "/job-view/" + entityId;
+          }
 
-        if (replyCommentType == "worker") {
-          notificationGetterId = entityId;
-          notificationRedirectUrl = "/users/" + entityId;
+          if (replyCommentType == "employee") {
+            const repliedComment = await this.employeeCommentModel.getById(
+              replyCommentId
+            );
+
+            notificationGetterId = repliedComment.senderId;
+            notificationRedirectUrl = "/users/" + entityId;
+          }
+
+          if (replyCommentType == "worker") {
+            const repliedComment = await this.workerCommentModel.getById(
+              replyCommentId
+            );
+
+            notificationGetterId = repliedComment.senderId;
+            notificationRedirectUrl = "/users/" + entityId;
+          }
+
+          this.sentCommentNotification(
+            {
+              senderNick: user.nick,
+              senderEmail: user.email,
+              commentType: commentType,
+              commentBody: body,
+              redirectLink: notificationRedirectUrl,
+            },
+            notificationGetterId
+          );
         }
       }
-
-      this.sentCommentNotification(
-        {
-          senderNick: user.nick,
-          senderEmail: user.email,
-          commentType: commentType,
-          commentBody: body,
-          redirectLink: notificationRedirectUrl,
-        },
-        notificationGetterId
-      );
 
       return this.sendResponseSuccess(res, "Comment sended success", comment);
     });

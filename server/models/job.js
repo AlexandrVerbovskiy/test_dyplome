@@ -37,7 +37,9 @@ class Job extends Model {
   getById = async (jobId) =>
     await this.errorWrapper(async () => {
       const jobs = await this.dbQueryAsync(
-        `SELECT ${this.__selectAllFields} FROM jobs WHERE id = ?`,
+        `SELECT ${this.__selectAllFields}, users.nick as authorNick, users.email as authorEmail FROM jobs
+        join users on users.id = jobs.author_id 
+        WHERE jobs.id = ?`,
         [jobId]
       );
       if (jobs.length) return jobs[0];
@@ -59,7 +61,7 @@ class Job extends Model {
       const params = [latitude, longitude];
 
       const jobSkipIdsRequest = "jobs.id NOT IN (?)";
-      const jobFilterRequest = `(jobs.title like "%${filter}%" OR nick like "%${filter}%")`;
+      const jobFilterRequest = `(jobs.title like "%${filter}%" OR nick like "%${filter}%" OR jobs.address like "%${filter}%")`;
 
       query += " WHERE jobs.active = true";
 

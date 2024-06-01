@@ -103,6 +103,9 @@ const JobProposalView = () => {
       isProposal={true}
       pricePerHour={proposal.price}
       priceExecutionTime={proposal.executionTime}
+      authorEmail={proposal.authorEmail}
+      authorId={proposal.authorId}
+      authorNIck={proposal.authorNIck}
     >
       <hr />
 
