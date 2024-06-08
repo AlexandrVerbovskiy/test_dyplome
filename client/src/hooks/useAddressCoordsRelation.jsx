@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import useMap from "./useMap";
-import config from "config";
+import config from "_config";
 
 const useAddressCoordsRelation = () => {
   const { fullAddressToString, getAddressByCoords, getCoordsByAddress } =

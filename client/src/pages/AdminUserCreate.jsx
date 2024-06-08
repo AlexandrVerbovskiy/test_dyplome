@@ -12,28 +12,30 @@ const AdminUserEdit = () => {
     const hasId = !!baseData.id;
     const request = hasId ? updateUser : createUser;
 
-    if (hasId) {
-      formData.append("userId", baseData.id);
-    }
+    try {
+      if (hasId) {
+        formData.append("userId", baseData.id);
+      }
 
-    const user = await main.request({
-      url: request.url(),
-      type: request.type,
-      convertRes: request.convertRes,
-      data: formData,
-    });
+      const user = await main.request({
+        url: request.url(),
+        type: request.type,
+        convertRes: request.convertRes,
+        data: formData,
+      });
 
-    if (!hasId) {
-      window.location.replace("/user-edit/" + user.id);
-    }
+      if (!hasId) {
+        window.location.replace("/user-edit/" + user.id);
+      }
 
-    if (hasId) {
-      main.setSuccess("User updated successfully")
-    }else{
-      main.setSuccess("User created successfully")
-    }
+      if (hasId) {
+        main.setSuccess("User updated successfully");
+      } else {
+        main.setSuccess("User created successfully");
+      }
 
-    setBaseData(user);
+      setBaseData(user);
+    } catch (e) {}
   };
 
   return (

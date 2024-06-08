@@ -9,24 +9,26 @@ const AdminJobCreate = () => {
   const [baseData, setBaseData] = useState({});
 
   const onSave = async (formData) => {
-    const hasId = !!baseData.id;
+    try {
+      const hasId = !!baseData.id;
 
-    if (hasId) {
-      formData.append("jobId", baseData.id);
-    }
+      if (hasId) {
+        formData.append("jobId", baseData.id);
+      }
 
-    const job = await main.request({
-      url: adminUpdateJob.url(),
-      type: adminUpdateJob.type,
-      convertRes: adminUpdateJob.convertRes,
-      data: formData,
-    });
+      const job = await main.request({
+        url: adminUpdateJob.url(),
+        type: adminUpdateJob.type,
+        convertRes: adminUpdateJob.convertRes,
+        data: formData,
+      });
 
-    if (!hasId) {
-      window.location.replace("/job-edit/" + job.id);
-    }
+      if (!hasId) {
+        window.location.replace("/job-edit/" + job.id);
+      }
 
-    setBaseData(job);
+      setBaseData(job);
+    } catch (e) {}
   };
 
   return (

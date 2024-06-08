@@ -8,7 +8,7 @@ import {
 import { MainContext } from "contexts";
 import { stripeCharge } from "requests";
 import { loadStripe } from "@stripe/stripe-js";
-import config from "config";
+import config from "_config";
 import Input from "./Input";
 
 const stripePromise = loadStripe(config.STRIPE_PUBLIC_KEY);

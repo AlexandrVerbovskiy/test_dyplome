@@ -24,9 +24,8 @@ const SignIn = () => {
       });
 
       localStorage.setItem("token", token);
-      setSuccess("Logged in successfully");
       setSessionUser(user);
-      redirect("/");
+      window.location.href = "/?success=Logged in successfully";
     } catch (e) {
       setError(e.message);
     }

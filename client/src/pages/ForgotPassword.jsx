@@ -6,7 +6,7 @@ import { redirect } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const { request, setSuccess, setError } = useContext(MainContext);
+  const { request, setSuccess } = useContext(MainContext);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -19,8 +19,8 @@ const ForgotPassword = () => {
         convertRes: forgotPassword.convertRes,
       });
 
-      setSuccess("Letter to reset password sent successfully");
-      redirect("/");
+      window.location.href =
+        "/?success=Letter to reset password sent successfully";
     } catch (e) {}
   };
 

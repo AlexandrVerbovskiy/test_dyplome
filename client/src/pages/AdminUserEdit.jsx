@@ -27,19 +27,21 @@ const AdminUserEdit = () => {
   }, [id]);
 
   const onSaveProfile = async (formData) => {
-    if (baseData.id) {
-      formData.append("userId", baseData.id);
-    }
+    try {
+      if (baseData.id) {
+        formData.append("userId", baseData.id);
+      }
 
-    const user = await main.request({
-      url: updateUser.url(),
-      type: updateUser.type,
-      convertRes: updateUser.convertRes,
-      data: formData,
-    });
+      const user = await main.request({
+        url: updateUser.url(),
+        type: updateUser.type,
+        convertRes: updateUser.convertRes,
+        data: formData,
+      });
 
-    main.setSuccess("User updated successfully");
-    setBaseData(user);
+      main.setSuccess("User updated successfully");
+      setBaseData(user);
+    } catch (e) {}
   };
 
   return (

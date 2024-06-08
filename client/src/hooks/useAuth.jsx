@@ -44,7 +44,7 @@ const useAuth = (request) => {
   const logout = () => {
     localStorage.removeItem("token");
     setSessionUser(null);
-    redirect("/");
+    window.location.href = "/?success=Successfully logged out";
   };
 
   return {

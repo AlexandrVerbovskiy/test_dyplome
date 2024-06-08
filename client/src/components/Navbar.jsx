@@ -126,7 +126,7 @@ const Navbar = ({
                 role="button"
                 onClick={handleActivateNotificationsPopup}
               >
-                {true && (
+                {false && (
                   <span className="alert-count">{countNewNotifications}</span>
                 )}
                 <i className="bx bx-bell"></i>
@@ -137,7 +137,7 @@ const Navbar = ({
                 href="/notifications"
                 role="button"
               >
-                {true && (
+                {false && (
                   <span className="alert-count">{countNewNotifications}</span>
                 )}
                 <i className="bx bx-bell"></i>

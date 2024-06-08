@@ -26,27 +26,29 @@ const VisitedUserLineChart = () => {
     type,
     { startYear, startMonth, endYear, endMonth }
   ) => {
-    const userInfos = await main.request({
-      url: getGroupedVisitedUsersInfo.url(),
-      type: getGroupedVisitedUsersInfo.type,
-      convertRes: getGroupedVisitedUsersInfo.convertRes,
-      data: getGroupedVisitedUsersInfo.convertData(type, {
-        startYear,
-        startMonth,
-        endYear,
-        endMonth,
-      }),
-    });
+    try {
+      const userInfos = await main.request({
+        url: getGroupedVisitedUsersInfo.url(),
+        type: getGroupedVisitedUsersInfo.type,
+        convertRes: getGroupedVisitedUsersInfo.convertRes,
+        data: getGroupedVisitedUsersInfo.convertData(type, {
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
+        }),
+      });
 
-    setIsFirst(false);
+      setIsFirst(false);
 
-    setVisitedUsersGrouped(
-      convertDataArrayToObject(
-        userInfos.visitedUsers ?? [],
-        "count",
-        visitedUserGroupType
-      )
-    );
+      setVisitedUsersGrouped(
+        convertDataArrayToObject(
+          userInfos.visitedUsers ?? [],
+          "count",
+          visitedUserGroupType
+        )
+      );
+    } catch (e) {}
   };
 
   useEffect(() => {

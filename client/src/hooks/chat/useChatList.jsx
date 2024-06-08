@@ -242,9 +242,9 @@ const useChatList = ({ onInit, getRequest }) => {
     });
   };
 
-  const deactivateChatInList = (chatId, deleteTime) => {
+  const deactivateChatInList = (chatId, deleteTime) => {    
     setChatList((prev) => {
-      prev.map((elem) => {
+      return prev.map((elem) => {
         if (elem.chatId == chatId) {
           return { ...elem, deleteTime };
         }

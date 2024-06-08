@@ -25,6 +25,12 @@ export const resetPassword = {
   convertRes: (res) => res.data,
 };
 
+export const updatePassword = {
+  url: () => "update-password",
+  type: "post",
+  convertRes: (res) => res.data,
+};
+
 export const validateToken = {
   url: () => "check-token",
   type: "post",

@@ -85,17 +85,19 @@ const useComments = ({ type, entityId }) => {
   const handleCreateComment = async (data) => {
     data["entityId"] = entityId;
 
-    const res = await main.request({
-      data,
-      url: createComment.url(type),
-      type: createComment.type,
-      convertRes: createComment.convertRes,
-    });
+    try {
+      const res = await main.request({
+        data,
+        url: createComment.url(type),
+        type: createComment.type,
+        convertRes: createComment.convertRes,
+      });
 
-    setComments((prev) => [
-      { ...res, replies: [], countReplyShown: 0, repliesCount: 0 },
-      ...prev,
-    ]);
+      setComments((prev) => [
+        { ...res, replies: [], countReplyShown: 0, repliesCount: 0 },
+        ...prev,
+      ]);
+    } catch (e) {}
   };
 
   const handleCreateReplyComment = async (
@@ -108,28 +110,32 @@ const useComments = ({ type, entityId }) => {
     data["parentType"] = parentType;
     data["entityId"] = entityId;
 
-    const res = await main.request({
-      data,
-      url: createComment.url("reply"),
-      type: createComment.type,
-      convertRes: createComment.convertRes,
-    });
+    try {
+      const res = await main.request({
+        data,
+        url: createComment.url("reply"),
+        type: createComment.type,
+        convertRes: createComment.convertRes,
+      });
 
-    addReplyComments(commentId, [{ ...res }], "start", false);
+      addReplyComments(commentId, [{ ...res }], "start", false);
+    } catch (e) {}
   };
 
   const handleGetMoreReplyComments = async (commentId) => {
     const sendData = { parentId: commentId, needCount: true };
 
-    const data = await main.request({
-      url: getComments.url("reply"),
-      type: createComment.type,
-      data: sendData,
-      convertRes: getComments.convertRes,
-    });
+    try {
+      const data = await main.request({
+        url: getComments.url("reply"),
+        type: createComment.type,
+        data: sendData,
+        convertRes: getComments.convertRes,
+      });
 
-    const comments = data.comments ?? [];
-    addReplyComments(commentId, comments);
+      const comments = data.comments ?? [];
+      addReplyComments(commentId, comments);
+    } catch (e) {}
   };
 
   return {

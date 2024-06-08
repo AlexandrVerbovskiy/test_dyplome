@@ -10,7 +10,7 @@ import {
 } from "requests";
 import { Link } from "react-router-dom";
 import { ViewInput, BaseJobEntityTemplate, YesNoPopup } from "components";
-import CONFIG from "../config";
+import CONFIG from "../_config";
 import { generateFullUserImgPath } from "utils";
 import StarRatingView from "components/StarRatingView";
 

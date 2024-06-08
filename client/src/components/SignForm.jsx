@@ -15,7 +15,7 @@ const SignForm = ({
             <div className="col mx-auto sign-form-body-parent">
               <div className="my-4 text-center">
                 <img
-                  src="assets/images/logo-img.png"
+                  src="/assets/images/logo-img.png"
                   width="180"
                   alt=""
                   style={{ width: "180px" }}

@@ -11,7 +11,11 @@ const NotificationElem = ({ type, title, link, body, createdAt }) => {
   const mainNotificationColor = getNotificationMainColor(type);
 
   return (
-    <a className="dropdown-item" href={link ? link : "#"}>
+    <a
+      className="dropdown-item"
+      href={link ? link : "#"}
+      style={link ? {} : { cursor: "auto" }}
+    >
       <div className="d-flex align-items-center">
         <div
           className={`notify bx bg-light-${mainNotificationColor} text-${mainNotificationColor}`}
@@ -20,7 +24,7 @@ const NotificationElem = ({ type, title, link, body, createdAt }) => {
         </div>
 
         <div className="flex-grow-1">
-          <h6 className="msg-name">
+          <h6 className="msg-name" style={{ justifyContent: "space-between" }}>
             <span>{title}</span>
             <span className="msg-time float-end">
               {fullTimeFormat(createdAt)}

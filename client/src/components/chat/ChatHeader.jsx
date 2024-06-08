@@ -27,7 +27,9 @@ const ChatHeader = () => {
   const isSystem = chatType === "system";
 
   const photo = generateFullUserImgPath(
-    isGroup ? activeChat.chatAvatar : activeChat.userAvatar,
+    isGroup
+      ? activeChat.chatAvatar
+      : activeChat.avatar ?? activeChat.userAvatar,
     isSystem && activeChat.userId == null
   );
 

@@ -1,5 +1,5 @@
 import React from "react";
-import CONFIG from "config";
+import config from "_config";
 
 const StatusElement = ({
   statusClassName,
@@ -35,7 +35,7 @@ const DisputeStatusElement = ({
   style,
   needWrapper = true,
 }) => {
-  const disputeStatuses = CONFIG["DISPUTE_STATUSES"];
+  const disputeStatuses = config["DISPUTE_STATUSES"];
 
   let disputeStatusInfoKey = null;
   if (!disputeStatus) return false;
@@ -66,7 +66,7 @@ const JobStatusElement = ({
   style,
   needWrapper = true,
 }) => {
-  const jobStatuses = CONFIG["JOB_STATUSES"];
+  const jobStatuses = config["JOB_STATUSES"];
 
   const statusInfoKey = Object.keys(jobStatuses).find(
     (key) =>

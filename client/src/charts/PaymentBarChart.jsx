@@ -40,35 +40,37 @@ const PaymentBarChart = () => {
     type,
     { startYear, startMonth, endYear, endMonth }
   ) => {
-    const paymentInfos = await main.request({
-      url: getGroupedPaymentsInfo.url(),
-      type: getGroupedPaymentsInfo.type,
-      convertRes: getGroupedPaymentsInfo.convertRes,
-      data: getGroupedPaymentsInfo.convertData(type, {
-        startYear,
-        startMonth,
-        endYear,
-        endMonth,
-      }),
-    });
+    try {
+      const paymentInfos = await main.request({
+        url: getGroupedPaymentsInfo.url(),
+        type: getGroupedPaymentsInfo.type,
+        convertRes: getGroupedPaymentsInfo.convertRes,
+        data: getGroupedPaymentsInfo.convertData(type, {
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
+        }),
+      });
 
-    setIsFirst(false);
+      setIsFirst(false);
 
-    setNewPaymentGrouped(
-      convertDataArrayToObject(
-        paymentInfos.gotSum ?? [],
-        "sum",
-        paymentGroupType
-      )
-    );
+      setNewPaymentGrouped(
+        convertDataArrayToObject(
+          paymentInfos.gotSum ?? [],
+          "sum",
+          paymentGroupType
+        )
+      );
 
-    setSpentPaymentGrouped(
-      convertDataArrayToObject(
-        paymentInfos.spentSum ?? [],
-        "sum",
-        paymentGroupType
-      )
-    );
+      setSpentPaymentGrouped(
+        convertDataArrayToObject(
+          paymentInfos.spentSum ?? [],
+          "sum",
+          paymentGroupType
+        )
+      );
+    } catch (e) {}
   };
 
   return (

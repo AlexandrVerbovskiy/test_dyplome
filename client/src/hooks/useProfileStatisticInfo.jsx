@@ -3,7 +3,7 @@ import { getUserStatistic } from "requests";
 import { sortCountByMonths } from "utils";
 import { MainContext } from "contexts";
 
-import config from "config";
+import config from "_config";
 const months = config.MONTH_NAMES;
 
 const useProfileStatisticInfo = ({ userId }) => {

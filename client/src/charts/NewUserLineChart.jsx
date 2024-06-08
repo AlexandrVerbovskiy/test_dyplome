@@ -25,28 +25,30 @@ const NewUserLineChart = () => {
     type,
     { startYear, startMonth, endYear, endMonth }
   ) => {
-    const userInfos = await main.request({
-      url: getGroupedNewUsersInfo.url(),
-      type: getGroupedNewUsersInfo.type,
-      convertRes: getGroupedNewUsersInfo.convertRes,
-      data: getGroupedNewUsersInfo.convertData(type, {
-        startYear,
-        startMonth,
-        endYear,
-        endMonth,
-      }),
-    });
+    try {
+      const userInfos = await main.request({
+        url: getGroupedNewUsersInfo.url(),
+        type: getGroupedNewUsersInfo.type,
+        convertRes: getGroupedNewUsersInfo.convertRes,
+        data: getGroupedNewUsersInfo.convertData(type, {
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
+        }),
+      });
 
-    setIsFirst(false);
+      setIsFirst(false);
 
-    setNewUsersGrouped(
-      convertDataArrayToObject(
-        userInfos.newUsers ?? [],
-        "count",
-        newUserGroupType,
-        "last"
-      )
-    );
+      setNewUsersGrouped(
+        convertDataArrayToObject(
+          userInfos.newUsers ?? [],
+          "count",
+          newUserGroupType,
+          "last"
+        )
+      );
+    } catch (e) {}
   };
 
   useEffect(() => {

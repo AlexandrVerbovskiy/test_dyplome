@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { adminUpdateJob, getJobInfo } from "requests";
 import { MainContext } from "contexts";
-import {AdminJobEditForm} from "components";
+import { AdminJobEditForm } from "components";
 import { useParams } from "react-router-dom";
 
 const AdminJobEdit = () => {
@@ -11,26 +11,30 @@ const AdminJobEdit = () => {
   const [baseData, setBaseData] = useState({});
 
   const onSave = async (formData) => {
-    formData.append("jobId", id);
+    try {
+      formData.append("jobId", id);
 
-    const job = await main.request({
-      url: adminUpdateJob.url(),
-      type: adminUpdateJob.type,
-      convertRes: adminUpdateJob.convertRes,
-      data: formData,
-    });
+      const job = await main.request({
+        url: adminUpdateJob.url(),
+        type: adminUpdateJob.type,
+        convertRes: adminUpdateJob.convertRes,
+        data: formData,
+      });
 
-    setBaseData(job);
+      setBaseData(job);
+    } catch (e) {}
   };
 
   const init = async () => {
-    const job = await main.request({
-      url: getJobInfo.url(id),
-      type: getJobInfo.type,
-      convertRes: getJobInfo.convertRes,
-    });
+    try {
+      const job = await main.request({
+        url: getJobInfo.url(id),
+        type: getJobInfo.type,
+        convertRes: getJobInfo.convertRes,
+      });
 
-    setBaseData(job);
+      setBaseData(job);
+    } catch (e) {}
   };
 
   useEffect(() => {

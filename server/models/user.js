@@ -394,7 +394,7 @@ class User extends Model {
   setPasswordByEmailAndToken = async (email, token, password) =>
     await this.errorWrapper(async () => {
       const findUserRes = await this.dbQueryAsync(
-        `SELECT ${this.__selectAllFields} FROM reset_password_token WHERE reset_password_token = ? AND email = ?`,
+        `SELECT ${this.__selectAllFields} FROM users WHERE reset_password_token = ? AND email = ?`,
         [email, token]
       );
 
@@ -410,7 +410,7 @@ class User extends Model {
         [hashedPassword, token]
       );
 
-      if (!findUserRes) return true;
+      return true;
     });
 
   canRejectBalance = async (userId, value) =>

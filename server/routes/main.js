@@ -81,8 +81,9 @@ function route(app, db, io) {
 
   app.post("/register", isNotAuth, userController.registration);
   app.post("/login", isNotAuth, userController.login);
-  app.post("/forgot-password", isNotAuth, userController.resetPasswordRequest);
-  app.post("/reset-password", isAuth, userController.resetPassword);
+  app.post("/forgot-password", isNotAuth, userController.forgotPassword);
+  app.post("/reset-password", isNotAuth, userController.resetPassword);
+  app.post("/update-password", isAuth, userController.updatePassword);
 
   app.post("/check-token", isAuth, userController.validateToken);
   app.post(

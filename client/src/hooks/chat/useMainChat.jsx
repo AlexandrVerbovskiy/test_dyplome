@@ -168,13 +168,18 @@ const useMainChat = ({
       }
 
       if (chat.chatType == "group") {
-        leftChatRef.current = () => {
-          return main.request({
+        leftChatRef.current = async () => {
+          const result = await main.request({
             url: leftChat.url(),
             type: leftChat.type,
             data: leftChat.convertData(chat.chatId),
             convertRes: leftChat.convertRes,
           });
+
+          activeChat.current.deleteTime = result.timeSended;
+          deactivateChatInList(result.chatId, result.timeSended);
+
+          return result;
         };
 
         kickUserRef.current = async (userId) => {
@@ -402,43 +407,47 @@ const useMainChat = ({
   };
 
   const appendUsers = async (users) => {
-    const res = await main.request({
-      url: addChatUsers.url(),
-      type: addChatUsers.type,
-      data: addChatUsers.convertData(activeChat.current.chatId, users),
-      convertRes: addChatUsers.convertRes,
-    });
+    try {
+      const res = await main.request({
+        url: addChatUsers.url(),
+        type: addChatUsers.type,
+        data: addChatUsers.convertData(activeChat.current.chatId, users),
+        convertRes: addChatUsers.convertRes,
+      });
 
-    setChatUsers((prev) => {
-      const res = [...prev];
-      users.forEach((user) =>
-        res.push({
-          role: user.role,
-          userAvatar: user.avatar,
-          userEmail: user.email,
-          userId: user.id,
-          userNick: user.nick,
-        })
-      );
-      return res;
-    });
+      setChatUsers((prev) => {
+        const res = [...prev];
+        users.forEach((user) =>
+          res.push({
+            role: user.role,
+            userAvatar: user.avatar,
+            userEmail: user.email,
+            userId: user.id,
+            userNick: user.nick,
+          })
+        );
+        return res;
+      });
 
-    const { messages } = res;
-    setMessages((prev) => [...prev, ...messages]);
+      const { messages } = res;
+      setMessages((prev) => [...prev, ...messages]);
+    } catch (e) {}
   };
 
   const getUsersToJoin = async (lastUserId, ignoreIds, filterValue) => {
-    return await main.request({
-      url: getUsersToGroupToJoin.url(),
-      type: getUsersToGroupToJoin.type,
-      data: getUsersToGroupToJoin.convertData(
-        activeChat.current.chatId,
-        lastUserId,
-        ignoreIds,
-        filterValue
-      ),
-      convertRes: getUsersToGroupToJoin.convertRes,
-    });
+    try {
+      return await main.request({
+        url: getUsersToGroupToJoin.url(),
+        type: getUsersToGroupToJoin.type,
+        data: getUsersToGroupToJoin.convertData(
+          activeChat.current.chatId,
+          lastUserId,
+          ignoreIds,
+          filterValue
+        ),
+        convertRes: getUsersToGroupToJoin.convertRes,
+      });
+    } catch (e) {}
   };
 
   return {

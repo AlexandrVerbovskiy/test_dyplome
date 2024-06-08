@@ -169,36 +169,42 @@ const AdminUsers = () => {
   });
 
   const onDelete = async (id) => {
-    await main.request({
-      url: adminDeleteUser.url(),
-      data: adminDeleteUser.convertData(id),
-      type: adminDeleteUser.type,
-      convertRes: adminDeleteUser.convertRes,
-    });
+    try {
+      await main.request({
+        url: adminDeleteUser.url(),
+        data: adminDeleteUser.convertData(id),
+        type: adminDeleteUser.type,
+        convertRes: adminDeleteUser.convertRes,
+      });
+    } catch (e) {}
 
     rebuild();
   };
 
   const adminChange = async (id) => {
-    const admin = await main.request({
-      url: adminUpdateUserAdmin.url(),
-      data: adminUpdateUserAdmin.convertData(id),
-      type: adminUpdateUserAdmin.type,
-      convertRes: adminUpdateUserAdmin.convertRes,
-    });
+    try {
+      const admin = await main.request({
+        url: adminUpdateUserAdmin.url(),
+        data: adminUpdateUserAdmin.convertData(id),
+        type: adminUpdateUserAdmin.type,
+        convertRes: adminUpdateUserAdmin.convertRes,
+      });
 
-    setItemFields({ admin }, id);
+      setItemFields({ admin }, id);
+    } catch (e) {}
   };
 
   const authorizedChange = async (id) => {
-    const authorized = await main.request({
-      url: adminUpdateUserAuthorized.url(),
-      data: adminUpdateUserAuthorized.convertData(id),
-      type: adminUpdateUserAuthorized.type,
-      convertRes: adminUpdateUserAuthorized.convertRes,
-    });
+    try {
+      const authorized = await main.request({
+        url: adminUpdateUserAuthorized.url(),
+        data: adminUpdateUserAuthorized.convertData(id),
+        type: adminUpdateUserAuthorized.type,
+        convertRes: adminUpdateUserAuthorized.convertRes,
+      });
 
-    setItemFields({ profileAuthorized: authorized }, id);
+      setItemFields({ profileAuthorized: authorized }, id);
+    } catch (e) {}
   };
 
   return (

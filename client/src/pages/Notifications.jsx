@@ -94,7 +94,9 @@ const Notifications = () => {
                       link ? "cursor-pointer" : ""
                     }`}
                     key={id}
-                    onClick={() => (window.location.href = link)}
+                    onClick={() =>
+                      link ? (window.location.href = link) : null
+                    }
                   >
                     <div className="card-body">
                       <div className="d-flex align-items-center">

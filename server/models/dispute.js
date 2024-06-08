@@ -180,8 +180,8 @@ class Dispute extends Model {
 
   baseGetMany = (props) => {
     const { filter } = props;
-    console.log(filter);
     const filterRes = this.baseStrFilter(filter);
+
     const baseQuery =
       "JOIN users ON disputes.user_id = users.id " +
       "JOIN job_requests ON disputes.job_request_id = job_requests.id " +
@@ -190,7 +190,15 @@ class Dispute extends Model {
       "JOIN jobs ON jobs.id = job_requests.job_id " +
       `WHERE ${filterRes.conditions} `;
     const baseProps = filterRes.props;
-    return { query: baseQuery, params: baseProps };
+
+    const resDateQueryBuild = this.baseListDateFilter(
+      props,
+      baseQuery,
+      baseProps
+    );
+
+    let { query, params } = resDateQueryBuild;
+    return { query, params };
   };
 
   count = async (props) =>

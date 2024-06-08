@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import config from "config";
+import config from "_config";
 import { MainContext } from "contexts";
 import { paypalApproveOrder, paypalCreateOrder } from "requests";
 import Input from "./Input";
@@ -17,17 +17,19 @@ const PaypalPaymentForm = ({ onComplete }) => {
   };
 
   const onApprove = async (data) => {
-    const newBalance = await main.request({
-      url: paypalApproveOrder.url(),
-      type: paypalApproveOrder.type,
-      convertRes: paypalApproveOrder.convertRes,
-      data: paypalApproveOrder.convertData(data.orderID),
-    });
+    try {
+      const newBalance = await main.request({
+        url: paypalApproveOrder.url(),
+        type: paypalApproveOrder.type,
+        convertRes: paypalApproveOrder.convertRes,
+        data: paypalApproveOrder.convertData(data.orderID),
+      });
 
-    main.setSuccess("Operation successful");
-    main.setSessionUser((data) => ({ ...data, balance: newBalance }));
-    onComplete();
-    setAmount("");
+      main.setSuccess("Operation successful");
+      main.setSessionUser((data) => ({ ...data, balance: newBalance }));
+      onComplete();
+      setAmount("");
+    } catch (e) {}
   };
 
   const createOrder = async (data) => {
@@ -35,12 +37,14 @@ const PaypalPaymentForm = ({ onComplete }) => {
       setAmountError("Invalid field");
       return null;
     } else {
-      return await main.request({
-        url: paypalCreateOrder.url(),
-        type: paypalCreateOrder.type,
-        convertRes: paypalCreateOrder.convertRes,
-        data: paypalCreateOrder.convertData(amount),
-      });
+      try {
+        return await main.request({
+          url: paypalCreateOrder.url(),
+          type: paypalCreateOrder.type,
+          convertRes: paypalCreateOrder.convertRes,
+          data: paypalCreateOrder.convertData(amount),
+        });
+      } catch (e) {}
     }
   };
 

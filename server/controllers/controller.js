@@ -138,8 +138,7 @@ class Controller {
 
   sendPasswordResetMail = async (email, name, token) => {
     const title = "Reset Password";
-    const link =
-      CLIENT_URL + "/" + STATIC.CLIENT_LINKS.PASSWORD_RESET + "/" + token;
+    const link = process.env.CLIENT_URL + "/reset-password/" + token;
 
     await this.__sendMail(email, title, "passwordReset", {
       name,
@@ -547,7 +546,7 @@ class Controller {
     user["workerRatingInfo"] = await this.workerCommentModel.getAverageStars(
       userId
     );
-    
+
     user["employeeRatingInfo"] =
       await this.employeeCommentModel.getAverageStars(userId);
 

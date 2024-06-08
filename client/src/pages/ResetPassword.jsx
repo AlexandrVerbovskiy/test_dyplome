@@ -32,8 +32,7 @@ const ResetPassword = () => {
         convertRes: resetPassword.convertRes,
       });
 
-      setSuccess("Password reset successfully");
-      redirect("/");
+      window.location.href = "/?success=Password reset successfully";
     } catch (e) {}
   };
 

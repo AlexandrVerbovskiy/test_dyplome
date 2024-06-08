@@ -18,9 +18,7 @@ const JobCard = ({
 
   return (
     <div className="job-card d-flex flex-column justify-content-between">
-      <div className="job-title">
-        {title}
-      </div>
+      <div className="job-title">{title}</div>
 
       <div>
         <div className="job-body">
@@ -44,7 +42,12 @@ const JobCard = ({
                 {isLongText && <>...</>}
               </span>
               {isLongText && (
-                <button className="show-more-job-description">Show More</button>
+                <a
+                  href={`/job-proposal/${id}`}
+                  className="show-more-job-description"
+                >
+                  Show More
+                </a>
               )}
             </p>
             {/*<div className="job-created-time">{timeCreated}</div>*/}

@@ -12,7 +12,7 @@ import {
   JobCardWrapper,
 } from "components";
 import { useGetJobs, usePopupController } from "hooks";
-import config from "config";
+import config from "_config";
 
 const MainPage = () => {
   const { setSuccess, setError, sessionUser } = useContext(MainContext);

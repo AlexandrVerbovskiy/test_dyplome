@@ -117,7 +117,7 @@ async function sendMoneyToUser(type, getter, amount, currency) {
       {
         recipient_type: type.toLowerCase(),
         amount: {
-          value: amount,
+          value: `${amount}`,
           currency: currency,
         },
         note: "Thank you.",

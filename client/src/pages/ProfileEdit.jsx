@@ -8,7 +8,7 @@ import {
   Textarea,
 } from "components";
 import { useChangePassword, useProfileEdit } from "hooks";
-import { updateProfile } from "requests";
+import { updatePassword, updateProfile } from "requests";
 import { MainContext } from "contexts";
 
 const ProfileEdit = () => {
@@ -84,9 +84,24 @@ const ProfileEdit = () => {
     } catch (e) {}
   };
 
-  const savePassword = () => {
+  const savePassword = async () => {
     const res = validateChangePassword();
-    if (res) alert("done 2");
+
+    if (res) {
+      try {
+        await main.request({
+          url: updatePassword.url(),
+          type: updatePassword.type,
+          data: {
+            currentPassword: oldPassword.value,
+            newPassword: password.value,
+          },
+          convertRes: updatePassword.convertRes,
+        });
+
+        main.setSuccess("Password updated successfully");
+      } catch (e) {}
+    }
   };
 
   return (

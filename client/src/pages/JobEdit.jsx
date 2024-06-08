@@ -10,7 +10,7 @@ import {
 import { useJobEdit } from "hooks";
 import { updateJob } from "requests";
 import { MainContext } from "contexts";
-import config from "config";
+import config from "_config";
 
 const JobEdit = () => {
   let { id = null } = useParams();

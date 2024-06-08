@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CommentCard, Layout, UserProfileStatisticInfo } from "components";
 import { useProfileStatisticInfo, useComments } from "hooks";
-import config from "config";
+import config from "_config";
 
 const sellerType = config.COMMENT_TYPES.employee;
 const workerType = config.COMMENT_TYPES.worker;

@@ -10,7 +10,7 @@ import {
   PopupWrapper,
   CommentCard,
 } from "components";
-import config from "config";
+import config from "_config";
 import { getJobInfo } from "requests";
 import { usePopupController, useComments } from "hooks";
 

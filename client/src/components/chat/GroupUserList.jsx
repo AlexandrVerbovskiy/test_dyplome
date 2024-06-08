@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { generateFullUserImgPath } from "utils";
 import { YesNoPopup } from "components";
-import config from "config";
+import config from "_config";
 
 const GroupUserList = ({ users, currentUserRole, kickUser }) => {
   const [idToDelete, setIdToDelete] = useState(null);

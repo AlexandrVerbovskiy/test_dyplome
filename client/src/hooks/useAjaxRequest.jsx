@@ -1,6 +1,6 @@
 import React from "react";
 import { axios } from "utils";
-import config from "config";
+import config from "_config";
 
 const useAjaxRequest = ({ onError }) => {
   return async function ({
@@ -25,6 +25,7 @@ const useAjaxRequest = ({ onError }) => {
       return convertedData;
     } catch (err) {
       const res = err.response;
+      console.log(res);
 
       if (res && res.status && res.data && res.data.error) {
         onError(res.data.error);

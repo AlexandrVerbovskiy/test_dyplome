@@ -43,35 +43,37 @@ const JobDisputeLineChart = () => {
     type,
     { startYear, startMonth, endYear, endMonth }
   ) => {
-    const disputeInfos = await main.request({
-      url: getGroupedDisputesInfo.url(),
-      type: getGroupedDisputesInfo.type,
-      convertRes: getGroupedDisputesInfo.convertRes,
-      data: getGroupedDisputesInfo.convertData(type, {
-        startYear,
-        startMonth,
-        endYear,
-        endMonth,
-      }),
-    });
+    try {
+      const disputeInfos = await main.request({
+        url: getGroupedDisputesInfo.url(),
+        type: getGroupedDisputesInfo.type,
+        convertRes: getGroupedDisputesInfo.convertRes,
+        data: getGroupedDisputesInfo.convertData(type, {
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
+        }),
+      });
 
-    setIsFirst(false);
+      setIsFirst(false);
 
-    setNewJobDisputesGrouped(
-      convertDataArrayToObject(
-        disputeInfos.newDisputes ?? [],
-        "count",
-        disputeGroupType
-      )
-    );
+      setNewJobDisputesGrouped(
+        convertDataArrayToObject(
+          disputeInfos.newDisputes ?? [],
+          "count",
+          disputeGroupType
+        )
+      );
 
-    setFinishedJobDisputesGrouped(
-      convertDataArrayToObject(
-        disputeInfos.finishedDisputes ?? [],
-        "count",
-        disputeGroupType
-      )
-    );
+      setFinishedJobDisputesGrouped(
+        convertDataArrayToObject(
+          disputeInfos.finishedDisputes ?? [],
+          "count",
+          disputeGroupType
+        )
+      );
+    } catch (e) {}
   };
 
   return (

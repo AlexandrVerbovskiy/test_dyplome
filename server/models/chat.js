@@ -345,9 +345,8 @@ class Chat extends Model {
                   cu.delete_time as delete_time, cu.last_viewed_message_id
                   FROM chats_users cu
               ) AS cu2 ON cu2.chat_user_id = cu1.chat_user_id
-              WHERE m1.hidden = 0
+              WHERE m1.hidden = 0 AND (cu2.delete_time IS NULL OR (m1.time_created <= cu2.delete_time)) AND m1.time_created >= cu2.time_created
               GROUP BY chats.id, cu1.last_viewed_message_id, cu2.last_viewed_message_id
-              HAVING (MAX(cu2.delete_time) IS NULL OR (MAX(m1.time_created) <= MAX(cu2.delete_time))) AND MAX(m1.time_created) >= MAX(cu2.time_created)
             ) AS chat_info ON chat_info.id = chats.id
             JOIN messages ON messages.id = chat_info.last_message_id
             JOIN messages_contents ON messages_contents.message_id = messages.id`;
@@ -770,19 +769,25 @@ class Chat extends Model {
 
   setOwnerByFirstPriority = async (chatId) =>
     await this.errorWrapper(async () => {
-      const query = `UPDATE chats_users
-        SET role = 'owner'
-        WHERE id IN (
-          SELECT id FROM chats_users
-          ORDER BY
-            CASE
-              WHEN role = 'admin' THEN 1
-              ELSE 2
-            END
-          LIMIT 1
-        )`;
+      const querySelect = `
+  SELECT id INTO @userId
+  FROM chats_users
+  ORDER BY
+    CASE
+      WHEN role = 'admin' THEN 1
+      ELSE 2
+    END
+  LIMIT 1;
+`;
 
-      await this.dbQueryAsync(query, [chatId]);
+      const queryUpdate = `
+  UPDATE chats_users
+  SET role = 'owner'
+  WHERE id = @userId;
+`;
+
+      await this.dbQueryAsync(querySelect, [chatId]);
+      await this.dbQueryAsync(queryUpdate, [chatId]);
     });
 
   getUserSystemChatInfo = async (userId) =>

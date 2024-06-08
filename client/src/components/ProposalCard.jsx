@@ -57,9 +57,9 @@ const ProposalCard = ({
               {isLongText && (
                 <>
                   ...
-                  <button className="show-more-job-description">
+                  <a href={`/job-proposal/${id}`} className="show-more-job-description">
                     Show More
-                  </button>
+                  </a>
                 </>
               )}
             </div>

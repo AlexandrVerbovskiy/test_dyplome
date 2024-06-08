@@ -5,7 +5,7 @@ import { DefaultPageLayout, UploadTrigger } from "components";
 import { useAdminChatMessages } from "hooks";
 import { generateFullUserImgPath, shortTimeFormat } from "utils";
 import { MainContext } from "contexts";
-import config from "config";
+import config from "_config";
 import DefaultAdminPageLayout from "components/DefaultAdminPageLayout";
 const { API_URL } = config;
 

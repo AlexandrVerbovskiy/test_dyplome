@@ -1,8 +1,8 @@
 import React from "react";
-import CONFIG from "config";
+import config from "_config";
 
 const DisputeBtn = ({ actualStatus, onClick }) => {
-  const jobStatus = CONFIG["JOB_STATUSES"];
+  const jobStatus = config["JOB_STATUSES"];
 
   let canShowDispute = true;
   if (

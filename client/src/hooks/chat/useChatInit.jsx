@@ -54,6 +54,7 @@ const useChatInit = ({
     io.on("offline", (data) => changeOnlineForSockets(data, false));
 
     io.on("chat-kicked", (data) => {
+      console.log(data);
       onGetMessageForSockets({ chatId: data.chatId, ...data.message });
       deactivateChat(data.chatId, data.time);
     });

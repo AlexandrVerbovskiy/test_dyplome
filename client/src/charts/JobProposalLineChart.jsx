@@ -31,51 +31,53 @@ const JobProposalLineChart = () => {
     type,
     { startYear, startMonth, endYear, endMonth }
   ) => {
-    const jobProposalInfos = await main.request({
-      url: getGroupedJobRequestsInfo.url(),
-      type: getGroupedJobRequestsInfo.type,
-      convertRes: getGroupedJobRequestsInfo.convertRes,
-      data: getGroupedJobRequestsInfo.convertData(type, {
-        startYear,
-        startMonth,
-        endYear,
-        endMonth,
-      }),
-    });
+    try {
+      const jobProposalInfos = await main.request({
+        url: getGroupedJobRequestsInfo.url(),
+        type: getGroupedJobRequestsInfo.type,
+        convertRes: getGroupedJobRequestsInfo.convertRes,
+        data: getGroupedJobRequestsInfo.convertData(type, {
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
+        }),
+      });
 
-    setIsFirst(false);
+      setIsFirst(false);
 
-    setRejectedProposalsGrouped(
-      convertDataArrayToObject(
-        jobProposalInfos.rejectedProposals ?? [],
-        "count",
-        jobProposalGroupType
-      )
-    );
+      setRejectedProposalsGrouped(
+        convertDataArrayToObject(
+          jobProposalInfos.rejectedProposals ?? [],
+          "count",
+          jobProposalGroupType
+        )
+      );
 
-    setCancelledProposalsGrouped(
-      convertDataArrayToObject(
-        jobProposalInfos.cancelledProposals ?? [],
-        "count",
-        jobProposalGroupType
-      )
-    );
+      setCancelledProposalsGrouped(
+        convertDataArrayToObject(
+          jobProposalInfos.cancelledProposals ?? [],
+          "count",
+          jobProposalGroupType
+        )
+      );
 
-    setNewProposalsGrouped(
-      convertDataArrayToObject(
-        jobProposalInfos.newProposals ?? [],
-        "count",
-        jobProposalGroupType
-      )
-    );
+      setNewProposalsGrouped(
+        convertDataArrayToObject(
+          jobProposalInfos.newProposals ?? [],
+          "count",
+          jobProposalGroupType
+        )
+      );
 
-    setFinishedProposalsGrouped(
-      convertDataArrayToObject(
-        jobProposalInfos.finishedProposals ?? [],
-        "count",
-        jobProposalGroupType
-      )
-    );
+      setFinishedProposalsGrouped(
+        convertDataArrayToObject(
+          jobProposalInfos.finishedProposals ?? [],
+          "count",
+          jobProposalGroupType
+        )
+      );
+    } catch (e) {}
   };
 
   useEffect(() => {

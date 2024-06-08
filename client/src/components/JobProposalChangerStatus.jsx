@@ -11,7 +11,7 @@ import {
   acceptCompleteJobProposal,
 } from "requests";
 
-import config from "config";
+import config from "_config";
 
 const JobProposalChangerStatus = ({
   setProposal,
@@ -102,16 +102,18 @@ const JobProposalChangerStatus = ({
   };
 
   const handleAcceptChangeStatusPopup = async () => {
-    const res = await main.request({
-      url: acceptChangePopupProps?.request.url(),
-      type: acceptChangePopupProps?.request.type,
-      data: acceptChangePopupProps?.request.convertData(proposalId),
-      convertRes: acceptChangePopupProps?.request.convertRes,
-    });
+    try {
+      const res = await main.request({
+        url: acceptChangePopupProps?.request.url(),
+        type: acceptChangePopupProps?.request.type,
+        data: acceptChangePopupProps?.request.convertData(proposalId),
+        convertRes: acceptChangePopupProps?.request.convertRes,
+      });
 
-    onSuccessChangeStatus(res);
-    onCloseChangeStatusPopup();
-    main.autoUpdateSessionInfo();
+      onSuccessChangeStatus(res);
+      onCloseChangeStatusPopup();
+      main.autoUpdateSessionInfo();
+    } catch (e) {}
   };
 
   const handleChangeClick = async () => {

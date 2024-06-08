@@ -3,7 +3,12 @@ import { usePagination } from "hooks";
 import { MainContext } from "contexts";
 import { getAllJobs, jobChangeActiveByAdmin } from "requests";
 import { Plus, Eye, Pencil } from "react-bootstrap-icons";
-import { CreateLink, SearchFilter, YesNoSpan, BaseAdminTableLayoutPage } from "components";
+import {
+  CreateLink,
+  SearchFilter,
+  YesNoSpan,
+  BaseAdminTableLayoutPage,
+} from "components";
 
 const headers = [
   {
@@ -131,14 +136,16 @@ const AdminJobs = () => {
   });
 
   const activeChange = async (id) => {
-    const active = await main.request({
-      url: jobChangeActiveByAdmin.url(),
-      data: jobChangeActiveByAdmin.convertData(id),
-      type: jobChangeActiveByAdmin.type,
-      convertRes: jobChangeActiveByAdmin.convertRes,
-    });
+    try {
+      const active = await main.request({
+        url: jobChangeActiveByAdmin.url(),
+        data: jobChangeActiveByAdmin.convertData(id),
+        type: jobChangeActiveByAdmin.type,
+        convertRes: jobChangeActiveByAdmin.convertRes,
+      });
 
-    setItemFields({ active }, id);
+      setItemFields({ active }, id);
+    } catch (e) {}
   };
 
   return (

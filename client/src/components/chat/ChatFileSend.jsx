@@ -2,7 +2,7 @@ import React, { useRef, useContext } from "react";
 import { Paperclip } from "react-bootstrap-icons";
 import { ChatBodyContext } from "contexts";
 import { getFileData } from "utils";
-import config from "config";
+import config from "_config";
 
 const ChatFileSend = () => {
   const inputRef = useRef(null);

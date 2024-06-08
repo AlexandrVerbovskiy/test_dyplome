@@ -161,6 +161,13 @@ class Dispute extends Controller {
       await this.userModel.addBalance(dispute.workerId, totalPrice);
       await this.jobProposalModel.acceptCompleted(dispute.proposalId);
 
+      await this.paymentTransactionModel.doneJobOffer(
+        dispute.workerId,
+        totalPrice,
+        dispute.title,
+        "System"
+      );
+
       this.resolvedWorkerDisputeNotification(
         {
           proposalId: dispute.jobRequestId,
@@ -205,6 +212,13 @@ class Dispute extends Controller {
           win: false,
         },
         dispute.workerId
+      );
+
+      await this.paymentTransactionModel.cancelledJobOffer(
+        dispute.jobAuthorId,
+        totalPrice,
+        dispute.title,
+        "System"
       );
 
       this.resolvedEmployeeDisputeNotification(

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getFileData } from "utils";
 import ErrorSpan from "./ErrorSpan";
-import config from "config";
+import config from "_config";
 
 const ImageInput = ({ btnText, onChange, error, url = null, id = null }) => {
   const [file, setFile] = useState(null);

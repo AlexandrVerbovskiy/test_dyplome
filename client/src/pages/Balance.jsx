@@ -88,7 +88,9 @@ const TransactionRow = ({
           <span className="font-weight-bold text-danger">-${money}</span>
         )}
       </td>
-      <td><div style={{textWrap:"wrap"}}>{description}</div></td>
+      <td>
+        <div style={{ textWrap: "wrap" }}>{description}</div>
+      </td>
       <td className="fw-bolder">{fullTimeFormat(createdAt)}</td>
     </tr>
   );
@@ -165,13 +167,15 @@ const PaymentForm = () => {
   });
 
   const init = async () => {
-    const res = await main.request({
-      url: getFeeInfo.url(),
-      type: getFeeInfo.type,
-      convertRes: getFeeInfo.convertRes,
-    });
+    try {
+      const res = await main.request({
+        url: getFeeInfo.url(),
+        type: getFeeInfo.type,
+        convertRes: getFeeInfo.convertRes,
+      });
 
-    setFeeInfo(res);
+      setFeeInfo(res);
+    } catch (e) {}
   };
 
   useEffect(() => {

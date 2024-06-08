@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-import config from "config";
+import config from "_config";
 
 const { MAP_DEFAULT } = config;
 

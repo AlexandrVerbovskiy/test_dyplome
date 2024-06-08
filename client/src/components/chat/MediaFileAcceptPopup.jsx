@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { PopupWrapper } from "components"
 import CustomAudio from "./CustomAudio";
 import { ChatBodyContext, ChatContext } from "contexts";
-import config from "config";
+import config from "_config";
 import { autoConvert } from "utils";
 
 const MediaFileAcceptPopup = () => {

@@ -1,9 +1,9 @@
-import CONFIG from "config";
+import config from "_config";
 
 const indicateMediaTypeByExtension = (type) => {
-    if (CONFIG.VIDEO_EXTENSIONS.includes(type.toLowerCase())) return "video";
-    if (CONFIG.AUDIO_EXTENSIONS.includes(type.toLowerCase())) return "audio";
-    if (CONFIG.IMAGE_EXTENSIONS.includes(type.toLowerCase())) return "image";
+    if (config.VIDEO_EXTENSIONS.includes(type.toLowerCase())) return "video";
+    if (config.AUDIO_EXTENSIONS.includes(type.toLowerCase())) return "audio";
+    if (config.IMAGE_EXTENSIONS.includes(type.toLowerCase())) return "image";
     return "file";
 }
 

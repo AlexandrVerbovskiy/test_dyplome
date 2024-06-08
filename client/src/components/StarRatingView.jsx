@@ -19,12 +19,14 @@ const StarRatingView = ({ value, onClick }) => {
   const activeStars = [];
   const unactiveStars = [];
 
+  value = value.toFixed(0);
+
   for (let i = 0; i < value; i++) {
     activeStars.push(<Star key={i} active={true} />);
   }
 
   for (let i = value; i < 5; i++) {
-    unactiveStars.push(<Star key={i}/>);
+    unactiveStars.push(<Star key={i} />);
   }
 
   return (

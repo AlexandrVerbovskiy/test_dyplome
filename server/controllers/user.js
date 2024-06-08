@@ -392,7 +392,7 @@ class User extends Controller {
       );
     });
 
-  resetPassword = (req, res) =>
+  updatePassword = (req, res) =>
     this.errorWrapper(res, async () => {
       const { currentPassword, newPassword } = req.body;
       const userId = req.userData.userId;
@@ -582,7 +582,7 @@ class User extends Controller {
     });
 
   userNameIdList = (req, res) =>
-    this.baseWrapper(req, res, async () => {
+    this.errorWrapper(res, async () => {
       const { page = 1, perPage = 20, filter = "" } = req.body;
       const startIndex = (page - 1) * perPage;
       const list = await this.userModel.getNameIdList(
@@ -594,7 +594,7 @@ class User extends Controller {
     });
 
   forgotPassword = (req, res) =>
-    this.baseWrapper(req, res, async () => {
+    this.errorWrapper(res, async () => {
       const { email } = req.body;
       const user = await this.userModel.findByEmail(email);
 
@@ -613,9 +613,10 @@ class User extends Controller {
     });
 
   resetPassword = (req, res) =>
-    this.baseWrapper(req, res, async () => {
+    this.errorWrapper(res, async () => {
       const { email, password, token } = req.body;
       const user = await this.userModel.findByEmail(email);
+      console.log("test");
 
       if (!user) {
         return this.sendResponseError(res, "No user found");
