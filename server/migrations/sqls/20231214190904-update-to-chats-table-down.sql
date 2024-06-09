@@ -1,0 +1,3 @@
+ALTER TABLE chats
+DROP COLUMN `name`,
+DROP COLUMN `avatar`;
