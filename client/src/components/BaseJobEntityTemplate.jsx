@@ -19,6 +19,7 @@ const BaseJobEntityTemplate = ({
   authorId,
   authorNick = null,
   authorEmail,
+  authorTitle="Job Author"
 }) => {
   return (
     <Layout pageClassName="job-view-page">
@@ -42,7 +43,7 @@ const BaseJobEntityTemplate = ({
 
               <div className="col-12 col-md-6 job-edit-inputs">
                 <div>
-                  <label className="form-label">Job Author</label>
+                  <label className="form-label">{authorTitle}</label>
                   <div className="input-group">
                     <div className="form-control">
                       <a href={`/users/${authorId}`}>

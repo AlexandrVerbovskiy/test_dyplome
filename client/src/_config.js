@@ -138,8 +138,7 @@ const config = {
   CHAT_ADMIN_ROLES_SELECT: [{ value: "member", title: "Member" }],
   //MAP_KEY: "AIzaSyAbwv5P-iff_vVB7TpstiQ1RI1kvktza48",
   //MAP_KEY: "AIzaSyA7invsVY2ADOAEuZ3w5eZQCe_Yu0QOF4w",
-  //MAP_KEY: "AIzaSyALYcsPh3unwjOuZ1aRDtQAHcz3DXMQVm4",
-  MAP_KEY:"",
+  MAP_KEY: "AIzaSyALYcsPh3unwjOuZ1aRDtQAHcz3DXMQVm4",
   STRIPE_PUBLIC_KEY:
     "pk_test_51Mq9NRJOCxSbJmWptiojgsHHhJMLSJmu6QWEXD0g39q6FEEXEZrcdYIxTHj6xkVFEylGbNgjLr3CghO6G4hsndAR00ftyUUUoh",
   PAYPAL_CLIENT_ID:

@@ -89,6 +89,8 @@ const JobProposalView = () => {
       disputeText = `Offer suspended due to dispute. The administrator has already completed reviewing the issue and resolved it`;
   }
 
+  console.log(proposal);
+
   return (
     <BaseJobEntityTemplate
       pageTitle="Proposal Info"
@@ -103,9 +105,24 @@ const JobProposalView = () => {
       isProposal={true}
       pricePerHour={proposal.price}
       priceExecutionTime={proposal.executionTime}
-      authorEmail={proposal.authorEmail}
-      authorId={proposal.authorId}
-      authorNIck={proposal.authorNIck}
+      authorEmail={
+        proposal.authorId == sessionUser.id
+          ? proposal.proposalAuthorEmail
+          : proposal.authorEmail
+      }
+      authorId={
+        proposal.authorId == sessionUser.id
+          ? proposal.proposalAuthorId
+          : proposal.authorId
+      }
+      authorNick={
+        proposal.authorId == sessionUser.id
+          ? proposal.proposalAuthorNick
+          : proposal.authorNick
+      }
+      authorTitle={
+        proposal.authorId == sessionUser.id ? "Proposal Author" : "Job Author"
+      }
     >
       <hr />
 
@@ -144,7 +161,7 @@ const JobProposalView = () => {
                   </a>
                 ) : (
                   <a
-                    href={"/chat/personal/" + proposal.authorId}
+                    href={"/chat/personal/" + proposal.userId}
                     className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
                   >
                     Write to worker

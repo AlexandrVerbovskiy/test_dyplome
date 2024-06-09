@@ -71,7 +71,7 @@ const JobView = () => {
 
             <div className="row">
               <div className="job-edit-map col-12 col-md-6">
-                <Map>
+                <Map center={{ lat: job.lat, lng: job.lng }}>
                   <MapMarker title={job.title} lat={job.lat} lng={job.lng} />
                 </Map>
               </div>
@@ -81,7 +81,9 @@ const JobView = () => {
                   <label className="form-label">Job Author</label>
                   <div className="input-group">
                     <div className="form-control">
-                      <a href={`/users/${job.authorId}`}>{job.authorNick ?? job.authorEmail}</a>
+                      <a href={`/users/${job.authorId}`}>
+                        {job.authorNick ?? job.authorEmail}
+                      </a>
                     </div>
                   </div>
                 </div>

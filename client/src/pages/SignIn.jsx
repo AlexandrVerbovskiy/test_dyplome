@@ -25,10 +25,8 @@ const SignIn = () => {
 
       localStorage.setItem("token", token);
       setSessionUser(user);
-      window.location.href = "/?success=Logged in successfully";
-    } catch (e) {
-      setError(e.message);
-    }
+      window.location.href = "/?success=Login completed successfully";
+    } catch (e) {}
   };
 
   return (

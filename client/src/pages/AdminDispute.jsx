@@ -198,6 +198,9 @@ const AdminDispute = () => {
       isProposal={true}
       pricePerHour={dispute.price}
       priceExecutionTime={dispute.executionTime}
+      authorNick={jobAuthor.nick}
+      authorEmail={jobAuthor.email}
+      authorId={jobAuthor.id}
     >
       <hr />
       <ViewInput

@@ -10,7 +10,10 @@ export const login = {
 export const registration = {
   url: () => "register",
   type: "post",
-  convertRes: (res) => res.data.validated,
+  convertRes: (res) => {
+    const token = res.headers.authorization.split(" ")[1];
+    return { token, user: { ...res.data.user } };
+  },
 };
 
 export const forgotPassword = {

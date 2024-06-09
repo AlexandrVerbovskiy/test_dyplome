@@ -13,7 +13,7 @@ class Payment extends Controller {
       const { userId } = req.userData;
       const { amount, token } = req.body;
       const charge = await stripe.charges.create({
-        amount: amount,
+        amount: amount * 100,
         currency: "usd",
         source: token.id,
         description: "Example Charge",

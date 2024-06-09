@@ -9,6 +9,27 @@ const Controller = require("./controller");
 class User extends Controller {
   __folder = "files/avatars";
 
+  __authByEmailAndPassword = async (
+    email,
+    password,
+    expiresIn = process.env.JWT_DEFAULT_ACCESS_LIFETIME
+  ) => {
+    const user = await this.userModel.findByPasswordAndEmail(email, password);
+    this.createLoginNotification(user.id);
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn,
+      }
+    );
+
+    return { token, user };
+  };
+
   registration = (req, res) =>
     this.errorWrapper(res, async () => {
       const { email, password } = req.body;
@@ -17,10 +38,18 @@ class User extends Controller {
       this.createRegistrationNotification(userId);
 
       await this.chatModel.createSystemChat({ id: userId });
+
+      const { token, user } = await this.__authByEmailAndPassword(
+        email,
+        password
+      );
+
+      res.set("Authorization", `Bearer ${token}`);
+
       return this.sendResponseSuccess(
         res,
         "User registered successfully",
-        {},
+        { user },
         201
       );
     });
@@ -29,22 +58,14 @@ class User extends Controller {
     this.errorWrapper(res, async () => {
       const { email, password, rememberMe } = req.body;
 
-      const duration = rememberMe
+      const expiresIn = rememberMe
         ? process.env.JWT_REMEMBER_ACCESS_LIFETIME
         : process.env.JWT_DEFAULT_ACCESS_LIFETIME;
 
-      const user = await this.userModel.findByPasswordAndEmail(email, password);
-      const userId = user.id;
-      this.createLoginNotification(userId);
-
-      const token = jwt.sign(
-        {
-          userId,
-        },
-        process.env.SECRET_KEY,
-        {
-          expiresIn: duration,
-        }
+      const { token, user } = await this.__authByEmailAndPassword(
+        email,
+        password,
+        expiresIn
       );
 
       res.set("Authorization", `Bearer ${token}`);
@@ -616,16 +637,16 @@ class User extends Controller {
     this.errorWrapper(res, async () => {
       const { email, password, token } = req.body;
       const user = await this.userModel.findByEmail(email);
-      console.log("test");
 
       if (!user) {
-        return this.sendResponseError(res, "No user found");
+        return this.sendResponseError(res, "No user found", 404);
       }
+      console.log(email, password);
 
       const success = await this.userModel.setPasswordByEmailAndToken(
         email,
-        password,
-        token
+        token,
+        password
       );
 
       this.passwordResetNotification(user["id"]);

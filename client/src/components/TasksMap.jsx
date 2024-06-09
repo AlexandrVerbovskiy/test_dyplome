@@ -3,7 +3,7 @@ import { Map, MapMarker } from ".";
 
 const TasksMap = ({ userPlace, tasks }) => (
   <>
-    <Map>
+    <Map center={userPlace.coords}>
       {tasks.length &&
         tasks.map((task) => (
           <MapMarker key={task.id} title={task.title} pos={task.coords} />

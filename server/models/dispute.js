@@ -41,8 +41,8 @@ class Dispute extends Model {
     await this.errorWrapper(async () => {
       const disputes = await this.dbQueryAsync(
         `SELECT cu1.chat_id as chatId, ${this.__fullDisputeInfo} 
-        LEFT JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
-        LEFT JOIN chats_users as cu2 ON (cu2.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)
+        JOIN chats_users as cu1 ON job_requests.user_id = cu1.user_id
+        JOIN chats_users as cu2 ON (cu1.chat_id = cu2.chat_id AND jobs.author_id = cu2.user_id)
         WHERE disputes.id = ?`,
         [id]
       );

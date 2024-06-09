@@ -95,7 +95,7 @@ const MainPage = () => {
 
         <div className="col-12 col-md-4" style={{ position: "relative" }}>
           <div className="main-map mt-3 mt-md-4">
-            <Map>
+            <Map center={{ lat: currentLocation.lat, lng: currentLocation.lng }}>
               <MapMarker
                 title="Your position"
                 lat={currentLocation.lat}

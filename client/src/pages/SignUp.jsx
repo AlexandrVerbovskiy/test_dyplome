@@ -18,15 +18,17 @@ const SignUp = () => {
       );
 
     try {
-      await main.request({
+      const { token, user } = await main.request({
         url: registration.url(),
         type: registration.type,
         data: { email, password },
+        convertRes: registration.convertRes,
       });
 
-      main.setSuccess("User registered successfully");
-      window.location = window.location.origin;
-    } catch {}
+      localStorage.setItem("token", token);
+      main.setSessionUser(user);
+      window.location.href = "/?success=Registration completed successfully";
+    } catch(e) {}
   };
 
   return (

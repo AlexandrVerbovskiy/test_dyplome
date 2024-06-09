@@ -32,8 +32,12 @@ const Navbar = ({
     setNotificationPopupActive(false);
   };
 
+  setTimeout(()=>{
+    document.querySelector(".navbar").classList.remove("nav-hidden")
+  }, 200)
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm header-nav">
+    <nav className="navbar nav-hidden navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm header-nav">
       <div className="container-fluid">
         <a
           href="/"
@@ -178,7 +182,7 @@ const Navbar = ({
                 <li>
                   <a
                     className={`dropdown-item ${
-                      window.location.pathname == "/profile-edit"
+                      window.location.pathname == "/profile"
                         ? "active"
                         : ""
                     }`}

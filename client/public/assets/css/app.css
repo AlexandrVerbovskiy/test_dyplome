@@ -2153,11 +2153,12 @@ input.search-control-2::placeholder {
 }
 
 .user-img {
-  max-width: 42px;
-  max-height: 42px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   border: 0 solid #e5e5e5;
   padding: 0;
+  object-fit: unset!important;
 }
 
 .user-info .user-name {
@@ -2827,7 +2828,7 @@ body:has(.navbar) .alert {
     width: 49%;
   }
 
-  .main-view-page .job-card{
+  .main-view-page .job-card {
     width: 100%;
   }
 
@@ -2841,7 +2842,7 @@ body:has(.navbar) .alert {
     width: 24%;
   }
 
-  .main-view-page .job-card{
+  .main-view-page .job-card {
     width: 49%;
   }
 }
@@ -4072,12 +4073,30 @@ hr:has(+ .balance-payment-type-select) {
   height: 400px;
 }
 
-.main-job-search-bar>.card {
-  margin-bottom: 0!important;
+.main-job-search-bar > .card {
+  margin-bottom: 0 !important;
 }
 
 @media (min-width: 768px) {
   .main-map {
     height: 620px;
+  }
+}
+
+.gm-style-iw.gm-style-iw-c .gm-ui-hover-effect span {
+  margin: 5px !important;
+  height: 16px !important;
+  width: 16px !important;
+}
+
+.gm-style-iw.gm-style-iw-c .gm-ui-hover-effect {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+@media (min-width: 992px) {
+  .navbar.nav-hidden {
+    overflow: hidden;
+    max-height: 76px;
   }
 }

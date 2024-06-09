@@ -288,9 +288,7 @@ class Chat extends Controller {
     this.errorWrapper(res, async () => {
       const { userId: companionId } = req.body;
       const searcherId = req.userData.userId;
-
-      const userId = req.userData.userId;
-      const chatId = await this.chatModel.hasPersonal(companionId, userId);
+      const chatId = await this.chatModel.hasPersonal(companionId, searcherId);
 
       let companionInfo = await this.userModel.getUserInfo(companionId);
 
@@ -308,6 +306,8 @@ class Chat extends Controller {
         }
       }
 
+      console.log(searcherId, companionId);
+
       companionInfo["chatType"] = "personal";
       companionInfo["userEmail"] = companionInfo["email"];
       companionInfo["userNick"] = companionInfo["nick"];
@@ -315,7 +315,7 @@ class Chat extends Controller {
 
       if (chatId) {
         companionInfo["chatId"] = chatId;
-        const resSelect = await this.chatModel.selectChat(userId, chatId);
+        const resSelect = await this.chatModel.selectChat(searcherId, chatId);
 
         companionInfo["messages"] = resSelect["messages"];
         companionInfo["statistic"] = resSelect["statistic"];
