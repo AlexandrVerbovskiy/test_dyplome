@@ -7,6 +7,7 @@ const VisualizeCamera = ({ active, handlePlay }) => {
 
   useEffect(() => {
     setStreamError(null);
+    
     if (active) {
       navigator.mediaDevices
         .getUserMedia({ video: true })

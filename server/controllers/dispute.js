@@ -85,10 +85,85 @@ class Dispute extends Controller {
       return this.sendResponseSuccess(res, "Find success", { dispute });
     });
 
-  updateDisputeStatus = async (req, res) =>
+  setStatus = async (req, res, role) =>
     this.errorWrapper(res, async () => {
-      const { disputeId, status } = req.body;
-      await this.disputeModel.setStatus(disputeId, status);
+      const { disputeId } = req.body;
+      const dispute = await this.disputeModel.getById(disputeId);
+
+      if (role === "worker") {
+        await this.disputeModel.workerRight(dispute.id, dispute.workerId);
+      } else if (role === "employee") {
+        await this.disputeModel.employeeRight(dispute.id, dispute.jobAuthorId);
+      }
+
+      const totalPrice = Number(dispute.executionTime * dispute.price).toFixed(
+        2
+      );
+
+      if (role === "worker") {
+        await this.userModel.addBalance(dispute.workerId, totalPrice);
+        await this.jobProposalModel.acceptCompleted(dispute.proposalId);
+      } else if (role === "employee") {
+        await this.userModel.addBalance(dispute.jobAuthorId, totalPrice);
+        await this.jobProposalModel.acceptCancelled(dispute.proposalId);
+      }
+
+      if (role === "worker") {
+        this.resolvedWorkerDisputeNotification(
+          {
+            proposalId: dispute.jobRequestId,
+            jobTitle: dispute.title,
+            getMoney: totalPrice,
+            win: true,
+          },
+          dispute.workerId
+        );
+
+        await this.paymentTransactionModel.doneJobOffer(
+          dispute.workerId,
+          totalPrice,
+          dispute.title,
+          "System"
+        );
+
+        this.resolvedEmployeeDisputeNotification(
+          {
+            proposalId: dispute.jobRequestId,
+            jobTitle: dispute.title,
+            getMoney: totalPrice,
+            win: false,
+          },
+          dispute.jobAuthorId
+        );
+      } else if (role === "employee") {
+        this.resolvedWorkerDisputeNotification(
+          {
+            proposalId: dispute.jobRequestId,
+            jobTitle: dispute.title,
+            getMoney: totalPrice,
+            win: false,
+          },
+          dispute.workerId
+        );
+
+        await this.paymentTransactionModel.cancelledJobOffer(
+          dispute.jobAuthorId,
+          totalPrice,
+          dispute.title,
+          "System"
+        );
+
+        this.resolvedEmployeeDisputeNotification(
+          {
+            proposalId: dispute.jobRequestId,
+            jobTitle: dispute.title,
+            getMoney: totalPrice,
+            win: true,
+          },
+          dispute.jobAuthorId
+        );
+      }
+
       return this.sendResponseSuccess(res, "Status changes success");
     });
 
@@ -148,91 +223,9 @@ class Dispute extends Controller {
       });
     });
 
-  markWorkerRight = (req, res) =>
-    this.errorWrapper(res, async () => {
-      const { disputeId } = req.body;
-      const dispute = await this.disputeModel.getById(disputeId);
-      await this.disputeModel.workerRight(dispute.id, dispute.workerId);
+  markWorkerRight = (req, res) => this.setStatus(req, res, "worker");
 
-      const totalPrice = Number(dispute.executionTime * dispute.price).toFixed(
-        2
-      );
-
-      await this.userModel.addBalance(dispute.workerId, totalPrice);
-      await this.jobProposalModel.acceptCompleted(dispute.proposalId);
-
-      await this.paymentTransactionModel.doneJobOffer(
-        dispute.workerId,
-        totalPrice,
-        dispute.title,
-        "System"
-      );
-
-      this.resolvedWorkerDisputeNotification(
-        {
-          proposalId: dispute.jobRequestId,
-          jobTitle: dispute.title,
-          getMoney: totalPrice,
-          win: true,
-        },
-        dispute.workerId
-      );
-
-      this.resolvedEmployeeDisputeNotification(
-        {
-          proposalId: dispute.jobRequestId,
-          jobTitle: dispute.title,
-          getMoney: totalPrice,
-          win: false,
-        },
-        dispute.jobAuthorId
-      );
-
-      return this.sendResponseSuccess(res, "Status changes success");
-    });
-
-  markEmployeeRight = (req, res) =>
-    this.errorWrapper(res, async () => {
-      const { disputeId } = req.body;
-      const dispute = await this.disputeModel.getById(disputeId);
-      await this.disputeModel.employeeRight(dispute.id, dispute.jobAuthorId);
-
-      const totalPrice = Number(dispute.executionTime * dispute.price).toFixed(
-        2
-      );
-
-      await this.userModel.addBalance(dispute.jobAuthorId, totalPrice);
-      await this.jobProposalModel.acceptCancelled(dispute.proposalId);
-
-      this.resolvedWorkerDisputeNotification(
-        {
-          proposalId: dispute.jobRequestId,
-          jobTitle: dispute.title,
-          getMoney: totalPrice,
-          win: false,
-        },
-        dispute.workerId
-      );
-
-      await this.paymentTransactionModel.cancelledJobOffer(
-        dispute.jobAuthorId,
-        totalPrice,
-        dispute.title,
-        "System"
-      );
-
-      this.resolvedEmployeeDisputeNotification(
-        {
-          proposalId: dispute.jobRequestId,
-          jobTitle: dispute.title,
-          getMoney: totalPrice,
-          win: true,
-        },
-        dispute.jobAuthorId
-      );
-
-      return this.sendResponseSuccess(res, "Status changes success");
-    });
+  markEmployeeRight = (req, res) => this.setStatus(req, res, "employee");
 }
 
 module.exports = Dispute;

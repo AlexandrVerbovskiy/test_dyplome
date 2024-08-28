@@ -110,7 +110,7 @@ class Controller {
       console.log(e);
       const status = e.status ? e.status : 500;
       const error = e.message;
-      this.sendResponseError(res, error, status);
+      return this.sendResponseError(res, error, status);
     }
   };
 

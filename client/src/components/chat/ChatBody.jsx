@@ -25,7 +25,7 @@ const ChatBody = () => {
   const mediaFileAccept = useMediaFileAccept();
   const recorder = useRecorder(mediaFileAccept.handleSetFile);
   const [activeMessageActionPopup, setActiveMessageActionPopup] =
-    useState(null);
+    useState(null);z
 
   const scrollBottom = () => {
     const block = bodyRef.current;

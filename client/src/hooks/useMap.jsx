@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { setKey, fromLatLng, fromAddress } from "react-geocode";
 import config from "_config";
 
-console.log(config.MAP_KEY);
-
 const useMap = () => {
   useEffect(() => {
     if (config.MAP_KEY) {

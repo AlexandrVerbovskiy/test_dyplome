@@ -112,7 +112,7 @@ const JobProposalChangerStatus = ({
 
       onSuccessChangeStatus(res);
       onCloseChangeStatusPopup();
-      main.autoUpdateSessionInfo();
+      //main.autoUpdateSessionInfo();
     } catch (e) {}
   };
 
