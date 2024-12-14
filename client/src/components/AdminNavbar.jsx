@@ -203,6 +203,56 @@ const AdminNavbar = ({ setHovered, setActive }) => {
 
                   <li style={{ height: "43px" }}>
                     <a
+                      href="/dashboard"
+                      className={`${
+                        window.location.pathname.includes("/dashboard")
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bxs-dashboard"></i>
+                      </div>
+                      <div className="menu-title">Dashboard</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/inactive-notify"
+                      className={`${
+                        window.location.pathname.includes("/inactive-notify")
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bx-broadcast"></i>
+                      </div>
+                      <div className="menu-title">
+                        Inactive Users broadcasting
+                      </div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
+                      href="/earnings-notify"
+                      className={`${
+                        window.location.pathname.includes("/earnings-notify")
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <div className="parent-icon">
+                        <i className="bx bx-broadcast"></i>
+                      </div>
+                      <div className="menu-title">Earnings broadcasting</div>
+                    </a>
+                  </li>
+
+                  <li style={{ height: "43px" }}>
+                    <a
                       href="/"
                       onClick={(e) => {
                         e.preventDefault();

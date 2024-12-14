@@ -673,3 +673,15 @@ export const getGroupedPaymentsInfo = {
   }),
   convertRes: (res) => res.data,
 };
+
+export const getInactiveUsers = {
+  url: () => `azure-last-inactive-users`,
+  type: "get",
+  convertRes: (res) => res.data?.users ?? [],
+};
+
+export const getTopJobsCompleted = {
+  url: () => `azure-last-top-jobs-completed`,
+  type: "get",
+  convertRes: (res) => res.data?.earnings ?? [],
+};

@@ -33,6 +33,9 @@ import {
   AdminGetMoneyRequest,
   Notifications,
   MyJobs,
+  AdminDashboard,
+  AdminEarningsUsersNotify,
+  AdminInactiveUsersNotify,
 } from "pages";
 import CurrentUserProfile from "pages/CurrentUserProfile";
 
@@ -185,12 +188,24 @@ const adminRouter = createBrowserRouter([
     element: <SystemOptions />,
   },
   {
+    path: "/dashboard",
+    element: <AdminDashboard />,
+  },
+  {
     path: "/notifications",
     element: <Notifications />,
   },
   {
     path: "/transactions",
     element: <AdminPaymentTransactions />,
+  },
+  {
+    path: "/earnings-notify",
+    element: <AdminEarningsUsersNotify />,
+  },
+  {
+    path: "/inactive-notify",
+    element: <AdminInactiveUsersNotify />,
   },
 ]);
 
